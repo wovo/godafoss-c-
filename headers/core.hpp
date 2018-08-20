@@ -1,21 +1,10 @@
 
 value_t
 
-velum
-canvas
-repository
-storage
-stash
-store
-shed
-repository 
-barn
-=> garner
-
-
-concept depot
 concept box
+concept item
 concept stream
+
 concept input 
 concept output
 concept simplex
