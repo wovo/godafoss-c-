@@ -1,6 +1,14 @@
 cto
 
-A cto is a Compile Time Object, implemented as a struct or class that has only static functions and attributes.
+A cto is a Compile Time Object, implemented as a struct or class that has only static functions and static attributes.
+A cto is never instantiated.
+Instead, cto's are passed as template parameters to create new cto's.
+
+init
+
+Before it is used at run-time, a cto must be initialized by calling its init function.
+When a cto 
+
 
 box
 
@@ -13,7 +21,9 @@ concept bool box = requires(
    typename T::is_box,
    typename T::value_type v,
    typename T::is_item | typename T::is_stream
-);
+){  
+   { T::init() } -> void;
+};
 ```
 
 item
@@ -47,6 +57,7 @@ concept bool stream = requires(
 direction
 
 A box can be an input, an output, or both.
+(A box could also be neither, but that would serve no purpose.)
 When it is an input you can read from it, when it is an output you can write to it.
 
 ```C++
