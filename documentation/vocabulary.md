@@ -9,7 +9,6 @@ init
 Before it is used at run-time, a cto must be initialized by calling its init function.
 When a cto 
 
-
 box
 
 A box is a cto that you can read a value from and/or write a value to.
