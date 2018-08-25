@@ -1,23 +1,58 @@
-cto
+godafoss refernce
+===
 
-A cto is a Compile Time Object, implemented as a struct or class that has only static functions and static attributes.
+<!-- update table_of_contents( input ) -->
+
+<!-- update end -->
+
+:# 1 vocabulary
+
+todo: blocking / polling
+
+:## 2 cto
+
+A cto is a Compile Time Object, implemented as a struct or class 
+that has only static functions and static attributes.
 A cto is never instantiated.
-Instead, cto's are passed as template parameters to create new cto's.
+Instead, a cto's static functions are used, or it is passed as 
+template parameters to create new cto's.
 
-init
+A cto implements one or more interfaces. 
+It advertises this by inheriting from the root class, xyz_rooot 
+for an interface xyz, for each interface it implements. 
+This inserts a tag element into the class, and probably some more 
+items that are mandatory for that interface. 
 
-Before it is used at run-time, a cto must be initialized by calling its init function.
-When a cto 
+:## 2 interface
 
-box
+An interface is a set of services 
+(functions, data elements, cto's, templates) provided by a cto.
+Each interface requires that the cto provides 
+a static constexpr bool with the name of the interface, prefixed with "is_".
+
+For each interface a concept exists with the same name that tests, 
+as far as possible, whether a cto provides the required interface.
+This concept is used to constrain templates that want to accept 
+only a cto that implement a specific the interface.
+
+:## 2 init
+
+Each cto provides an init() function.
+Before it is used at run-time, a cto must be initialized by calling init().
+When a cto (or an application) directly uses cto's, 
+it is responsible for initializing these cto's.
+
+:## 2 box
 
 A box is a cto that you can read a value from and/or write a value to.
+The type of the value is provided as value_type.
+
 A box is either an item or a stream.
 
 ```C++
 template< typename T >
 concept bool box = requires( 
-   typename T::is_box,
+   T::is_box,
    typename T::value_type v,
    typename T::is_item | typename T::is_stream
 ){  
@@ -25,7 +60,7 @@ concept bool box = requires(
 };
 ```
 
-item
+:## 2 item
 
 An item is a box that has or contains (at any point in time) a single value.
 When you read it twice in rapid succession, you will read the same value.
@@ -34,12 +69,12 @@ Writing to an item overwrites its old value.
 ```C++
 template< typename T >
 concept bool box = requires( 
-   box< T >,
-   typename T::is_item
+   T::is_item,
+   box< T >
 );
 ```
 
-stream
+:## 2 stream
 
 A stream is a box that holds a sequence of values.
 All writes to a stream matter, including writes of the same value.
@@ -48,46 +83,257 @@ Reading from a stream consumes the value that was read.
 ```C++
 template< typename T >
 concept bool stream = requires( 
-   box< T >,
-   typename T::is_item
+   T::is_stream,
+   box< T >
 );
 ```
 
-direction
+:## 2 buffering
 
-A box can be an input, an output, or both.
-(A box could also be neither, but that would serve no purpose.)
-When it is an input you can read from it, when it is an output you can write to it.
+A box can be buffered. 
+For an output box, this means that the effect of write operations 
+can be postponed until the next flush call.
+For an input box, this means that a read operation can reflect 
+the situation immediately before that last refresh call. 
+For immediate effect on a buffered box, a read must be preceded 
+by a refresh, and a write must be followed by a flush.
+
+An immediate box is not buffered: its refresh and/or 
+flush operation has no effect.
+The immediate decorator creates an immediate box from a 
+(possibly buffered) box
+by sticking an refresh() before each read() and a flush() 
+after each write().
+
+```C++
+// be lazy, use immediate<>
+immediate< p >::write( 0 );
+
+// this has the same effect as
+p::write( 0 );
+p::flush();
+
+```
+
+:## 2 input
+
+A input box provides a read function that returns 
+a value of the value_type of the box.
 
 ```C++
 template< typename T >
-concept bool box = requires( 
+concept bool input = requires( 
+   T::is_input,
    box< T >,
-   typename T::is_item
+   typename T::value_type
+){
+   refresh() -> void,
+   read() -> value_type
+};
+```
+
+:## 2 output
+
+An output box provides a write function that accepts 
+a value of the value_type of the box.
+
+```C++
+template< typename T >
+concept bool output = requires( 
+   T::is_output,
+   box< T >,
+   typename T::value_type
+){
+   write( value_type ) -> void,
+   flush() -> void
+};
+```
+
+:## 2 direction
+
+A box can be an input, an output, or both.
+When it is an input you can read from it, 
+when it is an output you can write to it.
+(In theory a box could also be neither, 
+but that would not be very useful.)
+
+When a box is both input and output it can be simplex 
+(sometimes call half-duplex) or duplex.
+A duplex box can, at any time, be both read and written.
+
+```C++
+template< typename T >
+concept bool input_output = requires( 
+   input< T >,
+   output< T >
+);
+
+template< typename T >
+concept bool duplex = requires( 
+   T::is_duplex,
+   input_output< T >
 );
 ```
 
-When a box is both input and output it can be simplex (sometimes call half-duplex) or duplex.
-A duplex box can be both read and written.
-
 A simplex box has a current direction, which can be input or output.
-The direction of a simplex box can be changed with a set_direction_input or set_direction_output call.
+The direction of a simplex box can be changed 
+with a direction_set_input or direction_set_output call.
 For a successful read, the direction of a simplex box must be input.
 For a successful write, the direction of a simplex box must be output.
 Otherwise a write can have no effect at all, or have a delayed effect,
-and a read returns an unspecified value, and for a stream it can either consume the value or not.
+and a read returns an unspecified value, and for a stream it can either 
+consume the value or not.
 
-buffering
+The effect of calling a direction_set... function can be delayed 
+up to the next direction_flush() call.
+Like for read() and write(), direct<> can be used 
+to get an immediate effect.
 
-A box can be buffered. 
-For an output box, this means that the effect of write operations can be postponed until the next flush call.
-For an input box, this means that a read operation can reflect the situation immediately before that last refresh call. 
-For immediate effect on a buffered box, a read must be preceded by a refresh, and a write must be followed by a flush.
+```C++
+template< typename T >
+concept bool simplex = requires( 
+   T::is_simplex,
+   input_output< T >
+){
+   direction_set_input() -> void,
+   direction_set_output() -> void,
+   direction_flush() -> void
+};
+```
 
-immediate
+:## 2 gpio, gpi, gpo, gpoc
 
-An immediate box is not buffered: its refresh and/or flush operation has no effect.
-The immediate decorator creates an immediate box from a (possibly buffered) box.
+A gpio is a (digital) General Purpose Input Output pin.
+Most pins of micro-controllers can be used as gpio 
+(but can often also have other, more specialized, uses).
+An I/O extender chip can also provide gpio pins.
+A gpio must be explicitly instructed to be an input or output, 
+hence it is simplex.
 
-todo: blocking / polling
+```C++
+template< typename T >
+concept bool gpio = requires( 
+   T::is_gpio,
+   item< bool >,
+   simplex< bool >
+);
+```
+
+A gpi is like a gpio, but can only be used for input.
+A gpo is like a gpio, but can only be used for output.
+
+```C++
+template< typename T >
+concept bool gpi = requires( 
+   T::is_gpi,
+   item< bool >,
+   input< bool >
+);
+
+template< typename T >
+concept bool gpo = requires( 
+   T::is_gpo,
+   item< bool >,
+   output< bool >
+);
+```
+
+A gpoc is like a gpio, but electrically it can only 'pull' 
+its pin to ground.
+When it is high, it doesn't 'pull' its pin high 
+(the pin is floating, as if it were an input).
+Hence it is duplex (it doesn't provide set_direction... calls), 
+but when its output is low the input will 
+in normal circumstances always read low.
+
+```C++
+template< typename T >
+concept bool gpoc = requires( 
+   T::is_gpoc,
+   item< bool >,
+   duplex< bool >
+);
+```
+
+The templates make_gpio<>, make_gpi<>, make_gpo<> and 
+make_gpoc<> create a pin with the requested interface 
+from their argument (if possible).
+The concepts can_gpio<>, can_gpi<>, can_gpo<> and can_gpoc<> 
+indicate whether these conversions are possible. 
+
+```C++
+template< typename T >
+concept bool can_gpio = requires( 
+   gpio< T > | gpoc< T >
+);
+
+template< typename T >
+concept bool can_gpi = requires( 
+   gpi< T > | gpoc< T >
+);
+
+template< typename T >
+concept bool can_gpo = requires( 
+   gpo< T > | gpoc< T >
+);
+
+template< typename T >
+concept bool can_gpoc = requires( 
+   gpio< T > | gpoc< T >
+);
+```
+
+A common idiom is that a template specifies its parameter 
+as for instance can_gpo,and to use make_gpo internally 
+to do the necessary conversion.
+This much like a run-time parameter accepting a derived type.
+
+```C++
+template< can_gpo _pin >
+void blink(){
+   alias pin = gpo< _pin >;
+   pin::init();
+   for(;;){
+      pin::write( 0 );
+      ...
+   }
+}
+```
+
+:## 2 adc
+
+An adc (Analog to Digital Conversion) pin is an item that has a 
+read() function that returns the analog value on the pin, 
+converted to a binary value in the range adc_min..adc_max.
+
+```C++
+template< typename T >
+concept bool adc = requires( 
+   T::is_adc,
+   item< T >,
+   input< T >,
+   constexpr T::value_type adc_min,
+   constexpr T::value_type adc_max
+);
+```
+
+:## 2 dac
+
+A dac (Digital to Analog Conversion) pin is an item that has a 
+write() function that causes the pin to output the analog 
+equivalent of the value that was written.
+The value must be in the range dac_min..dac_max.
+
+```C++
+template< typename T >
+concept bool dac = requires( 
+   T::is_dac,
+   item< T >,
+   output< T >,
+   constexpr T::value_type dac_min,
+   constexpr T::value_type dac_max
+);
+```
+
+
 
