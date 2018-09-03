@@ -1,0 +1,29 @@
+#############################################################################
+#
+# file : Makefile.link 
+# 
+# common settings and link to the bmptk/makefile.inc
+#
+# (c) Wouter van Ooijen (www.voti.nl) 2017
+#
+# This file is in the public domain.
+# 
+#############################################################################
+
+# add ourselves
+GODAFOSS           ?= $(RELATIVE)
+include            $(GODAFOSS)/makefile.inc
+
+# add Catch
+SEARCH             += $(RELATIVE)/../Catch/include
+
+# set BMPTK to the bmptk subdirectory
+BMPTK              ?= $(RELATIVE)/../bmptk
+
+ifeq ($(TARGET),native)
+   # enable exeptions (disabled by default by bmptk)
+   PROJECT_CPP_FLAGS  += -fexceptions 
+endif
+
+# Defer to the bmptk/Makefile.inc to do the real work
+include            $(BMPTK)/Makefile.inc

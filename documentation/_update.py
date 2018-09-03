@@ -1,12 +1,16 @@
-# update the markdown files:
-# insert/update code 
-# insert/update TOC
+# update a markdown file, insert/update:
+#    code fragments
+#    headers and header numbering
+#    TOC
+
+import sys
 
 example_files_path = ""
 
 def example( input, file_name, marker = "", quote = 0 ):
    result = []
    count = 0
+   ebd = ""
    
    # open quote line
    line = input.pop( 0 )
@@ -22,14 +26,20 @@ def example( input, file_name, marker = "", quote = 0 ):
          if not line.endswith( "\n" ):
             line += "\n"
          if marker != "" and line.find( marker ) > 0:
-            selected = not selected
+            selected = 1
             if selected and quote:
                n = line.split( marker )[ 1 ].strip().split( " " )[ 0 ].strip()
                print( "[%s] %s" % ( n, line ))
                if n != "":
-                  count = int( n )
+                  try:
+                     count = int( n )
+                  except:
+                     end = n
          elif selected:
-            if count > 0:
+            if end != "":
+               if line.startswith( end ):
+                  selected = 0
+            elif count > 0:
                count = count - 1
                if count == 0:
                   selected = 0
@@ -162,10 +172,5 @@ def update( file_name ):
          else:
             f.write( line )   
  	
-#update( "hwcpp-getting-started.md" )
-#update( "hwcpp-nrf24.md" )
-update( "hwcpp-getting-started.md" )
-# update( "hwcpp-nrf24.md" )
-update( "hwcpp-primer.md" )
-update( "hwcpp-reference.md" )
-update( "hwcpp-targets.md" )
+update( sys.argv[ 1 ] )
+
