@@ -9,17 +9,18 @@ It is for now (and maybe forever) work in progress.
 naming and architecture
 - no heap, no RTTI, no exceptions, no function indirection
 - constexpr rulez! (provide alternative to math?)
-- bikesheds are important, especialy their color
+- bikesheds are important, especially their color
 - header-only, (only) include the target
 - lowercase with _ separators
 - name composition order is from outer to inner, then verb, then variations
-- leading _ is library-internal (can change without notice)
+- leading _ is library-internal (can change without notice) <-- can't do that
 - avoid verb / noun / adjective confusion
 - avoid negatives (no-, not-, un- etc)
-- avoid simmilar things or couples with the same prefix (source / sink)
+- avoid similar things or couples with the same prefix (source / sink)
 - a concept is a type, so it doesn't need an is_ prefix (you don't use is_int!)
-- prefer composition over object features (direct<> instead of read_flush in the class)
+- prefer composition that changes features over extra object features (direct<> instead of read_flush in the class)
 - avoid using the name of what you are in, it might change (including the library name)
 - short names for small scopes, longer name for wider scopes
 - short names for common operations, longer names for less common / dangerous operations (shared_ptr.get() is defintely wrong!)
 - conserve the namespaces: don't use many names, prefer modifiers/adjectives. write a glossary!
+- avoid abbreviations, _t, etc. (gpio?)

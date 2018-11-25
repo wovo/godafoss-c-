@@ -43,9 +43,17 @@ godafoss reference
 
 <a name="toc-anchor-1"></a>
 
-# 2 vocabulary
+# 2 Vocabulary
 
-todo: blocking / polling
+This section defines the terms used in the library,
+in an order that tries to minimize forward references.
+
+todo: 
+- blocking / polling
+- examples
+- value split to item and stream, or use value directly? container? (no, that overloads)
+- range (= can always invert) - eigenlijk een eigenschap van de waarde???
+- 
 
 <!-- update example_path( "../include/core.hpp" ) -->
 
@@ -55,15 +63,29 @@ todo: blocking / polling
 
 A cto is a Compile Time Object, implemented as a struct or class 
 that has only static functions and static attributes.
-A cto is never instantiated.
-Instead, a cto's static functions are used, or it is passed as 
-template parameters to create new cto's.
+A cto doesn't need to be instantiated:
+its static functions can be used directly, or it can be passed as 
+a template parameter to create other cto's.
+
+When a cto is instantiated, the created object is a tag object.
+When it is passed around (as auto parameter) it carries only its type.
 
 A cto implements one or more interfaces. 
-It advertises this by inheriting from the root class, xyz_rooot 
-for an interface xyz, for each interface it implements. 
+It advertises this by inheriting from each interface root class, xyz_rooot 
+for the interface xyz.
+
+for each interface it implements. 
 This inserts a tag element into the class, and probably some more 
 items that are mandatory for that interface. 
+
+<a name="toc-anchor-3"></a>
+
+## 2.2 tag object
+
+A tag object is an instance of a cto,
+hence it has only static functions and static attributes.
+
+It is passed as an auto function parameter to pass its type.
 
 <a name="toc-anchor-3"></a>
 
@@ -71,8 +93,11 @@ items that are mandatory for that interface.
 
 An interface is a set of services 
 (functions, data elements, cto's, templates) provided by a cto.
-Each interface requires that the cto provides 
-a static constexpr bool with the name of the interface, prefixed with "is_".
+
+For each interface xyz a root class xyz_root exists.
+A cto that implements an interface inherits from its root class.
+This root class for the interface xyz contains at least a static 
+constexpr bool is_xyz with the value true.
 
 For each interface a concept exists with the same name that tests, 
 as far as possible, whether a cto provides the required interface.
@@ -81,21 +106,25 @@ only a cto that implement a specific the interface.
 
 <a name="toc-anchor-4"></a>
 
-## 2.3 init(): initialization
+## 2.3 initialization
 
 Each cto provides an init() function.
-Before it is used at run-time, a cto must be initialized by calling init().
-When a cto (or an application) directly uses cto's, 
-it is responsible for initializing these cto's.
+Before any of its functions or (static) attributes are used at run-time, 
+a cto must be initialized by calling its init().
+
+When a cto (or the main) directly uses a cto, 
+it is responsible for initializing that cto.
+When a cto (or the main) receives a cto and (only) passes
+it to another cto, the first cto should not init() the second cto.
 
 <a name="toc-anchor-5"></a>
 
-## 2.4 box
+## 2.4 value
 
-A box is a cto that you can read a value from and/or write a value to.
+A value is a cto that you can read a value from and/or write a value to.
 The type of the value is provided as value_type.
 
-A box is either an item or a stream.
+A value cto is either an item or a stream.
 
 <!-- update quote( input, "", "''box''" ) -->
 ~~~C++
