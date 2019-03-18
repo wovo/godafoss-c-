@@ -10,32 +10,47 @@ godafoss reference
 
   - [1 Content](#toc-anchor-0)
 
-  - [2 vocabulary](#toc-anchor-1)
+  - [2 Vocabulary](#toc-anchor-1)
 
     - [2.1 cto](#toc-anchor-2)
-      [2.2 interface](#toc-anchor-3)
-      [2.3 init(): initialization](#toc-anchor-4)
-      [2.4 box](#toc-anchor-5)
-      [2.5 item](#toc-anchor-6)
-      [2.6 stream](#toc-anchor-7)
-      [2.7 buffering](#toc-anchor-8)
-      [2.8 input, output](#toc-anchor-9)
+      [2.2 tag object](#toc-anchor-3)
+      [2.3 interface](#toc-anchor-4)
+      [2.4 initialization](#toc-anchor-5)
+      [2.5 value](#toc-anchor-6)
+      [2.6 item](#toc-anchor-7)
+      [2.7 stream](#toc-anchor-8)
+      [2.8 buffering](#toc-anchor-9)
+      [2.9 input, output](#toc-anchor-10)
 
-      - [2.8.1 input](#toc-anchor-10)
+      - [2.9.1 input](#toc-anchor-11)
 
-      - [2.8.2 output](#toc-anchor-11)
+      - [2.9.2 output](#toc-anchor-12)
 
-      - [2.8.3 direction](#toc-anchor-12)
-      [2.9 digital IO: gpio, gpi, gpo, gpoc](#toc-anchor-13)
+      - [2.9.3 direction](#toc-anchor-13)
+      [2.10 digital IO: gpio, gpi, gpo, gpoc](#toc-anchor-14)
 
-      - [2.9.1 gpio](#toc-anchor-14)
+      - [2.10.1 gpio](#toc-anchor-15)
 
-      - [2.9.2 gpi](#toc-anchor-15)
+      - [2.10.2 gpi](#toc-anchor-16)
 
-      - [2.9.3 gpo](#toc-anchor-16)
+      - [2.10.3 gpo](#toc-anchor-17)
 
-      - [2.9.4 gpoc](#toc-anchor-17)
-      [2.10 Analog IO: adc, dac](#toc-anchor-18)
+      - [2.10.4 gpoc](#toc-anchor-18)
+      [2.11 Analog IO: adc, dac](#toc-anchor-19)
+      [2.12 duration](#toc-anchor-20)
+      [2.13 timing services](#toc-anchor-21)
+
+      - [2.13.1 waiting](#toc-anchor-22)
+
+      - [2.13.2 clocking](#toc-anchor-23)
+
+      - [2.13.3 tasking](#toc-anchor-24)
+      [2.14 xy](#toc-anchor-25)
+      [2.15 color](#toc-anchor-26)
+      [2.16 pixel window](#toc-anchor-27)
+      [2.17 character stream](#toc-anchor-28)
+      [2.18 monospaced character window](#toc-anchor-29)
+      [2.19 string](#toc-anchor-30)
 
 <!-- update end -->
 
@@ -53,30 +68,41 @@ todo:
 - examples
 - value split to item and stream, or use value directly? container? (no, that overloads)
 - range (= can always invert) - eigenlijk een eigenschap van de waarde???
-- 
+- boxing of a value to make it into a type
+- interface tag
+- additive filters
+- substractive filters
+- cto => static type?
+- value -> item, item -> box
+- make_gpio<> => gpio_from<>
+- direct<> immediate<>
+- read_blocks() write_blocks() - means blocks unbounded
 
-<!-- update example_path( "../include/core.hpp" ) -->
+<!-- update example_path( "../include/core/core.hpp" ) -->
 
 <a name="toc-anchor-2"></a>
 
 ## 2.1 cto
 
-A cto is a Compile Time Object, implemented as a struct or class 
+A cto is a Compile Time Object: it has the role of an object, but it is created
+(once) at compile time and never changes.
+It is implemented as a struct or class 
 that has only static functions and static attributes.
 A cto doesn't need to be instantiated:
 its static functions can be used directly, or it can be passed as 
 a template parameter to create other cto's.
 
 When a cto is instantiated, the created object is a tag object.
-When it is passed around (as auto parameter) it carries only its type.
 
 A cto implements one or more interfaces. 
-It advertises this by inheriting from each interface root class, xyz_rooot 
-for the interface xyz.
-
+It advertises this by inheriting from each interface root class
+template, named xyz_rooot for the interface xyz,
 for each interface it implements. 
-This inserts a tag element into the class, and probably some more 
-items that are mandatory for that interface. 
+A template parameter of the root class is the cto class itself
+(CRTP pattern).
+
+The root class contributes a tag element to the class, and it
+might contribute more items that are mandatory for that interface. 
 
 <a name="toc-anchor-3"></a>
 
@@ -85,28 +111,40 @@ items that are mandatory for that interface.
 A tag object is an instance of a cto,
 hence it has only static functions and static attributes.
 
-It is passed as an auto function parameter to pass its type.
+When it is passed around the only useful information it carries is its type.
 
-<a name="toc-anchor-3"></a>
+A cto (which is a type) and a tag object (which is an object) serve 
+the same purpose: they pass the cto type, so the user
+can use the (static) elements of the cto type. 
+The difference is the situations in which they can be used: a cto
+can be passed (only) as a template parameter, a tag object can (also)
+be passed as function parameter. 
 
-## 2.2 interface
+<a name="toc-anchor-4"></a>
+
+## 2.3 interface
 
 An interface is a set of services 
 (functions, data elements, cto's, templates) provided by a cto.
 
-For each interface xyz a root class xyz_root exists.
+For each interface xyz a root class template xyz_root exists.
 A cto that implements an interface inherits from its root class.
 This root class for the interface xyz contains at least a static 
 constexpr bool is_xyz with the value true.
+
+A template parameter of a root class is the cto class itself
+(CRTP pattern). 
+This can be used by the root class to provide things that depend
+on details provided by the cto. 
 
 For each interface a concept exists with the same name that tests, 
 as far as possible, whether a cto provides the required interface.
 This concept is used to constrain templates that want to accept 
 only a cto that implement a specific the interface.
 
-<a name="toc-anchor-4"></a>
+<a name="toc-anchor-5"></a>
 
-## 2.3 initialization
+## 2.4 initialization
 
 Each cto provides an init() function.
 Before any of its functions or (static) attributes are used at run-time, 
@@ -117,9 +155,9 @@ it is responsible for initializing that cto.
 When a cto (or the main) receives a cto and (only) passes
 it to another cto, the first cto should not init() the second cto.
 
-<a name="toc-anchor-5"></a>
+<a name="toc-anchor-6"></a>
 
-## 2.4 value
+## 2.5 value
 
 A value is a cto that you can read a value from and/or write a value to.
 The type of the value is provided as value_type.
@@ -138,9 +176,9 @@ concept bool box = requires(
 };
 ~~~
 
-<a name="toc-anchor-6"></a>
+<a name="toc-anchor-7"></a>
 
-## 2.5 item
+## 2.6 item
 
 An item is a box that has or contains (at any point in time) a single value.
 When you read it twice in rapid succession, you will read the same value.
@@ -155,9 +193,9 @@ concept bool item = requires(
 );
 ~~~
 
-<a name="toc-anchor-7"></a>
+<a name="toc-anchor-8"></a>
 
-## 2.6 stream
+## 2.7 stream
 
 A stream is a box that holds a sequence of values.
 All writes to a stream matter, including writes of the same value.
@@ -172,9 +210,9 @@ concept bool stream = requires(
 );
 ~~~
 
-<a name="toc-anchor-8"></a>
+<a name="toc-anchor-9"></a>
 
-## 2.7 buffering
+## 2.8 buffering
 
 A box can be buffered. 
 For an output box, this means that the effect of write operations 
@@ -200,13 +238,13 @@ p::write( 0 );
 p::flush();
 ~~~
 
-<a name="toc-anchor-9"></a>
-
-## 2.8 input, output
-
 <a name="toc-anchor-10"></a>
 
-### 2.8.1 input
+## 2.9 input, output
+
+<a name="toc-anchor-11"></a>
+
+### 2.9.1 input
 
 A input box provides a read function that returns 
 a value of the value_type of the box.
@@ -224,9 +262,9 @@ concept bool input = requires(
 };
 ~~~
 
-<a name="toc-anchor-11"></a>
+<a name="toc-anchor-12"></a>
 
-### 2.8.2 output
+### 2.9.2 output
 
 An output box provides a write function that accepts 
 a value of the value_type of the box.
@@ -244,9 +282,9 @@ concept bool output = requires(
 };
 ~~~
 
-<a name="toc-anchor-12"></a>
+<a name="toc-anchor-13"></a>
 
-### 2.8.3 direction
+### 2.9.3 direction
 
 A box can be an input, an output, or both.
 When it is an input you can read from it, 
@@ -303,18 +341,19 @@ concept bool simplex = requires(
 };
 ~~~
 
-<a name="toc-anchor-13"></a>
-
-## 2.9 digital IO: gpio, gpi, gpo, gpoc
-
 <a name="toc-anchor-14"></a>
 
-### 2.9.1 gpio
+## 2.10 digital IO: gpio, gpi, gpo, gpoc
+
+<a name="toc-anchor-15"></a>
+
+### 2.10.1 gpio
 
 A gpio is a (digital) General Purpose Input Output pin.
 Most pins of micro-controllers can be used as gpio 
 (but can often also have other, more specialized, uses).
 An I/O extender chip can also provide gpio pins.
+
 A gpio must be explicitly instructed to be an input or output, 
 hence it is simplex.
 
@@ -328,9 +367,9 @@ concept bool gpio = requires(
 );
 ~~~
 
-<a name="toc-anchor-15"></a>
+<a name="toc-anchor-16"></a>
 
-### 2.9.2 gpi
+### 2.10.2 gpi
 
 A gpi is like a gpio, but can only be used for input.
 
@@ -344,9 +383,9 @@ concept bool gpi = requires(
 );
 ~~~
 
-<a name="toc-anchor-16"></a>
+<a name="toc-anchor-17"></a>
 
-### 2.9.3 gpo
+### 2.10.3 gpo
 
 A gpo is like a gpio, but can only be used for output.
 
@@ -360,9 +399,9 @@ concept bool gpo = requires(
 );
 ~~~
 
-<a name="toc-anchor-17"></a>
+<a name="toc-anchor-18"></a>
 
-### 2.9.4 gpoc
+### 2.10.4 gpoc
 
 A gpoc is like a gpio, but electrically it can only 'pull' 
 its pin to ground.
@@ -410,6 +449,127 @@ concept bool can_gpoc = requires(
    gpio< T > | gpoc< T >
 );
 // end_can_gpio_etc
+
+// ==========================================================================
+//
+// PUBLIC
+//
+// analog interfaces
+//
+// ==========================================================================
+
+// quote ''adc'' };
+template< typename T >
+concept bool adc = requires( 
+   T::is_adc,
+   item< T >,
+   input< T >,
+   constexpr T::value_type adc_min,
+   constexpr T::value_type adc_max
+);
+
+// quote ''dac'' };
+template< typename T >
+concept bool dac = requires( 
+   T::is_dac,
+   item< T >,
+   output< T >,
+   constexpr T::value_type dac_min,
+   constexpr T::value_type dac_max
+);
+
+
+// ==========================================================================
+//
+// PUBLIC
+//
+// invert
+//
+// ==========================================================================
+
+template< typename T >
+concept bool can_invert = requires( 
+   box< T >,
+   T::invert( T::value_type ) -> T::value_type
+);
+
+template< can_invert T >
+struct invert : _invert_read< _invert_write< T >>;
+
+template< typename T >
+struct _invert_read : T {};
+
+template< input T >
+struct _invert_read : T {
+   static auto read() -> T::value_type {
+      return T::invert( T::read() );
+   }
+};
+   
+template< typename T >
+struct _invert_write : T {};
+
+template< input T >
+struct _invert_write : T {
+   static void write( T::value_type v ) {
+      T::write( T::invert( v ));
+   }
+};
+   
+   
+// ==========================================================================
+//
+// PUBLIC
+//
+// direct
+//
+// ==========================================================================
+
+template< typename T >
+concept bool can_direct = requires( 
+   box< T >
+);
+
+template< can_direct T >
+struct direct : _direct_read< _direct_write< _direct_direction < T >>>;
+
+template< typename T >
+struct _direct_read : T {};
+
+template< input T >
+struct _diret_read : T {
+   static auto read() -> T::value_type {
+      T::refresh();
+      return T::invert( T::read() );
+   }
+};
+   
+template< typename T >
+struct _direct_write : T {};
+
+template< input T >
+struct _direct_write : T {
+   static void write( T::value_type v ) {
+      T::write( T::invert( v ));
+      T::flush();
+   }
+};
+   
+template< typename T >
+struct _direct_direction : T {};
+
+template< simplex T >
+struct _direct_direction : T {
+   static void direction_set_input() {
+      T::direction_set_input();
+      T::direction_flush();
+   }
+   static void direction_set_output() {
+      T::direction_set_output();
+      T::direction_flush();
+   }
+};
+   
 ~~~
 
 A common idiom is that a template specifies its parameter 
@@ -429,9 +589,9 @@ void blink(){
 }
 ~~~
 
-<a name="toc-anchor-18"></a>
+<a name="toc-anchor-19"></a>
 
-## 2.10 Analog IO: adc, dac
+## 2.11 Analog IO: adc, dac
 
 An adc (Analog to Digital Conversion) pin is an item that has a 
 read() function that returns the analog value on the pin, 
@@ -447,6 +607,44 @@ concept bool adc = requires(
    constexpr T::value_type adc_min,
    constexpr T::value_type adc_max
 );
+
+// quote ''dac'' };
+template< typename T >
+concept bool dac = requires( 
+   T::is_dac,
+   item< T >,
+   output< T >,
+   constexpr T::value_type dac_min,
+   constexpr T::value_type dac_max
+);
+
+
+// ==========================================================================
+//
+// PUBLIC
+//
+// invert
+//
+// ==========================================================================
+
+template< typename T >
+concept bool can_invert = requires( 
+   box< T >,
+   T::invert( T::value_type ) -> T::value_type
+);
+
+template< can_invert T >
+struct invert : _invert_read< _invert_write< T >>;
+
+template< typename T >
+struct _invert_read : T {};
+
+template< input T >
+struct _invert_read : T {
+   static auto read() -> T::value_type {
+      return T::invert( T::read() );
+   }
+};
 ~~~
 
 A dac (Digital to Analog Conversion) pin is an item that has a 
@@ -464,9 +662,39 @@ concept bool dac = requires(
    constexpr T::value_type dac_min,
    constexpr T::value_type dac_max
 );
+
+
+// ==========================================================================
+//
+// PUBLIC
+//
+// invert
+//
+// ==========================================================================
+
+template< typename T >
+concept bool can_invert = requires( 
+   box< T >,
+   T::invert( T::value_type ) -> T::value_type
+);
+
+template< can_invert T >
+struct invert : _invert_read< _invert_write< T >>;
+
+template< typename T >
+struct _invert_read : T {};
+
+template< input T >
+struct _invert_read : T {
+   static auto read() -> T::value_type {
+      return T::invert( T::read() );
+   }
+};
 ~~~
 
-## 1 duration
+<a name="toc-anchor-20"></a>
+
+## 2.12 duration
 
 A duration is an amount of time. 
 
@@ -476,9 +704,13 @@ class duration {
 
 constexpr
 
-## timing services
+<a name="toc-anchor-21"></a>
 
-### waiting
+## 2.13 timing services
+
+<a name="toc-anchor-22"></a>
+
+### 2.13.1 waiting
 
 template< typename T >
 concept bool waiting = requires(
@@ -488,7 +720,9 @@ concept bool waiting = requires(
    wait_busy( D ) -> void
 };
 
-### clocking
+<a name="toc-anchor-23"></a>
+
+### 2.13.2 clocking
 
 template< typename T >
 concept bool waiting = requires(
@@ -498,7 +732,9 @@ concept bool waiting = requires(
    now() -> D
 };
 
-### tasking
+<a name="toc-anchor-24"></a>
+
+### 2.13.3 tasking
 
 template< typename T >
 concept bool waiting = requires(
@@ -508,7 +744,9 @@ concept bool waiting = requires(
    now() -> D
 };
 
-## 1 xy
+<a name="toc-anchor-25"></a>
+
+## 2.14 xy
 
 An xy is a ADT for 2D coordinate (absolute) or vector (relative) values.
 
@@ -521,12 +759,22 @@ struct xy {
    template< typename X > constexpr operator* 
 };   
 
-## color
-## pixel window
-## character stream
-## monospaced character window
+<a name="toc-anchor-26"></a>
 
-## string
+## 2.15 color
+<a name="toc-anchor-27"></a>
+
+## 2.16 pixel window
+<a name="toc-anchor-28"></a>
+
+## 2.17 character stream
+<a name="toc-anchor-29"></a>
+
+## 2.18 monospaced character window
+
+<a name="toc-anchor-30"></a>
+
+## 2.19 string
 
 template< size_t N >
 class string { ... }
