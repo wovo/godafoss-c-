@@ -13,7 +13,8 @@ naming and architecture
 - header-only, (only) include the target
 - lowercase with _ separators
 - name composition order is from outer to inner, then verb, then variations
-- leading _ is library-internal (can change without notice) <-- can't do that
+- leading _ is library-internal (can change without notice)
+- macro's moeten _lowercase zijn!
 - avoid verb / noun / adjective confusion
 - avoid negatives (no-, not-, un- etc)
 - avoid similar things or couples with the same prefix (source / sink)

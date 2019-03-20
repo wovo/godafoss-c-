@@ -44,6 +44,9 @@ HEADERS           += core/gf-timing-wait.hpp
 HEADERS           += core/gf-timing-clock.hpp
 
 HEADERS           += targets/gf-arduino-due.hpp
+HEADERS           += targets/gf-sam3x8e.hpp
+HEADERS           += targets/gf-db103.hpp
+HEADERS           += targets/gf-lpc1114.hpp
 
 
 # add Catch

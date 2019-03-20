@@ -24,6 +24,11 @@
    #include "targets/gf-arduino-due.hpp"
 #endif
 
+#ifdef GF_TARGET_db103
+   #define GF_TARGET
+   #include "targets/gf-db103.hpp"
+#endif
+
 #ifndef GF_TARGET
    #error no valid GF_TARGET_* defines
 #endif   
