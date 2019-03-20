@@ -1,14 +1,14 @@
 // ==========================================================================
 //
-// file : hwcpp-target-arduino-due.hpp
+// file : godafoss-target-arduino-due.hpp
 //
 // HAL for the arduino due board target
 //
 // ==========================================================================
 
-#include "hwcpp-chip-sam3x8e.hpp"
+#include "targets/gf-sam3x8e.hpp"
 
-namespace hwcpp {
+namespace godafoss {
    
 template< uint64_t clock >
 struct target_arduino_due :
@@ -108,7 +108,8 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  d74,  a, 27 );
    make_pin_in_out(  d75,  a, 26 );
    make_pin_in_out(  d76,  a, 25 );
-      
+   
+/*     
    make_pin_adc(  a0,  7 );
    make_pin_adc(  a1,  6 );
    make_pin_adc(  a2,  5 );
@@ -122,8 +123,7 @@ using chip = chip_sam3x8e< clock >;
    make_pin_adc( a10, 12 );
    make_pin_adc( a11, 13 );
 
-/*     
-      { 1, 15 },  // dac0
+/     { 1, 15 },  // dac0
       { 1, 16 },  // dac1
       { 0,  1 },  // cantx
       { 0,  0 },  // canrx
@@ -134,10 +134,11 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out( _scl1,  a, 18 );
    make_pin_in_out( _sda1,  a, 17 );
 
-   using  scl = hwcpp::pin_oc<  _scl >;
-   using  sda = hwcpp::pin_oc<  _sda >;
-   using scl1 = hwcpp::pin_oc< _scl1 >;
-   using sda1 = hwcpp::pin_oc< _sda1 >;
+/*
+   using  scl = godafoss::pin_oc<  _scl >;
+   using  sda = godafoss::pin_oc<  _sda >;
+   using scl1 = godafoss::pin_oc< _scl1 >;
+   using sda1 = godafoss::pin_oc< _sda1 >;
 
    make_pin_in_out(  _sck,  a, 27 );
    make_pin_in_out( _miso,  a, 25 );
@@ -145,33 +146,34 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  _cs0,  c, 29 );
    make_pin_in_out(  _cs1,  c, 26 );
 
-   using  sck = hwcpp::pin_out<  _sck >;
-   using miso = hwcpp::pin_out< _miso >;
-   using mosi = hwcpp::pin_in<  _mosi >;
-   using  cs0 = hwcpp::pin_out<  _cs0 >;
-   using  cs1 = hwcpp::pin_out<  _cs1 >;
+   using  sck = godafoss::pin_out<  _sck >;
+   using miso = godafoss::pin_out< _miso >;
+   using mosi = godafoss::pin_in<  _mosi >;
+   using  cs0 = godafoss::pin_out<  _cs0 >;
+   using  cs1 = godafoss::pin_out<  _cs1 >;
 
    make_pin_in_out(   _tx,  a,  9 );
    make_pin_in_out(   _rx,  a,  8 );
    make_pin_in_out(  _led,  b, 27 );
     
-   using  tx = hwcpp::pin_out<  _tx >;
-   using  rx = hwcpp::pin_in<   _rx >;
-   using led = hwcpp::pin_out< _led >;
+   using  tx = godafoss::pin_out<  _tx >;
+   using  rx = godafoss::pin_in<   _rx >;
+   using led = godafoss::pin_out< _led >;
    
 #undef make_pin_in_out   
 #undef make_pin_adc
+*/
 
-   using waiting = typename chip::waiting;	  
-   using clocking = typename chip::clocking;	  
-   using timing = clocking;	  
-   
+   using waiting  = typename chip::waiting;	  
+   // using clocking = typename chip::clocking;	  
+   using timing = waiting;  
+
 }; // template<...> struct target_arduino_due
 
 template< uint64_t clock = 84'000'000 >
 using target = target_arduino_due< clock >; 
 	
-}; // namespace hwcpp
+}; // namespace godafoss
 
 
 

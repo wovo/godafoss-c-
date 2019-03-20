@@ -1,15 +1,13 @@
 // ==========================================================================
 //
-// gpio.hpp
-// 
-// GPIO : General Purpose Input Output (Digital Input / Output) stuff
+// gf-pin.hpp
 //
 // ==========================================================================
 //
 // This file is part the https://www.github.com/godafoss 
 // free C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2018
+// Copyright Wouter van Ooijen 2019
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -20,91 +18,91 @@
 
 // ==========================================================================
 //
-// PUBLIC
-//
-// GPIO concepts
+// in_out
 //
 // ==========================================================================
 
-// quote ''gpio'' );
+// quote ''pin_in_out'' );
 template< typename T >
-concept bool gpio = requires( 
-   T::is_gpio,
-   item< bool >,
-   simplex< bool >
-);
+concept bool is_pin_in_out = requires {
+   is_item< bool >;
+   is_simplex< bool >;
+   T::is_pin_in_out;
+};
 
-// quote ''gpi'' );
 template< typename T >
-concept bool gpi = requires( 
-   T::is_gpi,
-   item< bool >,
-   input< bool >
-);
-
-// quote ''gpo'' );
-template< typename T >
-concept bool gpo = requires( 
-   T::is_gpo,
-   item< bool >,
-   output< bool >
-);
-
-// quote ''gpoc'' );
-template< typename T >
-concept bool gpoc = requires( 
-   T::is_gpoc,
-   item< bool >,
-   duplex< bool >
-);
+struct be_pin_in_out : 
+   be_item< bool >, 
+   be_simplex< bool > 
+{
+   static const bool is_pin_in_out = true;	
+};
 
 
 // ==========================================================================
 //
-// PUBLIC
-//
-// conversion from one GPIO interface to another
+// out
 //
 // ==========================================================================
 
-// quote ''can_gpio'' );
+// quote ''pin_out'' );
 template< typename T >
-concept bool can_gpio = requires( 
-   gpio< T > | gpoc< T >
-);
+concept bool is_pin_out = requires {
+   is_item< bool >;
+   is_output< bool >;
+   T::is_pin_out;
+};
 
-template< can_gpio T >
-struct make_gpio : T {};
-
-template< gpoc T >
-struct make_gpio : T {
-   
-}
+template< typename T >
+struct be_pin_out : 
+   be_item< bool >, 
+   be_output< bool >
+{
+   static const bool is_pin_out = true;	
+};
 
 
 // ==========================================================================
 //
-// PUBLIC
-//
-// conversion to gpio
+// in
 //
 // ==========================================================================
 
-// quote ''can_gpi'' );
+// quote ''pin_in'' );
 template< typename T >
-concept bool can_gpi = requires( 
-   gpi< T > | gpoc< T >
-);
+concept bool is_pin_in = requires {
+   is_item< bool >;
+   is_input< bool >;
+   T::is_pin_in;
+};
 
-// quote ''can_gpo'' );
 template< typename T >
-concept bool can_gpo = requires( 
-   gpo< T > | gpoc< T >
-);
+struct be_pin_in : 
+   be_item< bool >, 
+   be_input< bool > 
+{
+   static const bool is_pin_in = true;	
+};
 
-// quote ''can_gpoc'' );
+
+// ==========================================================================
+//
+// oc
+//
+// ==========================================================================
+
+// quote ''pin_oc'' );
 template< typename T >
-concept bool can_gpoc = requires( 
-   gpio< T > | gpoc< T >
-);
+concept bool is_pin_oc = requires {
+   is_item< bool >;
+   is_duplex< bool >;
+   T::is_pin_oc;
+};
 
+template< typename T >
+struct be_pin_oc : 
+   be_item< bool >, 
+   be_duplex< bool > 
+{
+   static const bool is_pin_oc = true;	
+};

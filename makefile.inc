@@ -20,12 +20,30 @@ CPP_LANGUAGE      += -std=c++17 -fconcepts
 
 # the file locations
 
-SEARCH            += $(GODAFOSS)
+SEARCH            += $(GODAFOSS)/library
 
 # core files
 
-HEADERS           += include/core/basics.hpp
-HEADERS           += include/targets/arduino-due.hpp
+HEADERS           += core/gf-basics.hpp
+HEADERS           += core/gf-ints.hpp
+
+HEADERS           += core/gf-box.hpp
+HEADERS           += core/gf-box-filters.hpp
+HEADERS           += core/gf-box-invert.hpp
+HEADERS           += core/gf-box-direct.hpp
+HEADERS           += core/gf-box-adapters.hpp
+
+HEADERS           += core/gf-pin.hpp
+HEADERS           += core/gf-pin-adapters.hpp
+HEADERS           += core/gf-pin-demos.hpp
+
+HEADERS           += core/gf-port.hpp
+HEADERS           += core/gf-port-adapters.hpp
+
+HEADERS           += core/gf-timing-wait.hpp
+HEADERS           += core/gf-timing-clock.hpp
+
+HEADERS           += targets/gf-arduino-due.hpp
 
 
 # add Catch

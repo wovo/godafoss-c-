@@ -6,7 +6,7 @@
 //
 // ==========================================================================
 
-#include "hwcpp-all.hpp"
+#include "gf-all.hpp"
 
 // the atmel header files use 'register', which is removed in C++17
 #define register 
@@ -18,12 +18,11 @@
 
 namespace godafoss {
     
-struct sam3x8e {
+template< uint64_t clock >   
+struct chip_sam3x8e {
 	
 	
 // ==========================================================================
-//
-// PUBLIC
 //
 // chip initialization
 //
@@ -32,7 +31,7 @@ struct sam3x8e {
 static void init(){
 	
    // don't do this over and over	
-   _HWCPP_RUN_ONCE;	
+   GODAFOSS_RUN_ONCE;	
    
    // disable the watchdog     
    WDT->WDT_MR = WDT_MR_WDDIS;     
@@ -63,15 +62,13 @@ static void init(){
       static_assert( 
          clock == 84'000'000, 
          "Only 12 MHz (external 12 MHz crystal) "
-		 "or 84 MHz (external 12 MHz crystal, PLL) "
-		 "are supported for sam3xa.");   
+         "or 84 MHz (external 12 MHz crystal, PLL) "
+		   "are supported for sam3xa.");   
    }		 
 }    
 
 
 // ==========================================================================
-//
-// LIBRARY-INTERNAL
 //
 // GPIO
 //
@@ -85,46 +82,52 @@ enum class _port {
 };
 
 template< _port P, uint32_t pin >
-struct _pin_in_out_foundation : 
-   _pin_in_out_root 
+struct _pin_in_out : 
+   be_pin_in_out< _pin_in_out< P, pin > >
 {
 	
-   static void HWCPP_INLINE init(){
-      hwcpp::chip_sam3x8e< clock >::init();
+   static void GODAFOSS_INLINE init(){
+      godafoss::chip_sam3x8e< clock >::init();
    }
    
-   static void HWCPP_INLINE direction_set_direct( pin_direction d ){
-      ( ( d == pin_direction::input )
-         ? ((Pio*)P)->PIO_ODR 
-         : ((Pio*)P)->PIO_OER 
-      )  = ( 0x1U << pin );
+   static void GODAFOSS_INLINE direction_set_input(){
+      ((Pio*)P)->PIO_ODR = ( 0x1U << pin );
    }
    
-   static void HWCPP_INLINE set_direct( bool v ){
+   static void GODAFOSS_INLINE direction_set_output(){
+      ((Pio*)P)->PIO_OER = ( 0x1U << pin );
+   }
+   
+   static void GODAFOSS_INLINE direction_flush(){}
+   
+   static void GODAFOSS_INLINE write( bool v ){
       ( v 
          ? ((Pio*)P)->PIO_SODR 
          : ((Pio*)P)->PIO_CODR 
       )  = ( 0x1U << pin );	   
    }
 
-   static bool HWCPP_INLINE get_direct(){
+   static void GODAFOSS_INLINE flush(){}
+   
+   static bool GODAFOSS_INLINE read(){
       return ( ((Pio*)P)->PIO_PDSR & ( 0x1U << pin ) ) != 0;	   
    }
+
+   static void GODAFOSS_INLINE refresh(){}
+
 };
 
-// ========= GPIO constructor used in the actual targets
 
-template< _port P, uint32_t pin >
-using _pin_in_out = _box_builder< _pin_in_out_foundation< P, pin > >;
-
-
-
-
-// ========= inline small delay
+// ==========================================================================
+//
+// inline small delay
+//
+// ==========================================================================
 
 static constexpr auto inline_delay_max = 6;
-template< ticks_type t >
-static void HWCPP_INLINE inline_delay(){
+
+template< uint64_t t >
+static void GODAFOSS_INLINE wait_inline(){
               
    if constexpr ( t  == 0 ){
       // nothing
@@ -177,9 +180,14 @@ static void HWCPP_INLINE inline_delay(){
    }
 }
 
-// ========= busy loop wait
 
-static void HWCPP_NO_INLINE busy_delay( int32_t n ){
+// ==========================================================================
+//
+// busy wait
+//
+// ==========================================================================
+
+static void GODAFOSS_NO_INLINE wait_busy( int32_t n ){
    __asm volatile(                  
       "   .align 4           \t\n"  
       "1: subs.w  r0, #3     \t\n"  
@@ -188,45 +196,74 @@ static void HWCPP_NO_INLINE busy_delay( int32_t n ){
    ); 
 }
 
-// ========= foundation
 
-struct _timing_foundation :
-   _timing_clocking_foundation< std::ratio< clock, 1 > >
-{
-   static void init(){
+// ==========================================================================
+//
+// timer
+//
+// ==========================================================================
+
+static inline uint32_t    last_low = 0;
+static inline uint64_t  high = 0;
+
+static uint64_t now_ticks(){
+   
+   // the timer ticks down, but we want an up counter
+   uint32_t low = 0xFFFFFF - ( SysTick->VAL & 0xFFFFFF );
+   if( low < last_low ){
+   
+       // the timer rolled over, so increment the high part
+      high += 0x1ULL << 24;
+   }
+   last_low = low;
+
+   return ( low | high ); 
+}
+
+
+// ==========================================================================
+//
+// timing fundamentals
+//
+// ==========================================================================
+
+struct waiting : be_timing_wait< waiting > {
+   
+   using ticks_type = uint64_t;
+   
+   static void GODAFOSS_INLINE init(){
       chip_sam3x8e< clock >::init();
    }	
    
-   static ticks_type now_ticks(){
+   static constexpr ticks_type ticks_from_ns( uint64_t n ){
+      return ( n * clock ) / 1'000'000'000;	   
+   }
+   
+   static ticks_type GODAFOSS_INLINE now_ticks(){
       return chip_sam3x8e< clock >::now_ticks();
    }      
    
-   static void HWCPP_NO_INLINE  wait_ticks_function( ticks_type n ){     
+   static void GODAFOSS_NO_INLINE wait_ticks_function( ticks_type n ){     
       ticks_type t = now_ticks() + n;
       while( now_ticks() < t ){}
    }  
    
    template< ticks_type t >
-   static void HWCPP_INLINE wait_ticks_template(){   
+   static void GODAFOSS_INLINE wait_ticks_template(){   
        
       if constexpr ( t <= inline_delay_max ){
-         inline_delay< t >();    
+         wait_inline< t >();    
       
       } else if constexpr ( t < 2'000 ){
-          busy_delay( ((int32_t) t ) - 20 );
+          wait_busy( ((int32_t) t ) - 20 );
           
       } else {
           wait_ticks_function( t );
           
       }   
    }      
-};
-
-// ========= services
-
-using waiting  = _timing_waiting_builder< _timing_foundation >;
-using clocking = _timing_clocking_builder< _timing_foundation >;
-
+}; // struct waiting
+  
 }; // struct chip_sam3x8e
 
 }; // namespace godafoss
