@@ -14,7 +14,7 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using led     = gf::pin_out< gf::direct< target::d13 >>;
+using led     = gf::pin_out< gf::direct< target::p1_5 >>;
 
 int main( void ){   
    
@@ -24,11 +24,11 @@ int main( void ){
       
       led::write( 1 );
 
-      for( volatile uint32_t i = 0; i < 1'000'000; i++ ){}
+      for( volatile uint32_t i = 0; i < 200'000; i++ ){}
 
       led::write( 0 );
 
-      for( volatile uint32_t i = 0; i < 1'000'000; i++ ){}
+      for( volatile uint32_t i = 0; i < 200'000; i++ ){}
 
    }
 }

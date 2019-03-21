@@ -14,7 +14,7 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using led     = gf::pin_out< gf::direct< target::d13 >>;
+using led     = gf::pin_out< gf::direct< target::p1_4 >>;
 using timing  = target::timing;
 
 int main( void ){   
@@ -26,11 +26,11 @@ int main( void ){
       
       led::write( 1 );
 
-      timing::ms< 100 >::wait();
+      timing::ms< 200 >::wait();
 
       led::write( 0 );
 
-      timing::ms< 100 >::wait();
+      timing::ms< 200 >::wait();
 
    }
 }

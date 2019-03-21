@@ -46,6 +46,7 @@ namespace godafoss {
 
 #include "core/gf-port.hpp"
 #include "core/gf-port-adapters.hpp"
+#include "core/gf-port-demos.hpp"
 
 #include "core/gf-timing-wait.hpp"
 #include "core/gf-timing-clock.hpp"

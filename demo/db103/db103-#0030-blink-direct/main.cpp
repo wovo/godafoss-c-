@@ -12,25 +12,26 @@
 
 #include "godafoss.hpp"
 
-int main( void ){   
-   
-   // make the GPIO pin an output   
-   PIOB->PIO_OER = { 0x1U << 27 };
+const auto port  = 1;
+const auto pin   = 9;
+const auto mask  = 0x01U << pin;
+
+volatile uint32_t *gpioreg( uint32_t port, uint32_t offset ){
+   return (volatile uint32_t *)( 0x50000000 + port * 0x10000 + offset );
+}
+
+int main( void ){
+
+   *gpioreg( port, 0x8000 ) |= mask;    
    
    for(;;){
+      *gpioreg( port, 0x04 << pin ) = -1;
       
-      // make the GPIO pin high
-      PIOB->PIO_SODR = 0x01 << 27;
+      for( volatile int i = 0; i < 200'000; ++i ){}
 
-      // wait some time
-      for( volatile uint32_t i = 0; i < 100'000; i++ ){}
+      *gpioreg( port, 0x04 << pin ) = 0; 
 
-      // make the GPIO pin low
-      PIOB->PIO_CODR = 0x01 << 27;
-
-      // again, wait some time
-      for( volatile uint32_t i = 0; i < 100'000; i++ ){}
-
-   }      
+      for( volatile int i = 0; i < 200'000; ++i ){}
+   }
 }
 

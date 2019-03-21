@@ -14,23 +14,27 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using led     = target::p1_8;
+using timing  = target::timing;
+using led     = target::p1_3;
+
+using leds = gf::port_out<
+   target::scl,
+   target::sda,
+   target::p0_6,
+   target::p0_7,
+   
+   target::p1_0,
+   target::p1_1,
+   target::p1_2,
+   target::p1_3,
+   
+   target::p1_4,
+   target::p1_5,
+   target::p1_8,
+   target::p1_9
+>;   
 
 int main( void ){   
-   
-   led::init();
-   led::direction_set_output();
-   
-   for(;;){
-      
-      led::write( 1 );led::flush();
-
-      for( volatile uint32_t i = 0; i < 200'000; i++ ){}
-
-      led::write( 0 );led::flush();
-
-      for( volatile uint32_t i = 0; i < 200'000; i++ ){}
-
-   }
+   gf::kitt< leds, timing::ms< 200 > >();   
 }
 

@@ -63,7 +63,7 @@ static void init(){
          clock == 84'000'000, 
          "Only 12 MHz (external 12 MHz crystal) "
          "or 84 MHz (external 12 MHz crystal, PLL) "
-		   "are supported for sam3xa.");   
+		   "are supported for this chip.");   
    }		 
 }    
 
@@ -203,7 +203,7 @@ static void GODAFOSS_NO_INLINE wait_busy( int32_t n ){
 //
 // ==========================================================================
 
-static inline uint32_t    last_low = 0;
+static inline uint32_t  last_low = 0;
 static inline uint64_t  high = 0;
 
 static uint64_t now_ticks(){
@@ -262,6 +262,7 @@ struct waiting : be_timing_wait< waiting > {
           
       }   
    }      
+   
 }; // struct waiting
   
 }; // struct chip_sam3x8e

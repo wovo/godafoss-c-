@@ -39,6 +39,7 @@ HEADERS           += core/gf-pin-demos.hpp
 
 HEADERS           += core/gf-port.hpp
 HEADERS           += core/gf-port-adapters.hpp
+HEADERS           += core/gf-port-demos.hpp
 
 HEADERS           += core/gf-timing-wait.hpp
 HEADERS           += core/gf-timing-clock.hpp
