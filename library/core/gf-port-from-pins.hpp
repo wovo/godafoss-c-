@@ -36,7 +36,7 @@ struct _port_recurse_init : tail {
 // ========= output
 
 template< typename pin, typename tail >
-struct _port_recurse_set : tail {
+struct _port_recurse_output : tail {
 	
    using _vt = typename tail::value_type;
 	
@@ -55,14 +55,14 @@ struct _port_recurse_set : tail {
 // ========= input
 
 template< typename pin, typename tail >
-struct _port_recurse_get : tail {
+struct _port_recurse_input : tail {
 	
    using _vt = typename tail::value_type;
 	
    static _vt GODAFOSS_INLINE read() {   
       return (_vt)
-	     pin::get_buffered()
-         | ( tail::get_buffered() << 1 );
+	     pin::read()
+         | ( tail::read() << 1 );
    }
             
    static void GODAFOSS_INLINE refresh() {
@@ -77,13 +77,13 @@ template< typename pin, typename tail >
 struct _port_recurse_direction : tail {
 	
    static void GODAFOSS_INLINE direction_set_input(){
-      pin::direction_set_input( d );
-      tail::direction_set_input( d ); 
+      pin::direction_set_input();
+      tail::direction_set_input(); 
    }    
    
    static void GODAFOSS_INLINE direction_set_output(){
-      pin::direction_set_output( d );
-      tail::direction_set_output( d );         
+      pin::direction_set_output();
+      tail::direction_set_output();         
    }    
   
    static void GODAFOSS_INLINE direction_flush(){
@@ -114,16 +114,19 @@ struct _port_out_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_out_from_pins< n, pin, tail... > :
-   _port_recurse_set< pin_out< pin >, 
+   _port_recurse_output< pin_out< pin >, 
    _port_recurse_init< pin_out< pin >, 
       _port_out_from_pins< n, tail... > > >
 {};
 
+template< typename x >
+using no_inline = x;
+
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< _can_pin_out_list... Ts > 
+template< can_pin_out_list... Ts > 
 struct port_out< Ts... > :
-   _no_inline_wrapper<
+   no_inline<
       _port_out_from_pins< sizeof...( Ts ), Ts... > >
 {};
 
@@ -149,16 +152,16 @@ struct _port_in_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_in_from_pins< n, pin, tail... > :
-   _port_recurse_get< pin_in< pin >, 
+   _port_recurse_input< pin_in< pin >, 
    _port_recurse_init< pin_in< pin >, 
       _port_in_from_pins< n, tail... > > >
 {};
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< _can_pin_in_list... Ts > 
+template< can_pin_in_list... Ts > 
 struct port_in< Ts... > :
-   _no_inline_wrapper<
+   no_inline<
       _port_in_from_pins< sizeof...( Ts ), Ts... > >
 {};
 
@@ -184,8 +187,8 @@ struct _port_in_out_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_in_out_from_pins< n, pin, tail... > :
-   _port_recurse_set< pin_in_out< pin >, 
-   _port_recurse_get< pin_in_out< pin >, 
+   _port_recurse_output< pin_in_out< pin >, 
+   _port_recurse_input< pin_in_out< pin >, 
    _port_recurse_direction< pin_in_out< pin >, 
    _port_recurse_init< pin_in_out< pin >, 
       _port_in_out_from_pins< n, tail... > > > > >
@@ -193,9 +196,9 @@ struct _port_in_out_from_pins< n, pin, tail... > :
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< _can_pin_in_out_list... Ts > 
+template< can_pin_in_out_list... Ts > 
 struct port_in_out< Ts... > :
-   _no_inline_wrapper<
+   no_inline<
       _port_in_out_from_pins< sizeof...( Ts ), Ts... > >
 {};
    
@@ -221,16 +224,16 @@ struct _port_oc_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_oc_from_pins< n, pin, tail... > :
-   _port_recurse_set< pin_oc< pin >, 
-   _port_recurse_get< pin_oc< pin >, 
+   _port_recurse_output< pin_oc< pin >, 
+   _port_recurse_input< pin_oc< pin >, 
    _port_recurse_init< pin_oc< pin >, 
       _port_oc_from_pins< n, tail... > > > >
 {};
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< _can_pin_oc_list... Ts > 
+template< can_pin_oc_list... Ts > 
 struct port_oc< Ts... > :
-   _no_inline_wrapper<
+   no_inline<
       _port_oc_from_pins< sizeof...( Ts ), Ts... > >
 {};

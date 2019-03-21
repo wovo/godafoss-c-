@@ -30,7 +30,7 @@
 #endif
 
 #ifndef GF_TARGET
-   #error no valid GF_TARGET_* defines
+   #error no valid GF_TARGET_* defined
 #endif   
 
 #endif // GODAFOSS_H
