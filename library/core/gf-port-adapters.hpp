@@ -44,29 +44,13 @@ concept bool can_port_oc =
    // a port_in_out is NOT acceptable
    is_port_oc< T >;
 
-   
-// ==========================================================================
-//
-// lists of pins
-//
-// ==========================================================================
-
-template< typename... Ts >
-concept bool can_pin_out_list = ( can_pin_out< Ts > && ... );
-
-template< typename... Ts >
-concept bool can_pin_in_list = ( can_pin_in< Ts > && ... );
-
-template< typename... Ts >
-concept bool can_pin_in_out_list = ( can_pin_in_out< Ts > && ... );
-
-template< typename... Ts >
-concept bool can_pin_oc_list = ( can_pin_oc< Ts > && ... );
-
 
 // ==========================================================================
 //
 // fallbacks
+//
+// A port can be constructed from another port (implemented in this file),
+// or from a lits of pins (implemented in port-from-pins).
 //
 // ==========================================================================
 
@@ -112,19 +96,22 @@ struct port_in_out< T > :
 
 template< is_port_oc T >
 struct pin_in_out< T > : 
-   be_pin_out< bool >,
+   be_pin_out,
    box_init_filter< T >,
    box_write_filter< T >,
    box_read_filter< T >
 {   
 
    static GODAFOSS_INLINE void direction_set_input(){
-      invert< T >::write( 0 );
+      // make all pins high, which is effectively input 
+      T::write( ~0 );
    }
 
    static GODAFOSS_INLINE void direction_set_output(){}
 
-   static GODAFOSS_INLINE void direction_set_flush(){}
+   static GODAFOSS_INLINE void direction_set_flush(){
+      T::flush();
+   }
 
 };
 

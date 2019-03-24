@@ -17,7 +17,7 @@
 
 
 template< can_pin_out _p, typename d >
-void GODAFOSS_NORETURN blink(){
+GODAFOSS_NORETURN void blink(){
    using p = direct< pin_out< _p >>;	
    p::init();
    d::init();

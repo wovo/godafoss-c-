@@ -1,8 +1,6 @@
 // ==========================================================================
 //
-// basics.hpp
-// 
-// the basic stuff of the library
+// gf-analog.hpp
 //
 // ==========================================================================
 //
@@ -20,32 +18,40 @@
 
 // ==========================================================================
 //
-// PUBLIC
-//
 // analog input
 //
 // ==========================================================================
 
 // quote ''adc'' };
 template< typename T >
-concept bool adc = requires( 
-   T::is_adc,
-   item< T >,
-   input< T >,
-   constexpr T::value_type adc_min,
-   constexpr T::value_type adc_max
-);
+concept bool adc = requires {
+   T::is_adc;
+   is_item< T >;
+   is_input< T >;
+//   constexpr T::value_type adc_min;
+//   constexpr T::value_type adc_max;
+};
+
+template< int n_bits >
+struct be_adc :
+   be_item< typename uint_t< n_bits >::fast >,
+   be_input< typename uint_t< n_bits >::fast >
+{
+   static const bool is_adc = true;
+   using value_type = typename uint_t< n_bits >::fast;
+   static const value_type adc_min = 0;
+   static const value_type adc_max = ( 1 << n_bits ) -1;
+};
 
 
 // ==========================================================================
-//
-// PUBLIC
 //
 // analog output
 //
 // ==========================================================================
 
 // quote ''dac'' };
+/*
 template< typename T >
 concept bool dac = requires( 
    T::is_dac,
@@ -54,5 +60,5 @@ concept bool dac = requires(
    constexpr T::value_type dac_min,
    constexpr T::value_type dac_max
 );
-
+*/
 

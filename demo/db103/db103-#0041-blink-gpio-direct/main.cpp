@@ -14,7 +14,7 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using led     = gf::pin_out< gf::direct< target::p1_5 >>;
+using led     = gf::direct< gf::pin_out< target::p1_5 >>;
 
 int main( void ){   
    

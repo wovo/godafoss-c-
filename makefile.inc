@@ -29,13 +29,18 @@ HEADERS           += core/gf-ints.hpp
 
 HEADERS           += core/gf-box.hpp
 HEADERS           += core/gf-box-filters.hpp
+HEADERS           += core/gf-box-no-inline.hpp
 HEADERS           += core/gf-box-invert.hpp
 HEADERS           += core/gf-box-direct.hpp
 HEADERS           += core/gf-box-adapters.hpp
 
 HEADERS           += core/gf-pin.hpp
 HEADERS           += core/gf-pin-adapters.hpp
+HEADERS           += core/gf-pin-dummies.hpp
+HEADERS           += core/gf-pin-out-from-pins.hpp
 HEADERS           += core/gf-pin-demos.hpp
+
+HEADERS           += core/gf-analog.hpp
 
 HEADERS           += core/gf-port.hpp
 HEADERS           += core/gf-port-adapters.hpp
@@ -46,10 +51,24 @@ HEADERS           += core/gf-port-demos.hpp
 HEADERS           += core/gf-timing-wait.hpp
 HEADERS           += core/gf-timing-clock.hpp
 
-HEADERS           += targets/gf-arduino-due.hpp
-HEADERS           += targets/gf-sam3x8e.hpp
-HEADERS           += targets/gf-db103.hpp
-HEADERS           += targets/gf-lpc1114.hpp
+HEADERS           += core/gf-i2c.hpp
+HEADERS           += core/gf-spi.hpp
+
+HEADERS           += core/gf-uart.hpp
+HEADERS           += core/gf-ostream.hpp
+HEADERS           += core/gf-ostream-object.hpp
+
+HEADERS           += chips/gf-servo.hpp
+HEADERS           += chips/gf-pcf8574.hpp
+HEADERS           += chips/gf-pcf8591.hpp
+HEADERS           += chips/gf-nrf24.hpp
+
+HEADERS           += targets/gf-chip-atmega328.hpp
+HEADERS           += targets/gf-chip-lpc1114.hpp
+HEADERS           += targets/gf-chip-sam3x8e.hpp
+HEADERS           += targets/gf-board-arduino-uno.hpp
+HEADERS           += targets/gf-board-arduino-due.hpp
+HEADERS           += targets/gf-board-db103.hpp
 
 
 # add Catch

@@ -1,12 +1,12 @@
 // ==========================================================================
 //
-// file : godafoss-target-db103.hpp
+// file : gf-board-db103.hpp
 //
 // HAL for the arduino due board target
 //
 // ==========================================================================
 
-#include "targets/gf-lpc1114.hpp"
+#include "targets/gf-chip-lpc1114.hpp"
 
 namespace godafoss {
    
@@ -26,7 +26,7 @@ using chip = chip_lpc1114< clock >;
    
    make_pin_in_out(   scl,  0,  4 );
    make_pin_in_out(   sda,  0,  5 );
-   make_pin_in_out(  p0_6,  0,  7 );
+   make_pin_in_out(  p0_6,  0,  6 );
    make_pin_in_out(  p0_7,  0,  7 );
    
    make_pin_in_out(  p1_0,  1,  0 );

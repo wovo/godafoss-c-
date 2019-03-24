@@ -119,9 +119,6 @@ struct _port_out_from_pins< n, pin, tail... > :
       _port_out_from_pins< n, tail... > > >
 {};
 
-template< typename x >
-using no_inline = x;
-
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
 template< can_pin_out_list... Ts > 

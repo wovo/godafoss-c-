@@ -171,6 +171,9 @@ static void SystemCoreClockUpdate( void )
         SystemCoreClock = CHIP_FREQ_UTMIPLL / 2U;
       }
     break;
+    
+    default: 
+    break;
   }
 
   if ( (PMC->PMC_MCKR & PMC_MCKR_PRES_Msk) == PMC_MCKR_PRES_CLK_3 )

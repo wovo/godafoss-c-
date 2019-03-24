@@ -57,9 +57,11 @@ struct _invert_write< T > : T {
 // ==========================================================================
 
 template< typename T >
-concept bool can_invert = requires {
+concept bool can_invert = requires (
+   typename T::value_type v   
+) {
    is_box< T >;
-   { T::invert( T::value_type ) } -> typename T::value_type
+   { T::invert( v ) } -> typename T::value_type;
 };
 
 template< can_invert T >

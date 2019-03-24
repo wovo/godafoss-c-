@@ -28,7 +28,7 @@
 
 #define GODAFOSS_NO_INLINE __attribute__((noinline))
 
-#define GODAFOSS_NORETURN GODAFOSS_INLINE [[noreturn]]
+#define GODAFOSS_NORETURN [[noreturn]] GODAFOSS_INLINE
 
 #define GODAFOSS_RAM_FUNCTION \
    __attribute__( ( noinline, long_call, section(".data") ) )

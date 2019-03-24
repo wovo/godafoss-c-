@@ -30,7 +30,6 @@ concept bool is_pin_in_out = requires {
    T::is_pin_in_out;
 };
 
-template< typename T >
 struct be_pin_in_out : 
    be_item< bool >, 
    be_simplex< bool > 
@@ -53,7 +52,6 @@ concept bool is_pin_out = requires {
    T::is_pin_out;
 };
 
-template< typename T >
 struct be_pin_out : 
    be_item< bool >, 
    be_output< bool >
@@ -76,7 +74,6 @@ concept bool is_pin_in = requires {
    T::is_pin_in;
 };
 
-template< typename T >
 struct be_pin_in : 
    be_item< bool >, 
    be_input< bool > 
@@ -99,7 +96,6 @@ concept bool is_pin_oc = requires {
    T::is_pin_oc;
 };
 
-template< typename T >
 struct be_pin_oc : 
    be_item< bool >, 
    be_duplex< bool > 

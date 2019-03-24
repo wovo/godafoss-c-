@@ -25,3 +25,8 @@ naming and architecture
 - short names for common operations, longer names for less common / dangerous operations (shared_ptr.get() is defintely wrong!)
 - conserve the namespaces: don't use many names, prefer modifiers/adjectives. write a glossary!
 - avoid abbreviations, _t, etc. (gpio?)
+
+todo
+- mirror for ports, demo
+- servo demo with NRF
+- cout has no << flush??

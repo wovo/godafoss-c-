@@ -135,7 +135,7 @@ static GODAFOSS_INLINE void configure_as_gpio(
       case 0x0304: pin_gp_conf( &LPC_IOCON->PIO3_4,        0x00 ); break;
       case 0x0305: pin_gp_conf( &LPC_IOCON->PIO3_5,        0x00 ); break;
          
-      //default: HWLIB_PANIC_WITH_LOCATION; 
+      default: break; // HWLIB_PANIC_WITH_LOCATION; 
    }        
 } 
    
@@ -147,7 +147,7 @@ static GODAFOSS_INLINE void configure_as_gpio(
     
 template< uint32_t port, uint32_t pin >
 struct _pin_in_out : 
-   be_pin_in_out< _pin_in_out< port, pin > >
+   be_pin_in_out
 {
 	   
    static const uint32_t mask = 0x1U << pin;

@@ -28,7 +28,7 @@ struct box_init_filter {};
 template< is_box T >
 struct box_init_filter< T > { 
     
-   static void HWCPP_INLINE init(){ 
+   static void GODAFOSS_INLINE init(){ 
       T::init(); 
    }     
 }; 
@@ -48,11 +48,11 @@ struct box_write_filter< T > {
 
    using _value_type = typename T::value_type;
     
-   static void HWCPP_INLINE write( _value_type v ){ 
+   static void GODAFOSS_INLINE write( _value_type v ){ 
       T::write( v );  
    }
    
-   static void HWCPP_INLINE flush(){ 
+   static void GODAFOSS_INLINE flush(){ 
       T::flush(); 
    }
 };    
@@ -72,11 +72,11 @@ struct box_read_filter< T > {
 
    using _value_type = typename T::value_type;
     
-   static _value_type HWCPP_INLINE read(){ 
+   static _value_type GODAFOSS_INLINE read(){ 
       return T::get(); 
    }
    
-   static void HWCPP_INLINE refresh(){ 
+   static void GODAFOSS_INLINE refresh(){ 
       T::refresh(); 
    }
 }; 
@@ -94,15 +94,15 @@ struct box_direction_filter {};
 template< is_simplex T >
 struct box_direction_filter< T > { 
    
-   static void HWCPP_INLINE direction_set_input(){ 
+   static void GODAFOSS_INLINE direction_set_input(){ 
       T::direction_set_input(); 
    }
    
-   static void HWCPP_INLINE direction_set_output(){ 
+   static void GODAFOSS_INLINE direction_set_output(){ 
       T::direction_set_output; 
    }
    
-   static void HWCPP_INLINE direction_flush(){ 
+   static void GODAFOSS_INLINE direction_flush(){ 
       T::direction_flush(); 
    }
 }; 

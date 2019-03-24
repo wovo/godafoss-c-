@@ -27,10 +27,12 @@ struct _direct_read : T {};
 
 template< is_input T >
 struct _direct_read< T > : T {
+	
    static auto read(){
       T::refresh();
       return T::read();
    }
+   
 };
 
 
@@ -45,10 +47,12 @@ struct _direct_write : T {};
 
 template< is_input T >
 struct _direct_write< T > : T {
+	
    static void write( typename T::value_type v ) {
       T::write( v );
       T::flush();
    }
+   
 };
 
 
@@ -63,14 +67,17 @@ struct _direct_direction : T {};
 
 template< is_simplex T >
 struct _direct_direction< T > : T {
+	
    static void direction_set_input() {
       T::direction_set_input();
       T::direction_flush();
    }
+   
    static void direction_set_output() {
       T::direction_set_output();
       T::direction_flush();
    }
+   
 };
 
 

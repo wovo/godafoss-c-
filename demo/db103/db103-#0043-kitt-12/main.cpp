@@ -17,7 +17,7 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using led     = target::p1_3;
 
-using xleds = gf::port_out<
+using leds = gf::port_out<
    target::scl,
    target::sda,
    target::p0_6,
@@ -34,10 +34,7 @@ using xleds = gf::port_out<
    target::p1_9
 >;   
 
-//using leds = gf::port_out<>;   
-
-int main( void ){   
-   gf::port_out_dummy< 1 >::write( 1 );    
-//   gf::kitt< leds, timing::ms< 200 > >();  
+int main( void ){     
+   gf::kitt< leds, timing::ms< 50 > >();  
 }
 

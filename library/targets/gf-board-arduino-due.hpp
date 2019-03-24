@@ -1,12 +1,12 @@
 // ==========================================================================
 //
-// file : godafoss-target-arduino-due.hpp
+// file : gf-board-arduino-due.hpp
 //
 // HAL for the arduino due board target
 //
 // ==========================================================================
 
-#include "targets/gf-sam3x8e.hpp"
+#include "targets/gf-chip-sam3x8e.hpp"
 
 namespace godafoss {
    
@@ -109,7 +109,6 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  d75,  a, 26 );
    make_pin_in_out(  d76,  a, 25 );
    
-/*     
    make_pin_adc(  a0,  7 );
    make_pin_adc(  a1,  6 );
    make_pin_adc(  a2,  5 );
@@ -123,7 +122,7 @@ using chip = chip_sam3x8e< clock >;
    make_pin_adc( a10, 12 );
    make_pin_adc( a11, 13 );
 
-/     { 1, 15 },  // dac0
+/*    { 1, 15 },  // dac0
       { 1, 16 },  // dac1
       { 0,  1 },  // cantx
       { 0,  0 },  // canrx
@@ -159,10 +158,10 @@ using chip = chip_sam3x8e< clock >;
    using  tx = godafoss::pin_out<  _tx >;
    using  rx = godafoss::pin_in<   _rx >;
    using led = godafoss::pin_out< _led >;
+*/
    
 #undef make_pin_in_out   
 #undef make_pin_adc
-*/
 
    using waiting  = typename chip::waiting;	  
    // using clocking = typename chip::clocking;	  

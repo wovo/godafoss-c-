@@ -19,14 +19,19 @@
 #ifndef GODAFOSS_H
 #define GODAFOSS_H
 
+#ifdef GF_TARGET_arduino_uno
+   #define GF_TARGET
+   #include "targets/gf-board-arduino-uno.hpp"
+#endif
+
 #ifdef GF_TARGET_arduino_due
    #define GF_TARGET
-   #include "targets/gf-arduino-due.hpp"
+   #include "targets/gf-board-arduino-due.hpp"
 #endif
 
 #ifdef GF_TARGET_db103
    #define GF_TARGET
-   #include "targets/gf-db103.hpp"
+   #include "targets/gf-board-db103.hpp"
 #endif
 
 #ifndef GF_TARGET

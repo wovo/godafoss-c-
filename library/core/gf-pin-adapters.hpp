@@ -54,6 +54,25 @@ concept bool can_pin_oc = requires {
 
 // ==========================================================================
 //
+// lists of can-be-same pins
+//
+// ==========================================================================
+
+template< typename... Ts >
+concept bool can_pin_out_list = ( can_pin_out< Ts > && ... );
+
+template< typename... Ts >
+concept bool can_pin_in_list = ( can_pin_in< Ts > && ... );
+
+template< typename... Ts >
+concept bool can_pin_in_out_list = ( can_pin_in_out< Ts > && ... );
+
+template< typename... Ts >
+concept bool can_pin_oc_list = ( can_pin_oc< Ts > && ... );
+
+
+// ==========================================================================
+//
 // in_out
 //
 // ==========================================================================
@@ -62,14 +81,14 @@ template< typename T > struct pin_in_out;
 
 template< is_pin_in_out T > 
 struct pin_in_out< T > :
-   be_pin_out< bool >,
+   be_pin_out,
    box_init_filter< T >,
    box_write_filter< T >
 {};   
 
 template< is_pin_oc T >
 struct pin_in_out< T > : 
-   be_pin_out< bool >,
+   be_pin_out,
    box_init_filter< T >,
    box_write_filter< T >  
 {};	
@@ -85,11 +104,11 @@ template< typename T > struct pin_out;
 
 template< is_pin_in_out T >
 struct pin_out< T > : 
-   be_pin_out< bool >,
+   be_pin_out,
    box_write_filter< T >
 {
    
-   static void HWCPP_INLINE init(){
+   static void GODAFOSS_INLINE init(){
       T::init();
       direct< T >::direction_set_output();
    }  
@@ -98,14 +117,14 @@ struct pin_out< T > :
 
 template< is_pin_out T >
 struct pin_out< T > : 
-   be_pin_out< bool >,
+   be_pin_out,
    box_init_filter< T >,
    box_write_filter< T >
 {};
 
 template< is_pin_oc T >
 struct pin_out< T > : 
-   be_pin_out< bool >,
+   be_pin_out,
    box_init_filter< T >,
    box_write_filter< T >
 {};
@@ -121,11 +140,11 @@ template< typename T > struct pin_in;
 
 template< is_pin_in_out T >
 struct pin_in< T > : 
-   be_pin_in< bool >,
+   be_pin_in,
    box_read_filter< T >
 {
 	
-   static void HWCPP_INLINE init(){
+   static void GODAFOSS_INLINE init(){
       T::init();
       direct< T >::direction_set_input();
    }
@@ -134,18 +153,18 @@ struct pin_in< T > :
 
 template< is_pin_in T >
 struct pin_in< T > : 
-   be_pin_in< bool >,
+   be_pin_in,
    box_init_filter< T >,
    box_read_filter< T >
 {};
 
 template< is_pin_oc T >
 struct pin_in< T > : 
-   be_pin_in< bool >,
+   be_pin_in,
    box_read_filter< T >
 {
 	
-   static void HWCPP_INLINE init(){
+   static void GODAFOSS_INLINE init(){
       T::init();
       direct< T >::write( 1 );
    }
@@ -163,7 +182,7 @@ template< typename T > struct pin_oc;
 
 template< is_pin_oc T >
 struct pin_oc< T > : 
-   be_pin_oc< bool >,
+   be_pin_oc,
    box_init_filter< T >,
    box_write_filter< T >,
    box_read_filter< T >

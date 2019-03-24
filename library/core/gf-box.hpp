@@ -17,9 +17,6 @@
 //
 // ==========================================================================
 
-#define HWCPP_INLINE
-#define _HWCPP_RUN_ONCE
-
 
 // ==========================================================================
 //
@@ -31,14 +28,26 @@
 template< typename T >
 concept bool is_box = requires {  
    T::is_box;
-   T::is_item || T::is_stream;
+   T::is_item || T::is_stream; 
    { T::init() } -> void;
 };
 
 template< typename T >
-struct be_box {
+struct be_box_root {
    static const bool is_box = true;	
    using value_type = T;
+};
+
+template< typename T >
+struct be_box : be_box_root< T > {};
+
+template<>
+struct be_box< bool > :
+   be_box_root< bool >
+{
+   GODAFOSS_INLINE static bool invert( bool v ){
+      return !v;	   
+   }
 };
 
 // ==========================================================================
@@ -54,7 +63,8 @@ template< typename T >
 struct be_item : 
    be_box< T > 
 {
-   static const bool is_item = true;	
+   static const bool is_item   = true;	
+   static const bool is_stream = false;	
 };
 
 // ==========================================================================
@@ -70,6 +80,7 @@ template< typename T >
 struct be_stream : 
    be_box< T > 
 {
+   static const bool is_item   = false;	
    static const bool is_stream = true;	
 };
 

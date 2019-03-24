@@ -80,7 +80,7 @@ template< is_input_output T >
 struct box_in< T > : 
    box_read_filter< T > 
 {
-   static void HWCPP_INLINE init(){
+   static void GODAFOSS_INLINE init(){
       T::init(); 
       direct< T >::direction_set_input();
    }	

@@ -34,6 +34,11 @@ struct be_port_base :
 {
    static const bool is_port_base  = true;
    static const int  n_pins        = n;
+   
+   using _vt = typename be_item< typename uint_t< n >::fast >::value_type;
+   GODAFOSS_INLINE static _vt invert( _vt v ){
+      return ~v;	   
+   }	   
 };
 
 
@@ -46,7 +51,7 @@ struct be_port_base :
 template< typename T >
 concept bool is_port_in_out = requires { 
    is_port_base< T, T::n_pins >;
-   is_simplex< T::value_type >;
+   is_simplex< typename T::value_type >;
    T::is_port_in_out;   
 };
 
@@ -68,7 +73,7 @@ struct be_port_in_out :
 template< typename T >
 concept bool is_port_out = requires {
    is_port_base< T, T::n_pins >;
-   is_output< T::value_type >;
+   is_output< typename T::value_type >;
    T::is_port_out;
 };
 
@@ -90,7 +95,7 @@ struct be_port_out :
 template< typename T >
 concept bool is_port_in = requires {
    is_port_base< T, T::n_pins >;
-   is_input< T::value_type >;
+   is_input< typename T::value_type >;
    T::is_port_in;
 };
 
@@ -112,7 +117,7 @@ struct be_port_in :
 template< typename T >
 concept bool is_port_oc = requires {
    is_port_base< T, T::n_pins >;
-   is_duplex< T::value_type >;
+   is_duplex< typename T::value_type >;
    T::is_port_oc;
 };
 

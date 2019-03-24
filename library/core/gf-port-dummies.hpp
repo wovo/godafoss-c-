@@ -33,6 +33,12 @@ struct port_in_out_dummy :
       return 0; 
    }      
 	  
+   static void GODAFOSS_INLINE flush(){
+   }
+
+   static void GODAFOSS_INLINE refresh(){
+   }
+   
    static void GODAFOSS_INLINE direction_set_input(){
    }
 
@@ -54,6 +60,9 @@ using port_in_dummy  = port_in< port_in_out_dummy< n > >;
 
 
 // ==========================================================================
+
+// there is no port_oc< port_in_out > because port pins
+// don't have individual direction control
 
 template< int n >
 struct port_oc_dummy : 

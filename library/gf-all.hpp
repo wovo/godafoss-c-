@@ -121,13 +121,18 @@ namespace godafoss {
 
 #include "core/gf-box.hpp"
 #include "core/gf-box-filters.hpp"
+#include "core/gf-box-no-inline.hpp"
 #include "core/gf-box-invert.hpp"
 #include "core/gf-box-direct.hpp"
 #include "core/gf-box-adapters.hpp"
 
 #include "core/gf-pin.hpp"
 #include "core/gf-pin-adapters.hpp"
+#include "core/gf-pin-dummies.hpp"
+#include "core/gf-pin-out-from-pins.hpp"
 #include "core/gf-pin-demos.hpp"
+
+#include "core/gf-analog.hpp"
 
 #include "core/gf-port.hpp"
 #include "core/gf-port-adapters.hpp"
@@ -137,6 +142,18 @@ namespace godafoss {
 
 #include "core/gf-timing-wait.hpp"
 #include "core/gf-timing-clock.hpp"
+
+//#include "core/gf-timing-spi.hpp"
+//#include "core/gf-timing-i2c.hpp"
+
+#include "core/gf-uart.hpp"
+#include "core/gf-ostream.hpp"
+#include "core/gf-ostream-object.hpp"
+
+#include "chips/gf-servo.hpp"
+//#include "chips/gf-pcf8574.hpp"
+//#include "chips/gf-pcf8591.hpp"
+//#include "chips/gf-nrf24.hpp"
 
 } // namespace godafoss
 

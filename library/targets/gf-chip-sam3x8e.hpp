@@ -83,7 +83,7 @@ enum class _port {
 
 template< _port P, uint32_t pin >
 struct _pin_in_out : 
-   be_pin_in_out< _pin_in_out< P, pin > >
+   be_pin_in_out
 {
 	
    static void GODAFOSS_INLINE init(){
@@ -114,6 +114,156 @@ struct _pin_in_out :
    }
 
    static void GODAFOSS_INLINE refresh(){}
+
+};
+
+
+// ==========================================================================
+//
+// ADC
+//
+// ==========================================================================
+
+// ========= pin initialization
+
+static void _adc_init_common(){
+    
+   godafoss::chip_sam3x8e< clock >::init();
+        
+   // enable the clock to the ADC (peripheral # 37, in the 2nd PCER)
+   PMC->PMC_PCER1 = ( 0x01 << ( 37 - 32 ) );
+         
+   // timing: use defaults
+   ADC->ADC_MR = 0;
+      
+   // disable all interrupts
+   ADC->ADC_IDR = 0x1FFF'FFFF;
+      
+   // set gains to 1, offsets to 0
+   ADC->ADC_CGR = 0;
+   ADC->ADC_COR = 0;
+}
+
+// ========= ADC read
+
+static uint_fast16_t _adc_get_common( 
+   uint_fast8_t channel, 
+   uint_fast32_t mask 
+){
+	
+   // enable the channel
+   ADC->ADC_CHER = mask;         
+
+   // dummy conversion - can this be avoided?
+   ADC->ADC_CR = 0x0000'0002;
+   while( ( ADC->ADC_ISR & mask ) == 0 ){}
+   (void)ADC->ADC_CDR[ channel ];
+
+   // start the conversion 
+   ADC->ADC_CR = 0x0000'0002;
+      
+   // wait for the conversion to complete
+   while( ( ADC->ADC_ISR & mask ) == 0 ){}
+
+   // get conversion results
+   auto x = ADC->ADC_CDR[ channel ] & 0x0000'0FFF;
+ 
+   // disable the channel - doesn't work??
+   ADC->ADC_CHDR = 0x01 << channel;   
+      
+   // return the conversion result
+   return x;	
+}
+
+// ========= flyweight interface 
+
+template< uint_fast64_t channel >
+struct pin_adc :
+   be_adc< 12 >
+{
+	
+   using _value_type = typename be_adc< 12 >::value_type;
+	
+   static void GODAFOSS_INLINE init(){
+	  _adc_init_common(); 
+   }
+
+   static _value_type GODAFOSS_INLINE read(){
+      return _adc_get_common( channel, 0x01 << channel );
+   }	      
+   
+   static void GODAFOSS_INLINE refresh(){
+   }	      
+   
+};
+
+
+// ==========================================================================
+//
+// UART
+//
+// ==========================================================================
+
+template< uint64_t baudrate = GODAFOSS_BAUDRATE >
+struct uart :
+   be_uart< uart< baudrate > >
+{
+	
+   static inline Uart * hw_uart = UART;
+	
+   static void init(){
+	   
+      // don't do this over and over	
+      GODAFOSS_RUN_ONCE	   
+       
+      chip_sam3x8e< clock >::init();    
+
+      // enable the clock to port A
+      PMC->PMC_PCER0 = 1 << ID_PIOA;
+       
+      // disable PIO Control on PA9 and set up for Peripheral A
+      PIOA->PIO_PDR   = PIO_PA8; 
+      PIOA->PIO_ABSR &= ~PIO_PA8; 
+      PIOA->PIO_PDR   = PIO_PA9; 
+      PIOA->PIO_ABSR &= ~PIO_PA9; 
+
+      // enable the clock to the UART
+      PMC->PMC_PCER0 = ( 0x01 << ID_UART );
+
+      // Reset and disable receiver and transmitter.
+      hw_uart->UART_CR = 
+	     UART_CR_RSTRX 
+		 | UART_CR_RSTTX 
+		 | UART_CR_RXDIS 
+		 | UART_CR_TXDIS;
+
+      hw_uart->UART_BRGR = 5241600 / baudrate; 
+
+      // No parity, normal channel mode.
+      hw_uart->UART_MR = UART_MR_PAR_NO;
+
+      // Disable all interrupts.	  
+      hw_uart->UART_IDR = 0xFFFFFFFF;   
+
+      // Enable the receiver and the trasmitter.
+      hw_uart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;      
+   }	
+
+   static bool GODAFOSS_INLINE write_blocks(){
+      return ( hw_uart->UART_SR & 0x02 ) == 0;
+   }
+
+   static void GODAFOSS_INLINE write_unchecked( char c ){
+      hw_uart->UART_THR = c;
+   }
+   	
+   static bool GODAFOSS_INLINE read_blocks(){	
+      return ( hw_uart->UART_SR & 0x01 ) == 0;
+   }
+
+   static char GODAFOSS_INLINE read_unchecked(){
+      return hw_uart->UART_RHR; 
+   }
 
 };
 
