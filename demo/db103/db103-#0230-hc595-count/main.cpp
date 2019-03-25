@@ -20,7 +20,8 @@ using spi_bus = gf::spi_bus_bb_sclk_miso_mosi<
 using chip    =  gf::hc595< spi_bus, gf::invert< target::p1_1 > >;
 
 int main( void ){
- 
+   chip::init();
+   timing::init();
    for(;;){
       for( uint_fast16_t i = 0; i < 256; ++i ){
           chip::write( i );
