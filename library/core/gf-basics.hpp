@@ -32,6 +32,12 @@
 
 #define GODAFOSS_RAM_FUNCTION \
    __attribute__( ( noinline, long_call, section(".data") ) )
+   
+#ifdef __MINGW32__
+   #define GODAFOSS_WEAK
+#else
+   #define GODAFOSS_WEAK __attribute__((weak))
+#endif   
 
    
 // ==========================================================================

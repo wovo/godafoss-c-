@@ -65,6 +65,7 @@ struct be_timing_wait {
    
    template< uint64_t n >
    using us = ns< n * 1'000 >;
+   
    template< uint64_t n >
    using ms = ns< n * 1'000'000 >;
    

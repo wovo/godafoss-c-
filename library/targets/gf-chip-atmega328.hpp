@@ -15,7 +15,7 @@
 
 namespace godafoss {
     
-extern "C" void GODAFOSS_NO_INLINE _GODAFOSS_avr_ret(){}
+extern "C" void GODAFOSS_WEAK GODAFOSS_NO_INLINE _GODAFOSS_avr_ret(){}
     
 template< uint64_t clock >	
 struct chip_atmega328 {
@@ -67,21 +67,18 @@ enum class _port {
 typedef volatile unsigned char regs;
 
 static constexpr regs * port_data[] = { 
-//   &PORTA,
    &PORTB,
    &PORTC,
    &PORTD
 };
    
 static constexpr regs * port_in[] = { 
-//   &PINA,
    &PINB,
    &PINC,
    &PIND
 };
    
 static constexpr regs * port_direction[] = { 
-//   &DDRA,
    &DDRB,
    &DDRC,
    &DDRD
@@ -347,6 +344,10 @@ struct waiting :
    static void init(){
       chip::init();
    }	
+   
+   static constexpr ticks_type ticks_from_ns( uint64_t n ){
+      return ( n * clock ) / 1'000'000'000;	   
+   }   
 
    static void GODAFOSS_NO_INLINE wait_ticks_function( ticks_type n ){     
 
@@ -363,6 +364,9 @@ struct waiting :
    template< ticks_type t >
    static void GODAFOSS_INLINE wait_ticks_template(){
 	   
+	  //wait_ticks_function( t ); 
+	  //return;
+	      
       if constexpr ( t < call_overhead ){    
           chip::inline_small_delay< t >();
           
@@ -395,9 +399,13 @@ struct clocking :
    static void init(){
       chip::init();
 
-      // set up timer without prescaler (input=CPU clock)
+      // set up timer 1 without prescaler (input=CPU clock)
       TCCR1B = 0x01;   
    }	
+   
+   static constexpr ticks_type ticks_from_ns( uint64_t n ){
+      return ( n * clock ) / 1'000'000'000;	   
+   }   
 
    static ticks_type GODAFOSS_INLINE now_ticks(){
       return chip::now_ticks();
@@ -434,7 +442,8 @@ struct clocking :
 //
 // ==========================================================================
    
-using timing   = clocking;  
+using timing   = waiting;  
+// using timing   = clocking;  
 
 
 }; // struct atmega328

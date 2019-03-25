@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// file : hwcpp-spi.hpp
+// file : gf-spi.hpp
 //
 // ==========================================================================
 
@@ -8,20 +8,19 @@ template<
    can_pin_out  _sclk,
    can_pin_in   _miso,
    can_pin_out  _mosi,
-   is_waiting   _timing   
+   typename     timing   
 >
 struct spi_bus_bb_sclk_miso_mosi {
 
-   using sclk    = pin_out< _sclk >;
-   using miso    = pin_in<  _miso >;
-   using mosi    = pin_out< _mosi >;
-   using timing  = _timing;
+   using sclk    = direct< pin_out< _sclk > >;
+   using miso    = direct< pin_in<  _miso > >;
+   using mosi    = direct< pin_out< _mosi > >;
    
    static void init(){
       sclk::init();
       miso::init();
       mosi::init();	  
-	  timing::init();
+	   timing::init();
    }
    
    //for now: 1 MHz
@@ -37,16 +36,16 @@ struct spi_bus_bb_sclk_miso_mosi {
    ){
       d_in = 0;
       for( uint_fast8_t i = 0; i < bits; ++i ){
-         mosi::set( ( d_out & ( 0x01 << ( bits - 1 ) ) ) != 0 );		  
+         mosi::write( ( d_out & ( 0x01 << ( bits - 1 ) ) ) != 0 );		  
          wait_half_period();
-         sclk::set( 1 );
+         sclk::write( 1 );
          wait_half_period();
          d_out = d_out << 1;
          d_in = d_in << 1;
-         d_in |= ( miso::get() ? 0x01 : 0x00 );
-         sclk::set( 0 );
+         d_in |= ( miso::read() ? 0x01 : 0x00 );
+         sclk::write( 0 );
       } 
-      mosi::set( 0 );
+      mosi::write( 0 );
    }
    
    template< size_t n > 
@@ -66,9 +65,9 @@ struct spi_bus_bb_sclk_miso_mosi {
       const std::array< uint8_t, n > & data_out, 
             std::array< uint8_t, n > & data_in
    ){
-      sel::set( 0 );
+      sel::write( 0 );
       write_and_read( data_out, data_in );
-      sel::set( 1 );
+      sel::write( 1 );
       wait_half_period();
    }   
    

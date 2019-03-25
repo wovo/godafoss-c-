@@ -129,7 +129,7 @@ struct _print_reverse {
 //
 // ==========================================================================
 
-uint_fast16_t __attribute__ ((pure)) _strlen( const char *s ){
+uint_fast16_t __attribute__ ((pure)) GODAFOSS_WEAK _strlen( const char *s ){
    uint_fast16_t n = 0;
    while( *s++ ){ ++n; }
    return n;

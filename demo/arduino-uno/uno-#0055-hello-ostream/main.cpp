@@ -1,10 +1,6 @@
 // ==========================================================================
 //
-// Test whether a project can contain two source files.
-//
-// This causes some trouble with the MingW linker, because it doesn't
-// handle weak definitions. Hence being weak is sufficient for an embedded
-// build, but not for a windows-hosted build.
+// blink the LED on an Arduino Due
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -16,9 +12,15 @@
 
 #include "godafoss.hpp"
 
-void test();
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
+using uart    = target::uart<>;
 
-int main(){
-   test(); 
-}   
+int main( void ){   
+   gf::ostream< gf::formatter< uart > > cout;
+   timing::init();
+   timing::ms< 2000 >::wait();
+   cout << "Hello world (ostream)\n";
+}
 

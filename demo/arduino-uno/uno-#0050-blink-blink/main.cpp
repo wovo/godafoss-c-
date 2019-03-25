@@ -10,9 +10,13 @@
 //
 // ==========================================================================
 
-#include "hwlib.hpp"
+#include "godafoss.hpp"
 
-int main( void ){
-   auto led = hwlib::target::pin_out( hwlib::target::pins::led );
-   hwlib::blink( led );
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using led     = target::d13;
+using timing  = target::waiting;
+
+int main( void ){   
+   gf::blink< led, timing::ms< 200 > >();   
 }

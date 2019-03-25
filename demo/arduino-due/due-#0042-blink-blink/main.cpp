@@ -18,5 +18,5 @@ using led     = target::d13;
 using timing  = target::timing;
 
 int main( void ){   
-   gf::blink< led, timing::ms< 2 > >();   
+   gf::blink< led, timing::ms< 200 > >();   
 }

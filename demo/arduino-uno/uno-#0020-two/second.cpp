@@ -10,8 +10,7 @@
 //
 // ==========================================================================
 
-#include "hwlib.hpp"
+#include "godafoss.hpp"
 
 void test(){
-   hwlib::cout << "Test function called\n";
 }

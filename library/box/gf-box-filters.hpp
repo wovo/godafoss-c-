@@ -73,7 +73,7 @@ struct box_read_filter< T > {
    using _value_type = typename T::value_type;
     
    static _value_type GODAFOSS_INLINE read(){ 
-      return T::get(); 
+      return T::read(); 
    }
    
    static void GODAFOSS_INLINE refresh(){ 

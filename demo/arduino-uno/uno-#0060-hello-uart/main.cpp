@@ -1,10 +1,6 @@
 // ==========================================================================
 //
-// Test whether a project can contain two source files.
-//
-// This causes some trouble with the MingW linker, because it doesn't
-// handle weak definitions. Hence being weak is sufficient for an embedded
-// build, but not for a windows-hosted build.
+// Hello world on DB103 (LPC1114)
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -16,9 +12,20 @@
 
 #include "godafoss.hpp"
 
-void test();
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
+using uart    = target::uart<>;
 
-int main(){
-   test(); 
-}   
+void print( const char * s ){
+   while( *s != '\0' ){
+      uart::write( *s++ );
+   }
+}
 
+int main( void ){   
+   timing::init();
+   uart::init();
+   timing::ms< 2000 >::wait();
+   print( "Hello world (uart)\n" );
+}

@@ -21,6 +21,6 @@ int main( void ){
    gf::ostream< gf::formatter< uart > > cout;
    timing::init();
    timing::ms< 2000 >::wait();
-   cout << "Hello world\n";
+   cout << "Hello world (ostream)\n";
 }
 

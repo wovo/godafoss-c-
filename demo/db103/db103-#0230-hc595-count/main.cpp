@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// blink the LED on an Arduino Uno
+// kitt on 8 LEDs on a HC595 connected to a DB103 board (LPC1114)
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -14,23 +14,19 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using led     = gf::pin_out< gf::direct< target::d13 >>;
 using timing  = target::timing;
+using spi_bus = gf::spi_bus_bb_sclk_miso_mosi<
+   target::p1_2, gf::pin_in_dummy, target::p1_0, timing >;
+using chip    =  gf::hc595< spi_bus, gf::invert< target::p1_1 > >;
 
-int main( void ){   
-   
-   led::init();
-   timing::init();
-   
+int main( void ){
+ 
    for(;;){
-      
-      led::write( 1 );
-
-      timing::ms< 100 >::wait();
-
-      led::write( 0 );
-
-      timing::ms< 100 >::wait();
-
+      for( uint_fast16_t i = 0; i < 256; ++i ){
+          chip::write( i );
+          chip::flush();
+          timing::ms< 500 >::wait();
+      }
    }
-}
+}  
+

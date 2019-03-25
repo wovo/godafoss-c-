@@ -16,6 +16,7 @@ SERIAL_PORT        ?= COM4
 CONSOLE_BAUDRATE   := 2400
 
 # set RELATIVE to the next higher directory and defer to the Makefile.link
-RELATIVE           := $(RELATIVE)../
-include            $(RELATIVE)Makefile.link
+RELATIVE          ?= .
+RELATIVE          := $(RELATIVE)/..
+include           $(RELATIVE)/makefile.link
 

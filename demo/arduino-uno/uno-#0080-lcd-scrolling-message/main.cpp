@@ -10,28 +10,34 @@
 //
 // ==========================================================================
 
-#include "hwlib.hpp"
+#include "godafoss.hpp"
 
-namespace target = hwlib::target;
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
 
-int main( void ){
-    auto d4 = target::pin_out( target::pins::d4 );
-    auto d5 = target::pin_out( target::pins::d5 );
-    auto d6 = target::pin_out( target::pins::d6 );
-    auto d7 = target::pin_out( target::pins::d7 );
-    auto d  = hwlib::port_out_from( d4, d5, d6, d7 );
-    auto rs = target::pin_out( target::pins::d8 );
-    auto e  = target::pin_out( target::pins::d9 );
-    auto bl = target::pin_out( target::pins::d10 );
-    
-    auto lcd = hwlib::hd44780( rs, e, d, hwlib::xy( 16, 2 ) );  
-    
-    bl.write( 1 );
-    bl.flush();
+using lcd = godafoss::hd44780_rs_e_d_x_y_timing< 
+   target::d8,
+   target::d9,
+   godafoss::port_out<
+      target::d4,
+      target::d5,
+      target::d6,
+      target::d7 >,
+   16, 2,
+   timing >; 
+   
+using bl = godafoss::direct< godafoss::pin_out< target::d10 > >;   
 
-    scrolling_text( 
+int main( void ){  
+    bl::init(); 
+    bl::write( 1 );
+
+    gf::scrolling_text<
        lcd,
-       "We regret to inform you that we are closed for the day."
-    );  
+       timing::ms< 1'000 >,
+       timing::ms<   300 >,
+       timing::ms< 1'000 >
+    >(  "We regret to inform you that we are closed for the day." );  
     
 }

@@ -1,10 +1,6 @@
 // ==========================================================================
 //
-// Test whether a project can contain two source files.
-//
-// This causes some trouble with the MingW linker, because it doesn't
-// handle weak definitions. Hence being weak is sufficient for an embedded
-// build, but not for a windows-hosted build.
+// blink on 1 LEDs on a HC595 connected to a DB103 
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -16,9 +12,14 @@
 
 #include "godafoss.hpp"
 
-void test();
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
+using spi_bus = gf::spi_bus_bb_sclk_mosi_miso<
+   target::p1_2, target::p1_0, gf::pin_dummy, timing >;
+using chip    =  gf:hc595< spi_bus, gf::invert< target::p1_1 > >;
+using led     = chip::p2;
 
-int main(){
-   test(); 
-}   
-
+int main( void ){
+   hwlib::blink( chip.p0 );
+}  

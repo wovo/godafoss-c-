@@ -373,11 +373,13 @@ static uint64_t now_ticks(){
 
 // ==========================================================================
 //
-// timing fundamentals
+// waiting
 //
 // ==========================================================================
 
-struct waiting : be_timing_wait< waiting > {
+struct waiting : 
+   be_timing_wait< waiting > 
+{
    
    using ticks_type = uint64_t;
    
