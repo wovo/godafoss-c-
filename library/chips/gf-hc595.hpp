@@ -19,7 +19,7 @@ struct hc595 :
    be_port_out< 8 >
 {
    using cs = direct< pin_out< _cs >>;
-   static inline uint_fast8_t buffer, dummy;
+   static inline uint_fast8_t buffer;
    
    static void GODAFOSS_INLINE init(){
       bus::init();   
@@ -31,6 +31,6 @@ struct hc595 :
    }
    
    static void GODAFOSS_INLINE flush(){
-      bus::write_and_read_single( buffer, dummy );
+      typename bus:: template transfer< cs >().write( buffer );
    }
 };

@@ -36,7 +36,7 @@ GODAFOSS_NORETURN void kitt(){
    interval::init();
    for(;;){
       for( uint_fast8_t  i = 0; i < port::n_pins; ++i ){
-         port::write( (typename port::value_type) ( 0x01 << i ) );      
+         port::write( (typename port::value_type) ( 0x01 << i ) );   
          interval::wait(); 
       }
       for( uint_fast8_t  i = port::n_pins - 2; i > 0; --i ){

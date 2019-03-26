@@ -20,7 +20,7 @@ struct spi_bus_bb_sclk_miso_mosi {
       sclk::init();
       miso::init();
       mosi::init();	  
-	   timing::init();
+	  timing::init();
    }
    
    //for now: 1 MHz
@@ -29,10 +29,10 @@ struct spi_bus_bb_sclk_miso_mosi {
    }
    
    // must implement other SPI modes
-   template< typename data_type, int bits = 8 >
+   template< int bits = 8 >
    static void write_and_read_single( 
-      data_type d_out, 
-      data_type & d_in 
+      uint8_t   d_out, 
+      uint8_t & d_in 
    ){
       d_in = 0;
       for( uint_fast8_t i = 0; i < bits; ++i ){
@@ -48,27 +48,75 @@ struct spi_bus_bb_sclk_miso_mosi {
       mosi::write( 0 );
    }
    
-   template< size_t n > 
    static void write_and_read( 
-      const std::array< uint8_t, n > & data_out, 
-            std::array< uint8_t, n > & data_in
+      const uint8_t * data_out, 
+            uint8_t * data_in,
+      uint_fast16_t n			
    ){
-      for( uint_fast8_t i = 0; i < n; ++i ){
-         write_and_read_single( data_out[ i ], data_in[ i ] );
+      uint8_t dummy;	   
+      for( uint_fast16_t i = 0; i < n; ++i ){
+         write_and_read_single( 
+		     ( data_out != nullptr ) ? data_out[ i ] : dummy, 
+			  ( data_in  != nullptr ) ? data_in[ i ]  : dummy
+	     );
       }      
       wait_half_period();
    }   
-   
-   // flyweight handling of chip select
-   template< typename sel, size_t n > 
-   static void write_and_read( 
-      const std::array< uint8_t, n > & data_out, 
-            std::array< uint8_t, n > & data_in
-   ){
-      sel::write( 0 );
-      write_and_read( data_out, data_in );
-      sel::write( 1 );
-      wait_half_period();
-   }   
+     
+   template< can_pin_out _sel >
+   struct transfer {
+      using sel = direct< pin_out< _sel > >; 	 
+	   
+	   transfer(){
+         sel::write( 1 );
+         wait_half_period();
+      }
+
+      ~transfer(){
+         wait_half_period();
+         sel::write( 0 );
+         wait_half_period();
+      }
+
+      template< int n >
+      void write_and_read( 
+         const std::array< uint8_t, n > & data_out, 
+               std::array< uint8_t, n > & data_in
+      ){
+         spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
+         ::write_and_read( data_out, data_in, n );
+      }       	  
+	   
+      template< int n >
+      void write( 
+         const std::array< uint8_t, n > & data_out
+      ){
+         spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
+         ::write_and_read( data_out, nullptr, 1 );
+      }      
+ 	  
+      void write( 
+         const uint8_t data_out
+      ){
+         spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >         
+         ::write_and_read( &data_out, nullptr, 1 );
+      }      
+ 	  
+      template< int n >
+      void read( 
+               std::array< uint8_t, n > & data_in
+      ){
+         spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >         
+         ::write_and_read( nullptr, data_in, n  );
+      }       	  
+	  
+      void read( 
+               uint8_t data_in
+      ){
+         spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
+         ::write_and_read( nullptr, &data_in, 1  );
+      }       	  
+	  
+   };  
    
 }; // struct spi_bus_bb_sclk_miso_mosi

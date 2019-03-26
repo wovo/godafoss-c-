@@ -10,20 +10,17 @@
 //
 // ==========================================================================
 
-//! [[Doxygen hc595 example]]
-#include "hwlib.hpp"
+#include "godafoss.hpp"
 
-int main( void ){
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
+using spi_bus = gf::spi_bus_bb_sclk_miso_mosi<
+   target::p1_2, gf::pin_in_dummy, target::p1_0, timing >;
+using ss      = gf::invert< target::p1_1 >;
+using chip    = gf::hc595< spi_bus, ss >;
 
-   auto sclk = hwlib::target::pin_out{ 1, 2 };
-   auto mosi = hwlib::target::pin_out{ 1, 0 };
-   auto cs   = hwlib::target::pin_out{ 1, 1 };
-   
-   auto spi_bus = hwlib::spi_bus_bit_banged_sclk_mosi_miso{ 
-      sclk, mosi, hwlib::pin_in_dummy };
-   
-   auto chip = hwlib::hc595{ spi_bus, cs };
- 
-   hwlib::kitt( chip, 50 );
+int main( void ){   
+   gf::kitt< chip, timing::ms< 50 > >(); 
 }  
-//! [[Doxygen hc595 example]]
+

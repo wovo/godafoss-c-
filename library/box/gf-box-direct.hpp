@@ -45,7 +45,7 @@ struct _direct_read< T > : T {
 template< typename T >
 struct _direct_write : T {};
 
-template< is_input T >
+template< is_output T >
 struct _direct_write< T > : T {
 	
    static void write( typename T::value_type v ) {
