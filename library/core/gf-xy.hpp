@@ -40,7 +40,7 @@ public:
    constexpr xy( int_fast16_t x, int_fast16_t y ): x{ x }, y{ y }{}
    
    /// default constructor, zero's the x and y
-   constexpr xy():x{0}, y{0}{}
+   constexpr xy():x{ 0 }, y{ 0 }{}
 
    /// add two 
    constexpr xy operator+( const xy rhs ) const {

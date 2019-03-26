@@ -54,36 +54,36 @@ public:
             break;
 
          case 1 :
-            T::cursor_x = 10 * ( c - '0' );
+            T::cursor.x = 10 * ( c - '0' );
             ++goto_xy_state;
             return;
 
          case 2 :
-            T::cursor_x += c - '0' ;
+            T::cursor.x += c - '0' ;
             ++goto_xy_state;
             return;
 
          case 3 :
-            T::cursor_y = 10 * ( c - '0' );
+            T::cursor.y = 10 * ( c - '0' );
             ++goto_xy_state;
             return;
 
          case 4 :
-            T::cursor_y += c - '0' ;
+            T::cursor.y += c - '0' ;
             goto_xy_state = 0;
-            T::goto_xy( T::cursor_x, T::cursor_y );
+            T::goto_xy( T::cursor );
             return;
 
       }
 
       if( c == '\n' ){
-         T::goto_xy( 0, T::cursor_y + 1 );
+         T::goto_xy( xy( 0, T::cursor.y + 1 ) );
 
       } else if( c == '\r' ){
-         T::goto_xy( 0, T::cursor_y );
+         T::goto_xy( xy( 0, T::cursor.y ) );
 
       } else if( c == '\v' ){
-         T::goto_xy( 0, 0 );
+         T::goto_xy( xy( 0, 0 ) );
 
       } else if( c == '\f' ){
          T::clear();
@@ -92,15 +92,15 @@ public:
          goto_xy_state = 1;
 
       } else if( c == '\a' ){
-         while( T::cursor_x < T::size_x ){
+         while( T::cursor.x < T::size.x ){
 	        T::write( ' ' );
          }			
 
       } else if(
-         ( T::cursor_x >= 0 )
-         && ( T::cursor_x < T::size_x )
-         && ( T::cursor_y >= 0 )
-         && ( T::cursor_y < T::size_y )
+         ( T::cursor.x >= 0 )
+         && ( T::cursor.x < T::size.x )
+         && ( T::cursor.y >= 0 )
+         && ( T::cursor.y < T::size.y )
       ){
          T::write( c );
       }

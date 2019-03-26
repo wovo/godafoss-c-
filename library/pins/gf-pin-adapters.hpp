@@ -187,3 +187,32 @@ struct pin_oc< T > :
    box_write_filter< T >,
    box_read_filter< T >
 {};
+
+template< is_pin_in_out T >
+struct pin_oc< T > : 
+   be_pin_oc,
+   box_init_filter< T >,
+   box_write_filter< T >,
+   box_read_filter< T >
+{
+
+   static void GODAFOSS_INLINE init(){
+      T::init();
+      direct< T >::direction_set_input();
+   }
+
+   static void GODAFOSS_INLINE write( bool v ){
+       if( v ){
+          T::direction_set_input();   
+       } else {
+          T::direction_set_output();   
+          T::write( 1 );
+       }
+   }
+    
+   static void GODAFOSS_INLINE flush(){
+      T::direction_flush();
+      T::flush();
+   }       
+
+};

@@ -30,7 +30,19 @@ todo
 - mirror for ports, demo
 - servo demo with NRF
 - cout has no << flush??
-- hd44780 needs xy template parameter, use xy internally, in terminal too
-- should eg. hd44780 already be formatter<> ?
 - range adt
 - hwlib i2c aanpasen, overnemen
+
+template< typename T, T low, T high >;
+struct interval 
+   be_box
+{
+   T value;
+
+   template< typename T, T low, T high >
+   
+};
+
+dac::write( adc::read() );
+
+

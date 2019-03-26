@@ -31,10 +31,10 @@ void scrolling_text(
    auto len = _strlen( text );
    
    for(;;){
-      for( uint_fast16_t i = 0; ( i + term::size_x ) <= len; ++i ){
+      for( uint_fast16_t i = 0; ( i + term::size.x ) <= len; ++i ){
          term::clear();
-         term::goto_xy( 0 , 0 );
-         for( int_fast16_t j = 0; j < term::size_x; ++j ){
+         term::goto_xy( xy( 0 , 0 ) );
+         for( int_fast16_t j = 0; j < term::size.x; ++j ){
 			   term::write( text[ i + j ] );
 		   }
 		   //term << flush;

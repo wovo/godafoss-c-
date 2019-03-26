@@ -33,11 +33,8 @@ private:
    
 public:   
    
-   static constexpr xy_t size_x = _size_x; 
-   static constexpr xy_t size_y = _size_y;   
-   
-   static inline xy_t cursor_x; 
-   static inline xy_t cursor_y;   
+   static constexpr auto size = xy( _size_x, _size_y );     
+   static inline    xy cursor; 
    
 private:
    
@@ -45,7 +42,7 @@ private:
 
       port::write( d );      
       
-      // minumum tDBW
+      // minimum tDBW
       timing::template ns< 200 >::wait();
       
       e::write( 1 );
@@ -83,45 +80,44 @@ public:
    static void clear(){
       command( 0x01 );
       timing::template us< 5'000 >::wait();
-      goto_xy( 0, 0 );
+      goto_xy( xy( 0, 0 ));
    }   
    
-   static void goto_xy( xy_t x, xy_t y ){
+   static void goto_xy( xy target ){
 
-      if( size_y == 1 ){
+      if( size.y == 1 ){
 		  
          // 1-line LCDs have a split after the 8'th char
-         if( x < 8 ){
-            command( 0x80 + x );
+         if( target.x < 8 ){
+            command( 0x80 + target.x );
          } else {
-            command( 0x80 + 0x40 + ( x - 8 ));
+            command( 0x80 + 0x40 + ( target.x - 8 ));
          }
 		 
       } else {
-         if( size_y == 2 ){
+         if( size.y == 2 ){
             command( 
                0x80
-               + (( y > 0 ) 
+               + (( target.y > 0 ) 
                   ? 0x40 
                   : 0x00 )
-               + ( x )
+               + ( target.x )
             );
          } else {
             command( 
                0x80
-               + (( y & 0x01 )
+               + (( target.y & 0x01 )
                   ? 0x40 
                   : 0x00 )
-               + (( y & 0x02 )
+               + (( target.y & 0x02 )
                   ? 0x14 
                   : 0x00 )
-               + ( x )
+               + ( target.x )
              );              
          }
       }
 	  
-	  cursor_x = x;
-	  cursor_y = y;
+	  cursor = target;
    }
    
    static bool GODAFOSS_INLINE write_blocks(){
@@ -132,14 +128,14 @@ public:
 
    static void write( char chr ){
 
-      if( size_y == 1 ){
-         if( cursor_x == 8 ){
-            goto_xy( cursor_x, cursor_y );
+      if( size.y == 1 ){
+         if( cursor.x == 8 ){
+            goto_xy( cursor );
          }
       }   
       
       data( chr );
-	  ++cursor_x;
+	  ++cursor.x;
    }     
    
    static void init(){
@@ -162,13 +158,13 @@ public:
       write4( 0x03 );
       timing::template us< 100 >::wait();
       write4( 0x03 );
-      write4( 0x02 );     // now we are in 4 bit mode
+      write4( 0x02 );          // now we are in 4 bit mode
 
       // functional initialization
-      command( 0x28 );    // 4 bit mode, 2 lines, 5x8 font
-      command( 0x0C );    // display on, no cursor, no blink
-      clear();            // clear display, 'cursor' home
-      goto_xy( 0, 0 );    // 'cursor' home    
+      command( 0x28 );         // 4 bit mode, 2 lines, 5x8 font
+      command( 0x0C );         // display on, no cursor, no blink
+      clear();                 // clear display, 'cursor' home
+      goto_xy( xy( 0, 0 ) );   // 'cursor' home    
    }    
    
 }; // class _hd44780_rs_e_d_x_y_timing_foundation

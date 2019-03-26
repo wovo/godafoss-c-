@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// file : hwcpp-i2c.hpp
+// file : gf-i2c.hpp
 //
 // ==========================================================================   
    
@@ -41,9 +41,9 @@ concept bool is_i2c_profile(){
 
 // ========== 100 kHz
 
-struct i2c_profile_100kHz :
-   i2c_profile_root
-{
+using ns_type = uint64_t;
+
+struct i2c_profile_100kHz {
    static constexpr uint_fast64_t  f         = 100'000;
    static constexpr ns_type        t_hd_sta  = 4000;
    static constexpr ns_type        t_low     = 4700;
@@ -57,9 +57,7 @@ struct i2c_profile_100kHz :
 
 // ========== 400 kHz
       
-struct i2c_profile_400kHz :
-   i2c_profile_root
-{
+struct i2c_profile_400kHz {
    static constexpr uint_fast64_t  f         = 400'000;
    static constexpr ns_type        t_hd_sta  =  600;
    static constexpr ns_type        t_low     = 1300;
@@ -74,76 +72,62 @@ struct i2c_profile_400kHz :
       
 // ==========================================================================
 //
-// i2c bus
+// bit-banged implementation
 //
 // ==========================================================================  
 
-struct i2c_bus_marker :
-   not_instantiable
-{ 
-   static constexpr bool is_i2c_bus = true;
-};
-
-template< typename T >
-concept bool is_i2c_bus(){
-   return T::is_i2c_bus;
-}
-
-// ========== bit-banged implementation
-
 template< 
-   can_pin_oc scl_arg, 
-   can_pin_oc sda_arg, 
-   is_waiting timing, 
-   is_i2c_profile _profile = i2c_profile_100kHz
+   can_pin_oc  scl_arg, 
+   can_pin_oc  sda_arg, 
+   typename    timing, 
+   typename _profile = i2c_profile_100kHz
 >
-struct i2c_bus_bb_scl_sda :
-   i2c_bus_marker
-{
+struct i2c_bus_bb_scl_sda {
    using profile  = _profile;
+   
+   using bus = i2c_bus_bb_scl_sda< 
+      scl_arg, sda_arg, timing, _profile >;
 
-   private:
-
-   using scl      = pin_oc< scl_arg >;
-   using sda      = pin_oc< sda_arg >; 
+   using scl      = direct< pin_oc< scl_arg > >;
+   using sda      = direct< pin_oc< sda_arg > >; 
    
    static void write_bit( bool x ){
-      scl::set( 0 );
+      scl::write( 0 );
       timing::template ns< profile::t_low - profile::t_su_dat >::wait();
-      sda::set( x );
+      sda::write( x );
       timing::template ns< profile::t_su_dat >::wait();
-      scl::set( 1 ); 
+      scl::write( 1 ); 
       timing::template ns< profile::t_high >::wait();
    }
    
    static bool read_bit(){         
-      scl::set( 0 );
+      scl::write( 0 );
       timing::template ns< profile::t_low - profile::t_su_dat >::wait();         
-      sda::set( 1 );
+      sda::write( 1 );
       timing::template ns< profile::t_su_dat >::wait();         
-      scl::set( 1 );
-      bool result = sda::get();    
+      scl::write( 1 );
+      bool result = sda::read();    
       timing::template ns< profile::t_high >::wait();
       return result;
    }       
      
    static void write_start(){
-      sda::set( 1 );
-      scl::set( 1 );
+      sda::write( 1 );
+      scl::write( 1 );
       timing::template ns< profile::t_su_sta >::wait();
-      sda::set( 0 );
+      sda::write( 0 );
       timing::template ns< profile::t_hd_sta >::wait();
-      scl::set( 0 );
+      scl::write( 0 );
    }
 
    static void write_stop(){
-      scl::set( 0 );
+      scl::write( 0 );
       timing::template ns< profile::t_low - profile::t_su_dat >::wait();         
-      sda::set( 0 );
+      sda::write( 0 );
       timing::template ns< profile::t_su_dat >::wait(); 
-      scl::set( 1 );
+      scl::write( 1 );
       timing::template ns< profile::t_su_sto >::wait();   
-      sda::set( 1 );
+      sda::write( 1 );
       timing::template ns< profile::t_buf >::wait();
    }
        
@@ -184,144 +168,66 @@ public:
       scl::init();
       sda::init();
       
-      scl::set( 1 );
-      sda::set( 1 );
+      scl::write( 1 );
+      sda::write( 1 );
    }
-   
-   static void write( uint8_t address, const uint8_t data[], int n ){
-      write_start();
-      write_byte( address << 1 );
-      for( int i = 0; i < n; ++i ){
+
+   struct write_transaction {
+
+      write_transaction( uint8_t address ){
+         bus::write_start();
+         bus::write_byte( address << 1 );      
+      }
+
+      ~write_transaction(){
+         bus::read_ack();
+         bus::write_stop();
+      }
+
+      void write( const uint8_t data[], int n ){
+         for( int i = 0; i < n; ++i ){
+            bus::read_ack();
+            bus::write_byte( data[ i ] );
+         }               
+      }  
+
+      void write( const uint8_t data ){
+         write( &data, 1 );             
+      }  
+
+   };
+
+   struct read_transaction {
+
+      bool first;
+
+      read_transaction( uint8_t address ): 
+         first( true )
+      {
+         write_start();
+         write_byte( ( address << 1 ) | 0x01 );    
          read_ack();
-         write_byte( data[ i ] );
-      }               
-      read_ack();
-      write_stop();
-   }   
-   
-   template< size_t n >
-   static void write( uint8_t address, const std::array< uint8_t, n > & data ){
-      write_start();
-      write_byte( address << 1 );
-      for( int i = 0; i < n; ++i ){
-         read_ack();
-         write_byte( data[ i ] );
-      }               
-      read_ack();
-      write_stop();
-   }           
+      }
 
-/*
-template< _provides_uint8 T >
-static void write_one_element( T );
+      ~read_transaction(){
+         write_stop();
+      }
 
-static void write_one_element( uint8_t x ){
-   for( int i = 0; i < 8; ++i ){
-      read_ack();
-      write_byte( i );
-   }    
-}
-
-template< is_uint8_iterator T >
-static void write_one_element( T a ){
-   for( const auto x : a ){
-      write_element( x );
-   }
-}
-
-template< _provides_uint8 T >
-static void write_element( T a ){
-   write_one_element( a );
-}
-
-template< _provides_uint8 T, _provides_uint8... Ts >
-static void write_element( T a, Ts... as ){
-   write_one_element( a );
-   write_element( as... );   
-}
-
-   template< _provides_uint8... Ts >
-   static void write( uint8_t address, Ts... items ){
-      write_start();
-      write_byte( address << 1 );
-      write_element( items... );           
-      read_ack();
-      write_stop();
-   }           
-*/
-   
-   static void read( uint8_t address, uint8_t data[], int n ){
-      write_start();
-      write_byte( ( address << 1 ) | 0x01 );    
-      read_ack();
-      for( int i = 0; i < n; ){
-         data[ i ] = read_byte();
-         if( ++i < n ){
+      void read( uint8_t data[], int n ){
+         if( ! first ){
             write_ack();
-         }            
-      }               
-      write_stop();
-   }      
-	  
-   template< size_t n >
-   static void read( uint8_t address, const std::array< uint8_t, n > & data ){
-      write_start();
-      write_byte( ( address << 1 ) | 0x01 );    
-      read_ack();
-      for( int i = 0; i < n; ){
-         data[ i ] = read_byte();
-         if( ++i < n ){
-            write_ack();
-         }            
-      }               
-      write_stop();
-   }      
+         }
+         first = false;
+         for( int i = 0; i < n; ){
+            data[ i ] = read_byte();
+         }             
+      }      
+
+      void read( uint8_t & data ){
+         read( & data, 1 );            
+      }      
+
+   };
+
 	  
 };// i2c_bus_bb_scl_sda
-
-// ==========================================================================
-//
-// i2c channel
-//
-// ==========================================================================  
-/*
-struct i2c_channel_marker :
-   not_instantiable
-{ 
-   static constexpr bool is_i2c_channel = true;
-};
-
-template< typename T >
-concept bool is_i2c_channel(){
-   return T::is_i2c_channel;
-}
-
-// ========== channel constructor
-
-template< 
-   is_i2c_bus      _bus, 
-   uint8_t         _address
->
-struct i2c_channel :
-   i2c_channel_marker
-{
-private:
-
-   static auto constexpr address = _address;
-   using bus                     = _bus;
-   using profile                 = typename _bus::profile;
-
-   static void init(){
-      bus::init();
-   }
-
-   static void write( const uint8_t data[], int n ){
-      bus::write( data, n );
-   }           
-   
-   static void read( uint8_t data[], int n ){
-      bus::read( data, n );
-   } 
-   
-}; // i2c_channel
-*/

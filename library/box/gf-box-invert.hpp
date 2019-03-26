@@ -42,7 +42,7 @@ struct _invert_read< T > : T {
 template< typename T >
 struct _invert_write : T {};
 
-template< is_input T >
+template< is_output T >
 struct _invert_write< T > : T {
    static void write( typename T::value_type v ) {
       T::write( T::invert( v ));

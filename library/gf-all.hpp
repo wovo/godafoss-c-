@@ -145,7 +145,7 @@ namespace godafoss {
 #include "timing/gf-slow-down.hpp"
 
 #include "core/gf-spi.hpp"
-//#include "core/gf-i2c.hpp"
+#include "core/gf-i2c.hpp"
 
 #include "char-io/gf-uart.hpp"
 #include "char-io/gf-ostream.hpp"
@@ -157,7 +157,7 @@ namespace godafoss {
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"
 #include "chips/gf-hc595.hpp"
-//#include "chips/gf-pcf8574.hpp"
+#include "chips/gf-pcf8574.hpp"
 //#include "chips/gf-pcf8591.hpp"
 //#include "chips/gf-nrf24.hpp"
 
