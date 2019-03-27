@@ -1,0 +1,6 @@
+- embedded
+- my embedded
+- C/C++
+- features to avoid
+- dependency injection, #define, identifuers, objects, classes
+- abstractions: pins, ports, timing

@@ -15,12 +15,12 @@
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
-using adc     = target::a0;
+using adc     = target::adc0;
 
-using lcd = godafoss::hd44780_rs_e_d_x_y_timing< 
+using lcd = gf::hd44780_rs_e_d_x_y_timing< 
    target::d8,
    target::d9,
-   godafoss::port_out<
+   gf::port_out<
       target::d4,
       target::d5,
       target::d6,
@@ -28,7 +28,7 @@ using lcd = godafoss::hd44780_rs_e_d_x_y_timing<
    16, 2,
    timing >; 
    
-using bl = godafoss::direct< godafoss::pin_out< target::d10 > >;   
+using bl = gf::direct< gf::pin_out< target::d10 > >;   
 
 int main( void ){  
    gf::ostream< gf::formatter< lcd > > cout;     

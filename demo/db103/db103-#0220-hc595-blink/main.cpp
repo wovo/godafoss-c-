@@ -15,11 +15,11 @@
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
-using spi_bus = gf::spi_bus_bb_sclk_mosi_miso<
-   target::p1_2, target::p1_0, gf::pin_dummy, timing >;
-using chip    =  gf:hc595< spi_bus, gf::invert< target::p1_1 > >;
+using spi_bus = gf::spi_bus_bb_sclk_miso_mosi<
+   target::p1_2, gf::pin_in_dummy, target::p1_0, timing >;
+using chip    = gf::hc595< spi_bus, gf::invert< target::p1_1 > >;
 using led     = chip::p2;
 
 int main( void ){
-   hwlib::blink( chip.p0 );
+   gf::blink< led, timing::ms< 200 >  >();
 }  

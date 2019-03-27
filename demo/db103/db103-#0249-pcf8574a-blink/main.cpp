@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// Hello world on an Arduino Uno
+// kitt on 8 LEDs on a HC595 connected to a DB103 board (LPC1114)
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -15,24 +15,12 @@
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
-
-using i2c_bus = gf::i2c_bus_bb_scl_sda< target::a0, target::a1, timing >;
+using i2c_bus = gf::i2c_bus_bb_scl_sda<
+   target::scl, target::sda, timing >;
 using chip    = gf::pcf8574a< i2c_bus >;
-using lcd     = gf::hd44780_rs_e_d_x_y_timing< 
-   chip::p0,
-   chip::p2,
-   gf::port_out<
-      chip::p4,
-      chip::p5,
-      chip::p6,
-      chip::p7 >,
-   16, 2,
-   timing >; 
+using led     = chip::p2;
 
 int main( void ){
-   gf::direct< chip::p1 >::write( 0 );
-   gf::ostream< gf::formatter< lcd > > cout;
-   cout 
-      << "\fHello world!"
-      << "\n=== 2nd line ===";
-}
+   gf::blink< led, timing::ms< 200 >  >();
+}  
+

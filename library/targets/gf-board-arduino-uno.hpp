@@ -19,7 +19,7 @@ struct target_arduino_uno :
 
    #define make_pin_in_out( NAME, PORT, PIN )                   \
       using NAME = typename chip::                              \
-	     template _pin_in_out< chip::_port::PORT, PIN >;         \
+	     template _pin_in_out< chip::_port::PORT, PIN >;        \
    
    #define make_pin_adc( NAME, PIN )                            \
       using NAME = typename chip:: template _pin_adc< PIN >;    \
@@ -46,12 +46,19 @@ struct target_arduino_uno :
    make_pin_in_out(   d18,  c,  4 );
    make_pin_in_out(   d19,  c,  5 );
    
-   make_pin_adc(    a0,  0 );
-   make_pin_adc(    a1,  1 );
-   make_pin_adc(    a2,  2 );
-   make_pin_adc(    a3,  3 );
-   make_pin_adc(    a4,  4 );
-   make_pin_adc(    a5,  4 );
+   make_pin_in_out(    a0,  c,  0 );
+   make_pin_in_out(    a1,  c,  1 );
+   make_pin_in_out(    a2,  c,  2 );
+   make_pin_in_out(    a3,  c,  3 );
+   make_pin_in_out(    a4,  c,  4 );
+   make_pin_in_out(    a5,  c,  5 ); 
+   
+   make_pin_adc(    adc0,  0 );
+   make_pin_adc(    adc1,  1 );
+   make_pin_adc(    adc2,  2 );
+   make_pin_adc(    adc3,  3 );
+   make_pin_adc(    adc4,  4 );
+   make_pin_adc(    adc5,  4 );
    
    make_pin_in_out(  _scl,  c,  5 );
    make_pin_in_out(  _sda,  c,  4 );

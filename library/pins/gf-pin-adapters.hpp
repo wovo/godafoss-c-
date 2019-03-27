@@ -206,7 +206,7 @@ struct pin_oc< T > :
           T::direction_set_input();   
        } else {
           T::direction_set_output();   
-          T::write( 1 );
+          T::write( 0 );
        }
    }
     

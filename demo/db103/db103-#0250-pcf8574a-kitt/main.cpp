@@ -19,7 +19,7 @@ using i2c_bus = gf::i2c_bus_bb_scl_sda<
    target::scl, target::sda, timing >;
 using chip    = gf::pcf8574a< i2c_bus >;
 
-int main( void ){   
-   gf::kitt< chip, timing::ms< 50 > >(); 
+int main( void ){ 
+   gf::kitt< gf::invert< chip >, timing::ms< 50 > >(); 
 }  
 

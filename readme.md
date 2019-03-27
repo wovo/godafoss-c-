@@ -27,6 +27,7 @@ naming and architecture
 - avoid abbreviations, _t, etc. (gpio?)
 
 todo
+- 8574 LCD
 - mirror for ports, demo
 - servo demo with NRF
 - cout has no << flush??

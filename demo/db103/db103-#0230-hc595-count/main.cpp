@@ -17,16 +17,9 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using spi_bus = gf::spi_bus_bb_sclk_miso_mosi<
    target::p1_2, gf::pin_in_dummy, target::p1_0, timing >;
-using chip    =  gf::direct< gf::hc595< spi_bus, gf::invert< target::p1_1 > > >;
+using chip    =  gf::hc595< spi_bus, gf::invert< target::p1_1 > >;
 
 int main( void ){
-   chip::init();
-   timing::init();
-   for(;;){
-      for( uint_fast16_t i = 0; i < 256; ++i ){
-          chip::write( i );
-          timing::ms< 20 >::wait();
-      }
-   }
+   gf::blink< chip.p1 >();
 }  
 

@@ -117,6 +117,8 @@ struct _pin_in_out :
       
    static void GODAFOSS_INLINE refresh(){}
    
+   static void GODAFOSS_INLINE direction_flush(){}
+      
 };
 
 
