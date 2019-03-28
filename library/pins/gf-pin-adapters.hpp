@@ -40,8 +40,9 @@ concept bool can_pin_in = requires {
 // quote ''can_pin_out'' );
 template< typename T >
 concept bool can_pin_out = requires {
-      is_pin_out< T > 
-   || is_pin_oc< T >;
+     is_pin_out< T > 
+  || is_pin_in_out< T > 
+  || is_pin_oc< T >;
 };
 
 // quote ''can_pin_oc'' );
@@ -100,7 +101,7 @@ struct pin_in_out< T > :
 //
 // ==========================================================================
 
-template< typename T > struct pin_out;
+template< can_pin_out T > struct pin_out;
 
 template< is_pin_in_out T >
 struct pin_out< T > : 
