@@ -154,12 +154,18 @@ namespace godafoss {
 #include "char-io/gf-terminal.hpp"
 #include "char-io/gf-terminal-demos.hpp"
 
+//#include "graphics/gf-color.hpp"
+//#include "graphics/gf-window.hpp"
+//#include "graphics/gf-drawables.hpp"
+//#include "graphics/gf-window-demos.hpp"
+
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"
 #include "chips/gf-hc595.hpp"
 #include "chips/gf-pcf8574.hpp"
 //#include "chips/gf-pcf8591.hpp"
-//#include "chips/gf-nrf24.hpp"
+#include "chips/gf-ssd1306.hpp"
+#include "chips/gf-nrf24.hpp"
 
 } // namespace godafoss
 

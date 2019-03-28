@@ -62,11 +62,18 @@ HEADERS           += core/gf-xy.hpp
 HEADERS           += char-io/gf-terminal.hpp
 HEADERS           += char-io/gf-terminal-demos.hpp
 
+HEADERS           += graphics/gf-color.hpp
+HEADERS           += graphics/gf-window.hpp
+HEADERS           += graphics/gf-drawables.hpp
+HEADERS           += graphics/gf-window-demos.hpp
+
+
 HEADERS           += chips/gf-servo.hpp
 HEADERS           += chips/gf-hd44780.hpp
 HEADERS           += chips/gf-hc595.hpp
 HEADERS           += chips/gf-pcf8574.hpp
 HEADERS           += chips/gf-pcf8591.hpp
+HEADERS           += chips/gf-ssd1306.hpp
 HEADERS           += chips/gf-nrf24.hpp
 
 HEADERS           += targets/gf-chip-atmega328.hpp
