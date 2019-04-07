@@ -11,7 +11,7 @@
 //
 // ==========================================================================  
 
-template< is_i2c_bus bus, uint_fast8_t address = 0 >
+template< typename bus, uint_fast8_t address = 0 >
 struct pcf8591 :
    _port_oc_buffer_root< 8 >
 {

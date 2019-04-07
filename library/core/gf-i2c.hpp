@@ -80,7 +80,7 @@ template<
    can_pin_oc  scl_arg, 
    can_pin_oc  sda_arg, 
    typename    timing, 
-   typename _profile = i2c_profile_100kHz
+   typename    _profile = i2c_profile_100kHz
 >
 struct i2c_bus_bb_scl_sda {
    using profile  = _profile;

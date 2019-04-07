@@ -194,7 +194,6 @@ public:
     
 // configure a pin as ADC
 static uint32_t configure_as_adc( 
-   uint32_t port, 
    uint32_t pin 
 ){ 
  
@@ -204,7 +203,7 @@ static uint32_t configure_as_adc(
       // enable A/D power
    LPC_SYSCON->PDRUNCFG &= ~( 1 << 4 );      
 
-   switch( ( port << 8 ) | pin ){
+   switch( pin ){
       case 0x000B: pin_ad_conf( &LPC_IOCON->R_PIO0_11,    0x02 ); return 0;
       
       case 0x0100: pin_ad_conf( &LPC_IOCON->R_PIO1_0,     0x02 ); return 1;
@@ -212,10 +211,108 @@ static uint32_t configure_as_adc(
       case 0x0102: pin_ad_conf( &LPC_IOCON->R_PIO1_2,     0x02 ); return 3;
       case 0x0103: pin_ad_conf( &LPC_IOCON->SWDIO_PIO1_3, 0x02 ); return 4;
       case 0x0104: pin_ad_conf( &LPC_IOCON->PIO1_4,       0x01 ); return 5;
+      default: return 0;
         
       //default: HWLIB_PANIC_WITH_LOCATION;
    }          
 }    
+  
+template< uint_fast64_t pin >
+struct pin_adc :
+   be_adc< 10 >
+{
+   
+   static inline int channel;
+	
+   static void init(){
+      godafoss::chip_lpc1114< clock >::init();
+      channel = configure_as_adc( pin );
+   }
+
+   static uint_fast16_t read(){
+      
+      // configure the A/D for the pin
+      LPC_ADC->CR = ( 0x01 << channel ) | ( 12 << 8 );
+     
+      // start the conversion
+      LPC_ADC->CR |= ( 0x01 << 24 );
+   
+      // wait for the conversion to complete
+      while( ( LPC_ADC->GDR & ( 1 << 31 )) == 0 );
+     
+      // return the A/D result
+      return ( LPC_ADC->GDR >> 6 ) & 0x3FF;         
+	   
+   }
+   
+   static void GODAFOSS_INLINE refresh(){}
+   
+};   
+
+
+// ==========================================================================
+//
+// UART
+//
+// from https://github.com/zinahe/lpc1114/blob/master/UART.c
+//
+// ==========================================================================
+
+#include "targets/gf-chip-lpc1114.inc"
+
+template< uint64_t baudrate = GODAFOSS_BAUDRATE >
+struct uart :
+   be_uart< uart< baudrate > >
+{
+      uint64_t UBRR_VALUE = ((( clock / ( GODAFOSS_BAUDRATE * 16UL ))) - 1 );
+	
+   static void init(){   
+	   
+	// Enable IOCON block
+	SYSAHBCLKCTRL |= (1 << SYSAHBCLKCTRL_IOCON_BIT);
+	
+	// Configure IO Mode and Function of pins 6 and 7 for UART use. FUNC bits (2:0) = 0x01 (RX/TX) respectively.
+	IOCON_PIO1_6 = 0x01;		// RX
+	IOCON_PIO1_7 = 0x01;		// TX
+	
+	// Enable power to UART block
+	SYSAHBCLKCTRL |= (1 << SYSAHBCLKCTRL_UART_BIT);
+	
+	// Set transmission parameters to 8N1 (8 data bits, NO partity, 1 stop bit, DLAB=1)
+	UART_LCR = (UART_LCR_WORDLENGTH_08 << UART_LCR_WORDLENGTH_BIT) | (1 << UART_LCR_DLAB_BIT);
+	
+	// Set baud rate to 115200 kb/s @ UART_CLK of 12Mhz  (DLM = 0, DLL = 4, DIVADDVAL = 5, and MULVAL = 8)
+	UART_DLM = 0x00;		// Default
+	UART_DLL = 0x04;
+	UART_FDR = 0x85;		// FDR = (MULVAL << 4 ) | DIVADDVAL
+	
+	// Turn off DLAB
+	UART_LCR ^= (1 << UART_LCR_DLAB_BIT);
+	
+	// Enable UART_PCKL divider to supply clock to the baud generator
+	UARTCLKDIV = 0x01;
+	
+	// Enable UART Interrupt (NVIC_SETENA is a set only register. No need for a RMW operation)
+	NVIC_SETENA = (1 << NVIC_UART_BIT);
+   }	
+
+   static bool GODAFOSS_INLINE read_blocks(){
+      return (UART_LSR & (1 << UART_LSR_RDA_BIT)) == 0;
+   }
+
+   static char GODAFOSS_INLINE read_unchecked(){
+      return UART_RBR;
+   }
+
+   static bool GODAFOSS_INLINE write_blocks(){
+      return (UART_LSR & (1 << UART_LSR_THRE_BIT)) == 0;
+   }
+
+   static void GODAFOSS_INLINE write_unchecked( char c ){
+      UART_THR = c;
+   }   
+   
+};
 
 
 // ==========================================================================

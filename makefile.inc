@@ -24,6 +24,8 @@ SEARCH            += $(GODAFOSS)/library
 
 # core files
 
+HEADERS           += godafoss.hpp
+HEADERS           += gf-all.hpp
 HEADERS           += core/gf-basics.hpp
 HEADERS           += core/gf-ints.hpp
 

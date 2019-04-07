@@ -39,6 +39,12 @@ using chip = chip_lpc1114< clock >;
    make_pin_in_out(  p1_8,  1,  8 );
    make_pin_in_out(  p1_9,  1,  9 );
    
+   make_pin_adc( adc1_0, 0x0100 );
+   make_pin_adc( adc1_1, 0x0101 );
+   make_pin_adc( adc1_2, 0x0102 );
+   make_pin_adc( adc1_3, 0x0103 );
+   make_pin_adc( adc1_4, 0x0104 );   
+   
    using waiting  = typename chip::waiting;	  
    // using clocking = typename chip::clocking;	  
    using timing = waiting;  

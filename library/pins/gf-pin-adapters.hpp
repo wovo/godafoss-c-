@@ -101,7 +101,7 @@ struct pin_in_out< T > :
 //
 // ==========================================================================
 
-template< can_pin_out T > struct pin_out;
+template< typename T > struct pin_out;
 
 template< is_pin_in_out T >
 struct pin_out< T > : 

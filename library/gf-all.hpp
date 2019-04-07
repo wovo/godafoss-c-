@@ -79,7 +79,7 @@
 
 #pragma GCC diagnostic error "-Wsuggest-attribute=pure"
 #pragma GCC diagnostic error "-Wsuggest-attribute=const"
-#pragma GCC diagnostic error "-Wsuggest-attribute=noreturn"
+//#pragma GCC diagnostic error "-Wsuggest-attribute=noreturn"
 #pragma GCC diagnostic error "-Wsuggest-attribute=format"
 #pragma GCC diagnostic error "-Wmissing-format-attribute"
 #pragma GCC diagnostic error "-Wsuggest-final-types"
@@ -164,7 +164,7 @@ namespace godafoss {
 #include "chips/gf-hc595.hpp"
 #include "chips/gf-pcf8574.hpp"
 //#include "chips/gf-pcf8591.hpp"
-#include "chips/gf-ssd1306.hpp"
+//#include "chips/gf-ssd1306.hpp"
 #include "chips/gf-nrf24.hpp"
 
 } // namespace godafoss
