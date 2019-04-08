@@ -12,22 +12,30 @@
 
 #include "godafoss.hpp"
 
-void pin_set( bool x ){ 
-   if( x ){
-      PORTB &= ~( 0b01 << 5 );
-   } else {
-      PORTB |= ( 0b01 << 5 );
+class pin_b5 {
+public:
+   static void init(){
+      DDRB |= ( 0b01 << 5 );      
    }
-}
    
+   static void set( bool v ){ 
+      if( v ){
+         PORTB &= ~( 0b01 << 5 );
+      } else {
+         PORTB |= ( 0b01 << 5 );
+      }
+   }   
+};
+  
+template< typename P >  
 void toggle(){
+   P::init();
    for(;;){
-      pin_set( 1 );
-      pin_set( 0 );
+      P::set( 1 );
+      P::set( 0 );
    }
 }
 
 int main( void ){
-   DDRB |= ( 0b01 << 5 );
-   toggle();
+   toggle< pin_b5 >();
 }

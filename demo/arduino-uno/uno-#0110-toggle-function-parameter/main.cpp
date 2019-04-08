@@ -12,7 +12,7 @@
 
 #include "godafoss.hpp"
 
-void pin_set( bool x ){ 
+void pin_set( bool x ) { 
    if( x ){
       PORTB &= ~( 0b01 << 5 );
    } else {
@@ -20,14 +20,14 @@ void pin_set( bool x ){
    }
 }
    
-void toggle(){
+void toggle( void(*f)(bool) ){
    for(;;){
-      pin_set( 1 );
-      pin_set( 0 );
+      f( 1 );
+      f( 0 );
    }
 }
 
 int main( void ){
    DDRB |= ( 0b01 << 5 );
-   toggle();
+   toggle( pin_set );
 }

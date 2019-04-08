@@ -76,7 +76,7 @@ HEADERS           += chips/gf-hc595.hpp
 HEADERS           += chips/gf-pcf8574.hpp
 HEADERS           += chips/gf-pcf8591.hpp
 HEADERS           += chips/gf-ssd1306.hpp
-HEADERS           += chips/gf-nrf24.hpp
+HEADERS           += chips/gf-nrf24l01.hpp
 
 HEADERS           += targets/gf-chip-atmega328.hpp
 HEADERS           += targets/gf-chip-lpc1114.hpp

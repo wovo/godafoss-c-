@@ -12,22 +12,34 @@
 
 #include "godafoss.hpp"
 
-__attribute__((always_inline)) void pin_set( bool x ) { 
-   if( x ){
-      PORTB &= ~( 0b01 << 5 );
-   } else {
-      PORTB |= ( 0b01 << 5 );
+class pin {
+public:
+   virtual void set( bool v ) = 0;
+};
+
+class pin_b5 : public pin {
+public:
+   pin_b5(){
+      DDRB |= ( 0b01 << 5 );      
    }
-}
    
-void toggle( void(*f)(bool) ){
+   void set( bool v ) override { 
+      if( v ){
+         PORTB &= ~( 0b01 << 5 );
+      } else {
+         PORTB |= ( 0b01 << 5 );
+      }
+   }   
+};
+  
+void toggle( pin & p ){
    for(;;){
-      f( 1 );
-      f( 0 );
+      p.set( 1 );
+      p.set( 0 );
    }
 }
 
 int main( void ){
-   DDRB |= ( 0b01 << 5 );
-   toggle( pin_set );
+   pin_b5 p;
+   toggle( p );
 }
