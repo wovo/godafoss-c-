@@ -94,6 +94,7 @@ struct port_in_out< T > :
    box_read_filter< T >
 {};   
 
+/* wovo
 template< is_port_oc T >
 struct pin_in_out< T > : 
    be_pin_out,
@@ -114,6 +115,7 @@ struct pin_in_out< T > :
    }
 
 };
+*/
 
 // ==========================================================================
 

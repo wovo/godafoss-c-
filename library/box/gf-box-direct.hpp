@@ -96,4 +96,4 @@ template< can_direct T >
 struct direct : 
    _direct_read< 
       _direct_write< 
-	     _direct_direction < T >>> {};
+         _direct_direction < T >>> {};

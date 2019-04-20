@@ -104,7 +104,7 @@ struct ssd1306_i2c : ssd1306_commands {
       bus::read_ack();
 	  
       for( const auto d : data ){
-         write_byte( s );
+         write_byte( d );
          read_ack();
       }               
  
@@ -169,4 +169,7 @@ struct glcd_ssd1306 {
   
 
 }; // class glcd_oled
+
+template< typename bus, int address = 0x30 >
+using oled = glcd_ssd1306< ssd1306_i2c< bus, address >>; 
 

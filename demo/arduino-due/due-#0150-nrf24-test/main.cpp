@@ -34,8 +34,8 @@ using nrf2 = gf::nrf24l01_spi_ce_csn<
 #define GODAFOSS_TEST_EQUAL( c, a, b ) \
    gf_equal( __FILE__, __LINE__, c, #a, #b, a, b );
 
-int equal_calls_count;	
-int equal_failures_count;
+int equal_calls_count = 0;	
+int equal_failures_count = 0;
 
 template< typename ostream, typename A, typename B >
 void gf_equal( 
@@ -50,7 +50,7 @@ void gf_equal(
       cout 
          << f << ":" << gf::dec << n 
          << " check failed \n" 
-         << "   HWLIB_TEST_EQUAL( " << ta << " , " << tb << " )\n"
+         << "   GODAFOSS_TEST_EQUAL( " << ta << " , " << tb << " )\n"
          << "   left  \"" << ta << "\" = " << a << "\n"
          << "   right \"" << tb << "\" = " << b << "\n\n";
    }

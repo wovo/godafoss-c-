@@ -14,7 +14,7 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using timing  = target::timing;
+using timing  = target::clocking;  // <======
 
 using lcd = godafoss::hd44780_rs_e_d_x_y_timing< 
    target::d8,
@@ -33,14 +33,20 @@ using bl = godafoss::direct< godafoss::pin_out< target::d10 > >;
 int main( void ){
     gf::ostream< gf::formatter< lcd > > cout;   
      
+    timing::init();     
     bl::init(); 
     bl::write( 1 );
     
+    cout << "\f";
+    auto t1 = timing::now_ticks();
+    cout << 'x';
+    // timing::us< 800 >::wait();
+    auto t2 = timing::now_ticks();
+    
     cout 
-       << "\fHello world4!        | this is only for a"
-       << "\nnice to meet you    | 40 col. display." 
-       << "\t0002line 3 ============X"
-       << "\nline 4 ============X"
-       ;// << hwlib::flush;
+       << "\fwrite 1 char = \n"
+       << (int) ((t2 - t1) / 16 )
+       << " us";
+
 
 }

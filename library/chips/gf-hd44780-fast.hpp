@@ -16,24 +16,20 @@
 // ==========================================================================
 
 template< 
-   can_pin_out   _rs,
-   can_pin_out   _e,
-   can_port_out  _port,
-   uint32_t      _size_x,
-   uint32_t      _size_y,
+   can_pin_out   rs,
+   can_pin_out   e,
+   can_port_out  port,
+   uint32_t      size_x,
+   uint32_t      size_y,
    typename      timing
 > struct _hd44780_rs_e_d_x_y_timing {
 private:	
-	
-   using rs      = pin_out< _rs >;
-   using e       = pin_out< _e >;
-   using port    = port_out< _port >;  
    
    using xy_t    = uint_fast8_t;
    
 public:   
    
-   static constexpr auto size = xy( _size_x, _size_y );     
+   static constexpr auto size = xy( size_x, size_y );     
    static inline    xy cursor; 
    
 private:
@@ -47,6 +43,7 @@ private:
       
       e::write( 1 );
 
+      rs::flush();
       port::flush();
       e::flush();
       
@@ -61,7 +58,7 @@ private:
    }
 
    static void write8( bool is_data, uint_fast8_t d ){
-      direct< rs >::write( is_data );
+      rs::write( is_data );
       write4( d >> 4 );
       write4( d );
       

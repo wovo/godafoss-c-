@@ -25,14 +25,14 @@ struct pcf8574 :
      
    static void GODAFOSS_INLINE write( uint_fast8_t d ){
       buffer = d;
-	   dirty = true;
+      dirty = true;
    }
    
    static void GODAFOSS_INLINE flush(){
       if( dirty ){	 	   
          typename bus::write_transaction( address + base ).write( buffer );
-		 dirty = false;
-      }			 
+         dirty = false;
+      }	
    }
 
    static void GODAFOSS_INLINE refresh(){	 

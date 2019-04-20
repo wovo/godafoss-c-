@@ -34,7 +34,7 @@ struct be_pin_in_out :
    be_item< bool >, 
    be_simplex< bool > 
 {
-   static const bool is_pin_in_out = true;	
+   static constexpr bool is_pin_in_out  = true;	
 };
 
 
@@ -56,7 +56,7 @@ struct be_pin_out :
    be_item< bool >, 
    be_output< bool >
 {
-   static const bool is_pin_out = true;	
+   static constexpr bool is_pin_out     = true;	
 };
 
 
@@ -78,7 +78,7 @@ struct be_pin_in :
    be_item< bool >, 
    be_input< bool > 
 {
-   static const bool is_pin_in = true;	
+   static constexpr bool is_pin_in      = true;	
 };
 
 
@@ -100,5 +100,5 @@ struct be_pin_oc :
    be_item< bool >, 
    be_duplex< bool > 
 {
-   static const bool is_pin_oc = true;	
+   static constexpr bool is_pin_oc      = true;	
 };

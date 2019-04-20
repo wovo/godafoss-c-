@@ -23,7 +23,7 @@ using leds_a = gf::port_out<
    target::p0_6, 
    target::p0_7, 
    target::p1_0, 
-   target::p1_1, 
+   target::p1_1
 >;   
 
 using leds_b = gf::port_out<
@@ -35,12 +35,13 @@ using leds_b = gf::port_out<
    target::p1_9
 >;   
 
-using leds = gf:port_out<
+using leds = gf::port_out<
    leds_a,
    leds_b
->   
+>;   
 
 int main( void ){     
-   gf::kitt< leds, timing::ms< 50 > >();  
+   // doesn't work yet: port_out from 2 port_out's
+   // gf::kitt< leds, timing::ms< 50 > >();  
 }
 

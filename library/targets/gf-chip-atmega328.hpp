@@ -413,7 +413,7 @@ struct clocking :
       return chip::now_ticks();
    }
 
-   static void GODAFOSS_NO_INLINE  wait_ticks_function( ticks_type n ){     
+   static void GODAFOSS_NO_INLINE wait_ticks_function( ticks_type n ){     
       ticks_type t = now_ticks() + n;
       while( now_ticks() < t ){}
    } 

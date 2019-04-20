@@ -153,7 +153,7 @@ struct nrf24l01_spi_ce_csn {
    static const uint8_t fifo_status_rx_empty  = 0x01;
    
    // quote ##read-write 1
-   static uint8_t read( const reg r ){
+   static uint_fast8_t read( const reg r ){
       auto t = bus_transfer();
       t.write( compose( cmd::read_reg, r )  );
       return t.read_byte();
@@ -219,7 +219,7 @@ struct nrf24l01_spi_ce_csn {
    }
 
    // quote ##pipe-autoack 1
-   static void pipe_autoack( const uint8_t pipe, const bool enabled ){
+   static void pipe_autoack( const uint_fast8_t pipe, const bool enabled ){
       if( pipe <= 5 ){
          uint8_t val = read( reg::en_aa ); 
          if( enabled ){
@@ -239,7 +239,7 @@ struct nrf24l01_spi_ce_csn {
    }
 
    // quote ##pipe-enable 1
-   static void pipe_enable( const uint8_t pipe, const bool enabled ){
+   static void pipe_enable( const uint_fast8_t pipe, const bool enabled ){
       if( pipe <= 5 ){	   
       uint8_t val = read( reg::en_rxaddr ); 
          if( enabled ){

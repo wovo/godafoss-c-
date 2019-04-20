@@ -24,7 +24,7 @@ using uart    = target::uart<>;
 int main(){
    timing::init();
    gf::ostream< gf::formatter< uart > > cout;
-   #timing::ms< 2'000>::wait();
+   timing::ms< 2'000>::wait();
    
    cout << "Hello world\n";
 }   

@@ -1,1 +1,1 @@
-bmptk-make renumber
+bmptk-make -f makefile.link renumber

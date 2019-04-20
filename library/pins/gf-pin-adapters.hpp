@@ -24,33 +24,29 @@
 
 // quote ''can_pin_in_out'' );
 template< typename T >
-concept bool can_pin_in_out = requires {
+concept bool can_pin_in_out =
       is_pin_in_out< T > 
    || is_pin_oc< T >;
-};
-
-// quote ''can_pin_in'' );
-template< typename T >
-concept bool can_pin_in = requires {
-      is_pin_in< T > 
-   || is_pin_in_out< T > 
-   || is_pin_oc< T >;
-};
 
 // quote ''can_pin_out'' );
 template< typename T >
-concept bool can_pin_out = requires {
-     is_pin_out< T > 
-  || is_pin_in_out< T > 
+concept bool can_pin_out =
+     is_pin_in_out< T > 
+  || is_pin_out< T > 
   || is_pin_oc< T >;
-};
+
+// quote ''can_pin_in'' );
+template< typename T >
+concept bool can_pin_in = 
+      is_pin_in_out< T > 
+   || is_pin_in< T > 
+   || is_pin_oc< T >;
 
 // quote ''can_pin_oc'' );
 template< typename T >
-concept bool can_pin_oc = requires {
+concept bool can_pin_oc = 
       is_pin_in_out< T > 
    || is_pin_oc< T >;
-};
 
 
 // ==========================================================================
@@ -78,21 +74,12 @@ concept bool can_pin_oc_list = ( can_pin_oc< Ts > && ... );
 //
 // ==========================================================================
 
-template< typename T > struct pin_in_out;
-
-template< is_pin_in_out T > 
-struct pin_in_out< T > :
+template< can_pin_in_out T > 
+struct pin_in_out :
    be_pin_out,
    box_init_filter< T >,
    box_write_filter< T >
 {};   
-
-template< is_pin_oc T >
-struct pin_in_out< T > : 
-   be_pin_out,
-   box_init_filter< T >,
-   box_write_filter< T >  
-{};	
 
 
 // ==========================================================================
@@ -101,10 +88,15 @@ struct pin_in_out< T > :
 //
 // ==========================================================================
 
-template< typename T > struct pin_out;
+template< can_pin_out T > 
+struct pin_out : 
+   be_pin_out,
+   box_init_filter< T >,
+   box_write_filter< T >
+{};
 
 template< is_pin_in_out T >
-struct pin_out< T > : 
+struct pin_out< T > :
    be_pin_out,
    box_write_filter< T >
 {
@@ -115,20 +107,6 @@ struct pin_out< T > :
    }  
    
 };
-
-template< is_pin_out T >
-struct pin_out< T > : 
-   be_pin_out,
-   box_init_filter< T >,
-   box_write_filter< T >
-{};
-
-template< is_pin_oc T >
-struct pin_out< T > : 
-   be_pin_out,
-   box_init_filter< T >,
-   box_write_filter< T >
-{};
 
 
 // ==========================================================================
