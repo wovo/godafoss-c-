@@ -34,6 +34,7 @@ todo
 - cout has no << flush??
 - range adt
 - hwlib i2c aanpasen, overnemen
+-0 check https://github.com/olikraus/u8g2/wiki
 
 template< typename T, T low, T high >;
 struct interval 

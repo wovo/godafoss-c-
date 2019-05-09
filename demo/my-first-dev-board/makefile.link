@@ -1,0 +1,22 @@
+#############################################################################
+#
+# file : Makefile.link
+#
+# Non-leaf subdirectiory Makefile
+#
+# (c) Wouter van Ooijen (www.voti.nl) 2016
+#
+# This file is in the public domain.
+# 
+#############################################################################
+
+# settings common to this part of the subdirectory tree
+TARGET             ?= my_first_dev_board
+SERIAL_PORT        ?= COM4
+CONSOLE_BAUDRATE   := 2400
+
+# set RELATIVE to the next higher directory and defer to the Makefile.link
+RELATIVE          ?= .
+RELATIVE          := $(RELATIVE)/..
+include           $(RELATIVE)/makefile.link
+

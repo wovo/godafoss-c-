@@ -82,6 +82,7 @@ HEADERS           += targets/gf-chip-atmega328.hpp
 HEADERS           += targets/gf-chip-lpc1114.hpp
 HEADERS           += targets/gf-chip-sam3x8e.hpp
 HEADERS           += targets/gf-board-arduino-uno.hpp
+HEADERS           += targets/gf-board-my-first-dev-board.hpp
 HEADERS           += targets/gf-board-arduino-due.hpp
 HEADERS           += targets/gf-board-db103.hpp
 
