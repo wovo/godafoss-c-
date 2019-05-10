@@ -11,7 +11,7 @@
 #============================================================================
 
 # source files in this project (main.* is automatically assumed)
-SOURCES := second.cpp
+SOURCES := 
 
 # header files in this project
 HEADERS :=

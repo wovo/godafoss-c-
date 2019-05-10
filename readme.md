@@ -27,6 +27,12 @@ naming and architecture
 - avoid abbreviations, _t, etc. (gpio?)
 
 todo
+- pullup/down should survive pin adapters
+- pullup<> decorator
+- pin_in from adc for my-first-devboard
+- mfd: walk / select color, speed
+- mfd: board test
+- mfd: dimming demo
 - can_pin_out etc. don't work?? in pin adapters
 - 8574 + LCD
 - mirror for ports, demo

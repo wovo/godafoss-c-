@@ -15,7 +15,7 @@ using target  = gf::target<>;
 using timing  = target::timing;
 
 using color = target::red;
-using led   = target::led7;
+using led   = target::led5;
 
 int main(){
    color::init();

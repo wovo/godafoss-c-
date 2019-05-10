@@ -13,13 +13,21 @@
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
+using uart    = target::uart<>;
 
-using color  = target::green;
-using led    = target::leds_together;
+using adc     = target::adc;
 
 int main(){
-   color::init();
-   color::write( 1 );
-   gf::walk< target::leds_border, timing::ms< 200 > >();
-}  
-
+   adc::init();
+   timing::init();
+   uart::init();
+   timing::ms< 2000 >::wait();
+   
+   for(;;){
+      uart::write( '|' );
+      auto v = adc::read() / 16;       
+      while( v-- ){ uart::write( '=' ); }
+      uart::write( '\n' );
+      timing::ms< 200 >::wait();
+   }
+}   

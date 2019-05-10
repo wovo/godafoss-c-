@@ -50,6 +50,33 @@ concept bool can_pin_oc =
 
 
 // ==========================================================================
+//// pull-ups
+//
+// ==========================================================================
+
+template< typename T >
+concept bool is_pullup_capable = requires {
+   { T::pullup_enable() } -> void;
+   { T::pullup_disable() } -> void;
+};
+
+template< typename T >
+struct pullup_filter {};
+
+template< is_pullup_capable T >
+struct pullup_filter< T > { 
+    
+   static void GODAFOSS_INLINE pullup_enable(){ 
+      T::pullup_enable(); 
+   }    
+ 
+   static void GODAFOSS_INLINE pullup_disable(){ 
+      T::pullup_disable(); 
+   }     
+}; 
+
+
+// ==========================================================================
 //
 // lists of can-be-same pins
 //
@@ -78,7 +105,8 @@ template< can_pin_in_out T >
 struct pin_in_out :
    be_pin_out,
    box_init_filter< T >,
-   box_write_filter< T >
+   box_write_filter< T >,
+   pullup_filter< T >
 {};   
 
 
@@ -120,7 +148,8 @@ template< typename T > struct pin_in;
 template< is_pin_in_out T >
 struct pin_in< T > : 
    be_pin_in,
-   box_read_filter< T >
+   box_read_filter< T >,
+   pullup_filter< T >
 {
 	
    static void GODAFOSS_INLINE init(){
@@ -134,13 +163,15 @@ template< is_pin_in T >
 struct pin_in< T > : 
    be_pin_in,
    box_init_filter< T >,
-   box_read_filter< T >
+   box_read_filter< T >,
+   pullup_filter< T >
 {};
 
 template< is_pin_oc T >
 struct pin_in< T > : 
    be_pin_in,
-   box_read_filter< T >
+   box_read_filter< T >,
+   pullup_filter< T >
 {
 	
    static void GODAFOSS_INLINE init(){
@@ -164,7 +195,8 @@ struct pin_oc< T > :
    be_pin_oc,
    box_init_filter< T >,
    box_write_filter< T >,
-   box_read_filter< T >
+   box_read_filter< T >,
+   pullup_filter< T >
 {};
 
 template< is_pin_in_out T >
@@ -172,7 +204,8 @@ struct pin_oc< T > :
    be_pin_oc,
    box_init_filter< T >,
    box_write_filter< T >,
-   box_read_filter< T >
+   box_read_filter< T >,
+   pullup_filter< T >
 {
 
    static void GODAFOSS_INLINE init(){

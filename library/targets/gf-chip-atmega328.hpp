@@ -109,6 +109,14 @@ struct _pin_in_out :
       }
    }
 
+   static void GODAFOSS_INLINE pullup_enable(){
+      write( 1 );
+   }
+
+   static void GODAFOSS_INLINE pullup_disable(){
+      write( 0 );
+   }
+
    static void GODAFOSS_INLINE flush(){}
       
    static bool GODAFOSS_INLINE read(){	   

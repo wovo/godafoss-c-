@@ -15,11 +15,14 @@ using target  = gf::target<>;
 using timing  = target::timing;
 
 using color  = target::green;
-using led    = target::leds_together;
+using leds   = gf::port_out< 
+   target::leds_border_together,
+   target::led5,
+   gf::pin_out_dummy >;
 
 int main(){
    color::init();
    color::write( 1 );
-   gf::walk< target::leds_border, timing::ms< 200 > >();
+   gf::walk< leds, timing::ms< 500 > >();
 }  
 

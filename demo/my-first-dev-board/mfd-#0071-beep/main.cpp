@@ -14,14 +14,15 @@ namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
 
-using led    = target::leds_together;
-using colors = gf::pin_out_from_pins< 
-   target::blue,
-   gf::invert< target::red >>;
+using lsp = target::buzzer;
 
 int main(){
-   led::init();
-   led::write( 1 );
-   gf::blink< colors, timing::ms< 500 > >();
+   lsp::init();
+   timing::init();
+   for( int i = 0; i < 500; ++i ){
+      lsp::write( 1 );
+      timing::us< 500 >::wait();
+      lsp::write( 0 );
+      timing::us< 500 >::wait();
+   }
 }   
-
