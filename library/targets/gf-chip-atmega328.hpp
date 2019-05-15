@@ -220,7 +220,7 @@ struct uart :
 //
 // ==========================================================================
 
-using  ticks_type = uint64_t;
+using ticks_type = uint64_t;
 
 template< ticks_type n >
 static void GODAFOSS_INLINE inline_small_delay(){
@@ -349,7 +349,8 @@ struct waiting :
    be_timing_wait< waiting > 
 {
 	
-   using chip = chip_atmega328< clock >;    
+   using chip = chip_atmega328< clock >;   
+   using ticks_type = chip::ticks_type;
 	
    static void init(){
       chip::init();
@@ -454,7 +455,6 @@ struct clocking :
    
 using timing   = waiting;  
 // using timing   = clocking;  
-
 
 }; // struct atmega328
 

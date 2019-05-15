@@ -47,6 +47,7 @@ concept bool is_timing_wait_base = requires {
 template< is_timing_wait_base T >
 struct be_timing_wait {
    static const bool is_timing_wait = true;
+   //using ticks_type = typename T::ticks_type;
    
    template< uint64_t n >
    struct ns {
@@ -59,7 +60,7 @@ struct be_timing_wait {
       
       static void GODAFOSS_INLINE wait(){
           T:: template wait_ticks_template< n_ticks >();		    
-	   }
+      }
       
    };	   
    
@@ -68,6 +69,18 @@ struct be_timing_wait {
    
    template< uint64_t n >
    using ms = ns< n * 1'000'000 >;
+   
+   static void wait_ns( int64_t n ){
+      T::wait_ticks_function( T::ticks_from_ns( n ));
+   }      
+   
+   static void GODAFOSS_INLINE wait_us( int64_t n ){
+      wait_ns( n * 1'000 );
+   }      
+   
+   static void GODAFOSS_INLINE wait_ms( int64_t n ){
+      wait_ns( n * 1'000'000 );
+   }      
    
 };
 
