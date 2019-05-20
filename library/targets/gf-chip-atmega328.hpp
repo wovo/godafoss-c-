@@ -43,7 +43,7 @@ static void GODAFOSS_INLINE init(){
    } else {
       static_assert( 
          clock == 0, 
-         "Only 1 MHz (internal), "
+         "Only 1 MHz (internal oscillator), "
 		 "or 16 or 20 MHz (external crystal) "
 		 "clock is supported for atmega328.");
    }		 
