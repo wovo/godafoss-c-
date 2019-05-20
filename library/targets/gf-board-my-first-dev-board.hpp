@@ -9,6 +9,19 @@
 #include "targets/gf-chip-atmega328.hpp"
 
 namespace godafoss {
+   
+template< typename T >   
+struct pin_in_from_adc : be_pin_in {
+   static void init(){
+      T::init();
+   }
+   static void refresh(){
+      T::refresh();
+   }
+   static bool read(){
+      return T::read() > ( T::adc_max / 2 );
+   }
+};
     
 template< uint64_t clock >
 struct target_my_first_devboard :
@@ -28,7 +41,9 @@ struct target_my_first_devboard :
    #define make_pin_adc( NAME, PIN )                           \
       using NAME = typename chip:: template _pin_adc< PIN >;   \
       
-   make_pin_adc(     adc,  0 );
+   make_pin_adc(      adc,  0 );
+   make_pin_adc( adc6_pin,  6 );
+   make_pin_adc( adc7_pin,  7 );
    
    make_pin_in(  sw1_pin,  c,  1 );
    make_pin_in(  sw2_pin,  c,  2 );
@@ -40,6 +55,10 @@ struct target_my_first_devboard :
    using sw3 = invert< sw3_pin >;
    using sw4 = invert< sw4_pin >;
     
+   //make_pin_in(  sw6,      c,  5 );
+   using sw6 = pin_in_from_adc< adc7_pin >;
+   using sw5 = pin_in_from_adc< adc6_pin >;
+
    make_pin_out(  buzzer,  d,  3 );
    
    make_pin_out(     red,  b,  3 );
@@ -71,8 +90,6 @@ struct target_my_first_devboard :
       led1, led2, led3, led6, led9, led8, led7, led4 >;
    using leds_border_together = pin_out_from_pins< 
       led1, led2, led3, led6, led9, led8, led7, led4 >;
-
-
    
 }; // template<...> struct target_my_first_devboard
 

@@ -14,33 +14,26 @@ namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
 
-using colors = target::colors;
-using led    = target::leds_together;
+using color = target::blue;
 
-using sw_black  = target::sw1;
-using sw_red    = target::sw2;
-using sw_green  = target::sw3;
-using sw_blue   = target::sw4;
+using sw5    = target::sw5;
+using leds_5 = gf::pin_out_from_pins< 
+   gf::invert< target::led1 >, target::led4 >;
+   
+using sw6    = target::sw6;
+using leds_6 = gf::pin_out_from_pins< 
+   gf::invert< target::led2 >, target::led5 >;
 
 int main(){
-   led::init();
-   led::write( 1 );
-   colors::init();
-   colors::write( 0 );
-   sw_red::init();
-   sw_green::init();
-   sw_blue::init();
-   sw_black::init();
-   sw_red::pullup_enable();
-   sw_green::pullup_enable();
-   sw_blue::pullup_enable();
-   sw_black::pullup_enable();
+   leds_5::init();
+   leds_6::init();
+   color::init();
+   color::write( 1 );
+   sw5::init();
+   sw6::init();
    
-   for( uint8_t c = 0;;){
-      if( sw_black::read() ){ c =  0; }
-      if( sw_red::read() ){ c |= 0b0'001; }
-      if( sw_green::read() ){ c |= 0b0'010; }
-      if( sw_blue::read() ){ c |= 0b0'100; }
-      colors::write( c );
+   for(;;){
+      leds_5::write( sw5::read() );
+      leds_6::write( sw6::read() );
    }
 }   

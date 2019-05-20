@@ -24,8 +24,8 @@ int main(){
    timing::ms< 2000 >::wait();
    
    for(;;){
-      uart::write( '|' );
       auto v = adc::read() / 16;       
+      uart::write( '|' );
       while( v-- ){ uart::write( '=' ); }
       uart::write( '\n' );
       timing::ms< 200 >::wait();
