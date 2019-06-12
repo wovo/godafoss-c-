@@ -210,6 +210,7 @@ public:
       }
 
       ~read_transaction(){
+         write_nack();
          write_stop();
       }
 
