@@ -115,6 +115,8 @@
 // ==========================================================================
 
 namespace godafoss {
+   
+#include "../externals/torsor.hpp"
 
 #include "core/gf-basics.hpp"
 #include "core/gf-ints.hpp"
