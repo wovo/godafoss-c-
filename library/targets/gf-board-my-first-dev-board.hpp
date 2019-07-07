@@ -30,16 +30,16 @@ struct target_my_first_devboard :
 	
    using chip = chip_atmega328< clock >;	
 
-   #define make_pin_out( NAME, PORT, PIN )                     \
-      using NAME = pin_out< typename chip::                    \
+   #define make_pin_out( NAME, PORT, PIN )                      \
+      using NAME = pin_out< typename chip::                     \
 	     template _pin_in_out< chip::_port::PORT, PIN > >;      \
    
-   #define make_pin_in( NAME, PORT, PIN )                      \
-      using NAME = pin_in< typename chip::                     \
+   #define make_pin_in( NAME, PORT, PIN )                       \
+      using NAME = pin_in< typename chip::                      \
 	     template _pin_in_out< chip::_port::PORT, PIN > >;      \
    
-   #define make_pin_adc( NAME, PIN )                           \
-      using NAME = typename chip:: template _pin_adc< PIN >;   \
+   #define make_pin_adc( NAME, PIN )                            \
+      using NAME = typename chip:: template _pin_adc< PIN >;    \
       
    make_pin_adc(      adc,  0 );
    make_pin_adc( adc6_pin,  6 );
@@ -49,6 +49,9 @@ struct target_my_first_devboard :
    make_pin_in(  sw2_pin,  c,  2 );
    make_pin_in(  sw3_pin,  c,  3 );
    make_pin_in(  sw4_pin,  c,  4 );
+
+//   make_pin_in(      sw5,  c,  6 );
+//   make_pin_in(      sw6,  c,  7 );
    
    using sw1 = invert< sw1_pin >;
    using sw2 = invert< sw2_pin >;
