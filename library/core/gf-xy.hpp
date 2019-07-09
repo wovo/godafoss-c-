@@ -25,8 +25,9 @@
 /// 
 /// This class abstracts an (at least 16 bit) integer pair.
 /// It is used for instance for the size of a graphics or character screen,
-/// and to identify a single pixel location,
 /// or the distance between two pixel locations.
+/// 
+/// (The torsor of xy is used to identify a single pixel location.)
 class xy final {
 public:
 
@@ -150,3 +151,4 @@ public:
    }
 
 };
+
