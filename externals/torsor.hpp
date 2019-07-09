@@ -254,7 +254,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    {
-      return ::torsor< decltype( + value ), M >( + value ); 
+      return torsor< decltype( + value ), M >( + value ); 
    }
 
    /// add a torsor with a value
@@ -269,7 +269,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    constexpr auto operator+( const U & right ) const {
-      return ::torsor< decltype( value + right ), M >( value + right );      
+      return torsor< decltype( value + right ), M >( value + right );      
    }
 
    /// update add a torsor with a value
@@ -307,7 +307,7 @@ public:
    __attribute__((always_inline))
    ///@endcond
    constexpr auto operator-( const U & right ) const {
-      return ::torsor< decltype( value - right ), M >( value - right );     
+      return torsor< decltype( value - right ), M >( value - right );     
    }
    
    /// subtract two torsors
