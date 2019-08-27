@@ -10,12 +10,6 @@
 //
 // ==========================================================================
 
-namespace godafoss {
+/*
 
-// foreground
-// background
-// write( xy, color );
-// flush();
-// clear();
-
-}; // namespace godafoss
+write( 
