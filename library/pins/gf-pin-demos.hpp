@@ -28,3 +28,18 @@ GODAFOSS_NORETURN void blink(){
       d::wait();	  
    }	   
 }	
+
+template< can_pin_out _p, typename d, typename t >
+void blink(){
+   using p = direct< pin_out< _p >>;	
+   p::init();
+   d::init();
+   t::init();
+   auto end = d::timing::now() + t;
+   while( now() < end ){
+      p::write( 1 );
+      d::wait();	  
+      p::write( 0 );
+      d::wait();	  
+   }	   
+}	

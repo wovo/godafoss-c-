@@ -1,12 +1,12 @@
 #include "godafoss.hpp"
 
-using gf     = godafoss;
-using target = gf::target;
-using timing = gf::timing;
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
 
 int main(){
    gf::blink< 
-      target<>::d2, 
+      target::d2, 
       timing::ms< 500 > 
    >();
 }

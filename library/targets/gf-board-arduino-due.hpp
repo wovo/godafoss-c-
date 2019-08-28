@@ -121,6 +121,8 @@ using chip = chip_sam3x8e< clock >;
    make_pin_adc(  a9, 11 );
    make_pin_adc( a10, 12 );
    make_pin_adc( a11, 13 );
+   
+   using led = d13;
 
 /*    { 1, 15 },  // dac0
       { 1, 16 },  // dac1
