@@ -29,6 +29,7 @@ GODAFOSS_NORETURN void blink(){
    }	   
 }	
 
+/*
 template< can_pin_out _p, typename d, typename t >
 void blink(){
    using p = direct< pin_out< _p >>;	
@@ -43,3 +44,4 @@ void blink(){
       d::wait();	  
    }	   
 }	
+*/

@@ -37,9 +37,15 @@ struct target_my_first_devboard :
    #define make_pin_in( NAME, PORT, PIN )                       \
       using NAME = pin_in< typename chip::                      \
 	     template _pin_in_out< chip::_port::PORT, PIN > >;      \
+		 
+   #define make_pin_in_out( NAME, PORT, PIN )                   \
+      using NAME = typename chip::                              \
+	     template _pin_in_out< chip::_port::PORT, PIN >;        \
    
    #define make_pin_adc( NAME, PIN )                            \
       using NAME = typename chip:: template _pin_adc< PIN >;    \
+	  
+   // my-first0-devboard pin functions	  
       
    make_pin_adc(      adc,  0 );
    make_pin_adc( adc6_pin,  6 );
@@ -78,6 +84,46 @@ struct target_my_first_devboard :
    make_pin_out(    led8,  b,  2 );
    make_pin_out(    led9,  c,  5 ); 
    
+   // arduino pins
+   
+   make_pin_in_out(    d0,  d,  0 );
+   make_pin_in_out(    d1,  d,  1 );
+   make_pin_in_out(    d2,  d,  2 );
+   make_pin_in_out(    d3,  d,  3 );
+   make_pin_in_out(    d4,  d,  4 );
+   make_pin_in_out(    d5,  d,  5 );
+   make_pin_in_out(    d6,  d,  6 );
+   make_pin_in_out(    d7,  d,  7 );
+   make_pin_in_out(    d8,  b,  0 );
+   make_pin_in_out(    d9,  b,  1 );
+   make_pin_in_out(   d10,  b,  2 );
+   make_pin_in_out(   d11,  b,  3 );
+   make_pin_in_out(   d12,  b,  4 );
+   make_pin_in_out(   d13,  b,  5 );
+   
+   make_pin_in_out(   d14,  c,  0 );
+   make_pin_in_out(   d15,  c,  1 );
+   make_pin_in_out(   d16,  c,  2 );
+   make_pin_in_out(   d17,  c,  3 );
+   make_pin_in_out(   d18,  c,  4 );
+   make_pin_in_out(   d19,  c,  5 );
+   
+   make_pin_in_out(    a0,  c,  0 );
+   make_pin_in_out(    a1,  c,  1 );
+   make_pin_in_out(    a2,  c,  2 );
+   make_pin_in_out(    a3,  c,  3 );
+   make_pin_in_out(    a4,  c,  4 );
+   make_pin_in_out(    a5,  c,  5 ); 
+   
+   make_pin_adc(    adc0,  0 );
+   make_pin_adc(    adc1,  1 );
+   make_pin_adc(    adc2,  2 );
+   make_pin_adc(    adc3,  3 );
+   make_pin_adc(    adc4,  4 );
+   make_pin_adc(    adc5,  5 );   
+   
+   #undef make_pin_in   
+   #undef make_pin_out   
    #undef make_pin_in_out   
    #undef make_pin_adc 
    

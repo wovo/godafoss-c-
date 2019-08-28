@@ -272,6 +272,10 @@ a continuous 440 Hz tone.
 
 image frequency meter 440 Hz
 
+The blink function that was used so far blinks forever.
+A second version of trhis function exists, that takes a second
+ducration parameter, to specify how long the blinking
+(or in this case, the beeping) must be done.
 
 
 - beep
