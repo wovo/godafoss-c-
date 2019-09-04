@@ -55,7 +55,7 @@ opdracht opdrachten[] = {
    { 1324, "electronica"  },
    { 4132, "solderen"     },
    { 1243, "knutselen"    },
-   { 1243, "robot"        },
+   { 3412, "robot"        },
    { 4213, "raspberry Pi" },
    { 3214, "3D printer"   },
 };
@@ -98,9 +98,9 @@ int main( void ){
          
       } else {
          cout 
-            << "\fje opdracht is:\n  "
+            << "\fje wachtwoord is:\n  "
             << p->text;
       }
-      (void) pressed(); 
+      timing::ms< 3'000 >::wait();
    }
 }
