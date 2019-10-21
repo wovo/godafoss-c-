@@ -58,7 +58,7 @@ struct target_arduino_uno :
    make_pin_adc(    adc2,  2 );
    make_pin_adc(    adc3,  3 );
    make_pin_adc(    adc4,  4 );
-   make_pin_adc(    adc5,  4 );
+   make_pin_adc(    adc5,  5 );
    
    make_pin_in_out(  _scl,  c,  5 );
    make_pin_in_out(  _sda,  c,  4 );
