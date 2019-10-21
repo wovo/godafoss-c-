@@ -39,6 +39,11 @@
    #include "targets/gf-board-db103.hpp"
 #endif
 
+#ifdef GF_TARGET_stm32f030f4
+   #define GF_TARGET
+   #include "targets/gf-chip-stm32f030f4.hpp"
+#endif
+
 #ifndef GF_TARGET
    #error no valid GF_TARGET_* defined
 #endif   

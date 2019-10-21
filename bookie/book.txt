@@ -1,0 +1,197 @@
+
+- target system
+- target micro-controller
+- download
+- compile/build versus run
+
+blink
+
+The first thing to do on micro-controller system is to blink a LED.
+It proves that your system is working and that you are a genius.
+So let's look at the code for a blink-a-led application in godafoss.
+The line numbers are for reference, they are not part of the real
+source code.
+
+[1] #include "godafoss.hpp"
+[2] int main(){
+[3]    godafoss::blink< 
+[4]       godafoss::target<>::led, 
+[5]       godafoss::target<>::timing::ms< 500 > 
+[6]    >();
+[7] }
+
+The first line makes the godafoss features available for use in the code.
+It must be on a line by itself, and it is the first line of every godafoss
+application.
+
+The int main(){ on line [2] upto the final } on line [7] are required
+by the C++ language to identify what the application does when it is run.
+You will find this in every C++ program. 
+The int before main is required by the C++ language because it is 
+useful in C++ applications that run on a PC.
+For a micro-controller application it has no meaning, but it must still be 
+present.
+
+The lines 3..6 are the interesting part.
+The godafoss::blink means 'the blink within the godafoss namespace'. 
+There are many persons named Martin in the world, so to identify a specific
+Martin you say something like Martin King: the person named Martin
+within the King family. 
+(Assuming there is only one King family, and only one
+Martin in that family.)
+In C++ you would write this as King::Martin.
+The godafoss namespace
+has a blink function, which is used here to do the blinking.
+
+We want to blink the LED that is on the target board.
+This LED is connected to a specific pin of the micro-controller
+on which the application will run.
+To have the desired effect, the blink function must be configured to 
+do the blinking on the correct micro-controller pin. 
+The godafoss namespace has a target<> in it.
+For each target that has an LED, godafoss provides this pin
+as godafoss::target<>::led, so this is the first thing used
+to configure the blink function.
+The <> after target are required because a target can be configured.
+Specifying <>, which means no options, 
+
+The next thing that must be configured is how long the on and off periods
+of the blinking must be.
+This is specified via the timing that is provided by each godafoss target.
+In this example 500 ms (half a second) is specified for both the on
+and the off period, so the blinking rate will be 1 per second (1 Hertz).
+
+The fully configured godafoss::blink doesn't need any run-time information 
+to do its work, so the () on line [6] specifies that it is called,
+which means that its code is executed.
+As configured godafoss::blink will blink forever, so that
+is all there is to blinking the LED on a target board.
+
+To blink an LED that is external to the board it must be connected, and 
+the blink function must be configured with the micro-controller
+pin that it is connected to. 
+A suitable series resistor is needed to limit the current,
+otherwise the LED or the micro-controller might be damaged.
+In nearly all cases, a 1 kOhm (1000 Ohm) resistor will do.
+It has a color code of brown-black-red or brown-black-black-brown,
+in both cases followed by another ring which isn't important.
+
+<image>
+
+A resistor is symmetrical (apart from aesthetics you can swap its two leads).
+An LED however is not: it must be connected the right way round, 
+or it will not work.
+
+<image>
+
+Use a solderless breadboard and plug-in wires to connect 
+the pin marked 2 or D2 to the resistor, 
+the other side of the resistor to the LED pin at the round side
+of the LED, and the other (flat) side of the LED to the ground 
+(marked GND on most boards).
+
+<image>
+
+Provided that the correct target board is selected in the 
+development environment, the godafoss::target namsepace will contain
+the pins as d0, d1, etc and a0, a1, etc.
+The LED is connected to the d7 pin, so that pin must be used
+to configure the blink function.
+
+[1] #include "godafoss.hpp"
+[2] int main(){
+[3]    godafoss::blink< 
+[4]       godafoss::target<>::d2, 
+[5]       godafoss::target<>::timing::ms< 500 > 
+[6]    >();
+[7] }
+
+All this godafoss and godafoss::target is a bit repetitive.
+Aliases can be created via 'using' statements to make the application 
+code itself (the main) shorter and easier to read, at the cost of 
+a few extra lines at the top.
+
+[1] #include "godafoss.hpp"
+
+using gf     = godafoss;
+using target = gf::target;
+using timing = gf::timing;
+
+[2] int main(){
+[3]    gf::blink< 
+[4]       target<>::d7, 
+[5]       timing::ms< 500 > 
+[6]    >();
+[7] }
+
+One step further, it is often condered good practice to separate
+the 'flexible' part of the application from the how how it works.
+In the case of the blink application, the pin that is used and the
+time of the on and off periods can also be specified separately.
+
+[1] #include "godafoss.hpp"
+
+using gf     = godafoss;
+using target = gf::target;
+using timing = gf::timing;
+
+using led    = target::d7;
+using period = timing::ms< 500 >; 
+
+[2] int main(){
+[3]    gf::blink< led, period >();
+[7] }
+
+This separation might seem unnecessary for such a small and simple
+program, but it pays off when the led and the peiod are used at
+multiple locations.
+
+morse
+
+Morse is a way to encode letters and digits in a sequence of 
+short and long beeps (or flashes of light). 
+An example is the sequence that was used as a distress
+(call for help) signal: three short beeps, three longer beeps, 
+three short beeps. 
+Interpreted as morse code this can be read as SOS, 
+which was in popular culture read as Save Our Ship or 
+(later) Save Our Souls.
+(Note: the real morse code for the letters SOS would be
+three short beeps, a pause, three long beeps, a pause,
+three short beeps. The pauses are needed to separate the letters.)
+
+<code>
+
+Beeping is much like blinking an LED, only faster.
+The so-called middle A note, commonly used for tuning, has a frequency 
+of 440 Hz, which means that the full period is 1/440 s = 2.27 ms.
+Hence the configuration parameter for blink to produce a middle A
+is half that value: 1120 us.
+
+To physically produce a beep, a speaker must be connected to the target.
+As for the LED, a series resistor must be used to limit the current.
+Like a resistor, a speaker is symmetrical 
+(swapping the connections has no effect).
+
+
+<image>
+
+Chaning the 500 ms in the previous application to 1120 us produces
+a continuous 440 Hz tone.
+
+<code>
+
+
+
+
+
+
+
+- scale factors us etc.
+- beep
+- blink an amount of time
+- different on and off periods
+
+- resistor table
+- using a solderless breadboard
+- arduin pin names
