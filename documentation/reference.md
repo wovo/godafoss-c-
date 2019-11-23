@@ -68,7 +68,6 @@ todo:
 - examples
 - value split to item and stream, or use value directly? container? (no, that overloads)
 - range (= can always invert) - eigenlijk een eigenschap van de waarde???
-- boxing of a value to make it into a type
 - interface tag
 - additive filters
 - substractive filters
@@ -84,8 +83,8 @@ todo:
 
 ## 2.1 cto
 
-A cto is a Compile Time Object: it has the role of an object, but it is created
-(once) at compile time and never changes.
+A cto is a Compile Time Object: it has the role of an object, 
+but it is created (once) at compile time and never changes.
 It is implemented as a struct or class 
 that has only static functions and static attributes.
 A cto doesn't need to be instantiated:
@@ -198,7 +197,8 @@ concept bool item = requires(
 ## 2.7 stream
 
 A stream is a box that holds a sequence of values.
-All writes to a stream matter, including writes of the same value.
+All writes to a stream matter, including 
+repeated writes of the same value.
 Reading from a stream consumes the value that was read.
 
 <!-- update quote( input, "", "''stream''" ) -->
@@ -217,17 +217,24 @@ concept bool stream = requires(
 A box can be buffered. 
 For an output box, this means that the effect of write operations 
 can be postponed until the next flush call.
-For an input box, this means that a read operation can reflect 
-the situation immediately before that last refresh call. 
+For an input box, this means that a read operation reflects 
+the situation immediately before that last refresh call, or later. 
 For immediate effect on a buffered box, a read must be preceded 
 by a refresh, and a write must be followed by a flush.
 
 An immediate box is not buffered: its refresh and/or 
 flush operation has no effect.
-The immediate decorator creates an immediate box from a 
-(possibly buffered) box
+
+The immediate decorator creates an immediate iterm from a 
+(possibly buffered) one
 by sticking an refresh() before each read() and a flush() 
 after each write().
+
+The buffered decorator creates a buffered item from 
+a (possibly) unbuffered (direct) one
+by storing the read or written value and
+doing the read or write on the decorated item 
+only when refresh or flush is called.
 
 ~~~C++
 // be lazy, use immediate<>!
@@ -409,7 +416,9 @@ When it is high, it doesn't 'pull' its pin high
 (the pin is floating, as if it were an input).
 Hence it is duplex (it doesn't provide set_direction... calls), 
 but when its output is low the input will 
-in normal circumstances always read low.
+in normal circumstances always read low,
+because the (strong) pull-down will dominate
+any external weak pull-up.
 
 <!-- update quote( input, "", "''gpoc''" ) -->
 ~~~C++
@@ -422,7 +431,7 @@ concept bool gpoc = requires(
 ~~~
 
 The templates make_gpio<>, make_gpi<>, make_gpo<> and 
-make_gpoc<> create a pin with the requested interface 
+make_gpoc<> create a pin with the requested functionality
 from their argument (if possible).
 The concepts can_gpio<>, can_gpi<>, can_gpo<> and can_gpoc<> 
 indicate whether these conversions are possible. 
@@ -457,6 +466,8 @@ concept bool can_gpoc = requires(
 // analog interfaces
 //
 // ==========================================================================
+
+
 
 // quote ''adc'' };
 template< typename T >
@@ -573,9 +584,10 @@ struct _direct_direction : T {
 ~~~
 
 A common idiom is that a template specifies its parameter 
-as for instance can_gpo,and to use make_gpo internally 
+as for instance can_gpo, and to use make_gpo internally 
 to do the necessary conversion.
-This much like a run-time parameter accepting a derived type.
+This a bit like a run-time parameter accepting a derived type,
+but with the actual 'work' done by the make_* conversion templates.
 
 ~~~C++
 template< can_gpo _pin >

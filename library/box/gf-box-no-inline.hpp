@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// gf-noinline.hpp
+// gf-no-inline.hpp
 //
 // ==========================================================================
 //
@@ -90,7 +90,6 @@ struct _no_inline_box_in_wrapper< T > : T {
 //
 // ==========================================================================
 
-
 template< typename T >
 struct _no_inline_box_direction_wrapper : T {};
 
@@ -131,6 +130,8 @@ struct _no_inline_stream_out_wrapper : T {};
 
 template< typename T >
 struct _no_inline_stream_in_wrapper : T {};
+
+// nothing special yet
 
 
 // ==========================================================================

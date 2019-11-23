@@ -57,7 +57,7 @@ godafoss reference
 
 The first thing to do on micro-controller system is to blink a LED.
 It proves that your system is working and that you are a genius.
-So let's look at the code for a blink-a-led application in godafoss.
+So let's look at the code for a blink-a-led application using godafoss.
 The line numbers are for reference, they are not part of the real
 source code.
 
@@ -91,9 +91,9 @@ The godafoss::blink phrase means 'the blink within the godafoss namespace'.
 A namsepace is a bit like a family.
 There are many persons named Martin in the world, so to identify a specific
 Martin you say something like Martin King: the person named Martin
-within the King family. 
-(Assuming there is only one King family, and only one
-Martin in that family.)
+within the King family 
+(assuming there is only one King family, and only one
+Martin in that family).
 In C++ you would write this as King::Martin.
 The godafoss namespace
 has a blink function, which is used here to do the blinking.
@@ -108,12 +108,14 @@ features available on the target system.
 For each target that has an LED, godafoss provides this pin
 as godafoss::target<>::led, so this is the first item used
 to configure the blink function.
-The angle brackets <> after target are required because a target can be configured.
+The angle brackets <> after target are required 
+because a target can be configured.
 Specifying <> means that the default(s) are used.
 
 The next thing that must be configured is how long the on and off periods
 of the blinking must be.
-This is specified via the timing service that is provided by each godafoss target.
+This is specified via the timing service 
+that is provided by each godafoss target.
 In this example 500 ms (half a second) is specified 
 (for both the on and the off period), 
 so the blinking rate will be at a rate of 1 per second (1 Hertz).
@@ -154,8 +156,8 @@ image
 Provided that the correct target board is selected in the 
 development environment, the godafoss::target namsepace will contain
 the pins as d0, d1, etc and a0, a1, etc.
-The LED is connected to the d7 pin, so that pin must be used
-to configure the blink function.
+In nthis case the LED is connected to the d7 pin, 
+so that pin must be used to configure the blink function.
 
 <!-- update quote( input, "due-01-01-02-blink-d2", "", numbers = 1 ) -->
 ~~~C++
@@ -172,7 +174,7 @@ to configure the blink function.
 All this godafoss and godafoss::target is a bit longwieldy and repetitive.
 Aliases can be created via 'using' statements to make the application 
 code itself (the main) shorter and easier to read, at the cost of 
-a few extra lines at the top.
+a few extra boilerplate lines at the top.
 
 <!-- update quote( input, "due-01-01-03-blink-using", "", numbers = 1 ) -->
 ~~~C++
@@ -192,7 +194,7 @@ a few extra lines at the top.
 
 One step further, it is often considered good practice to separate
 the 'flexible' (easily changeable) part of the application from 
-the etails of how how it works.
+the details of how how it works.
 In the case of the blink application, the pin that is used and the
 time of the on and off periods can be lifted out of the blink call.
 
@@ -231,7 +233,8 @@ which was in popular culture read as Save Our Ship or
 (later) Save Our Souls.
 (Note: the real morse code for the letters SOS would be
 three short beeps, a pause, three long beeps, a pause,
-three short beeps. The pauses are needed to separate the letters.)
+three short beeps. 
+The pauses are needed to separate the letters.)
 
 Beeping is much like blinking an LED, only faster.
 The so-called middle A note, commonly used for tuning, has a frequency 
@@ -273,7 +276,7 @@ a continuous 440 Hz tone.
 image frequency meter 440 Hz
 
 The blink function that was used so far blinks forever.
-A second version of trhis function exists, that takes a second
+A second version of this function exists, that takes a second
 ducration parameter, to specify how long the blinking
 (or in this case, the beeping) must be done.
 

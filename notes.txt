@@ -1,0 +1,94 @@
+thing-name variations are needed for the:
+- is_thing             (user) concept
+- be_thing_root        (lib/HAL writer) root class 
+- be_thing             (HAL writer) creator that makes the thing from a HAL-provided base
+- is_thing_root thing  (HAL writer) concept for that HAL-provided base
+- make_thing?                (user) decorator/adapter that makes the thing from a related thing or set of things
+- can_thing?            (all) can be made into a thing
+
+tag: is_thing_tag ? now only is_thing
+
+check die lezing @ code dive voor naamgeving?
+
+the name filter is exactly the wronmg way round??
+box buffered requires default constructor & assignment
+
+add as-value, subrange
+
+
+loop< 8 >([]{   
+   
+})
+
+add hwlib::work to godafoss? defeats the static call-tree....
+I must up-propagate the work via the init
+
+making sure all inits are called is error-prone, 
+but it vcan be *checked* by an external tool 
+=> the tool's output is not part of the build
+(contrary to stack size calculation)
+
+
+template< can_gpo _pin >
+struct {
+   using pin = make_gpo< _pin >;
+   
+   using init = inits< pin >;
+   static void init(){
+      pin.write( 0 );
+   }
+   
+   static void work(){
+      if ...
+	  if ...
+   }
+   
+can a lambda capture private statics???   
+non-capturing lambda decays to a function pointer
+-> three types: init, work, main
+
+   using minions = minion_list<
+      pin,                           // has a minions
+	  init< []{ pin.write( 0 ); }>,  // a function to be called once
+	  timing::main< loop >           // a thread body
+	                                 // a one-shot worker
+									 // etc: other workers, defined by the scheduler
+   >;	  
+   
+   static void loop(){
+      for(;;){
+	     timing::ms< 500 >::wait();
+		 pin.write( 1 );
+      }
+   }
+   
+I can't write the main the nornmal way, with a loop => doesn't serve the threads or one-shots
+
+can I find out whether sometghing needs a thread, or can do with a one-shot?
+can decide on a per-cto base, or from tool analysis....
+   
+main(){
+   using led = target::d2;
+   using minions = blink< led, timing::ms< 100 >>;
+   minions::run();
+}   
+
+Can I restrict the functions used in a main or init or repeated?
+repeated should not use wait (only wait_busy when realy needed) 
+=> can do that with tooling...
+   
+main(){
+   using led = target::d2;
+   timing::main< []{
+      for(;;){
+	     timing::ms< 500 >::wait();
+		 ...
+   } >::run();
+}   
+
+TOOLING
+preferred way: use tooling to check conformance
+treat this like malformed-NDR, but the req. are outside the language
+
+Is the call the run-to-completion from the waits possible (CRTP?)
+   
