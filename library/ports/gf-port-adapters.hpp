@@ -49,8 +49,9 @@ concept bool can_port_oc =
 //
 // fallbacks
 //
-// A port can be constructed from another port (implemented in this file),
-// or from a lits of pins (implemented in port-from-pins).
+// A port can be constructed from another port 
+// (implemented in this file),
+// or from a list of pins (implemented in port-from-pins).
 //
 // ==========================================================================
 

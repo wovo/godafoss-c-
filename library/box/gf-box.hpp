@@ -113,7 +113,7 @@ struct be_input :
 // quote ''output'' };
 template< typename T >
 concept bool is_output = requires ( 
-   typename T::value_type v
+   as_value< typename T::value_type > v
 ){
    is_box< T >;
    T::is_output;

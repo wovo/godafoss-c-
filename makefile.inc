@@ -28,12 +28,14 @@ HEADERS           += godafoss.hpp
 HEADERS           += gf-all.hpp
 HEADERS           += core/gf-basics.hpp
 HEADERS           += core/gf-ints.hpp
+HEADERS           += core/gf-passing.hpp
 
 HEADERS           += box/gf-box.hpp
 HEADERS           += box/gf-box-filters.hpp
 HEADERS           += box/gf-box-no-inline.hpp
 HEADERS           += box/gf-box-invert.hpp
 HEADERS           += box/gf-box-direct.hpp
+HEADERS           += box/gf-box-buffered.hpp
 HEADERS           += box/gf-box-adapters.hpp
 
 HEADERS           += pins/gf-pin.hpp

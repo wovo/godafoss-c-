@@ -120,12 +120,14 @@ namespace godafoss {
 
 #include "core/gf-basics.hpp"
 #include "core/gf-ints.hpp"
+#include "core/gf-passing.hpp"
 
 #include "box/gf-box.hpp"
 #include "box/gf-box-filters.hpp"
 #include "box/gf-box-no-inline.hpp"
 #include "box/gf-box-invert.hpp"
 #include "box/gf-box-direct.hpp"
+#include "box/gf-box-buffered.hpp"
 #include "box/gf-box-adapters.hpp"
 
 #include "pins/gf-pin.hpp"

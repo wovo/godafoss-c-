@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// gf-box-direct.hpp
+// gf-box-buffered.hpp
 //
 // ==========================================================================
 //
@@ -23,15 +23,23 @@
 // ==========================================================================
 
 template< typename T >
-struct _direct_read : T {};
+struct _buffered_read : T {};
 
 template< is_input T >
-struct _direct_read< T > : T {
+struct _buffered_read< T > : T {
 	
    static auto read(){
-      T::refresh();
-      return T::read();
+      return buffer;
    }
+   
+   static void refresh(){
+      T::refresh();
+      buffer = T::read();	   
+   }
+   
+private:
+
+   typename T::value_type  buffer;   
    
 };
 
@@ -43,15 +51,28 @@ struct _direct_read< T > : T {
 // ==========================================================================
    
 template< typename T >
-struct _direct_write : T {};
+struct _buffered_write : T {};
 
 template< is_output T >
-struct _direct_write< T > : T {
+struct _buffered_write< T > : T {
 	
    static void write( typename T::value_type v ) {
-      T::write( v );
-      T::flush();
+      buffer = v;
+	  dirty = true;
    }
+   
+   static void flush() {
+      if( dirty ){	   
+         T::write( buffer );
+         T::flush();
+		 dirty = false;
+      }		 
+   }
+   
+private:
+
+   bool                    dirty;
+   typename T::value_type  buffer;   
    
 };
 
@@ -63,20 +84,37 @@ struct _direct_write< T > : T {
 // ==========================================================================
    
 template< typename T >
-struct _direct_direction : T {};
+struct _buffered_direction : T {};
 
 template< is_simplex T >
-struct _direct_direction< T > : T {
+struct _buffered_direction< T > : T {
 	
    static void direction_set_input() {
-      T::direction_set_input();
-      T::direction_flush();
+      direction_is_input =  true;
+	  dirty = true;
    }
    
    static void direction_set_output() {
-      T::direction_set_output();
-      T::direction_flush();
+      direction_is_input = false;	   
+	  dirty = true;
    }
+   
+   static void direction_flush() {
+      if( dirty ){	   
+         if( direction_is_input ){
+	        T::direction_set_input();
+         } else {
+	        T::direction_set_output();
+         }  
+	     T::direction_flush();
+		 dirty = false;
+      }		 
+   }
+   
+private:
+
+   bool dirty;        
+   bool direction_is_input;   
    
 };
 
@@ -88,12 +126,12 @@ struct _direct_direction< T > : T {
 // ==========================================================================
 
 template< typename T >
-concept bool can_direct = requires {
-   is_item< T >;
+concept bool can_buffered = requires {
+   is_box< T >;
 };
 
-template< can_direct T >
-struct direct : 
-   _direct_read< 
-      _direct_write< 
-         _direct_direction < T >>> {};
+template< can_buffered T >
+struct buffered : 
+   _buffered_read< 
+      _buffered_write< 
+         _buffered_direction < T >>> {};
