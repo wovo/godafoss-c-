@@ -1,59 +1,42 @@
-godafoss reference
+\documentclass{article}
 
-*****************************************************************************
+\author{Wouter van Ooijen}
+\title{Programming micro-controllers with godafoss}
+\date{\today}
 
-<!-- update example_path( "code/arduino-due/%s/main.cpp" ) -->
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
 
-<a name="toc-anchor-0"></a>
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset { %
+    language=C++,
+    backgroundcolor=\color{black!5}, % set backgroundcolor
+    basicstyle=\footnotesize,% basic font setting
+}
 
-# 1 Content
+\begin{document}
 
-<!-- update table_of_contents( input, 2 ) -->
+\maketitle
 
-  - [1 Content](#toc-anchor-0)
+% =======================================================
+\section{Introduction}
 
-  - [2 Introduction](#toc-anchor-1)
+\begin{itemize}
+\item  target system
+\item  target micro-controller
+\item  download
+\item  compile/build versus run
+\item  C++ versus godafoss
+\item  electronics 'on the fly'
+\item  format, whitespace
+\end{itemize}
 
-  - [3 First steps](#toc-anchor-2)
+% =======================================================
+\section{First steps}
 
-    - [3.1 Blink](#toc-anchor-3)
-      [3.2 Morse](#toc-anchor-4)
-
-  - [4 Scale factors](#toc-anchor-5)
-
-  - [5 Resistor color codes](#toc-anchor-6)
-
-  - [6 Arduino pin names](#toc-anchor-7)
-
-  - [7 Using a solderless breadboard](#toc-anchor-8)
-
-<!-- update end -->
-
-*****************************************************************************
-
-<a name="toc-anchor-1"></a>
-
-# 2 Introduction
-
-- target system
-- target micro-controller
-- download
-- compile/build versus run
-- C++ versus godafoss
-- electronics 'on the fly'
-
-- format, whitespace
-
-
-*****************************************************************************
-
-<a name="toc-anchor-2"></a>
-
-# 3 First steps
-
-<a name="toc-anchor-3"></a>
-
-## 3.1 Blink
+% ---------------------------------------------------------------------------
+\subsection{Blink}
 
 The first thing to do on micro-controller system is to blink a LED.
 It proves that your system is working and that you are a genius.
@@ -61,8 +44,9 @@ So let's look at the code for a blink-a-led application in godafoss.
 The line numbers are for reference, they are not part of the real
 source code.
 
-<!-- update quote( input, "due-01-01-01-blink-led", "", numbers = 1 ) -->
-~~~C++
+% update quote( input, "due-01-01-01-blink-led", "", numbers = 1 ) 
+\lstset {language=C++}
+\begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
 [ 3] int main(){
@@ -71,7 +55,7 @@ source code.
 [ 6]       godafoss::target<>::timing::ms< 500 > 
 [ 7]    >();
 [ 8] }
-~~~
+\end{lstlisting}
 
 The first line makes the godafoss features available for use in the code.
 It must be on a line by itself, and it is the first line of every godafoss
@@ -159,8 +143,9 @@ the pins as d0, d1, etc and a0, a1, etc.
 The LED is connected to the d7 pin, so that pin must be used
 to configure the blink function.
 
-<!-- update quote( input, "due-01-01-02-blink-d2", "", numbers = 1 ) -->
-~~~C++
+% update quote( input, "due-01-01-02-blink-d2", "", numbers = 1 )
+\lstset {language=C++}
+\begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
 [ 3] int main(){
@@ -169,15 +154,16 @@ to configure the blink function.
 [ 6]       godafoss::target<>::timing::ms< 500 > 
 [ 7]    >();
 [ 8] }
-~~~
+\end{lstlisting}
 
 All this godafoss and godafoss::target is a bit longwieldy and repetitive.
 Aliases can be created via 'using' statements to make the application 
 code itself (the main) shorter and easier to read, at the cost of 
 a few extra lines at the top.
 
-<!-- update quote( input, "due-01-01-03-blink-using", "", numbers = 1 ) -->
-~~~C++
+% update quote( input, "due-01-01-03-blink-using", "", numbers = 1 )
+\lstset {language=C++}
+\begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
 [ 3] using gf     = godafoss;
@@ -190,7 +176,7 @@ a few extra lines at the top.
 [10]       timing::ms< 500 > 
 [11]    >();
 [12] }
-~~~
+\end{lstlisting}
 
 One step further, it is often considered good practice to separate
 the 'flexible' (easily changeable) part of the application from 
@@ -198,8 +184,9 @@ the details of how how it works.
 In the case of the blink application, the pin that is used and the
 blinking period can be lifted out of the blink call.
 
-<!-- update quote( input, "due-01-01-04-blink-using-led-period", "", numbers = 1 ) -->
-~~~C++
+% update quote( input, "due-01-01-04-blink-using-led-period", "", numbers = 1 ) -->
+\lstset {language=C++}
+\begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
 [ 3] using gf     = godafoss;
@@ -212,16 +199,15 @@ blinking period can be lifted out of the blink call.
 [10] int main(){
 [11]    gf::blink< led, period >();
 [12] }
-~~~
+\end{lstlisting}
 
 This separation might seem unnecessary for such a small and simple
 program, but it pays off for a larger application,
 where the led and the period are likely to be used at
 multiple locations in the source.
 
-<a name="toc-anchor-4"></a>
-
-## 3.2 Morse
+% ---------------------------------------------------------------------------
+\subsection{Morse}
 
 Morse is a way to encode letters and digits in a sequence of 
 short and long beeps (or flashes of light). 
@@ -254,8 +240,9 @@ image
 Changing the 500 ms used in the blink applications to 2270 us produces
 a continuous 440 Hz tone.
 
-<!-- update quote( input, "due-01-02-01-beep-440", "", numbers = 1 ) -->
-~~~C++
+% update quote( input, "due-01-02-01-beep-440", "", numbers = 1 ) -->
+\lstset {language=C++}
+\begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
 [ 3] using gf     = godafoss;
@@ -268,7 +255,7 @@ a continuous 440 Hz tone.
 [10] int main(){
 [11]    gf::blink< led, period >();
 [12] }
-~~~
+\end{lstlisting}
 
 image frequency meter 440 Hz
 
@@ -282,30 +269,19 @@ duration parameter, to specify how long the blinking
 - blink an amount of time
 - different on and off periods
 
-
-*****************************************************************************
-
-<a name="toc-anchor-5"></a>
-
-# 4 Scale factors
+% =======================================================
+\section{Scale factors}
 
 
-*****************************************************************************
+% =======================================================
+\section{Resistor color codes}
 
-<a name="toc-anchor-6"></a>
-
-# 5 Resistor color codes
-
-*****************************************************************************
-
-<a name="toc-anchor-7"></a>
-
-# 6 Arduino pin names
+% =======================================================
+\section{Arduino pin names}
 
 
-*****************************************************************************
+% =======================================================
+\section{Using a solderless breadboard}
 
-<a name="toc-anchor-8"></a>
-
-# 7 Using a solderless breadboard
+\end{document}
 

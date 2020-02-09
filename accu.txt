@@ -13,6 +13,6 @@
 - I2C & SPI: channel/transaction
 - timing abstraction, small delays
 - remaining issues: C++ user-defined template parameters
-- how to print whithout std::cout
+- how to print without std::cout
 - problem with CRTP
 - remaining issues: users, abstractions, timing, testing, documentation (doxygen doesn't work)
