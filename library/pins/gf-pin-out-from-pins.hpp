@@ -30,7 +30,7 @@ struct _pin_out_from_pins<> :
 template< typename head, typename... tail >
 struct _pin_out_from_pins< head, tail... > {
 	
-   using pin = pin_out< head >	;
+   using pin = pin_out_from< head >	;
 	
    static void GODAFOSS_INLINE init(){
       pin::init();
@@ -50,8 +50,8 @@ struct _pin_out_from_pins< head, tail... > {
 };
 
 // wrapper
-template< can_pin_out_list... tail >
+template< pin_out_compatible_list... tail >
 struct pin_out_from_pins :
-   be_pin_out,
+   pin_out_root,
    _pin_out_from_pins< tail... >
 {};

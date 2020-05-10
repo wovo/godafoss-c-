@@ -6,14 +6,14 @@
  
 
 template< 
-   typename     bus,
-   can_pin_out  _cs
+   typename            bus,
+   pin_out_compatible  _cs
 >   
 struct hc595 :
-   be_port_out< 8 >
+   port_out_root< 8 >
 {
    using chip = hc595< bus, _cs >;	 
-   using cs = direct< pin_out< _cs >>;
+   using cs = direct< pin_out_from< _cs >>;
    static inline uint_fast8_t buffer;
    static inline bool dirty;
    
@@ -36,7 +36,7 @@ struct hc595 :
    }
    
    template< int n > struct pin :
-      be_pin_out
+      pin_out_root
    {
   
       static GODAFOSS_INLINE void init(){

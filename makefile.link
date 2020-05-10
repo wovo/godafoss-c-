@@ -17,11 +17,26 @@ include            $(GODAFOSS)/makefile.inc
 # add Catch
 SEARCH             += $(RELATIVE)/../Catch/include
 
+# add SFML
+SFML ?= $(RELATIVE)/../SFML-2.5.1-10
+ifeq ($(TARGET),native)
+   ifeq ($(OS),Windows_NT)
+      SEARCH            += $(SFML)/include
+      LINKER_FLAGS      += -L$(SFML)/lib 
+      LINKER_FLAGS      += -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
+      LINKER_FLAGS      += -lopengl32 -lgdi32 -lws2_32 -lwinmm
+      DEFINES           += -DSFML_STATIC
+   else
+      LINKER_FLAGS      += -lsfml-graphics -lsfml-window -lsfml-system 
+      DEFINES           += -DSFML_STATIC
+   endif
+endif
+
 # set BMPTK to the bmptk subdirectory
 BMPTK              ?= $(RELATIVE)/../bmptk
 
 ifeq ($(TARGET),native)
-   # enable exeptions (disabled by default by bmptk)
+   # enable exceptions (disabled by default by bmptk)
    PROJECT_CPP_FLAGS  += -fexceptions 
 endif
 

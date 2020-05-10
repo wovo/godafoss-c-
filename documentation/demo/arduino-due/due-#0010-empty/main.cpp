@@ -12,20 +12,4 @@
 
 #include "godafoss.hpp"
 
-template< typename T >
-struct absolute : T {
-    
-   typename( P... )    
-   absolute( P... ): T( P... ) {}
-}
-
-template< typename T >
-struct relative : T {
-   // block     
-    
-    
-}
-
-
-
 int main( void ){}

@@ -11,7 +11,7 @@ template<
    int          base    = 0x20
 >   
 struct pcf8574 :
-   be_port_out< 8 >
+   port_out_root< 8 >
 {
 
    using chip = pcf8574< bus, address, base >;
@@ -39,7 +39,7 @@ struct pcf8574 :
    }
 
    template< int n > struct pin :
-      be_pin_oc
+      pin_oc_root
    {
   
       static GODAFOSS_INLINE void init(){

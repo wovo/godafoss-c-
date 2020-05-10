@@ -16,7 +16,7 @@
 
 # required C++ command-line settings
 
-CPP_LANGUAGE      += -std=c++17 -fconcepts
+# CPP_LANGUAGE      += -std=c++17 -fconcepts
 
 # the file locations
 
@@ -26,12 +26,15 @@ SEARCH            += $(GODAFOSS)/library
 
 HEADERS           += godafoss.hpp
 HEADERS           += gf-all.hpp
+
 HEADERS           += core/gf-basics.hpp
 HEADERS           += core/gf-ints.hpp
 HEADERS           += core/gf-passing.hpp
+HEADERS           += core/gf-output-stream.hpp
+HEADERS           += core/gf-xy.hpp
 
 HEADERS           += box/gf-box.hpp
-HEADERS           += box/gf-box-filters.hpp
+HEADERS           += box/gf-box-inherit.hpp
 HEADERS           += box/gf-box-no-inline.hpp
 HEADERS           += box/gf-box-invert.hpp
 HEADERS           += box/gf-box-direct.hpp
@@ -62,7 +65,6 @@ HEADERS           += core/gf-spi.hpp
 HEADERS           += char-io/gf-uart.hpp
 HEADERS           += char-io/gf-ostream.hpp
 HEADERS           += char-io/gf-ostream-object.hpp
-HEADERS           += core/gf-xy.hpp
 HEADERS           += char-io/gf-terminal.hpp
 HEADERS           += char-io/gf-terminal-demos.hpp
 
@@ -87,6 +89,7 @@ HEADERS           += targets/gf-board-arduino-uno.hpp
 HEADERS           += targets/gf-board-my-first-dev-board.hpp
 HEADERS           += targets/gf-board-arduino-due.hpp
 HEADERS           += targets/gf-board-db103.hpp
+HEADERS           += targets/gf-native.hpp
 
 
 # add Catch

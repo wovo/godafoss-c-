@@ -2,14 +2,25 @@
 //
 // gf-box.hpp
 // 
-// the basic stuff of the library
+// ==========================================================================
+//
+// the basic interface properties:
+//    - box: holds some data elements(s))
+//    - item: box that always holds one element of the data
+//    - stream: box that holds a sequence of data elements
+//    - input: box that supports read()
+//    - output: box that supports write()
+//    - input_output: both input and output
+//    - duplex: both input and output at the same time
+//    - simplex: both input and output, but only one at a time
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -20,167 +31,203 @@
 
 // ==========================================================================
 //
-// box, item, stream
+// box
+//
+// holds some data elements(s))
 //
 // ==========================================================================
 
 // quote ''box'' };
 template< typename T >
-concept bool is_box = requires {  
-   T::is_box;
-   T::is_item || T::is_stream; 
-   { T::init() } -> void;
+concept box = requires {  
+   T::box_marker;
+   T::is_item  || T::is_stream; 
+   T::is_input || T::is_output; 
+   { T::init() } -> std::same_as< void >;
 };
 
 template< typename T >
-struct be_box_root {
-   static const bool is_box = true;	
+struct _box_root {
+   static const bool _box_marker = true;	
    using value_type = T;
 };
 
 template< typename T >
-struct be_box : be_box_root< T > {};
+struct box_root : _box_root< T > {};
 
 template<>
-struct be_box< bool > :
-   be_box_root< bool >
+struct box_root< bool > :
+   _box_root< bool >
 {
    GODAFOSS_INLINE static bool invert( bool v ){
       return !v;	   
    }
 };
 
+
+// ==========================================================================
+//
+// item 
+//
+// box that always holds one element of the data
+//
 // ==========================================================================
 
 // quote ''item'' );
 template< typename T >
-concept bool is_item = requires {
-   is_box< T >;
-   T::is_item;
+concept item = requires {
+   box< T >;
+   T::_item_marker;
 };
 
 template< typename T >
-struct be_item : 
-   be_box< T > 
+struct item_root : 
+   box_root< T > 
 {
-   static const bool is_item   = true;	
-   static const bool is_stream = false;	
-};
-
-// ==========================================================================
-
-// quote ''stream'' );
-template< typename T >
-concept bool is_stream = requires {
-   is_box< T >;
-   T::is_stream;
-};
-
-template< typename T >
-struct be_stream : 
-   be_box< T > 
-{
-   static const bool is_item   = false;	
-   static const bool is_stream = true;	
+   static const bool _item_marker = true;	
 };
 
 
 // ==========================================================================
 //
-// input, output
+// stream
+//
+// box that holds a sequence of data elements
+//
+// ==========================================================================
+
+// quote ''stream'' );
+template< typename T >
+concept stream = requires {
+   box< T >;
+   T::stream_marker;
+};
+
+template< typename T >
+struct stream_root : 
+   box_root< T > 
+{
+   static const bool _stream_marker = true;	
+};
+
+
+// ==========================================================================
+//
+// input
+//
+// box that supports read()
 //
 // ==========================================================================
 
 // quote ''input'' };
 template< typename T >
-concept bool is_input = requires {
-   is_box< T >;
-   T::is_input;
-   { T::refresh() } -> void;
-   { T::read() } -> typename T::value_type;
+concept input = requires {
+   box< T >;
+   T::input_marker;
+   { T::refresh() }  -> std::same_as< void >;
+   { T::read() }     -> std::same_as< typename T::value_type >;
 };
 
 template< typename T >
-struct be_input : 
-   be_box< T > 
+struct input_root : 
+   box_root< T > 
 {
-   static const bool is_input = true;	
+   static const bool _input_marker = true;	
 };
 
 
+// ==========================================================================
+//
+// output
+//
+// box that supports write()
+//
 // ==========================================================================
 
 // quote ''output'' };
 template< typename T >
-concept bool is_output = requires ( 
-   as_value< typename T::value_type > v
+concept output = requires ( 
+   typename T::value_type v
 ){
-   is_box< T >;
-   T::is_output;
-   { T::write( v ) } -> void;
-   { T::flush() } -> void;
+   box< T >;
+   T::_output_marker;
+   { T::write( v ) }  -> std::same_as< void >;
+   { T::flush()    }  -> std::same_as< void >;
 };
 
 template< typename T >
-struct be_output : 
-   be_box< T > 
+struct output_root : 
+   box_root< T > 
 {
-   static const bool is_output = true;	
+   static const bool _output_marker = true;	
 };
 
 
 // ==========================================================================
+//
+// input_output
+//
+// both input and output
+//
+// ==========================================================================
 
 // quote ''input_output'' );
 template< typename T >
-concept bool is_input_output = requires {
-   is_input< T >;
-   is_output< T >;
+concept input_output = requires {
+   input< T >;
+   output< T >;
 };
 
 template< typename T >
-struct be_input_output : 
-   be_input< T >, 
-   be_output< T > 
+struct input_output_root : 
+   input_root< T >, 
+   output_root< T > 
 {};
 
 
 // ==========================================================================
 //
-// simplex, duplex
+// duplex
+//
+// both input and output, at the same time
 //
 // ==========================================================================
 
 // quote ''duplex'' );
 template< typename T >
-concept bool is_duplex = requires {
-   is_input_output< T >;
-   T::is_duplex;
+concept duplex = requires {
+   input_output< T >;
+   T::_duplex_marker;
 };
 
 template< typename T >
-struct be_duplex : 
-   be_input_output< T > 
+struct duplex_root : 
+   input_output_root< T > 
 {
-   static const bool is_duplex = true;	
+   static const bool _duplex_marker = true;	
 };
 
 
 // ==========================================================================
+//
+// simplex
+//
+// both input and output, but only one at a time
+//
+// ==========================================================================
 
 // quote ''simplex'' };
 template< typename T >
-concept bool is_simplex = requires ( 
+concept simplex = requires ( 
 ){
-   is_input_output< T >;
-   T::is_simplex;
-   { T::direction_set_input() } -> void;
-   { T::direction_set_output() } -> void;
-   { T::direction_flush() } -> void;
+   input_output< T >;
+   T::_simplex_marker;
+   { T::direction_set_input() }   -> std::same_as< void >;
+   { T::direction_set_output() }  -> std::same_as< void >;
+   { T::direction_flush() }       -> std::same_as< void >;
 };
 
 template< typename T >
-struct be_simplex : be_input_output< T > {
-   static const bool is_simplex = true;	
+struct simplex_root : input_output_root< T > {
+   static const bool _simplex_marker = true;	
 };
-

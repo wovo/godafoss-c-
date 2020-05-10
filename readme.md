@@ -6,6 +6,8 @@ https://forvo.com/word/goðafoss/
 This is where I throw in all my previous work.
 It is for now (and maybe forever) work in progress.
 
+THIS IS WORK IN PROGRESS, NOT YET FIT FOR USE.
+
 naming and architecture
 - no heap, no RTTI, no exceptions, no function indirection
 - constexpr rulez! (provide alternative to math?)
@@ -27,6 +29,9 @@ naming and architecture
 - avoid abbreviations, _t, etc. (gpio?)
 
 todo
+- check void return types (core & box)
+- native window using SFML
+- check xy iterator
 - pullup/down should survive pin adapters
 - pullup<> decorator
 - pin_in from adc for my-first-devboard

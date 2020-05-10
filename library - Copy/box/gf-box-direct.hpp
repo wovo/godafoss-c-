@@ -1,13 +1,19 @@
 // ==========================================================================
 //
-// gf-box-filters.hpp
+// gf-box-direct.hpp
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// The direct<> decorator inserts the appropriate refresh or flush
+// before or after each read, write, or direction change operation.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -18,20 +24,22 @@
 
 // ==========================================================================
 //
-// init
+// read
 //
 // ==========================================================================
 
 template< typename T >
-struct box_init_filter {};
+struct _direct_read : T {};
 
-template< is_box T >
-struct box_init_filter< T > { 
-    
-   static void GODAFOSS_INLINE init(){ 
-      T::init(); 
-   }     
-}; 
+template< is_input T >
+struct _direct_read< T > : T {
+	
+   static auto read(){
+      T::refresh();
+      return T::read();
+   }
+   
+};
 
 
 // ==========================================================================
@@ -39,47 +47,19 @@ struct box_init_filter< T > {
 // write
 //
 // ==========================================================================
-
-template< typename T >
-struct box_write_filter {};
    
+template< typename T >
+struct _direct_write : T {};
+
 template< is_output T >
-struct box_write_filter< T > { 
-
-   using _value_type = typename T::value_type;
-    
-   static void GODAFOSS_INLINE write( _value_type v ){ 
-      T::write( v );  
+struct _direct_write< T > : T {
+	
+   static void write( typename T::value_type v ) {
+      T::write( v );
+      T::flush();
    }
    
-   static void GODAFOSS_INLINE flush(){ 
-      T::flush(); 
-   }
-};    
-
-
-// ==========================================================================
-//
-// read
-//
-// ==========================================================================
-
-template< typename T >
-struct box_read_filter {};
-
-template< is_input T >
-struct box_read_filter< T > { 
-
-   using _value_type = typename T::value_type;
-    
-   static _value_type GODAFOSS_INLINE read(){ 
-      return T::read(); 
-   }
-   
-   static void GODAFOSS_INLINE refresh(){ 
-      T::refresh(); 
-   }
-}; 
+};
 
 
 // ==========================================================================
@@ -87,22 +67,39 @@ struct box_read_filter< T > {
 // direction
 //
 // ==========================================================================
+   
+template< typename T >
+struct _direct_direction : T {};
+
+template< is_simplex T >
+struct _direct_direction< T > : T {
+	
+   static void direction_set_input() {
+      T::direction_set_input();
+      T::direction_flush();
+   }
+   
+   static void direction_set_output() {
+      T::direction_set_output();
+      T::direction_flush();
+   }
+   
+};
+
+
+// ==========================================================================
+//
+// the direct<> decorator
+//
+// ==========================================================================
 
 template< typename T >
-struct box_direction_filter {};
-   
-template< is_simplex T >
-struct box_direction_filter< T > { 
-   
-   static void GODAFOSS_INLINE direction_set_input(){ 
-      T::direction_set_input(); 
-   }
-   
-   static void GODAFOSS_INLINE direction_set_output(){ 
-      T::direction_set_output; 
-   }
-   
-   static void GODAFOSS_INLINE direction_flush(){ 
-      T::direction_flush(); 
-   }
-}; 
+concept can_direct = requires {
+   is_item< T >;
+};
+
+template< can_direct T >
+struct direct : 
+   _direct_read< 
+   _direct_write< 
+   _direct_direction < T >>> {};

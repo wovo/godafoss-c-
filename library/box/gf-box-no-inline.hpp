@@ -1,13 +1,19 @@
 // ==========================================================================
 //
-// gf-no-inline.hpp
+// gf-box-no-inline.hpp
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// no_inline< T > provides functions that call the corresponding functions
+// in T without a forced inlining.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -18,15 +24,15 @@
 
 // ==========================================================================
 //
-// box: init
+// init
 //
 // ==========================================================================
 
 template< typename T >
-struct _no_inline_init_wrapper : T {};
+struct _no_inline_box_init : T {};
 
-template< is_box T >
-struct _no_inline_init_wrapper< T > : T {
+template< box T >
+struct _no_inline_box_init< T > : T {
 	
    static void init(){ 
       T::init(); 
@@ -37,15 +43,15 @@ struct _no_inline_init_wrapper< T > : T {
 
 // ==========================================================================
 //
-// out
+// write
 //
 // ==========================================================================
 
 template< typename T >
-struct _no_inline_box_out_wrapper : T {};
+struct _no_inline_box_write : T {};
 
-template< is_output T >
-struct _no_inline_box_out_wrapper< T > : T {
+template< output T >
+struct _no_inline_box_write< T > : T {
 	
    using _vt = typename T::value_type;
     
@@ -67,10 +73,10 @@ struct _no_inline_box_out_wrapper< T > : T {
 // ==========================================================================
 
 template< typename T >
-struct _no_inline_box_in_wrapper : T {};
+struct _no_inline_box_read : T {};
 
-template< is_input T >
-struct _no_inline_box_in_wrapper< T > : T { 
+template< input T >
+struct _no_inline_box_read< T > : T { 
 
    using _vt = typename T::value_type;
     
@@ -81,20 +87,21 @@ struct _no_inline_box_in_wrapper< T > : T {
    static void refresh(){ 
       T::refresh(); 
    }
+   
 }; 
 
 
 // ==========================================================================
 //
-// simplex: direction
+// direction
 //
 // ==========================================================================
 
 template< typename T >
-struct _no_inline_box_direction_wrapper : T {};
+struct _no_inline_box_direction : T {};
 
-template< is_simplex T >
-struct _no_inline_box_direction_wrapper< T > : T { 
+template< simplex T >
+struct _no_inline_box_direction< T > : T { 
     
    static void direction_set_output(){ 
       T::direction_set_output(); 
@@ -107,45 +114,19 @@ struct _no_inline_box_direction_wrapper< T > : T {
    static void direction_flush(){ 
       T::direction_flush(); 
    }
+   
 }; 
 
 
 // ==========================================================================
 //
-// streams out
-//
-// ==========================================================================
-
-template< typename T >
-struct _no_inline_stream_out_wrapper : T {};
-
-// nothing special yet
-
-
-// ==========================================================================
-//
-// streams in
-//
-// ==========================================================================
-
-template< typename T >
-struct _no_inline_stream_in_wrapper : T {};
-
-// nothing special yet
-
-
-// ==========================================================================
-//
-// wrapper
+// no_inline
 //
 // ==========================================================================
 
 template< typename T >
 using no_inline = 
-   _no_inline_init_wrapper<
-   _no_inline_box_out_wrapper<
-   _no_inline_box_in_wrapper<
-   _no_inline_box_direction_wrapper< 
-   _no_inline_stream_out_wrapper<
-   _no_inline_stream_in_wrapper< T > > > > > >;
-
+   _no_inline_box_init<
+   _no_inline_box_write<
+   _no_inline_box_read<
+   _no_inline_box_direction< T > > > >;

@@ -16,9 +16,9 @@
 // ==========================================================================
 
 
-template< can_port_out _port, typename interval >
+template< port_out_compatible _port, typename interval >
 GODAFOSS_NORETURN void walk(){
-   using port = direct< port_out< _port >>;	
+   using port = direct< port_out_from< _port >>;	
    port::init();
    interval::init();
    for(;;){
@@ -29,9 +29,9 @@ GODAFOSS_NORETURN void walk(){
    }      
 }
 
-template< can_port_out _port, typename interval >
+template< port_out_compatible _port, typename interval >
 GODAFOSS_NORETURN void kitt(){
-   using port = direct< port_out< _port >>;	
+   using port = direct< port_out_from< _port >>;	
    port::init();
    interval::init();
    for(;;){

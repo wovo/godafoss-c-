@@ -1,10 +1,102 @@
+files to check
+==============
+   + core/gf-basics.hpp
+   + core/gf-ints.hpp
+   core/gf-passing.hpp
+   core/gf-output-stream.hpp
+   core/gf-xy.hpp
+
+   + box/gf-box.hpp
+   + box/gf-box-inherit.hpp
+   + box/gf-box-no-inline.hpp
+   + box/gf-box-invert.hpp
+   + box/gf-box-direct.hpp
+   + box/gf-box-buffered.hpp
+   + box/gf-box-adapters.hpp
+
+   pins/gf-pin.hpp
+   pins/gf-pin-adapters.hpp
+   pins/gf-pin-dummies.hpp
+   pins/gf-pin-out-from-pins.hpp
+   pins/gf-pin-demos.hpp
+
+   core/gf-analog.hpp
+
+   ports/gf-port.hpp
+   ports/gf-port-adapters.hpp
+   ports/gf-port-dummies.hpp
+   ports/gf-port-from-pins.hpp
+   ports/gf-port-demos.hpp
+
+   timing/gf-timing-wait.hpp
+   timing/gf-timing-clock.hpp
+   timing/gf-slow-down.hpp
+
+   core/gf-spi.hpp
+   core/gf-i2c.hpp
+
+   char-io/gf-uart.hpp
+   char-io/gf-ostream.hpp
+   char-io/gf-ostream-object.hpp
+   char-io/gf-terminal.hpp
+   char-io/gf-terminal-demos.hpp
+
+   graphics/gf-color.hpp
+//   graphics/gf-window.hpp
+//   graphics/gf-drawables.hpp
+//   graphics/gf-window-demos.hpp
+
+   chips/gf-servo.hpp
+   chips/gf-hd44780.hpp
+   chips/gf-hc595.hpp
+   chips/gf-pcf8574.hpp
+//   chips/gf-pcf8591.hpp
+//   chips/gf-ssd1306.hpp
+   chips/gf-nrf24l01.hpp
+
+C++20 (GCC 10) required
+
+refresh error flags list
+
+pullup from adapters => pins, or even to core (shared by ports)?
+should pullup also be buffered??
+
+should pullup be propagated by port?
+
+// ?? why is this needed?
+template< can_output T > struct box_out; (box adapters)
+
+term: interface-oriented (concept-oriented)
+
+file naming: gf-core-*; maybe put everything back in one directory?
+
+should the HAL pop the warning settings??
+
+Get back to your code after some time. 
+Add comments to explain it in simple terms.
+Make the identifiers match those terms.
+Remove the comments.
+box_init_filter<> => box_only_init<>
+It IS a filter, that is how it works, but that is the wrong name.
+What it DOES for the using code is passing only a specific part.
+When in doubt about naming: forget the implementation, read where it is used.
+if you need a comment THERE, the name is wrong.
+
 thing-name variations are needed for the:
 - is_thing             (user) concept
 - be_thing_root        (lib/HAL writer) root class 
 - be_thing             (HAL writer) creator that makes the thing from a HAL-provided base
 - is_thing_root thing  (HAL writer) concept for that HAL-provided base
-- make_thing?                (user) decorator/adapter that makes the thing from a related thing or set of things
-- can_thing?            (all) can be made into a thing
+- make_thing?          (user) decorator/adapter that makes the thing from a related thing or set of things
+- can_thing?           (all) can be made into a thing
+
+color : concept
+color : default color? or is that rgb24? rgb32?
+
+When in doubt how to implement an ADT or driver interface:
+- write an interface that specifies as little as possible
+- write an implementation
+- write the library to the interface, not the implementation
 
 tag: is_thing_tag ? now only is_thing
 
@@ -12,6 +104,7 @@ check die lezing @ code dive voor naamgeving?
 
 the name filter is exactly the wronmg way round??
 box buffered requires default constructor & assignment
+=> put that as requirement in box?
 
 add as-value, subrange
 

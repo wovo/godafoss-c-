@@ -5,17 +5,17 @@
 // ==========================================================================
 
 template<
-   can_pin_out  _sclk,
-   can_pin_in   _miso,
-   can_pin_out  _mosi,
-   typename     timing   
+   pin_out_compatible  _sclk,
+   pin_in_compatible   _miso,
+   pin_out_compatible  _mosi,
+   typename            timing   
 >
 struct spi_bus_bb_sclk_miso_mosi {
 private:   
    
-   using sclk    = direct< pin_out< _sclk > >;
-   using miso    = direct< pin_in<  _miso > >;
-   using mosi    = direct< pin_out< _mosi > >;
+   using sclk    = direct< pin_out_from< _sclk > >;
+   using miso    = direct< pin_in_from<  _miso > >;
+   using mosi    = direct< pin_out_from< _mosi > >;
       
    //for now: 1 MHz
    static void wait_half_period(){
@@ -64,9 +64,9 @@ public:
       timing::init();    
    }
      
-   template< can_pin_out _sel >
+   template< pin_out_compatible _sel >
    struct transfer {
-      using sel = direct< pin_out< _sel > >; 	 
+      using sel = direct< pin_out_from< _sel > >; 	 
 	   
 	   transfer(){
          sel::init();

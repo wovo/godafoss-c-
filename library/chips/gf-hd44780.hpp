@@ -16,18 +16,18 @@
 // ==========================================================================
 
 template< 
-   can_pin_out   _rs,
-   can_pin_out   _e,
-   can_port_out  _port,
-   uint32_t      _size_x,
-   uint32_t      _size_y,
-   typename      timing
+   pin_out_compatible   _rs,
+   pin_out_compatible   _e,
+   port_out_compatible  _port,
+   uint32_t             _size_x,
+   uint32_t             _size_y,
+   typename             timing
 > struct _hd44780_rs_e_d_x_y_timing {
 private:	
 	
-   using rs      = pin_out< _rs >;
-   using e       = pin_out< _e >;
-   using port    = port_out< _port >;  
+   using rs      = pin_out_from< _rs >;
+   using e       = pin_out_from< _e >;
+   using port    = port_out_from< _port >;  
    
    using xy_t    = uint_fast8_t;
    
@@ -173,12 +173,12 @@ public:
 }; // class _hd44780_rs_e_d_x_y_timing_foundation
 
 template< 
-   can_pin_out   rs,
-   can_pin_out   e,
-   can_port_out  port,
-   uint32_t      size_x,
-   uint32_t      size_y,
-   typename      timing
+   pin_out_compatible   rs,
+   pin_out_compatible   e,
+   port_out_compatible  port,
+   uint32_t             size_x,
+   uint32_t             size_y,
+   typename             timing
 > using hd44780_rs_e_d_x_y_timing = 
     terminal<
     _hd44780_rs_e_d_x_y_timing< 

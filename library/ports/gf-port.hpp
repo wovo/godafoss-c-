@@ -18,27 +18,29 @@
 
 // ==========================================================================
 //
-// base
+// root
 //
 // ==========================================================================
 
 template< typename T, int n >
-concept bool is_port_base = requires {
-   is_item< typename uint_t< n >::fast >;	
-   T::is_port_base;
+concept port = requires {
+   item< typename uint_bits< n >::fast >;	
+   T::port_marker;
 };
 
 template< int n >
-struct be_port_base : 
-   be_item< typename uint_t< n >::fast >
+struct port_root : 
+   item_root< typename uint_bits< n >::fast >
 {
-   static const bool is_port_base  = true;
-   static const int  n_pins        = n;
+   static const bool port_marker  = true;
+   static const int  n_pins       = n;
    
-   using _vt = typename be_item< typename uint_t< n >::fast >::value_type;
+   using _vt = typename item_root< typename uint_bits< n >::fast >::value_type;
+   
    GODAFOSS_INLINE static _vt invert( _vt v ){
       return ~v;	   
    }	   
+
 };
 
 
@@ -49,18 +51,18 @@ struct be_port_base :
 // ==========================================================================
 
 template< typename T >
-concept bool is_port_in_out = requires { 
-   is_port_base< T, T::n_pins >;
-   is_simplex< typename T::value_type >;
-   T::is_port_in_out;   
+concept port_in_out = requires { 
+   port< T, T::n_pins >;
+   simplex< typename T::value_type >;
+   T::port_in_out_marker;   
 };
 
 template< int n >
-struct be_port_in_out :
-   be_port_base< n >,
-   be_input_output< typename uint_t< n >::fast >
+struct port_in_out_root :
+   port_root< n >,
+   input_output_root< typename uint_bits< n >::fast >
 {
-   static constexpr bool is_port_in_out = true;
+   static constexpr bool port_in_out_marker = true;
 };
 
 
@@ -71,18 +73,18 @@ struct be_port_in_out :
 // ==========================================================================
 
 template< typename T >
-concept bool is_port_out = requires {
-   is_port_base< T, T::n_pins >;
-   is_output< typename T::value_type >;
-   T::is_port_out;
+concept port_out = requires {
+   port< T, T::n_pins >;
+   output< typename T::value_type >;
+   T::port_out_marker;
 };
 
 template< int n >
-struct be_port_out :
-   be_port_base< n >,
-   be_output< typename uint_t< n >::fast >
+struct port_out_root :
+   port_root< n >,
+   output_root< typename uint_bits< n >::fast >
 {
-   static constexpr bool is_port_out = true;
+   static constexpr bool port_out_marker = true;
 };
 
 
@@ -93,18 +95,18 @@ struct be_port_out :
 // ==========================================================================
 
 template< typename T >
-concept bool is_port_in = requires {
-   is_port_base< T, T::n_pins >;
-   is_input< typename T::value_type >;
-   T::is_port_in;
+concept port_in = requires {
+   port< T, T::n_pins >;
+   input< typename T::value_type >;
+   T::port_in_marker;
 };
 
 template< int n >
-struct be_port_in :
-   be_port_base< n >,
-   be_input< typename uint_t< n >::fast >
+struct port_in_root :
+   port_root< n >,
+   input_root< typename uint_bits< n >::fast >
 {
-   static constexpr bool is_port_in = true;
+   static constexpr bool port_marker = true;
 };
 
 
@@ -115,16 +117,16 @@ struct be_port_in :
 // ==========================================================================
 
 template< typename T >
-concept bool is_port_oc = requires {
-   is_port_base< T, T::n_pins >;
-   is_duplex< typename T::value_type >;
-   T::is_port_oc;
+concept port_oc = requires {
+   port< T, T::n_pins >;
+   duplex< typename T::value_type >;
+   T::port_oc_marker;
 };
 
 template< int n >
-struct be_port_oc :
-   be_port_base< n >,
-   be_duplex< typename uint_t< n >::fast >
+struct port_oc_root :
+   port_root< n >,
+   duplex_root< typename uint_bits< n >::fast >
 {
-   static constexpr bool is_port_oc = true;
+   static constexpr bool port_oc_marker = true;
 };

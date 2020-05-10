@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// gf_ostream.hpp
+// gf-ostream.hpp
 //
 // ==========================================================================
 //
@@ -23,10 +23,10 @@
 // ==========================================================================
 
 template< typename T >
-concept bool is_stream_out_char = requires {
-	is_stream< T >;
-	is_output< T >;
-//    { T::value_type } -> char;
+concept is_stream_out_char = requires {
+	stream< T >;
+	output< T >;
+   std::same_as< typename T::value_type, char >;
 };
 
 

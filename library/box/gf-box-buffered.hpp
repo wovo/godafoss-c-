@@ -4,10 +4,16 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// The buffered<> decorator buffers read, write or direction operations,
+// necessitating appropriate refersh or flush calls.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -25,7 +31,7 @@
 template< typename T >
 struct _buffered_read : T {};
 
-template< is_input T >
+template< input T >
 struct _buffered_read< T > : T {
 	
    static auto read(){
@@ -39,7 +45,7 @@ struct _buffered_read< T > : T {
    
 private:
 
-   typename T::value_type  buffer;   
+   static typename T::value_type  buffer;   
    
 };
 
@@ -53,26 +59,26 @@ private:
 template< typename T >
 struct _buffered_write : T {};
 
-template< is_output T >
+template< output T >
 struct _buffered_write< T > : T {
 	
    static void write( typename T::value_type v ) {
       buffer = v;
-	  dirty = true;
+      dirty = true;
    }
    
    static void flush() {
       if( dirty ){	   
          T::write( buffer );
          T::flush();
-		 dirty = false;
+         dirty = false;
       }		 
    }
    
 private:
 
-   bool                    dirty;
-   typename T::value_type  buffer;   
+   static bool                    dirty;
+   static typename T::value_type  buffer;   
    
 };
 
@@ -86,52 +92,52 @@ private:
 template< typename T >
 struct _buffered_direction : T {};
 
-template< is_simplex T >
+template< simplex T >
 struct _buffered_direction< T > : T {
 	
    static void direction_set_input() {
-      direction_is_input =  true;
+     direction_is_input =  true;
 	  dirty = true;
    }
    
    static void direction_set_output() {
       direction_is_input = false;	   
-	  dirty = true;
+      dirty = true;
    }
    
    static void direction_flush() {
       if( dirty ){	   
          if( direction_is_input ){
-	        T::direction_set_input();
+            T::direction_set_input();
          } else {
-	        T::direction_set_output();
+            T::direction_set_output();
          }  
-	     T::direction_flush();
-		 dirty = false;
+         T::direction_flush();
+         dirty = false;
       }		 
    }
    
 private:
 
-   bool dirty;        
-   bool direction_is_input;   
+   static bool dirty;        
+   static bool direction_is_input;   
    
 };
 
 
 // ==========================================================================
 //
-// wrapper
+// the buffered<> decorator
 //
 // ==========================================================================
 
 template< typename T >
-concept bool can_buffered = requires {
-   is_box< T >;
+concept can_buffered = requires {
+   box< T >;
 };
 
 template< can_buffered T >
 struct buffered : 
    _buffered_read< 
-      _buffered_write< 
-         _buffered_direction < T >>> {};
+   _buffered_write< 
+   _buffered_direction < T >>> {};

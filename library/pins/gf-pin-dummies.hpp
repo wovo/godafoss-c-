@@ -17,7 +17,7 @@
 
 
 struct pin_in_out_dummy : 
-   be_pin_in_out 
+   pin_in_out_root
 {   
    
    static void GODAFOSS_INLINE init(){}   
@@ -46,10 +46,10 @@ struct pin_in_out_dummy :
 
 // ==========================================================================
 
-using pin_out_dummy = pin_out< pin_in_out_dummy >;  
+using pin_out_dummy = pin_out_from< pin_in_out_dummy >;  
 
-using pin_in_dummy  = pin_in< pin_in_out_dummy >;      
+using pin_in_dummy  = pin_in_from< pin_in_out_dummy >;      
 
-using pin_oc_dummy  = pin_oc< pin_in_out_dummy >;      
+using pin_oc_dummy  = pin_oc_from< pin_in_out_dummy >;      
 
 

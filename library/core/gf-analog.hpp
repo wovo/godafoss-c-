@@ -24,21 +24,21 @@
 
 // quote ''adc'' };
 template< typename T >
-concept bool adc = requires {
+concept adc = requires {
    T::is_adc;
-   is_item< T >;
-   is_input< T >;
+   item< T >;
+   input< T >;
 //   constexpr T::value_type adc_min;
 //   constexpr T::value_type adc_max;
 };
 
 template< int n_bits >
 struct be_adc :
-   be_item< typename uint_t< n_bits >::fast >,
-   be_input< typename uint_t< n_bits >::fast >
+   item_root< typename uint_bits< n_bits >::fast >,
+   input_root< typename uint_bits< n_bits >::fast >
 {
    static const bool is_adc = true;
-   using value_type = typename uint_t< n_bits >::fast;
+   using value_type = typename uint_bits< n_bits >::fast;
    static const value_type adc_min = 0;
    static const value_type adc_max = ( 1 << n_bits ) -1;
 };
@@ -53,7 +53,7 @@ struct be_adc :
 // quote ''dac'' };
 /*
 template< typename T >
-concept bool dac = requires( 
+concept dac = requires( 
    T::is_dac,
    item< T >,
    output< T >,

@@ -18,10 +18,10 @@
 
 template< int n >
 struct port_in_out_dummy : 
-   be_port_in_out< n > 
+   port_in_out_root< n > 
 {   
 
-   using _vt = typename be_port_in_out< n >::value_type;
+   using _vt = typename port_in_out_root< n >::value_type;
    
    static void GODAFOSS_INLINE init(){}   
 
@@ -50,13 +50,13 @@ struct port_in_out_dummy :
 // ==========================================================================
 
 template< int n >
-using port_out_dummy = port_out< port_in_out_dummy< n > >;  
+using port_out_dummy = port_out_from< port_in_out_dummy< n > >;  
 
 
 // ==========================================================================
 
 template< int n >
-using port_in_dummy  = port_in< port_in_out_dummy< n > >;      
+using port_in_dummy  = port_in_from< port_in_out_dummy< n > >;      
 
 
 // ==========================================================================
@@ -66,10 +66,10 @@ using port_in_dummy  = port_in< port_in_out_dummy< n > >;
 
 template< int n >
 struct port_oc_dummy : 
-   be_port_oc< n > 
+   port_oc_root< n > 
 {   
     
-   using _vt = typename be_port_oc< n >::value_type;
+   using _vt = typename port_oc_root< n >::value_type;
    
    static void GODAFOSS_INLINE init(){}   
 

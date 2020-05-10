@@ -5,26 +5,26 @@
 // ==========================================================================
 
 // quote ##rx-address-01 2
-template< size_t n > concept bool range_1_5 = 
+template< size_t n > concept range_1_5 = 
    ( ( n >0 ) && ( n < 6 ) );
 
 // quote ##transmit 2
-template< size_t n > concept bool range_1_32 = 
+template< size_t n > concept range_1_32 = 
    ( ( n > 0 ) && ( n < 33 ) );
 
 // quote ##cto 7
 template<
-   typename     _bus,    // SPI bus (MOSI, MISO, SCK)
-   can_pin_out  _ce,     // CE (Chip Enable) pin
-   can_pin_out  _csn,    // SPI Chip Select (Negative) pin
-   typename     timing   // timing service
+   typename            _bus,    // SPI bus (MOSI, MISO, SCK)
+   pin_out_compatible  _ce,     // CE (Chip Enable) pin
+   pin_out_compatible  _csn,    // SPI Chip Select (Negative) pin
+   typename            timing   // timing service
 >
 struct nrf24l01_spi_ce_csn {
 
    // quote ##hw-interface 3
    using bus          = _bus;
-   using chip_enable  = direct< pin_out< _ce >>;
-   using chip_select  = invert< direct< pin_out< _csn >>>;
+   using chip_enable  = direct< pin_out_from< _ce >>;
+   using chip_select  = invert< direct< pin_out_from< _csn >>>;
 
    static void init(){
       bus::init();
@@ -73,24 +73,28 @@ struct nrf24l01_spi_ce_csn {
    }
 
    // quote ##fcommand 2 
-   template< range_1_32 n >
+   template< std::size_t n >
    static void write( 
       const cmd c, 
       const std::array< uint8_t, n > & d,
       int_fast16_t amount = n
-   ){
+   )
+      requires range_1_32< n >
+   {
       auto t = bus_transfer();
       t.write( static_cast< uint8_t>( c ) );
       t.write( d, amount );
    }
    
    // quote ##read-write 1
-   template< range_1_32 n >
+   template< std::size_t n >
    static void read( 
       const cmd c, 
       std::array< uint8_t, n > & d,
       int_fast16_t amount = n      
-   ){
+   )
+      requires range_1_32< n >
+   {
       auto t = bus_transfer();
       t.write( static_cast< uint8_t>( c ) );
       t.read( d, amount );
@@ -370,14 +374,18 @@ struct nrf24l01_spi_ce_csn {
    }
 
    // quote ##rx-address-01 2
-   template< range_1_5 n >
-   static void receive_address_p0( const std::array< uint8_t, n > address ){
+   template< std::size_t n >
+   static void receive_address_p0( const std::array< uint8_t, n > address )
+      requires range_1_5< n >
+   {
       write( reg::rx_addr_p0, address );  
    }
 
    // quote ##rx-address-01 2
-   template< range_1_5 n >
-   static void receive_address_p1( const std::array< uint8_t, n > address ){
+   template< std::size_t n >
+   static void receive_address_p1( const std::array< uint8_t, n > address )
+      requires range_1_5< n >   
+   {
       write( reg::rx_addr_p1, address );  
    }
 
@@ -387,8 +395,10 @@ struct nrf24l01_spi_ce_csn {
    }
 
    // quote ##tx-address 2
-   template< range_1_5 n >
-   static void transmit_address( const std::array< uint8_t, n > address ){
+   template< std::size_t n >
+   static void transmit_address( const std::array< uint8_t, n > address )
+      requires range_1_5< n >
+   {
       write( reg::tx_addr, address );   
    } 
 
@@ -424,16 +434,20 @@ struct nrf24l01_spi_ce_csn {
    }
 
    // quote ##transmit 2
-   template< range_1_32 n >
-   static void transmit( std::array< uint8_t, n > data ){
+   template< std::size_t n >
+   static void transmit( std::array< uint8_t, n > data )
+      requires range_1_32< n >
+   {
       //chip_enable::write( 0 );
       write( cmd::w_tx_payload, data );
       //chip_enable::write( 1 );
    }
    
    // quote ##transmit 2
-   template< range_1_32 n >
-   static void transmit_datagram( std::array< uint8_t, n > data ){
+   template< std::size_t n >
+   static void transmit_datagram( std::array< uint8_t, n > data )
+      requires range_1_32< n >
+   {
       //chip_enable::write( 0 );
       write( cmd::w_tx_payload_noack, data );
       //chip_enable::write( 1 );

@@ -114,15 +114,16 @@ struct _port_out_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_out_from_pins< n, pin, tail... > :
-   _port_recurse_output< pin_out< pin >, 
-   _port_recurse_init< pin_out< pin >, 
+   _port_recurse_output< pin_out_from< pin >, 
+   _port_recurse_init< pin_out_from< pin >, 
       _port_out_from_pins< n, tail... > > >
 {};
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< can_pin_out_list... Ts > 
-struct port_out< Ts... > :
+template< typename... Ts > 
+requires pin_out_compatible_list< Ts... >
+struct port_out_from< Ts... > :
    no_inline<
       _port_out_from_pins< sizeof...( Ts ), Ts... > >
 {};
@@ -149,15 +150,16 @@ struct _port_in_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_in_from_pins< n, pin, tail... > :
-   _port_recurse_input< pin_in< pin >, 
-   _port_recurse_init< pin_in< pin >, 
+   _port_recurse_input< pin_in_from< pin >, 
+   _port_recurse_init< pin_in_from< pin >, 
       _port_in_from_pins< n, tail... > > >
 {};
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< can_pin_in_list... Ts > 
-struct port_in< Ts... > :
+template< typename... Ts > 
+requires pin_in_compatible_list< Ts... >
+struct port_in_from< Ts... > :
    no_inline<
       _port_in_from_pins< sizeof...( Ts ), Ts... > >
 {};
@@ -184,17 +186,18 @@ struct _port_in_out_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_in_out_from_pins< n, pin, tail... > :
-   _port_recurse_output< pin_in_out< pin >, 
-   _port_recurse_input< pin_in_out< pin >, 
-   _port_recurse_direction< pin_in_out< pin >, 
-   _port_recurse_init< pin_in_out< pin >, 
+   _port_recurse_output< pin_in_out_from< pin >, 
+   _port_recurse_input< pin_in_out_from< pin >, 
+   _port_recurse_direction< pin_in_out_from< pin >, 
+   _port_recurse_init< pin_in_out_from< pin >, 
       _port_in_out_from_pins< n, tail... > > > > >
 {};
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< can_pin_in_out_list... Ts > 
-struct port_in_out< Ts... > :
+template< typename... Ts > 
+requires pin_in_out_compatible_list< Ts... > 
+struct port_in_out_from< Ts... > :
    no_inline<
       _port_in_out_from_pins< sizeof...( Ts ), Ts... > >
 {};
@@ -221,16 +224,17 @@ struct _port_oc_from_pins< n > :
 // add one pin and recurse
 template< int n, typename pin, typename... tail >
 struct _port_oc_from_pins< n, pin, tail... > :
-   _port_recurse_output< pin_oc< pin >, 
-   _port_recurse_input< pin_oc< pin >, 
-   _port_recurse_init< pin_oc< pin >, 
+   _port_recurse_output< pin_oc_from< pin >, 
+   _port_recurse_input< pin_oc_from< pin >, 
+   _port_recurse_init< pin_oc_from< pin >, 
       _port_oc_from_pins< n, tail... > > > >
 {};
 
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< can_pin_oc_list... Ts > 
-struct port_oc< Ts... > :
+template< typename... Ts > 
+requires pin_oc_compatible_list< Ts... > 
+struct port_oc_from< Ts... > :
    no_inline<
       _port_oc_from_pins< sizeof...( Ts ), Ts... > >
 {};

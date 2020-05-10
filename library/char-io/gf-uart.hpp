@@ -23,9 +23,10 @@
 // ==========================================================================
 
 template< typename T >
-concept bool is_uart = requires {
-   is_stream< T, char >;
-   is_duplex< T, char >;
+concept is_uart = requires {
+   stream< T >;
+   duplex< T >;
+   std::same_as< typename T::value_type, char >;
    T::is_uart;
 };
 
@@ -37,19 +38,19 @@ concept bool is_uart = requires {
 // ==========================================================================
 
 template< typename T >
-concept bool is_hardware_uart = requires (
+concept is_hardware_uart = requires (
    char c
 ) {
-   { T::write_blocks() }        -> bool;
-   { T::write_unchecked( c ) }  -> void;
-   { T::read_blocks() }         -> bool;
-   { T::read_unchecked() }      -> char;
+   { T::write_blocks() }        -> std::same_as< bool >;
+   { T::write_unchecked( c ) }  -> std::same_as< void >;
+   { T::read_blocks() }         -> std::same_as< bool >;
+   { T::read_unchecked() }      -> std::same_as< char >;
 };
 
 template< typename T >
 struct be_uart : 
-   be_stream< char >,
-   be_duplex< char >
+   stream_root< char >,
+   duplex_root< char >
 {
    
    static const bool is_uart = true;

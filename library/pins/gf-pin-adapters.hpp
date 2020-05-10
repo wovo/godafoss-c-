@@ -4,10 +4,13 @@
 //
 // ==========================================================================
 //
-// This file is part the https://www.github.com/godafoss 
-// free C++ library for close-to-the-hardware programming.
+// ==========================================================================
 //
-// Copyright Wouter van Ooijen 2019
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -22,48 +25,24 @@
 //
 // ==========================================================================
 
-// quote ''can_pin_in_out'' );
-template< typename T >
-concept bool can_pin_in_out =
-      is_pin_in_out< T > 
-   || is_pin_oc< T >;
-
-// quote ''can_pin_out'' );
-template< typename T >
-concept bool can_pin_out =
-     is_pin_in_out< T > 
-  || is_pin_out< T > 
-  || is_pin_oc< T >;
-
-// quote ''can_pin_in'' );
-template< typename T >
-concept bool can_pin_in = 
-      is_pin_in_out< T > 
-   || is_pin_in< T > 
-   || is_pin_oc< T >;
-
-// quote ''can_pin_oc'' );
-template< typename T >
-concept bool can_pin_oc = 
-      is_pin_in_out< T > 
-   || is_pin_oc< T >;
 
 
 // ==========================================================================
-//// pull-ups
+//
+// pull-ups
 //
 // ==========================================================================
 
 template< typename T >
-concept bool is_pullup_capable = requires {
-   { T::pullup_enable() } -> void;
-   { T::pullup_disable() } -> void;
+concept pullup_capable = requires {
+   T::pullup_enable();
+   T::pullup_disable();
 };
 
 template< typename T >
 struct pullup_filter {};
 
-template< is_pullup_capable T >
+template< pullup_capable T >
 struct pullup_filter< T > { 
     
    static void GODAFOSS_INLINE pullup_enable(){ 
@@ -78,34 +57,18 @@ struct pullup_filter< T > {
 
 // ==========================================================================
 //
-// lists of can-be-same pins
-//
-// ==========================================================================
-
-template< typename... Ts >
-concept bool can_pin_out_list = ( can_pin_out< Ts > && ... );
-
-template< typename... Ts >
-concept bool can_pin_in_list = ( can_pin_in< Ts > && ... );
-
-template< typename... Ts >
-concept bool can_pin_in_out_list = ( can_pin_in_out< Ts > && ... );
-
-template< typename... Ts >
-concept bool can_pin_oc_list = ( can_pin_oc< Ts > && ... );
-
-
-// ==========================================================================
-//
 // in_out
 //
 // ==========================================================================
 
-template< can_pin_in_out T > 
-struct pin_in_out :
-   be_pin_out,
-   box_init_filter< T >,
-   box_write_filter< T >,
+GODAFOSS_FROM_COMPATIBLE( pin_in_out )
+
+template< pin_in_out T > 
+struct pin_in_out_from< T > :
+   pin_out_root,
+   box_inherit_init< T >,
+   box_inherit_read< T >,
+   box_inherit_write< T >,
    pullup_filter< T >
 {};   
 
@@ -116,17 +79,19 @@ struct pin_in_out :
 //
 // ==========================================================================
 
-template< can_pin_out T > 
-struct pin_out : 
-   be_pin_out,
-   box_init_filter< T >,
-   box_write_filter< T >
+GODAFOSS_FROM_COMPATIBLE( pin_out )
+
+template< pin_out T > 
+struct pin_out_from< T >  : 
+   pin_out_root,
+   box_inherit_init< T >,
+   box_inherit_write< T >
 {};
 
-template< is_pin_in_out T >
-struct pin_out< T > :
-   be_pin_out,
-   box_write_filter< T >
+template< pin_in_out T >
+struct pin_out_from< T > :
+   pin_out_root,
+   box_inherit_write< T >
 {
    
    static void GODAFOSS_INLINE init(){
@@ -143,12 +108,12 @@ struct pin_out< T > :
 //
 // ==========================================================================
 
-template< typename T > struct pin_in;
+GODAFOSS_FROM_COMPATIBLE( pin_in )
 
-template< is_pin_in_out T >
-struct pin_in< T > : 
-   be_pin_in,
-   box_read_filter< T >,
+template< pin_in_out T >
+struct pin_in_from< T > : 
+   pin_in_root,
+   box_inherit_read< T >,
    pullup_filter< T >
 {
 	
@@ -159,18 +124,18 @@ struct pin_in< T > :
    
 };
 
-template< is_pin_in T >
-struct pin_in< T > : 
-   be_pin_in,
-   box_init_filter< T >,
-   box_read_filter< T >,
+template< pin_in T >
+struct pin_in_from< T > : 
+   pin_in_root,
+   box_inherit_init< T >,
+   box_inherit_read< T >,
    pullup_filter< T >
 {};
 
-template< is_pin_oc T >
-struct pin_in< T > : 
-   be_pin_in,
-   box_read_filter< T >,
+template< pin_oc T >
+struct pin_in_from< T > : 
+   pin_in_root,
+   box_inherit_read< T >,
    pullup_filter< T >
 {
 	
@@ -188,23 +153,23 @@ struct pin_in< T > :
 //
 // ==========================================================================
 
-template< typename T > struct pin_oc;
+GODAFOSS_FROM_COMPATIBLE( pin_oc )
 
-template< is_pin_oc T >
-struct pin_oc< T > : 
-   be_pin_oc,
-   box_init_filter< T >,
-   box_write_filter< T >,
-   box_read_filter< T >,
+template< pin_oc T >
+struct pin_oc_from< T > : 
+   pin_oc_root,
+   box_inherit_init< T >,
+   box_inherit_write< T >,
+   box_inherit_read< T >,
    pullup_filter< T >
 {};
 
-template< is_pin_in_out T >
-struct pin_oc< T > : 
-   be_pin_oc,
-   box_init_filter< T >,
-   box_write_filter< T >,
-   box_read_filter< T >,
+template< pin_in_out T >
+struct pin_oc_from< T > : 
+   pin_oc_root,
+   box_inherit_init< T >,
+   box_inherit_write< T >,
+   box_inherit_read< T >,
    pullup_filter< T >
 {
 

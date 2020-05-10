@@ -4,10 +4,10 @@
 //
 // ==========================================================================   
    
-template< can_pin_out _pin, typename timing >
+template< pin_out_compatible _pin, typename timing >
 struct servo {
 	
-   using pin = direct< pin_out< _pin > >;	
+   using pin = direct< pin_out_from< _pin > >;	
 	
    static void init(){
       pin::init();

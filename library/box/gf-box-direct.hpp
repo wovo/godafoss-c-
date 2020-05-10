@@ -4,10 +4,16 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// The direct<> decorator inserts the appropriate refresh or flush
+// before or after each read, write, or direction change operation.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -25,7 +31,7 @@
 template< typename T >
 struct _direct_read : T {};
 
-template< is_input T >
+template< input T >
 struct _direct_read< T > : T {
 	
    static auto read(){
@@ -45,7 +51,7 @@ struct _direct_read< T > : T {
 template< typename T >
 struct _direct_write : T {};
 
-template< is_output T >
+template< output T >
 struct _direct_write< T > : T {
 	
    static void write( typename T::value_type v ) {
@@ -65,7 +71,7 @@ struct _direct_write< T > : T {
 template< typename T >
 struct _direct_direction : T {};
 
-template< is_simplex T >
+template< simplex T >
 struct _direct_direction< T > : T {
 	
    static void direction_set_input() {
@@ -83,17 +89,17 @@ struct _direct_direction< T > : T {
 
 // ==========================================================================
 //
-// wrapper
+// the direct<> decorator
 //
 // ==========================================================================
 
 template< typename T >
-concept bool can_direct = requires {
-   is_item< T >;
+concept can_direct = requires {
+   item< T >;
 };
 
 template< can_direct T >
 struct direct : 
    _direct_read< 
-      _direct_write< 
-         _direct_direction < T >>> {};
+   _direct_write< 
+   _direct_direction < T >>> {};

@@ -4,10 +4,15 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// The invert<> decorator inverts the value written to or read from a box.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -18,53 +23,59 @@
 
 // ==========================================================================
 //
-// read
+// invert the read operation (if available)
 //
 // ==========================================================================
 
 template< typename T >
 struct _invert_read : T {};
 
-template< is_input T >
+template< input T >
 struct _invert_read< T > : T {
+   
    static auto read(){
       return T::invert( T::read() );
    }
+
 };
 
 
 // ==========================================================================
 //
-// write
+// invert the write operation (if available)
 //
 // ==========================================================================
    
 template< typename T >
 struct _invert_write : T {};
 
-template< is_output T >
+template< output T >
 struct _invert_write< T > : T {
+   
    static void write( typename T::value_type v ) {
       T::write( T::invert( v ));
    }
+
 };
 
 
 // ==========================================================================
 //
-// wrapper
+// invert adapter
 //
 // ==========================================================================
 
+// invert requires that an invert function is present
 template< typename T >
-concept bool can_invert = requires (
+concept can_invert = requires (
    typename T::value_type v   
 ) {
-   is_box< T >;
-   { T::invert( v ) } -> typename T::value_type;
+   box< T >;
+   { T::invert( v ) } -> std::same_as< typename T::value_type >;
 };
 
+// invert both the read and write operations (if available)
 template< can_invert T >
 struct invert : 
    _invert_read< 
-      _invert_write< T >> {};
+   _invert_write< T >> {};

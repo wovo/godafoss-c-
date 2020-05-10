@@ -4,10 +4,19 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// The xy ADT is a pair of two T signed integer values named x and y
+// of at least 16 bits. It is used as distances between locations 
+// on a window or terminal.
+//
+// The torsor of xy is used to identify a location.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2018
+// Copyright 
+//    Wouter van Ooijen 2018-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -15,35 +24,24 @@
 //
 // ==========================================================================
 
+
 // ==========================================================================
 //
-// xy
+// xy ADT
 //
 // ==========================================================================
 
-/// an xy pair 
-/// 
-/// This class abstracts an (at least 16 bit) integer pair.
-/// It is used for instance for the size of a graphics or character screen,
-/// or the distance between two pixel locations.
-/// 
-/// (The torsor of xy is used to identify a single pixel location.)
 class xy final {
 public:
 
-   /// x value of the pair
-   int_fast16_t x;
+   using value_t = int_fast16_t;
+
+   int_fast16_t x, y;
    
-   /// y value of the pair
-   int_fast16_t y;
-   
-   /// construct from its x and y values
    constexpr xy( int_fast16_t x, int_fast16_t y ): x{ x }, y{ y }{}
    
-   /// default constructor, zero's the x and y
    constexpr xy():x{ 0 }, y{ 0 }{}
 
-   /// add two 
    constexpr xy operator+( const xy rhs ) const {
       return xy{ 
           static_cast< int_fast16_t >( x + rhs.x ),
@@ -51,7 +49,6 @@ public:
       };      
    }      
    
-   /// subtract two 
    constexpr xy operator-( const xy rhs ) const {
       return xy{ 
           static_cast< int_fast16_t >( x - rhs.x ),
@@ -59,7 +56,6 @@ public:
       };         
    }      
 
-   /// divide by an integer
    constexpr xy operator/( const int_fast16_t rhs ) const {
       return xy{ 
           static_cast< int_fast16_t >( x / rhs ),
@@ -67,7 +63,6 @@ public:
       };         
    }    
 
-   /// multiply by an integer
    constexpr xy operator*( const int_fast16_t rhs ) const {
       return xy{ 
           static_cast< int_fast16_t >( x * rhs ),
@@ -75,17 +70,20 @@ public:
       };         
    }    
 
-   /// test whether two xy values are equal
    constexpr bool operator==( const xy & rhs ) const {
       return ( x == rhs.x ) && ( y == rhs.y );
    }
 
-   /// test whether two xy values are unequal
    constexpr bool operator!=( const xy & rhs ) const {
       return ! ( *this == rhs );
    }
 
 }; 
+
+template< is_output_stream T >
+T & operator<<( T & lhs, xy rhs ){
+   return lhs << '(' << rhs.x << ',' << rhs.y << ')';
+}
 
 
 // ==========================================================================
@@ -93,8 +91,6 @@ public:
 // iterator
 //
 // ==========================================================================
-
-/// \cond INTERNAL
 
 class xy_iterator_t {
 private:

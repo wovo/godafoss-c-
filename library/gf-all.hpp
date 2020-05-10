@@ -1,33 +1,43 @@
 // ==========================================================================
 //
-// File      : gf-all.hpp
-// Part of   : C++ library for close-to-the-hardware programming
-// Copyright : wouter@voti.nl 2019
-//
-// Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE_1_0.txt or copy at 
-// http://www.boost.org/LICENSE_1_0.txt)
+// gf-all.hpp
 //
 // ==========================================================================
-
-// This file includes all target-independent files 
-// to add a file, add it here and in the Makefile.inc
 //
-// C/C++ library files are included here rather than in the individual
-// library files.
+// This file includes all target-independent files. 
+//
+// To add a file, add it here and in the Makefile.inc
+//
+// C/C++ library files are included here rather than in 
+// the individual library files.
 // The individual header files depend on the order in which they 
 // are included here, and don't have multiple-include guards.
 // They are not meant to be included individually.
 //
-// In normal use, this file is included by a target-specific file.
+// In typical use, this file is included (only) by a target HAL file.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright 
+//    Wouter van Ooijen 2019-2020
+// 
+// Distributed under the Boost Software License, Version 1.0.
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// ==========================================================================
+
 
 #ifndef GF_ALL_H
 #define GF_ALL_H
 
 // ==========================================================================
 //
-// The library headers we need are included here rather than in the files
-// that need them. 
+// The library headers we need are included here 
+// rather than in the files that need them. 
 //
 // A dirty hack is needed because the AVR8 compiler lacks certain headers
 // https://github.com/maniacbug/StandardCplusplus
@@ -84,7 +94,7 @@
 #pragma GCC diagnostic error "-Wmissing-format-attribute"
 #pragma GCC diagnostic error "-Wsuggest-final-types"
 #pragma GCC diagnostic error "-Wsuggest-final-methods"
-#pragma GCC diagnostic error "-Wsuggest-override"
+//#pragma GCC diagnostic error "-Wsuggest-override" - SFML
 
 #pragma GCC diagnostic error "-Warray-bounds=2"
 #pragma GCC diagnostic error "-Wduplicated-branches"
@@ -110,7 +120,7 @@
 
 // ==========================================================================
 //
-// include all non-HAL library files, enclosed in the hwcpp namespace
+// include all non-HAL library files, enclosed in the godafoss namespace
 //
 // ==========================================================================
 
@@ -121,9 +131,11 @@ namespace godafoss {
 #include "core/gf-basics.hpp"
 #include "core/gf-ints.hpp"
 #include "core/gf-passing.hpp"
+#include "core/gf-output-stream.hpp"
+#include "core/gf-xy.hpp"
 
 #include "box/gf-box.hpp"
-#include "box/gf-box-filters.hpp"
+#include "box/gf-box-inherit.hpp"
 #include "box/gf-box-no-inline.hpp"
 #include "box/gf-box-invert.hpp"
 #include "box/gf-box-direct.hpp"
@@ -154,13 +166,12 @@ namespace godafoss {
 #include "char-io/gf-uart.hpp"
 #include "char-io/gf-ostream.hpp"
 #include "char-io/gf-ostream-object.hpp"
-#include "core/gf-xy.hpp"
 #include "char-io/gf-terminal.hpp"
 #include "char-io/gf-terminal-demos.hpp"
 
 #include "graphics/gf-color.hpp"
-//#include "graphics/gf-window.hpp"
-//#include "graphics/gf-drawables.hpp"
+#include "graphics/gf-window.hpp"
+#include "graphics/gf-drawables.hpp"
 //#include "graphics/gf-window-demos.hpp"
 
 #include "chips/gf-servo.hpp"
