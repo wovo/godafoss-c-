@@ -1,13 +1,18 @@
 // ==========================================================================
 //
-// gf-pin-out-from-pins.hpp
+// gf-pin-all.hpp
 //
 // ==========================================================================
 //
-// This file is part the https://www.github.com/godafoss 
-// free C++ library for close-to-the-hardware programming.
+// A write on the the pin all< p1, ... > writes to all pins p1...
 //
-// Copyright Wouter van Ooijen 2019
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright 
+//    Wouter van Ooijen 2019-2020
 // 
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
@@ -49,9 +54,18 @@ struct _pin_out_from_pins< head, tail... > {
    
 };
 
-// wrapper
+// opt into all<>
 template< pin_out_compatible_list... tail >
-struct pin_out_from_pins :
+struct support_all< tail... > {
+   static constexpr bool value = true;
+};
+
+// wrapper
+/*
+template< pin_out_compatible_list... tail >
+   requires pin_out_compatible_list< tail... >
+struct all< tail... > :
    pin_out_root,
    _pin_out_from_pins< tail... >
 {};
+*/

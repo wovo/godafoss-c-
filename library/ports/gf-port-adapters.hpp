@@ -18,89 +18,16 @@
 
 // ==========================================================================
 //
-// concepts
-//
-// ==========================================================================
-
-/*
-template< typename T >
-concept can_port_in_out =  
-      is_port_in_out< T >
-   || is_port_oc< T >;
-
-template< typename T >
-concept can_port_out =  
-      is_port_out< T >
-   || is_port_in_out< T >
-   || is_port_oc< T >;
-
-template< typename T >
-concept can_port_in =  
-      is_port_in< T >
-   || is_port_in_out< T >
-   || is_port_oc< T >;
-
-template< typename T >
-concept can_port_oc =  
-   // a port_in_out is NOT acceptable
-   is_port_oc< T >;
-*/
-
-/*
-template< typename T, typename... D >
-using _first = T;
-
-template< typename... T >
-concept _can_port_out_first =  
-      is_port_out< _first< T > >
-   || is_port_in_out< _first< T > >
-   || is_port_oc< _first< T > >;
-*/
-
-// ==========================================================================
-//
-// fallbacks
-//
-// A port can be constructed from another port 
-// (implemented in this file),
-// or from a list of pins (implemented in port-from-pins).
-//
-// ==========================================================================
-
-/*
-
-template< typename... Ts >
-requires 
-   can_pin_in_out_list< Ts...> 
-   || ( ( sizeof...( Ts ) == 1 ) && ( can_port_in_out< Ts > && ... ) )
-struct port_in_out;
-
-template< typename... Ts >
-requires 
-   can_pin_out_list< Ts...> 
-   || ( ( sizeof...( Ts ) == 1 ) && ( can_port_out< Ts > && ... ) )
-struct port_out;
-
-template< typename... Ts >
-requires 
-   can_pin_in_list< Ts...> 
-   || ( ( sizeof...( Ts ) == 1 ) && ( can_port_in< Ts > && ... ) )
-struct port_in;
-
-template< typename... Ts >
-requires 
-   can_pin_oc_list< Ts...> 
-   || ( ( sizeof...( Ts ) == 1 ) && ( can_port_oc< Ts > && ... ) )
-struct port_oc;
-*/
-
-// ==========================================================================
-//
 // adapters
 //
 // ==========================================================================
 
-GODAFOSS_FROM_COMPATIBLE( port_in_out )
+GODAFOSS_SUPPORTED( port_in_out, port_in_out_from )
+
+template< port_in_out T >
+struct port_in_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< port_in_out T > 
 struct port_in_out_from< T > :
@@ -111,13 +38,17 @@ struct port_in_out_from< T > :
    box_inherit_read< T >
 {};   
 
-/* wovo
-template< is_port_oc T >
-struct pin_in_out< T > : 
-   be_pin_out,
-   box_init< T >,
-   box_write< T >,
-   box_read< T >
+template< port_oc T >
+struct port_in_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
+
+template< port_oc T >
+struct pin_in_out_from< T > : 
+   port_in_out_root< T::n_pins >,
+   box_inherit_init< T >,
+   box_inherit_write< T >,
+   box_inherit_read< T >
 {   
 
    static GODAFOSS_INLINE void direction_set_input(){
@@ -132,11 +63,15 @@ struct pin_in_out< T > :
    }
 
 };
-*/
 
 // ==========================================================================
 
-GODAFOSS_FROM_COMPATIBLE( port_out )
+GODAFOSS_SUPPORTED( port_out, port_out_from )
+
+template< port_in_out T >
+struct port_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< port_in_out T > 
 struct port_out_from< T > :
@@ -152,12 +87,22 @@ struct port_out_from< T > :
 
 };   
 
+template< port_out T >
+struct port_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
+
 template< port_out T > 
 struct port_out_from< T > :
    port_out_root< T::n_pins >,
    box_inherit_init< T >,
    box_inherit_write< T >
 {};   
+
+template< port_oc T >
+struct port_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< port_oc T > 
 struct port_out_from< T > :
@@ -169,7 +114,12 @@ struct port_out_from< T > :
 // ==========================================================================
 
 
-GODAFOSS_FROM_COMPATIBLE( port_in )
+GODAFOSS_SUPPORTED( port_in, port_in_from )
+
+template< port_in_out T >
+struct port_in_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< port_in_out T > 
 struct port_in_from< T > :
@@ -185,12 +135,22 @@ struct port_in_from< T > :
 
 };   
 
+template< port_in T >
+struct port_in_supported< T > {
+   static constexpr bool supported = true;; 
+};
+
 template< port_in T > 
 struct port_in_from< T > :
    port_in_root< T::n_pins >,
    box_inherit_init< T >,
    box_inherit_read< T >
 {};   
+
+template< port_oc T >
+struct port_in_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< port_oc T > 
 struct port_in_from< T > :
@@ -209,7 +169,12 @@ struct port_in_from< T > :
 // ==========================================================================
 
 
-GODAFOSS_FROM_COMPATIBLE( port_oc )
+GODAFOSS_SUPPORTED( port_oc, port_oc_from )
+
+template< port_oc T >
+struct port_oc_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< port_oc T > 
 struct port_oc_from< T > :

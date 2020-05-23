@@ -17,66 +17,123 @@ template< typename T >
 concept color_compatible = true;
 
 template< typename T >
-concept window = requires {  
+concept window = requires( 
+   typename T::offset_t  a, 
+   typename T::color_t   c 
+){  
    T::window_marker;
-   { T::init() } -> std::same_as< void >;
-   { T::write( T::address_t, T::color_t ) } -> std::same_as< void >;
-   { T::write( T::address_t ) } -> std::same_as< void >;
-   { T::clear( T::color_t ) } -> std::same_as< void >;
-   { T::clear() } -> std::same_as< void >;
-   { T::flush() } -> std::same_as< void >;
+   { T::size }           -> std::same_as< const typename T::offset_t & >;
+   { T::init() }         -> std::same_as< void >;
+   { T::write( a, c ) }  -> std::same_as< void >;
+   { T::clear( c ) }     -> std::same_as< void >;
+   { T::flush() }        -> std::same_as< void >;
 };
 
+// GODAFOSS_FROM_COMPATIBLE( window )
+
 template< 
-   typename          implementation, 
-   xy_compatible     _address_t,
+   typename          _implementation, 
+   xy_compatible     _offset_t,
    color_compatible  _color_t,
-   _address_t        _size, 
-   _color_t          _foreground, 
-   _color_t          _background 
+   xy                _size
 >
 struct window_root {
 
    static constexpr bool window_marker = true;
    
-   using address_t  = _address_t;
-   using color_t    = _color_t;
+   using offset_t    = _offset_t;
+   using location_t  = torsor< _offset_t >;
+   using color_t     = _color_t;
    
-   static constexpr address_t size = _size;
-   static constexpr color_t foreground = _foreground;
-   static constexpr color_t background = _background;
+   static constexpr location_t origin = location_t( 0, 0 );
+   static constexpr offset_t   size   = _size;
    
-   static bool within( 
-      address_t::value_t value, 
-      address_t::value_t limit 
-   ){
+   template< typename T >
+   static bool within( T value, T limit ){
       return ( value >= 0 ) && ( value < limit );
    }
    
-   static void write( address_t location, color_t color ){
+   static void write( location_t location, color_t color ){
       if( 
          within( location.x, size.x ) 
          && within( location.y, size.y )
       ){   
-         implementation::write_implementation( location, color );
+         _implementation::write_implementation( location, color );
       }   
    } 
-   
-   static void write( address_t location ){
-      write( location, foreground );
-   }      
-   
+          
    static void clear( color_t color ){ 
       for( const auto location : xy_all_t( size )){
-         implementation::write_implementation( location, color );                        
+         _implementation::write_implementation( location, color );                        
       }         
    }   
    
-   static void clear(){ 
-      clear( background );        
-   }   
-   
 };
+
+template< typename minion >
+struct flip_horizontally : 
+   window_root< 
+      flip_horizontally< minion >,
+      typename minion::location_t,
+      typename minion::color_t,
+      minion::size
+   >      
+{
+   
+   static void init(){
+      minion::init();   
+   }
+
+   static void write_implementation( 
+      minion::location_t pos, 
+      minion::color_t color
+   ){
+      minion::write( 
+         typename minion::location_t( minion::size.x - pos.x, pos.y ),
+         color
+      );   
+   }
+   
+   static void flush(){
+      minion::flush();   
+   }   
+
+};
+
+template< window T >
+struct support_invert< T >{
+   static constexpr bool value = true;
+};
+
+template< window minion >
+struct invert< minion >: 
+   window_root< 
+      invert< minion >,
+      typename minion::address_t,
+      typename minion::color_t,
+      minion::size
+   >      
+{
+   
+   static void init(){
+      minion::init();   
+   }
+
+   static void write_implementation( 
+      minion::address_t pos, 
+      minion::color_t color
+   ){
+      minion::write( pos, - color );   
+   }
+   
+   static void flush(){
+      minion::flush();   
+   }   
+
+};
+
+
+
 
 // direct
 // buffered

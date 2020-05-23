@@ -61,7 +61,12 @@ struct pullup_filter< T > {
 //
 // ==========================================================================
 
-GODAFOSS_FROM_COMPATIBLE( pin_in_out )
+GODAFOSS_SUPPORTED( pin_in_out, pin_in_out_from )
+
+template< pin_in_out T >
+struct pin_in_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_in_out T > 
 struct pin_in_out_from< T > :
@@ -79,7 +84,12 @@ struct pin_in_out_from< T > :
 //
 // ==========================================================================
 
-GODAFOSS_FROM_COMPATIBLE( pin_out )
+GODAFOSS_SUPPORTED( pin_out, pin_out_from )
+
+template< pin_out T >
+struct pin_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_out T > 
 struct pin_out_from< T >  : 
@@ -87,6 +97,11 @@ struct pin_out_from< T >  :
    box_inherit_init< T >,
    box_inherit_write< T >
 {};
+
+template< pin_in_out T >
+struct pin_out_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_in_out T >
 struct pin_out_from< T > :
@@ -108,7 +123,12 @@ struct pin_out_from< T > :
 //
 // ==========================================================================
 
-GODAFOSS_FROM_COMPATIBLE( pin_in )
+GODAFOSS_SUPPORTED( pin_in, pin_in_from )
+
+template< pin_in_out T >
+struct pin_in_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_in_out T >
 struct pin_in_from< T > : 
@@ -125,12 +145,22 @@ struct pin_in_from< T > :
 };
 
 template< pin_in T >
+struct pin_in_supported< T > {
+   static constexpr bool supported = true;; 
+};
+
+template< pin_in T >
 struct pin_in_from< T > : 
    pin_in_root,
    box_inherit_init< T >,
    box_inherit_read< T >,
    pullup_filter< T >
 {};
+
+template< pin_oc T >
+struct pin_in_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_oc T >
 struct pin_in_from< T > : 
@@ -153,7 +183,12 @@ struct pin_in_from< T > :
 //
 // ==========================================================================
 
-GODAFOSS_FROM_COMPATIBLE( pin_oc )
+GODAFOSS_SUPPORTED( pin_oc, pin_oc_from )
+
+template< pin_oc T >
+struct pin_oc_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_oc T >
 struct pin_oc_from< T > : 
@@ -163,6 +198,11 @@ struct pin_oc_from< T > :
    box_inherit_read< T >,
    pullup_filter< T >
 {};
+
+template< pin_in_out T >
+struct pin_oc_supported< T > {
+   static constexpr bool supported = true;; 
+};
 
 template< pin_in_out T >
 struct pin_oc_from< T > : 

@@ -4,11 +4,11 @@
 //
 // ==========================================================================
 //
-// The xy ADT is a pair of two T signed integer values named x and y
-// of at least 16 bits. It is used as distances between locations 
-// on a window or terminal.
+// The xy< T > ADT is a pair of two T values named x and y. 
+// It is used as distances between locations on a window or terminal.
 //
-// The torsor of xy is used to identify a location.
+// The xy< torsor< T > > is used 
+// to identify a location on a window or terminal.
 //
 // ==========================================================================
 //
@@ -31,42 +31,47 @@
 //
 // ==========================================================================
 
+template< typename T = int_fast16_t >
 class xy final {
 public:
 
-   using value_t = int_fast16_t;
+   using value_t = T;
 
-   int_fast16_t x, y;
+   value_t x, y;
    
-   constexpr xy( int_fast16_t x, int_fast16_t y ): x{ x }, y{ y }{}
+   constexpr xy( value_t x, value_t y ): x{ x }, y{ y }{}
+   
+   constexpr xy( value_t x ): x{ x }, y{ x }{}
    
    constexpr xy():x{ 0 }, y{ 0 }{}
 
-   constexpr xy operator+( const xy rhs ) const {
-      return xy{ 
-          static_cast< int_fast16_t >( x + rhs.x ),
-          static_cast< int_fast16_t >( y + rhs.y )
+   template< typename V >
+   constexpr auto operator+( const xy< V > rhs ) const {
+      return xy< decltype( x + rhs.x ) > { 
+          static_cast< value_t >( x + rhs.x ),
+          static_cast< value_t >( y + rhs.y )
       };      
    }      
    
-   constexpr xy operator-( const xy rhs ) const {
-      return xy{ 
-          static_cast< int_fast16_t >( x - rhs.x ),
-          static_cast< int_fast16_t >( y - rhs.y )
+   template< typename V >
+   constexpr auto operator-( const xy< V > rhs ) const {
+      return xy< decltype( x + rhs.x ) > {
+          static_cast< value_t >( x - rhs.x ),
+          static_cast< value_t >( y - rhs.y )
       };         
    }      
 
-   constexpr xy operator/( const int_fast16_t rhs ) const {
+   constexpr xy operator/( const value_t rhs ) const {
       return xy{ 
-          static_cast< int_fast16_t >( x / rhs ),
-          static_cast< int_fast16_t >( y / rhs )
+          static_cast< value_t >( x / rhs ),
+          static_cast< value_t >( y / rhs )
       };         
    }    
 
-   constexpr xy operator*( const int_fast16_t rhs ) const {
+   constexpr xy operator*( const value_t rhs ) const {
       return xy{ 
-          static_cast< int_fast16_t >( x * rhs ),
-          static_cast< int_fast16_t >( y * rhs )
+          static_cast< value_t >( x * rhs ),
+          static_cast< value_t >( y * rhs )
       };         
    }    
 
@@ -80,8 +85,8 @@ public:
 
 }; 
 
-template< is_output_stream T >
-T & operator<<( T & lhs, xy rhs ){
+template< is_output_stream T, typename V >
+T & operator<<( T & lhs, xy< V > rhs ){
    return lhs << '(' << rhs.x << ',' << rhs.y << ')';
 }
 
@@ -92,20 +97,21 @@ T & operator<<( T & lhs, xy rhs ){
 //
 // ==========================================================================
 
+template< typename T >
 class xy_iterator_t {
 private:
 
-   xy limits;
-   xy current;
+   xy< T > limits;
+   xy< T > current;
 
 public:
 
-   xy_iterator_t( xy limits, xy current ): 
+   xy_iterator_t( xy< T > limits, xy< T > current ): 
       limits( limits ), 
       current( current )
    {}
 
-   xy operator*() const {
+   xy< T > operator*() const {
       return current;
    }
 
@@ -127,24 +133,32 @@ public:
       
 };
 
+template< typename T >
 class xy_all_t {
 private:
 
-   xy limits;
+   xy< T > limits;
 
 public:
 
-   xy_all_t( xy limits ):
+   xy_all_t( xy< T > limits ):
       limits( limits )
    {}
 
-   xy_iterator_t begin() const {
-      return xy_iterator_t( limits, xy( 0 , 0 ) );
+   xy_iterator_t< T > begin() const {
+      return xy_iterator_t( limits, xy< T >( 0 , 0 ) );
    }
 
-   xy_iterator_t end() const {
-      return xy_iterator_t( limits, xy( 0, limits.y ) );
+   xy_iterator_t< T > end() const {
+      return xy_iterator_t( limits, xy< T >( 0, limits.y ) );
    }
 
 };
+
+template< typename limits_t >
+limits_t random_xy( limits_t limits ){
+   return limits_t( 
+      random_in_range< typename limits_t::value_t >( 0, limits.x ),
+      random_in_range< typename limits_t::value_t >( 0, limits.y ) );
+}  
 

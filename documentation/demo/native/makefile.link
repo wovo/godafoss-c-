@@ -2,9 +2,9 @@
 #
 # makefile.link
 #
-# common settings and uplink for ARduino Due projects
+# common settings for native projects (windows or linux) 
 #
-# (c) Wouter van Ooijen (www.voti.nl) 2017
+# (c) Wouter van Ooijen (www.voti.nl) 2017-2020
 #
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at 
@@ -15,7 +15,7 @@
 # common settings for Arduino Due projects
 TARGET            ?= native
 
-GCC-WIN         ?= C:\mingw64-10
+GCC-WIN         ?= C:\ti-software\mingw64
 CPP_LANGUAGE    ?= -std=c++2a
 
 # defer to the next-level makefile.link

@@ -31,9 +31,10 @@ template< typename w >
 class line {
 public:
    
-   using address_t  = w::address_t;
-   using value_t    = w::address_t::value_t;
-   using color_t    = w::color_t;
+   using offset_t    = w::offset_t;
+   using location_t  = w::location_t;
+   using value_t     = w::offset_t::value_t;
+   using color_t     = w::color_t;
    
 private:   
 
@@ -49,24 +50,19 @@ private:
    
 public:
 
-   address_t  origin;
-   address_t  size;  
-   color_t    default_ink;
-   bool       use_foreground;
+   offset_t  origin;
+   offset_t  size;  
+   color_t   ink;
    
-   line( address_t origin, address_t size, color_t ink )
-      : origin{ origin }, size{ size }, 
-        default_ink{ ink }, use_foreground{ false }
+   line( location_t origin, offset_t size, color_t ink )
+      : origin{ origin - w::origin }, size{ size }, ink{ ink }
    {}   
-   
-   line( address_t origin, address_t size )
-      : origin{ origin }, size{ size }, 
-        use_foreground{ true }
+      
+   line( location_t origin, location_t end, color_t ink )
+      : origin{ origin - w::origin }, size{ end - origin }, ink{ ink }
    {}   
-   
+      
    void write(){ 
-   
-      auto ink = use_foreground ? w::foreground : default_ink;
          
       value_t x0 = origin.x;
       value_t y0 = origin.y;
@@ -115,7 +111,7 @@ public:
             yDraw = y;
          }
 
-         w::write( address_t( xDraw, yDraw ), ink );
+         w::write( location_t( xDraw, yDraw ), ink );
 
          if( E > 0 ){
             E += TwoDyTwoDx; //E += 2*Dy - 2*Dx;
@@ -147,35 +143,25 @@ public:
    address_t  origin;
    address_t  size;  
    color_t    border_ink;
-   bool       use_foreground;
-   color_t    fill_ink;
    bool       fill;
-   
-   rectangle( address_t origin, address_t size )
-      : origin{ origin }, size{ size }, 
-        use_foreground{ true }, 
-        fill{ false }
-   {}    
-   
+   color_t    fill_ink;
+     
    rectangle( address_t origin, address_t size, color_t border )
       : origin{ origin }, size{ size }, 
-        border_ink{ border }, use_foreground{ false }, 
-        fill{ false }
+        border_ink{ border }, fill{ false }
    {}   
    
    rectangle( address_t origin, address_t size, color_t border, color_t fill )
       : origin{ origin }, size{ size }, 
-        border_ink{ border }, use_foreground{ false }, 
-        fill_ink{ fill }, fill{ true }
+        border_ink{ border }, fill{ true }, fill_ink{ fill }
    {}   
    
    void write(){ 
-      auto ink = use_foreground ? w::foreground : border_ink;
       auto end = origin + size;
-      line( origin,  address_t( size.x + 1, 0 ), ink ).write();
-      line( origin,  address_t( 0, size.y + 1 ), ink ).write();
-      line( end,     address_t( - size.x, 0   ), ink ).write();
-      line( end,     address_t( 0, - size.y   ), ink ).write();
+      line( origin,  address_t( size.x + 1, 0 ), border_ink ).write();
+      line( origin,  address_t( 0, size.y + 1 ), border_ink ).write();
+      line( end,     address_t( - size.x, 0   ), border_ink ).write();
+      line( end,     address_t( 0, - size.y   ), border_ink ).write();
       if( fill ){
          for( auto const a : xy_all_t( size - address_t( 1, 1 ))){
             w::write( origin + address_t( 1, 1 ) + a, fill_ink );   
@@ -200,77 +186,83 @@ public:
    using value_t    = w::address_t::value_t;
    using color_t    = w::color_t;
    
+   address_t  midpoint;
+   value_t    radius;
    address_t  origin;
    address_t  size;  
-   color_t    default_ink;
+   color_t    border_ink;
    bool       use_foreground;
-   
-   circle( address_t origin, address_t size, color_t ink )
-      : origin{ origin }, size{ size }, 
-        default_ink{ ink }, use_foreground{ false }
-   {}   
-   
-   circle( address_t origin, address_t size )
-      : origin{ origin }, size{ size }, 
-        use_foreground{ true }
-   {}   
-   
-};   
+   color_t    fill_ink;
+   bool       fill;  
 
-/*
-
-/// a circle object                   
-class circle : public drawable {
-private:   
-   uint_fast16_t  radius;
-   color          ink;
+   void update_from_midpoint_radius(){ 
+      origin = midpoint - address_t{ radius };
+      size = address_t( 2 * radius );
+   }      
    
-public:
-   /// create a circle object 
-   circle( 
-      xy start, 
-      uint_fast16_t radius, 
-      color ink = unspecified
-   )
-      : drawable{ start }, radius{ radius }, ink{ ink }
-   {}     
+   circle( address_t midpoint, value_t radius )
+      : midpoint{ midpoint }, radius{ radius }, 
+        use_foreground{ true }, 
+        fill{ false }
+   {
+      update_from_midpoint_radius();   
+   }   
    
-   void draw( window & w ) override { 
+   circle( address_t midpoint, value_t radius, color_t ink )
+      : midpoint{ midpoint }, radius{ radius },
+        border_ink{ ink }, use_foreground{ false },
+        fill{ false }
+   {
+      update_from_midpoint_radius();   
+   }   
+   
+   circle( address_t midpoint, value_t radius, color_t border, color_t fill )
+      : midpoint{ midpoint }, radius{ radius },
+        border_ink{ border }, use_foreground{ false }, 
+        fill_ink{ fill }, fill{ true }
+   {
+      update_from_midpoint_radius();   
+   }   
+      
+   void write(){ 
 
       // don't draw anything when the size would be 0 
       if( radius < 1 ){
          return;       
       }
    
+      auto ink = use_foreground ? w::foreground : border_ink;
+      auto start = midpoint;
+
       // http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
    
-      int_fast16_t fx = 1 - radius;
-      int_fast16_t ddFx = 1;
-      int_fast16_t ddFy = -2 * radius;
-      int_fast16_t x = 0;
-      int_fast16_t y = radius;
+      value_t fx = 1 - radius;
+      value_t ddFx = 1;
+      value_t ddFy = -2 * radius;
+      value_t x = 0;
+      value_t y = radius;
     
       // top and bottom
-      w.write( start + xy( 0, + radius ), ink );
-      w.write( start + xy( 0, - radius ), ink );
+      w::write( start + xy( 0, + radius ), ink );
+      w::write( start + xy( 0, - radius ), ink );
 
       // left and right 
-      w.write( start + xy( + radius, 0 ), ink );
-      w.write( start + xy( - radius, 0 ), ink );
+      w::write( start + xy( + radius, 0 ), ink );
+      w::write( start + xy( - radius, 0 ), ink );
          
       // filled circle
-      if(0){
+      if( 0 ) if( fill ){
    
          // top and bottom
-         w.write( start + xy( 0, + radius ), ink );
-         w.write( start + xy( 0, - radius ), ink );
+         w::write( start + xy( 0, + radius ), fill_ink );
+         w::write( start + xy( 0, - radius ), fill_ink );
 
          // left and right
-         line(  
+         line< w >(  
               start - xy( radius, 0 ), 
-              start + xy( radius, 0 ), 
-              ink 
-          ).draw( w );
+                      xy( radius, 0 ), 
+              fill_ink 
+          ).write();
       } 
     
       while( x < y ){
@@ -285,37 +277,36 @@ public:
          ddFx += 2;
          fx += ddFx;   
                     
-         w.write( start + xy( + x, + y ), ink );
-         w.write( start + xy( - x, + y ), ink );
-         w.write( start + xy( + x, - y ), ink );
-         w.write( start + xy( - x, - y ), ink );
-         w.write( start + xy( + y, + x ), ink );
-         w.write( start + xy( - y, + x ), ink );
-         w.write( start + xy( + y, - x ), ink );
-         w.write( start + xy( - y, - x ), ink );
+         w::write( start + xy( + x, + y ), ink );
+         w::write( start + xy( - x, + y ), ink );
+         w::write( start + xy( + x, - y ), ink );
+         w::write( start + xy( - x, - y ), ink );
+         w::write( start + xy( + y, + x ), ink );
+         w::write( start + xy( - y, + x ), ink );
+         w::write( start + xy( + y, - x ), ink );
+         w::write( start + xy( - y, - x ), ink );
             
          // filled circle
-         if(0) if( ! ink.is_transparent()  ){
-            line( 
-               start + xy( -x,  y ), 
-               start + xy(  x,  y ), 
-               ink ).draw( w );
-            line( 
+         if( fill ){
+            line< w >( 
+               start + xy( -x + 1,  y ), 
+                       xy(  2 * x - 2, 0 ), 
+               fill_ink ).write();
+            if(0) line< w >( 
                start + xy( -x, -y ), 
-               start + xy(  x, -y ), 
-               ink ).draw( w );
-            line( 
+                       xy(  2 * x, 0 ), 
+               fill_ink ).write();
+            if(0) line< w >( 
                start + xy( -y,  x ), 
-               start + xy(  y,  x ), 
-               ink ).draw( w );
-            line( 
+                       xy(  2 * y,  0 ), 
+               fill_ink ).write();
+            if(0)line< w >( 
                start + xy( -y, -x ), 
-               start + xy(  y, -x ), 
-               ink ).draw( w );
+                       xy(  2 * y, 0 ), 
+               fill_ink ).write();
          }
+
       }
    }   
     
 }; // class circle
-
-*/

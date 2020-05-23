@@ -68,30 +68,51 @@
    
 // ==========================================================================
 //
-// Instantiating the macro GODAFOSS_FROM_COMPATIBLE( NAME ) creates
-// a base class template NAME_FROM< typename T > that (when instantiated)
-//    creates an error message
+// Instantiating the macro GODAFOSS_SUPPORTED( NAME_1, NAME_2 ) creates:
+//
 // a concept NAME_compatible< T > that is satisfied only when
-//    a NAME_from< T > class template specialization exist that
-//    creates (is) a NAME
+//    a NAME_subpported< T > or < T, Ts > specialization exists that
+//    has a static constexpr bool = true;
+//
 // a concept NAME_compatible_list< T... > that is satisfied when
 //    all its parameters T... satisfy NAME_compatible< T >
 //
+// a base class template NAME_2< typename T > that (when instantiated)
+//    creates an error message.
+//
+// Usage 1:
+// 
+//   GODAFOSS_SOPPORTED( pin_in, pin_in_from )
+//      create a specialization of pin_in_compatible
+//      now a template can constrain    
+//
 // ==========================================================================
   
-#define GODAFOSS_FROM_COMPATIBLE( NAME )                              \
-                                                                      \
-template< typename... P >                                             \
-struct NAME ## _from {                                                \
-   static_assert(                                                     \
-      sizeof...( P ) < 0,                                             \
-         #NAME "_from<> doesn't support this type of parameter(s)\n"  \
-         "   (check the 'required from here' line)" );                \
-};                                                                    \
-                                                                      \
-template< typename T >                                                \
-concept NAME ## _compatible = NAME< NAME ## _from< T > >;             \
-                                                                      \
-template< typename... Ts >                                            \
-concept NAME ## _compatible_list =                                    \
-   ( NAME ## _compatible< Ts > && ... );                              
+#define GODAFOSS_SUPPORTED( NAME_1, NAME_2 )                    \
+                                                                \
+template< typename T, typename... P >                           \
+struct NAME_1 ## _supported { };                                \
+                                                                \
+template< typename T >                                          \
+struct NAME_1 ## _supported< T > { };                           \
+                                                                \
+template< typename... Ts >                                      \
+concept NAME_1 ## _compatible = requires {                      \
+   NAME_1 ## _supported< Ts... >::supported;                    \
+};                                                              \
+                                                                \
+template< typename... Ts >                                      \
+concept NAME_1 ## _compatible_list =                            \
+   ( NAME_1 ## _compatible< Ts > && ... );                      \
+                                                                \
+template< typename... P >                                       \
+   requires NAME_1 ## _compatible< P... >                       \
+struct NAME_2 {                                                 \
+   static_assert(                                               \
+      sizeof...( P ) < 0,                                       \
+         "library internal error\n"                             \
+         "   " #NAME_2 "<> claims support for this type(s)"     \
+         " of parameter(s),\n"                                  \
+         "   but no actual implementation is available.\n"      \
+         "   (check the 'required from here' line)" );          \
+};                                                              

@@ -34,19 +34,17 @@ struct target_native {
 
 template< 
    godafoss::xy     size, 
-   int              number,
+   int              number = 0,
    int              m = 5, 
-   godafoss::color  foreground = godafoss::white, 
-   godafoss::color  background = godafoss::black 
+   godafoss::color  background = godafoss::green,
+   godafoss::color  foreground = godafoss::blue 
 >
 struct window : 
    godafoss::window_root< 
-      window< size, number, m, foreground, background >, 
+      window< size, number, m, background, foreground >, 
       godafoss::xy, 
       godafoss::color, 
-      size, 
-      foreground, 
-      background 
+      size
    >
 {     
 private:
@@ -55,18 +53,14 @@ private:
    static inline sf::Image image;
    
    static void make_render_window(){
-      static sf::RenderWindow ww( sf::VideoMode( m * size.x, m * size.y ), "GODAFOSS-SFML window" );
-      wp = &ww;
       GODAFOSS_RUN_ONCE;
+      static sf::RenderWindow ww( 
+         sf::VideoMode( m * size.x, m * size.y ), 
+         "GODAFOSS-SFML window" );
+      wp = &ww;
       image.create( m * size.x, m * size.y );
    }   
 
-public:   
-
-   static void init(){
-      make_render_window();
-   }	
-   
    static void poll(){
       make_render_window();
       if ( wp->isOpen() ){
@@ -78,6 +72,10 @@ public:
          }
       }
    }
+   
+public:   
+
+   static void init(){}	
    
    static void write_implementation( 
       xy pos, 
@@ -98,12 +96,12 @@ public:
 	    wp->clear();
       
        sf::Texture texture;
-       texture.loadFromImage(image);
+       texture.loadFromImage( image) ;
 	   
        sf::Sprite sprite;
-       sprite.setTexture(texture, true);
+       sprite.setTexture( texture, true );
 	   
-       wp->draw(sprite);      
+       wp->draw( sprite );      
        wp->display();
 	   
 	    poll();

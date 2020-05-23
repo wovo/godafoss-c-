@@ -61,21 +61,26 @@ struct _invert_write< T > : T {
 
 // ==========================================================================
 //
-// invert adapter
+// opt into the invert decorator
 //
 // ==========================================================================
 
-// invert requires that an invert function is present
+// invert is supported for a box that has an invert function
 template< typename T >
-concept can_invert = requires (
+concept can_invert_box = requires (
    typename T::value_type v   
 ) {
    box< T >;
    { T::invert( v ) } -> std::same_as< typename T::value_type >;
 };
 
+template< can_invert_box T >
+struct support_invert< T > {
+   static constexpr bool value = true;
+};
+
 // invert both the read and write operations (if available)
-template< can_invert T >
-struct invert : 
+template< can_invert_box T >
+struct invert< T > : 
    _invert_read< 
    _invert_write< T >> {};

@@ -119,13 +119,18 @@ struct _port_out_from_pins< n, pin, tail... > :
       _port_out_from_pins< n, tail... > > >
 {};
 
-// determine the number of arguments, break the forced inlining, 
+template< pin_out_compatible T, pin_out_compatible... Ts  >
+struct port_out_supported< T, Ts... > {
+   static constexpr bool supported = true;; 
+};
+
+// determine the number of arguments, 
+// break the forced inlining, 
 // and defer to the recursive template
-template< typename... Ts > 
-requires pin_out_compatible_list< Ts... >
-struct port_out_from< Ts... > :
+template< pin_out_compatible T, pin_out_compatible... Ts > 
+struct port_out_from< T, Ts... > :
    no_inline<
-      _port_out_from_pins< sizeof...( Ts ), Ts... > >
+      _port_out_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};
 
 
@@ -155,13 +160,18 @@ struct _port_in_from_pins< n, pin, tail... > :
       _port_in_from_pins< n, tail... > > >
 {};
 
-// determine the number of arguments, break the forced inlining, 
+template< pin_in_compatible T, pin_in_compatible... Ts  >
+struct port_in_supported< T, Ts... > {
+   static constexpr bool supported = true;; 
+};
+
+// determine the number of arguments, 
+// break the forced inlining, 
 // and defer to the recursive template
-template< typename... Ts > 
-requires pin_in_compatible_list< Ts... >
-struct port_in_from< Ts... > :
+template< pin_in_compatible T, pin_in_compatible... Ts > 
+struct port_in_from< T, Ts... > :
    no_inline<
-      _port_in_from_pins< sizeof...( Ts ), Ts... > >
+      _port_in_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};
 
       
@@ -193,13 +203,17 @@ struct _port_in_out_from_pins< n, pin, tail... > :
       _port_in_out_from_pins< n, tail... > > > > >
 {};
 
+template< pin_in_out_compatible T, pin_in_out_compatible... Ts  >
+struct port_in_out_supported< T, Ts... > {
+   static constexpr bool supported = true;; 
+};
+
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< typename... Ts > 
-requires pin_in_out_compatible_list< Ts... > 
-struct port_in_out_from< Ts... > :
+template< pin_in_out_compatible T, pin_in_out_compatible... Ts > 
+struct port_in_out_from< T, Ts... > :
    no_inline<
-      _port_in_out_from_pins< sizeof...( Ts ), Ts... > >
+      _port_in_out_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};
    
    
@@ -230,11 +244,15 @@ struct _port_oc_from_pins< n, pin, tail... > :
       _port_oc_from_pins< n, tail... > > > >
 {};
 
+template< pin_oc_compatible T, pin_oc_compatible... Ts  >
+struct port_oc_supported< T, Ts... > {
+   static constexpr bool supported = true;; 
+};
+
 // determine the number of arguments, break the forced inlining, 
 // and defer to the recursive template
-template< typename... Ts > 
-requires pin_oc_compatible_list< Ts... > 
-struct port_oc_from< Ts... > :
+template< pin_oc_compatible T, pin_oc_compatible... Ts > 
+struct port_oc_from< T, Ts... > :
    no_inline<
-      _port_oc_from_pins< sizeof...( Ts ), Ts... > >
+      _port_oc_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};

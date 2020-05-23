@@ -18,7 +18,7 @@
 #define torsor_hpp
 
 // this file contains Doxygen lines
-/// @file
+/// @file 
 
 // Doxygen doeesn't understand concepts or even the
 // __attribute__((always_inline)), so those are put
@@ -44,98 +44,98 @@ namespace torsor_concepts {
 
 // concept for the torsor copy constructor
 template< typename V, typename W >
-concept bool can_be_constructed_from
+concept can_be_constructed_from
 = requires ( W w ) {  
    V( w );
 };
 
 // concept for the torsor assignment operator
 template< typename V, typename W >
-concept bool can_be_assigned_from
+concept can_be_assigned_from
 = requires ( V & v, W w ) {  
    v = w;
 };
 
 // conecpt for the ( + torsor ) operator
 template< typename V >
-concept bool can_be_plussed
+concept can_be_plussed
 = requires ( V v ) {  
    ( + v );
 };
 
 // conecpt for the ( torsor + value ) operator
 template< typename V, typename W >
-concept bool can_be_added_with_value
+concept can_be_added_with_value
 = requires ( V v, W w ) {  
    ( v + w );
 };
 
 // concept for the ( torsor - value ) operators
 template< typename V, typename W >
-concept bool can_be_subtracted_with_value 
+concept can_be_subtracted_with_value 
 = requires ( V v, W w ) {  
    ( v - w );
 };
 
 // concept for the ( torsor += value ) operator
 template< typename V, typename W >
-concept bool can_be_update_added_with_value 
+concept can_be_update_added_with_value 
 = requires ( V v, W w ) {  
    ( v += w );
 };
 
 // concept for the ( torsor -= value ) operator
 template< typename V, typename W >
-concept bool can_be_update_subtracted_with_value 
+concept can_be_update_subtracted_with_value 
 = requires ( V v, W w ){
    ( v -= w );
 };
 
 // concept for the ( torsor == torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_equal 
+concept can_be_compared_equal 
 = requires ( V v, W w ){
    ( v == w );
 };
 
 // concept for the ( torsor != torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_unequal 
+concept can_be_compared_unequal 
 = requires ( V v, W w ){
    ( v != w );
 };
 
 // concept for the ( torsor > torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_larger
+concept can_be_compared_larger
 = requires ( V v, W w ){
    ( v > w );
 };
 
 // concept for the ( torsor >= torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_larger_or_equal
+concept can_be_compared_larger_or_equal
 = requires ( V v, W w ){
    ( v >= w );
 };
 
 // concept for the ( torsor < torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_smaller
+concept can_be_compared_smaller
 = requires ( V v, W w ){
    ( v < w );
 };
 
 // concept for the ( torsor >= torsor ) operator
 template< typename V, typename W >
-concept bool can_be_compared_smaller_or_equal
+concept can_be_compared_smaller_or_equal
 = requires ( V v, W w ){
    ( v <= w );
 };
 
 // concept for the ( COUT << torsor ) operator
 template< typename COUT, typename W >
-concept bool can_be_printed_to 
+concept can_be_printed_to 
 = requires( COUT cout, char c, W w ){
    ( cout << c );
    ( cout << w );
@@ -457,7 +457,9 @@ public:
    __attribute__((always_inline))
    constexpr explicit torsor( const T & value, int n ):
       value( value )
-   {}   
+   { 
+      (void) n; 
+   }   
    ///@endcond
    
    /// add a value and a torsor

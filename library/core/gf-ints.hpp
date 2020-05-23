@@ -7,6 +7,12 @@
 // uint_bits< N >::fast is the smallest 'fast' 
 // unsigned integer type that stores (at least) N bits.
 //
+// uint_bits< N >::least is the smallest 
+// unsigned integer type that stores (at least) N bits.
+//
+// Both should be used for bit patterns, not for amounts.
+// Use ::fast for parameters, use ::least for array storage.
+//
 // ==========================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss), 
@@ -21,44 +27,75 @@
 //
 // ==========================================================================
 
-  
 // if no exact match, get something bigger
+template< uint64_t n > struct _uint_bits_fast {
+   typedef typename _uint_bits_fast< n + 1 >::type type;
+   
+};
+
+// if no exact match, get something bigger
+template< uint64_t n > struct _uint_bits_least {
+   typedef typename _uint_bits_least< n + 1 >::type type;
+};
+
 template< uint64_t n > struct uint_bits {
    
-   // not thing bigger than an unsigned long long int
+   // nothing bigger available
    static_assert( 
-      n <= 8 * sizeof( unsigned long long int ),
-      "ports, a/d and d/a pins, etc. must fit in an unsigned integer type" 
+      n <= 8 * sizeof( uint_fast64_t ),
+      "no unsigned integer type is large enough" 
    );
    
    // try 1 bit bigger
-   typedef typename uint_bits< n + 1 >::fast fast;
+   typedef typename _uint_bits_fast< n >::type fast;
+   typedef typename _uint_bits_least< n >::type least;
 }; 
+
    
-template<> struct uint_bits< 8 * sizeof( unsigned char ) > {
-   typedef unsigned char fast;
+// ==========================================================================
+
+template<> struct _uint_bits_fast< 8 * sizeof( uint_fast8_t ) > {
+   typedef uint_fast8_t type;
 };   
 
-#if USHRT_MAX > UCHAR_MAX
-template<> struct uint_bits< 8 * sizeof( unsigned short ) > {
-   typedef unsigned short fast;
+#if UINT_FAST16_MAX > UINT_FAST8_MAX
+template<> struct _uint_bits_fast< 8 * sizeof( uint_fast16_t ) > {
+   typedef uint_fast16_t type;
 };
 #endif   
 
-#if UINT_MAX > USHRT_MAX
-template<> struct uint_bits< 8 * sizeof( unsigned int ) > {
-   typedef unsigned int fast;
+#if UINT_FAST32_MAX > UINT_FAST16_MAX
+template<> struct _uint_bits_fast< 8 * sizeof( uint_fast32_t ) > {
+   typedef uint_fast32_t type;
 }; 
 #endif  
 
-#if ULONG_MAX > UINT_MAX
-template<> struct uint_bits< 8 * sizeof( unsigned long int ) > {
-   typedef unsigned long int fast;
+#if UINT_FAST64_MAX > UINT_FAST32_MAX
+template<> struct _uint_bits_fast< 8 * sizeof( uint_fast64_t ) > {
+   typedef uint_fast64_t type;
 }; 
 #endif  
 
-#if ULLONG_MAX > ULONG_MAX
-template<> struct uint_bits< 8 * sizeof( unsigned long long int ) > {
-   typedef unsigned long long int fast;
-};  
-#endif
+// ==========================================================================
+
+template<> struct _uint_bits_least< 8 * sizeof( uint_least8_t ) > {
+   typedef uint_least8_t type;
+};   
+
+#if UINT_LEAST16_MAX > UINT_LEAST8_MAX
+template<> struct _uint_bits_least< 8 * sizeof( uint_least16_t ) > {
+   typedef uint_least16_t type;
+};
+#endif   
+
+#if UINT_LEAST32_MAX > UINT_LEAST16_MAX
+template<> struct _uint_bits_least< 8 * sizeof( uint_least32_t ) > {
+   typedef uint_least32_t type;
+}; 
+#endif  
+
+#if UINT_LEAST64_MAX > UINT_LEAST32_MAX
+template<> struct _uint_bits_least< 8 * sizeof( uint_least64_t ) > {
+   typedef uint_least64_t type;
+}; 
+#endif  

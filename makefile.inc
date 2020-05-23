@@ -21,8 +21,11 @@
 # the file locations
 
 SEARCH            += $(GODAFOSS)/library
+SEARCH            += $(GODAFOSS)/externals
 
 # core files
+
+HEADERS           += torsor.hpp
 
 HEADERS           += godafoss.hpp
 HEADERS           += gf-all.hpp
@@ -31,7 +34,9 @@ HEADERS           += core/gf-basics.hpp
 HEADERS           += core/gf-ints.hpp
 HEADERS           += core/gf-passing.hpp
 HEADERS           += core/gf-output-stream.hpp
+HEADERS           += core/gf-random.hpp
 HEADERS           += core/gf-xy.hpp
+HEADERS           += core/gf-decorators.hpp
 
 HEADERS           += box/gf-box.hpp
 HEADERS           += box/gf-box-inherit.hpp
@@ -44,7 +49,7 @@ HEADERS           += box/gf-box-adapters.hpp
 HEADERS           += pins/gf-pin.hpp
 HEADERS           += pins/gf-pin-adapters.hpp
 HEADERS           += pins/gf-pin-dummies.hpp
-HEADERS           += pins/gf-pin-out-from-pins.hpp
+HEADERS           += pins/gf-pin-all.hpp
 HEADERS           += pins/gf-pin-demos.hpp
 
 HEADERS           += core/gf-analog.hpp
@@ -70,6 +75,7 @@ HEADERS           += char-io/gf-terminal-demos.hpp
 
 HEADERS           += graphics/gf-color.hpp
 HEADERS           += graphics/gf-window.hpp
+HEADERS           += graphics/gf-window-decorators.hpp
 HEADERS           += graphics/gf-drawables.hpp
 HEADERS           += graphics/gf-window-demos.hpp
 

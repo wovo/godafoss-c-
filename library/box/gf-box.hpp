@@ -40,9 +40,7 @@
 // quote ''box'' };
 template< typename T >
 concept box = requires {  
-   T::box_marker;
-   T::is_item  || T::is_stream; 
-   T::is_input || T::is_output; 
+   T::_box_marker;
    { T::init() } -> std::same_as< void >;
 };
 
@@ -55,13 +53,14 @@ struct _box_root {
 template< typename T >
 struct box_root : _box_root< T > {};
 
+// box< bool > has a different invert than other boxes
 template<>
 struct box_root< bool > :
    _box_root< bool >
 {
    GODAFOSS_INLINE static bool invert( bool v ){
       return !v;	   
-   }
+   }   
 };
 
 
@@ -100,7 +99,7 @@ struct item_root :
 template< typename T >
 concept stream = requires {
    box< T >;
-   T::stream_marker;
+   T::_stream_marker;
 };
 
 template< typename T >
@@ -123,7 +122,7 @@ struct stream_root :
 template< typename T >
 concept input = requires {
    box< T >;
-   T::input_marker;
+   T::_input_marker;
    { T::refresh() }  -> std::same_as< void >;
    { T::read() }     -> std::same_as< typename T::value_type >;
 };

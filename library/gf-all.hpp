@@ -62,6 +62,9 @@
    #include <array>
 #endif
 
+#include <random>
+#include <iostream>
+
 
 // ==========================================================================
 //
@@ -120,19 +123,22 @@
 
 // ==========================================================================
 //
-// include all non-HAL library files, enclosed in the godafoss namespace
+// include all non-HAL library files, 
+// enclosed in the godafoss namespace
 //
 // ==========================================================================
 
 namespace godafoss {
    
-//#include "../externals/torsor.hpp"
+#include "../externals/torsor.hpp"
 
 #include "core/gf-basics.hpp"
 #include "core/gf-ints.hpp"
 #include "core/gf-passing.hpp"
 #include "core/gf-output-stream.hpp"
+#include "core/gf-random.hpp"
 #include "core/gf-xy.hpp"
+#include "core/gf-decorators.hpp"
 
 #include "box/gf-box.hpp"
 #include "box/gf-box-inherit.hpp"
@@ -145,7 +151,7 @@ namespace godafoss {
 #include "pins/gf-pin.hpp"
 #include "pins/gf-pin-adapters.hpp"
 #include "pins/gf-pin-dummies.hpp"
-#include "pins/gf-pin-out-from-pins.hpp"
+#include "pins/gf-pin-all.hpp"
 #include "pins/gf-pin-demos.hpp"
 
 #include "core/gf-analog.hpp"
@@ -171,8 +177,9 @@ namespace godafoss {
 
 #include "graphics/gf-color.hpp"
 #include "graphics/gf-window.hpp"
+#include "graphics/gf-window-decorators.hpp"
 #include "graphics/gf-drawables.hpp"
-//#include "graphics/gf-window-demos.hpp"
+#include "graphics/gf-window-demos.hpp"
 
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"
