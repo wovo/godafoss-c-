@@ -10,8 +10,8 @@
 //       - not inline 
 //       - placed in RAM (instead of FLASH)
 //       - weak
-//    - macro that makes a function run once
-//    - macro that supports the *_from / *_compatible pattern
+//    - macro that makes (the remainder of) a function run once
+//    - macro that supports opt-in support for a template
 //
 // ==========================================================================
 //

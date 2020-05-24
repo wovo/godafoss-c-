@@ -1,3 +1,16 @@
+ubuntu notes
+- sudo apt install git, codelite, python-is-python3, libsfml-dev
+- clone godafoss, bpmtk, catch2
+
+
+- xy in hd44780 should be smaller
+- component should be torsor< int > ???
+- how to access low-level of a torsor?
+- copy torsor back
+- specify location of an sfml window??
+- item -> value, single, atom
+- ICE from windows
+
 files to check
 ==============
    + core/gf-basics.hpp

@@ -33,7 +33,7 @@ struct target_native {
 // ==========================================================================
 
 template< 
-   godafoss::xy     size, 
+   godafoss::xy<>   size, 
    int              number = 0,
    int              m = 5, 
    godafoss::color  background = godafoss::green,
@@ -42,12 +42,19 @@ template<
 struct window : 
    godafoss::window_root< 
       window< size, number, m, background, foreground >, 
-      godafoss::xy, 
+      godafoss::xy<>, 
       godafoss::color, 
       size
    >
 {     
 private:
+
+   using root = godafoss::window_root< 
+      window< size, number, m, background, foreground >, 
+      godafoss::xy<>, 
+      godafoss::color, 
+      size
+   >;
 
    static inline sf::RenderWindow * wp;
    static inline sf::Image image;
@@ -78,10 +85,11 @@ public:
    static void init(){}	
    
    static void write_implementation( 
-      xy pos, 
+      root::location_t _pos, 
       color col
    ){
       make_render_window();      
+      auto pos = _pos - root::origin;
       for( int x = 0; x < m; ++x ){
          for( int y = 0; y < m; ++y ){
             image.setPixel( 
@@ -155,5 +163,3 @@ template< typename _dummy = void >
 using target = target_native<>; 
 
 }; // namespace godafoss
-
-

@@ -57,9 +57,9 @@ public:
    line( location_t origin, offset_t size, color_t ink )
       : origin{ origin - w::origin }, size{ size }, ink{ ink }
    {}   
-      
+           
    line( location_t origin, location_t end, color_t ink )
-      : origin{ origin - w::origin }, size{ end - origin }, ink{ ink }
+      : origin{ origin - w::origin }, size{ origin - end }, ink{ ink }
    {}   
       
    void write(){ 
@@ -135,36 +135,37 @@ template< typename w >
 class rectangle {
 public:
    
-   using address_t  = w::address_t;
-   using value_t    = w::address_t::value_t;
-   using color_t    = w::color_t;
-   using line       = line< w >;
+   using offset_t    = w::offset_t;
+   using location_t  = w::location_t;
+   using value_t     = w::offset_t::value_t;
+   using color_t     = w::color_t;
+   using line        = line< w >;
    
-   address_t  origin;
-   address_t  size;  
+   offset_t   origin;
+   offset_t   size;  
    color_t    border_ink;
    bool       fill;
    color_t    fill_ink;
      
-   rectangle( address_t origin, address_t size, color_t border )
-      : origin{ origin }, size{ size }, 
+   rectangle( location_t origin, location_t size, color_t border )
+      : origin{ origin - w::origin }, size{ size - origin }, 
         border_ink{ border }, fill{ false }
    {}   
-   
-   rectangle( address_t origin, address_t size, color_t border, color_t fill )
-      : origin{ origin }, size{ size }, 
+  
+   rectangle( location_t origin, location_t size, color_t border, color_t fill  )
+      : origin{ origin - w::origin }, size{ size - origin }, 
         border_ink{ border }, fill{ true }, fill_ink{ fill }
-   {}   
-   
+   {}  
+    
    void write(){ 
       auto end = origin + size;
-      line( origin,  address_t( size.x + 1, 0 ), border_ink ).write();
-      line( origin,  address_t( 0, size.y + 1 ), border_ink ).write();
-      line( end,     address_t( - size.x, 0   ), border_ink ).write();
-      line( end,     address_t( 0, - size.y   ), border_ink ).write();
+      line( w::origin + origin,  offset_t( size.x + 1, 0 ), border_ink ).write();
+      line( w::origin + origin,  offset_t( 0, size.y + 1 ), border_ink ).write();
+      line( w::origin + end,     offset_t( - size.x, 0   ), border_ink ).write();
+      line( w::origin + end,     offset_t( 0, - size.y   ), border_ink ).write();
       if( fill ){
-         for( auto const a : xy_all_t( size - address_t( 1, 1 ))){
-            w::write( origin + address_t( 1, 1 ) + a, fill_ink );   
+         for( auto const a : range( size - offset_t( 1, 1 ))){
+            w::write( w::origin + origin + offset_t( 1, 1 ) + a, fill_ink );   
          }   
       }
    }

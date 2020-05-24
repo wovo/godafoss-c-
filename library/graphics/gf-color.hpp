@@ -75,7 +75,8 @@ public:
    constexpr bool operator!= ( const color c ) const {
       return ! ( *this == c );  
    }     
-   
+
+/*   
    template< typename T>
    friend T & operator<<( T & lhs, const color & rhs ){
       if( rhs.is_transparent ){
@@ -87,7 +88,8 @@ public:
             << rhs.green << ","
             << rhs.blue << "]";
       }
-}  
+   }  
+*/   
 
 }; // class color
 
@@ -119,5 +121,3 @@ color random_color< color >(){
       random_in_range< uint8_t >( 0, 255 ),
       random_in_range< uint8_t >( 0, 255 ) );
 }
-
-

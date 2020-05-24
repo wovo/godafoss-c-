@@ -21,7 +21,8 @@ struct windows_max_size<> {
 template< window w, typename... tail >
 struct windows_max_size< w, tail... > { 
 
-   static constexpr xy max( xy a, xy b ){
+   template< typename T, typename V >
+   static constexpr xy<> max( xy< T > a, xy< V > b ){
       return xy( std::max( a.x, b.x ), std::max( a.y, b.y ) );   
    }
 
@@ -42,7 +43,7 @@ struct _windows_all< w > {
    
    static void init(){}
    
-   static void write( xy address, color col ){ 
+   static void write( xy<> address, color col ){ 
       (void)address; 
       (void)col; 
    }
@@ -59,7 +60,7 @@ struct _windows_all< w, tail... > {
       _windows_all< tail... >::init();
    }
    
-   static void write( xy address, color col ){
+   static void write( xy<> address, color col ){
       w::write( address, col );
       _windows_all< tail... >::write( address, col );  
    }
@@ -81,7 +82,7 @@ template< window_compatible... tail >
 struct all< tail... > :
    window_root<
       all< tail... >,
-      xy,
+      xy<>,
       color,
       windows_max_size< tail... >::value
    >
@@ -90,7 +91,7 @@ struct all< tail... > :
       _windows_all< tail... >::init();
    }
    
-   static void write_implementation( xy address, color col ){
+   static void write_implementation( xy<> address, color col ){
       _windows_all< tail... >::write( address, col );  
    }
    

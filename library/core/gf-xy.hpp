@@ -5,10 +5,9 @@
 // ==========================================================================
 //
 // The xy< T > ADT is a pair of two T values named x and y. 
-// It is used as distances between locations on a window or terminal.
+// It is used for distances in an xy plane, like a window or terminal.
 //
-// The xy< torsor< T > > is used 
-// to identify a location on a window or terminal.
+// The xy< torsor< T > > is used to identify a location on an xy plaae. 
 //
 // ==========================================================================
 //
@@ -27,11 +26,19 @@
 
 // ==========================================================================
 //
-// xy ADT
+// xy<> ADT
 //
 // ==========================================================================
 
-template< typename T = int_fast16_t >
+template< typename T = int_fast64_t, T zero = 0 >
+   requires requires( T & x, T & v ){
+      // default constructor
+      // copy constructor
+      { v * v };
+      { v / v };
+      { v == v };
+      { x = v };
+   }
 class xy final {
 public:
 
@@ -43,9 +50,13 @@ public:
    
    constexpr xy( value_t x ): x{ x }, y{ x }{}
    
-   constexpr xy():x{ 0 }, y{ 0 }{}
+   constexpr xy():x{ zero }, y{ zero }{}
+   
+   static constexpr auto origin = xy{};
 
    template< typename V >
+//      requires requires( V b ){ { x + b }; }   - ICE segfault
+      requires requires( T x, V b ){ { x + b }; }      
    constexpr auto operator+( const xy< V > rhs ) const {
       return xy< decltype( x + rhs.x ) > { 
           static_cast< value_t >( x + rhs.x ),
@@ -54,6 +65,7 @@ public:
    }      
    
    template< typename V >
+      requires requires( T x, V b ){ { x - b }; }      
    constexpr auto operator-( const xy< V > rhs ) const {
       return xy< decltype( x + rhs.x ) > {
           static_cast< value_t >( x - rhs.x ),
@@ -61,15 +73,15 @@ public:
       };         
    }      
 
-   constexpr xy operator/( const value_t rhs ) const {
-      return xy{ 
+   constexpr auto operator/( const value_t rhs ) const {
+      return xy { 
           static_cast< value_t >( x / rhs ),
           static_cast< value_t >( y / rhs )
       };         
    }    
 
    constexpr xy operator*( const value_t rhs ) const {
-      return xy{ 
+      return xy { 
           static_cast< value_t >( x * rhs ),
           static_cast< value_t >( y * rhs )
       };         
@@ -85,11 +97,12 @@ public:
 
 }; 
 
+/*
 template< is_output_stream T, typename V >
 T & operator<<( T & lhs, xy< V > rhs ){
    return lhs << '(' << rhs.x << ',' << rhs.y << ')';
 }
-
+*/
 
 // ==========================================================================
 //
@@ -101,14 +114,16 @@ template< typename T >
 class xy_iterator_t {
 private:
 
-   xy< T > limits;
    xy< T > current;
+   xy< T > start;
+   xy< T > limit;
 
 public:
 
-   xy_iterator_t( xy< T > limits, xy< T > current ): 
-      limits( limits ), 
-      current( current )
+   xy_iterator_t( xy< T > start, xy< T > limit ): 
+      current( start ),
+      start( start ), 
+      limit( limit ) 
    {}
 
    xy< T > operator*() const {
@@ -117,8 +132,8 @@ public:
 
    void operator++(){
       ++current.x;
-      if( current.x == limits.x ){
-         current.x = 0;
+      if( current.x == limit.x ){
+         current.x = start.x;
          ++current.y;
       }
    }
@@ -133,32 +148,57 @@ public:
       
 };
 
-template< typename T >
-class xy_all_t {
+
+// ==========================================================================
+//
+// ranges
+//
+// ==========================================================================
+
+template< typename T, T v >
+   requires requires( T & x ){
+      { ++x };      
+   }      
+class range {
 private:
 
-   xy< T > limits;
+   xy< T, v > start;
+   xy< T, v > limit;
 
 public:
 
-   xy_all_t( xy< T > limits ):
-      limits( limits )
+/*
+r r -> r
+a a -> a
+a r -> a
+(0) a -> a
+(0) r -> r
+*/
+
+   range( xy< T, v > limit ):
+      start( limit.origin ), limit( limit )
    {}
 
    xy_iterator_t< T > begin() const {
-      return xy_iterator_t( limits, xy< T >( 0 , 0 ) );
+      return xy_iterator_t( start, limit );
    }
 
    xy_iterator_t< T > end() const {
-      return xy_iterator_t( limits, xy< T >( 0, limits.y ) );
+      return xy_iterator_t( xy< T >( 0, limit.y ), limit );
    }
 
 };
+
+
+// ==========================================================================
+//
+// random
+//
+// ==========================================================================
 
 template< typename limits_t >
 limits_t random_xy( limits_t limits ){
    return limits_t( 
       random_in_range< typename limits_t::value_t >( 0, limits.x ),
       random_in_range< typename limits_t::value_t >( 0, limits.y ) );
-}  
-
+} 

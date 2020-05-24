@@ -86,7 +86,7 @@ public:
       goto_xy( xy( 0, 0 ));
    }   
    
-   static void goto_xy( xy target ){
+   static void goto_xy( xy<> target ){
 
       if( size.y == 1 ){
 		  

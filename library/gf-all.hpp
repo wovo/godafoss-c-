@@ -143,6 +143,7 @@ namespace godafoss {
 #include "box/gf-box.hpp"
 #include "box/gf-box-inherit.hpp"
 #include "box/gf-box-no-inline.hpp"
+
 #include "box/gf-box-invert.hpp"
 #include "box/gf-box-direct.hpp"
 #include "box/gf-box-buffered.hpp"
@@ -165,7 +166,6 @@ namespace godafoss {
 #include "timing/gf-timing-wait.hpp"
 #include "timing/gf-timing-clock.hpp"
 #include "timing/gf-slow-down.hpp"
-
 #include "core/gf-spi.hpp"
 #include "core/gf-i2c.hpp"
 
@@ -177,7 +177,7 @@ namespace godafoss {
 
 #include "graphics/gf-color.hpp"
 #include "graphics/gf-window.hpp"
-#include "graphics/gf-window-decorators.hpp"
+//#include "graphics/gf-window-decorators.hpp"
 #include "graphics/gf-drawables.hpp"
 #include "graphics/gf-window-demos.hpp"
 

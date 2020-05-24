@@ -1,55 +1,34 @@
-#include <iostream>
+template< int N, typename T >
+struct _by_const { using type = const T; };
 
 template< typename T >
-concept x = true
-   T::in_marker;
-};
+struct _by_const< 1 + sizeof( int * ), T > { using type = const T &; };
 
 template< typename T >
-concept pin_in_out = requires {  
-   T::in_out_marker;
+using gf_const = _by_const< sizeof( T ), T >::type;
+
+/*
+// when no exact match: pass as a 1 byte smaller data type would be passed
+template< int N >
+using by_const_determined_by_size = by_const_determined_by_size< N - 1 >;
+
+// when larger than a pointer: pass by reference
+template<>
+using by_const_determined_by_size< 1 + sizeof( int * ) > = const & T;
+
+// when same size as a pointer or smaller: pass by value
+template<>
+using by_const_determined_by_size< 0 > = const T;
+*/
+
+struct s {
+   int x;
 };
 
-struct in { constexpr static bool in_marker = true; };
-
-struct in_out { constexpr static bool in_out_marker = true; };
-        
-template< typename... P >                                                                                             
-struct pin_in_from {                                                                                               
-   static_assert(                                                     
-      sizeof...( P ) < 0,                                
-         "pin_in_from<> doesn't support this type as parameter\n"     
-         "   (check the 'required from here' line)" );                
-};                                                                    
-                                                                      
-template< typename T >                                                
-concept pin_in_compatible = pin_in< pin_in_from< T > >;             
-                                                                      
-template< typename... Ts >                                            
-concept pin_in_compatible_list =                                    
-   ( pin_in_compatible< Ts > && ... );                              
-
-template< pin_in_out T >
-struct pin_in_from< T > { 
-   static constexpr bool in_marker = true;
-   int dummy; 
-};
-
-template < pin_in_out... P > 
-//   requires ( sizeof...( P ) > 1 ) && ( pin_in_compatible_list< P... > )
-struct pin_in_from< P... > {
-   static constexpr bool in_marker = true;
-   int dummy; 
-};
-
-template< pin_in_compatible... _p >
-void f(){
-   using p = pin_in_from< _p... >;
+void f( gf_const< s > x ){
+   (void)x;
 }
 
 int main( void ){
-   
-   f< in_out >();
-   f< in_out, in_out >();
-     
+   f( s() );
 }

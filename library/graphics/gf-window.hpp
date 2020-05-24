@@ -35,7 +35,7 @@ template<
    typename          _implementation, 
    xy_compatible     _offset_t,
    color_compatible  _color_t,
-   xy                _size
+   xy<>              _size
 >
 struct window_root {
 
@@ -54,17 +54,18 @@ struct window_root {
    }
    
    static void write( location_t location, color_t color ){
+      auto loc = location - origin;
       if( 
-         within( location.x, size.x ) 
-         && within( location.y, size.y )
+         within( loc.x, size.x ) 
+         && within( loc.y, size.y )
       ){   
          _implementation::write_implementation( location, color );
       }   
    } 
           
    static void clear( color_t color ){ 
-      for( const auto location : xy_all_t( size )){
-         _implementation::write_implementation( location, color );                        
+      for( const auto location : range( size )){
+         _implementation::write_implementation( origin + location, color );                        
       }         
    }   
    
@@ -76,7 +77,7 @@ struct flip_horizontally :
       flip_horizontally< minion >,
       typename minion::location_t,
       typename minion::color_t,
-      minion::size
+      minion::size 
    >      
 {
    
