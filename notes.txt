@@ -1,6 +1,12 @@
 ubuntu notes
-- sudo apt install git, codelite, python-is-python3, libsfml-dev
-- clone godafoss, bpmtk, catch2
+- sudo apt install git, codelite, python-is-python3, 
+   libsfml-dev, gcc-10, g++-10, gnome-terminal
+- clone godafoss, bpmtk, catchorg/Catch2
+- codelite startup
+-> make codelite startup script
+- codelite start de exe niet goed
+- use 'ubuntu software' to install notepad++
+
 
 
 - xy in hd44780 should be smaller

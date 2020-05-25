@@ -139,7 +139,7 @@ public:
    using location_t  = w::location_t;
    using value_t     = w::offset_t::value_t;
    using color_t     = w::color_t;
-   using line        = line< w >;
+   using w_line      = line< w >;
    
    offset_t   origin;
    offset_t   size;  
@@ -159,10 +159,10 @@ public:
     
    void write(){ 
       auto end = origin + size;
-      line( w::origin + origin,  offset_t( size.x + 1, 0 ), border_ink ).write();
-      line( w::origin + origin,  offset_t( 0, size.y + 1 ), border_ink ).write();
-      line( w::origin + end,     offset_t( - size.x, 0   ), border_ink ).write();
-      line( w::origin + end,     offset_t( 0, - size.y   ), border_ink ).write();
+      w_line( w::origin + origin,  offset_t( size.x + 1, 0 ), border_ink ).write();
+      w_line( w::origin + origin,  offset_t( 0, size.y + 1 ), border_ink ).write();
+      w_line( w::origin + end,     offset_t( - size.x, 0   ), border_ink ).write();
+      w_line( w::origin + end,     offset_t( 0, - size.y   ), border_ink ).write();
       if( fill ){
          for( auto const a : range( size - offset_t( 1, 1 ))){
             w::write( w::origin + origin + offset_t( 1, 1 ) + a, fill_ink );   
