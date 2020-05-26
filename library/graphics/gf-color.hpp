@@ -111,6 +111,7 @@ constexpr color silver      = color( 0xC0C0C0 );
 constexpr color brown       = color( 0xA52A2A );        
 constexpr color salmon      = color( 0xFA8072 );
 
+/*
 template< typename color_t >
 color_t random_color();
 
@@ -121,3 +122,4 @@ color random_color< color >(){
       random_in_range< uint8_t >( 0, 255 ),
       random_in_range< uint8_t >( 0, 255 ) );
 }
+*/

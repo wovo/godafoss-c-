@@ -15,6 +15,7 @@
 # common settings for Arduino Due projects
 TARGET            ?= native
 
+GPP-LINUX       ?= g++-10
 GCC-WIN         ?= C:\ti-software\mingw64
 CPP_LANGUAGE    ?= -std=c++2a
 

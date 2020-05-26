@@ -8,6 +8,8 @@
 
 #include "gf-all.hpp"
 
+#define __SOFTFP__ 
+
 // the atmel header files use 'register', which is removed in C++17
 #define register 
 #include "sam.h"
@@ -83,7 +85,7 @@ enum class _port {
 
 template< _port P, uint32_t pin >
 struct _pin_in_out : 
-   be_pin_in_out
+   pin_in_out_root
 {
 	
    static void GODAFOSS_INLINE init(){
@@ -203,7 +205,7 @@ struct pin_adc :
 // UART
 //
 // ==========================================================================
-
+__SOFTFP__
 template< uint64_t baudrate = GODAFOSS_BAUDRATE >
 struct uart :
    be_uart< uart< baudrate > >
@@ -223,9 +225,11 @@ struct uart :
        
       // disable PIO Control on PA9 and set up for Peripheral A
       PIOA->PIO_PDR   = PIO_PA8; 
-      PIOA->PIO_ABSR &= ~PIO_PA8; 
+      //PIOA->PIO_ABSR &= ~PIO_PA8; 
+      PIOA->PIO_ABSR = PIOA->PIO_ABSR & ~PIO_PA8; 
       PIOA->PIO_PDR   = PIO_PA9; 
-      PIOA->PIO_ABSR &= ~PIO_PA9; 
+      //PIOA->PIO_ABSR &= ~PIO_PA9; 
+      PIOA->PIO_ABSR = PIOA->PIO_ABSR & ~PIO_PA9; 
 
       // enable the clock to the UART
       PMC->PMC_PCER0 = ( 0x01 << ID_UART );

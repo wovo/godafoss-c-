@@ -1,0 +1,5 @@
+grep: @: No such file or directory
+rm -f main.ld main.bin main.elfx main.elf main.map main.hex main.dmp main.lssx main.lss main.exe main.dll main.pyd main.nmdump    main.annotated main.o bmptk_calculated_size_stack.c bmptk_calculated_size_stack.o bmptk_fixed_size_stack.c bmptk_fixed_size_stack.o  -rf  -doxygen_docs .settings temp .cproject .project .clang .codelite __codelite.workspace _cpp_flags _linker_flags _linker_libs
+rm: invalid option -- 'o'
+Try 'rm --help' for more information.
+make: *** [../../../../../bmptk/Makefile.inc:1514: clean] Error 1
