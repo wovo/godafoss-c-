@@ -106,9 +106,9 @@ struct _pin_in_out :
          : ((Pio*)P)->PIO_CODR 
       )  = ( 0x1U << pin );	   */
 	  if( v ){
-		  (Pio*)P)->PIO_SODR = ( 0x1U << pin );	
+		  ((Pio*)P)->PIO_SODR = ( 0x1U << pin );	
 	  } else
-		  (Pio*)P)->PIO_CODR = ( 0x1U << pin );	
+		  ((Pio*)P)->PIO_CODR = ( 0x1U << pin );	
       }
    }
 
