@@ -8,8 +8,6 @@
 
 #include "gf-all.hpp"
 
-#define __SOFTFP__ 
-
 // the atmel header files use 'register', which is removed in C++17
 #define register 
 #include "sam.h"
@@ -103,10 +101,15 @@ struct _pin_in_out :
    static void GODAFOSS_INLINE direction_flush(){}
    
    static void GODAFOSS_INLINE write( bool v ){
-      ( v 
+      /*( v 
          ? ((Pio*)P)->PIO_SODR 
          : ((Pio*)P)->PIO_CODR 
-      )  = ( 0x1U << pin );	   
+      )  = ( 0x1U << pin );	   */
+	  if( v ){
+		  (Pio*)P)->PIO_SODR = ( 0x1U << pin );	
+	  } else
+		  (Pio*)P)->PIO_CODR = ( 0x1U << pin );	
+      }
    }
 
    static void GODAFOSS_INLINE flush(){}
