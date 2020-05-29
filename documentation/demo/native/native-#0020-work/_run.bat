@@ -1,1 +1,1 @@
-bmptk-make run
+sudo make run

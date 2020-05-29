@@ -1,0 +1,1 @@
+-Wl,-Map,main.map -Wl,--gc-sections,--wrap=atexit -Wl,-fatal-warnings

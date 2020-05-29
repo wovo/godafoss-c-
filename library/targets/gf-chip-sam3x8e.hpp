@@ -83,7 +83,7 @@ enum class _port {
 
 template< _port P, uint32_t pin >
 struct _pin_in_out : 
-   be_pin_in_out
+   pin_in_out_root
 {
 	
    static void GODAFOSS_INLINE init(){
@@ -101,10 +101,15 @@ struct _pin_in_out :
    static void GODAFOSS_INLINE direction_flush(){}
    
    static void GODAFOSS_INLINE write( bool v ){
-      ( v 
+      /*( v 
          ? ((Pio*)P)->PIO_SODR 
          : ((Pio*)P)->PIO_CODR 
-      )  = ( 0x1U << pin );	   
+      )  = ( 0x1U << pin );	   */
+	  if( v ){
+		  ((Pio*)P)->PIO_SODR = ( 0x1U << pin );	
+	  } else
+		  ((Pio*)P)->PIO_CODR = ( 0x1U << pin );	
+      }
    }
 
    static void GODAFOSS_INLINE flush(){}
@@ -203,7 +208,7 @@ struct pin_adc :
 // UART
 //
 // ==========================================================================
-
+__SOFTFP__
 template< uint64_t baudrate = GODAFOSS_BAUDRATE >
 struct uart :
    be_uart< uart< baudrate > >
@@ -223,9 +228,11 @@ struct uart :
        
       // disable PIO Control on PA9 and set up for Peripheral A
       PIOA->PIO_PDR   = PIO_PA8; 
-      PIOA->PIO_ABSR &= ~PIO_PA8; 
+      //PIOA->PIO_ABSR &= ~PIO_PA8; 
+      PIOA->PIO_ABSR = PIOA->PIO_ABSR & ~PIO_PA8; 
       PIOA->PIO_PDR   = PIO_PA9; 
-      PIOA->PIO_ABSR &= ~PIO_PA9; 
+      //PIOA->PIO_ABSR &= ~PIO_PA9; 
+      PIOA->PIO_ABSR = PIOA->PIO_ABSR & ~PIO_PA9; 
 
       // enable the clock to the UART
       PMC->PMC_PCER0 = ( 0x01 << ID_UART );
