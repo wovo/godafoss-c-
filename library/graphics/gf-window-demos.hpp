@@ -1,7 +1,6 @@
 
 namespace demo {
    
-   /*
 template< typename w, typename tt >   
 void random_lines(){
    w::init();
@@ -20,6 +19,5 @@ void random_lines(){
       }         
    }      
 }
-*/
 
 };
