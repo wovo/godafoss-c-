@@ -102,7 +102,7 @@ struct i2c_bus_bb_scl_sda {
       timing::template ns< profile::t_high >::wait();
    }
    
-   static bool read_bit(){         
+   static [[nodiscard]] bool read_bit(){         
       scl::write( 0 );
       timing::template ns< profile::t_low - profile::t_su_dat >::wait();         
       sda::write( 1 );
@@ -133,7 +133,7 @@ struct i2c_bus_bb_scl_sda {
       timing::template ns< profile::t_buf >::wait();
    }
        
-   static bool read_ack(){
+   static [[nodiscard]] bool read_ack(){
       return ! read_bit(); 
    } 
    
@@ -152,7 +152,7 @@ struct i2c_bus_bb_scl_sda {
       }         
    }
 
-   static uint8_t read_byte(){
+   static [[nodiscard]] uint8_t read_byte(){
       uint8_t result = 0;
       for( int i = 0; i < 8; ++i ){
          result = result << 1;

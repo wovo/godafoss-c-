@@ -1,0 +1,1 @@
+-L../../../../../SFML-2.5.1-10/lib  -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lgdi32 -lws2_32 -lwinmm    		

@@ -13,15 +13,17 @@
 class color final {
 private:    
               
-   static constexpr uint8_t clip( int_fast16_t x ){
-      return ( x < 0 ) 
-         ? 0 
-         : ( x > 0xFF ? 0xFF : x ); 
+   static constexpr uint8_t clip( int_fast16_t x, bool transparent = false ){
+      return ( transparent )
+         ? 0
+         : ( x < 0 ) 
+            ? 0 
+            : ( x > 0xFF ? 0xFF : x ); 
    }   
       
 public:
 
-//   bool    is_transparent; 
+   bool    is_transparent; 
    uint8_t red;
    uint8_t green;
    uint8_t blue;
@@ -35,14 +37,17 @@ public:
    constexpr color( 
       uint_fast32_t red, 
       uint_fast32_t green, 
-      uint_fast32_t blue
+      uint_fast32_t blue, 
+      bool transparent = false 
    ): 
-      red{   clip( red   ) }, 
-      green{ clip( green ) }, 
-      blue{  clip( blue  ) }
+      is_transparent{ transparent },
+      red{   clip( red,   transparent ) }, 
+      green{ clip( green, transparent ) }, 
+      blue{  clip( blue,  transparent ) }
    {}   
       
-   constexpr color( uint_fast32_t rgb32 = 0 ): 
+   constexpr color( uint_fast32_t rgb32 = 0 ):
+      is_transparent( false ),  
       red{   clip( ( rgb32 & 0xFF0000 ) >> 16 ) }, 
       green{ clip( ( rgb32 & 0x00FF00 ) >>  8 ) }, 
       blue{  clip( ( rgb32 & 0x0000FF ) >>  0 ) }
@@ -52,14 +57,19 @@ public:
       return color( 
          0xFF - static_cast< uint8_t >( red ), 
          0xFF - static_cast< uint8_t >( green ), 
-         0xFF - static_cast< uint8_t >( blue ) ); 
+         0xFF - static_cast< uint8_t >( blue ), 
+         is_transparent ); 
    }   
    
    constexpr bool operator== ( const color c ) const {
-      return 
-               ( red    == c.red   ) 
+      return is_transparent 
+         ? c.is_transparent 
+         : ( 
+            ( ! c.is_transparent ) 
+            && ( red    == c.red ) 
             && ( green  == c.green ) 
-            && ( blue   == c.blue  );
+            && ( blue   == c.blue )
+         ); 
    }
 
    constexpr bool operator!= ( const color c ) const {
@@ -68,11 +78,15 @@ public:
    
    template< typename T>
    friend T & operator<<( T & lhs, const color & rhs ){
-      return lhs 
-         << "[" << hex << setw(4) << setfill( '0' )
-         << rhs.red << "," 
-         << rhs.green << ","
-         << rhs.blue << "]";
+      if( rhs.is_transparent ){
+         return lhs << "[transparent]"; 
+      } else {
+         return lhs 
+            << "[" << hex << setw(4) << setfill( '0' )
+            << rhs.red << "," 
+            << rhs.green << ","
+            << rhs.blue << "]";
+      }
    }   
 
 }; // class color
@@ -86,7 +100,7 @@ constexpr color gray        = color( 0x80, 0x80, 0x80 );
 constexpr color yellow      = color( 0xFF, 0xFF,    0 );
 constexpr color cyan        = color(    0, 0xFF, 0xFF );
 constexpr color magenta     = color( 0xFF,    0, 0xFF );
-    
+constexpr color transparent = color( 0,       0,    0,   1 );      
 constexpr color violet      = color( 0xEE82EE );        
 constexpr color sienna      = color( 0xA0522D );        
 constexpr color purple      = color( 0x800080 );         
@@ -110,17 +124,22 @@ class black_or_white final {
 public:
 
    bool is_black;
+   bool is_transparent;
    
    black_or_white( color c ):
-      is_black( c == black )
+      is_black( c == black ), is_transparent( false )
    {}
    
    template< typename T>
    friend T & operator<<( T & lhs, const black_or_white rhs ){
-      return lhs << 
-         ( rhs.is_black
-            ? "[black]"
-            : "[white]" );
+      if( rhs.is_transparent ){
+         return lhs << "[transparent]"; 
+      } else {
+         return lhs << 
+            ( rhs.is_black
+               ? "[black]"
+               : "[white]" );
+      }
    }   
    
 };   

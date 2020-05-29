@@ -55,7 +55,7 @@ public:
    static constexpr auto origin = xy{};
 
    template< typename V >
-//      requires requires( V b ){ { x + b }; }   - ICE segfault
+//      requires requires( V b ){ { x + b }; }   - GCC 10.0.1 ICE segfault
       requires requires( T x, V b ){ { x + b }; }      
    constexpr auto operator+( const xy< V > rhs ) const {
       return xy< decltype( x + rhs.x ) > { 
@@ -97,12 +97,11 @@ public:
 
 }; 
 
-/*
 template< is_output_stream T, typename V >
 T & operator<<( T & lhs, xy< V > rhs ){
    return lhs << '(' << rhs.x << ',' << rhs.y << ')';
 }
-*/
+
 
 // ==========================================================================
 //

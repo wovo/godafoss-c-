@@ -4,7 +4,8 @@
 //
 // ==========================================================================
 //
-// by_const< T > : best way (copy or reference) to pass a const value
+// by_const< T > : best way (copy or reference) 
+// to pass a const value of type T
 //
 // ==========================================================================
 //

@@ -186,7 +186,7 @@ namespace godafoss {
 #include "chips/gf-hc595.hpp"
 #include "chips/gf-pcf8574.hpp"
 //#include "chips/gf-pcf8591.hpp"
-//#include "chips/gf-ssd1306.hpp"
+#include "chips/gf-ssd1306.hpp"
 #include "chips/gf-nrf24l01.hpp"
 
 } // namespace godafoss

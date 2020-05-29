@@ -18,6 +18,8 @@ TARGET            ?= native
 GCC-WIN         ?= C:\ti-software\mingw64
 CPP_LANGUAGE    ?= -std=c++2a
 
+#GCC-WIN         ?= C:\mingw64-10-0-1
+
 # defer to the next-level makefile.link
 RELATIVE          ?= .
 RELATIVE          := $(RELATIVE)/..
