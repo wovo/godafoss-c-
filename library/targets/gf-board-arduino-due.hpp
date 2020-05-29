@@ -135,9 +135,9 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out( _scl1,  a, 18 );
    make_pin_in_out( _sda1,  a, 17 );
 
-/*
    using  scl = godafoss::pin_oc<  _scl >;
    using  sda = godafoss::pin_oc<  _sda >;
+/*
    using scl1 = godafoss::pin_oc< _scl1 >;
    using sda1 = godafoss::pin_oc< _sda1 >;
 
