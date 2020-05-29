@@ -101,13 +101,9 @@ struct _pin_in_out :
    static void GODAFOSS_INLINE direction_flush(){}
    
    static void GODAFOSS_INLINE write( bool v ){
-      /*( v 
-         ? ((Pio*)P)->PIO_SODR 
-         : ((Pio*)P)->PIO_CODR 
-      )  = ( 0x1U << pin );	   */
 	  if( v ){
 		  ((Pio*)P)->PIO_SODR = ( 0x1U << pin );	
-	  } else
+	  } else {
 		  ((Pio*)P)->PIO_CODR = ( 0x1U << pin );	
       }
    }
@@ -208,7 +204,7 @@ struct pin_adc :
 // UART
 //
 // ==========================================================================
-__SOFTFP__
+
 template< uint64_t baudrate = GODAFOSS_BAUDRATE >
 struct uart :
    be_uart< uart< baudrate > >
