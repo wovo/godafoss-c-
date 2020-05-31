@@ -9,12 +9,12 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright 
+// Copyright
 //    Wouter van Ooijen 2019-2020
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,12 +33,12 @@ struct _direct_read : T {};
 
 template< input T >
 struct _direct_read< T > : T {
-	
+
    static auto read(){
       T::refresh();
       return T::read();
    }
-   
+
 };
 
 
@@ -47,18 +47,18 @@ struct _direct_read< T > : T {
 // write
 //
 // ==========================================================================
-   
+
 template< typename T >
 struct _direct_write : T {};
 
 template< output T >
 struct _direct_write< T > : T {
-	
+
    static void write( typename T::value_type v ) {
       T::write( v );
       T::flush();
    }
-   
+
 };
 
 
@@ -67,39 +67,45 @@ struct _direct_write< T > : T {
 // direction
 //
 // ==========================================================================
-   
+
 template< typename T >
 struct _direct_direction : T {};
 
 template< simplex T >
 struct _direct_direction< T > : T {
-	
+
    static void direction_set_input() {
       T::direction_set_input();
       T::direction_flush();
    }
-   
+
    static void direction_set_output() {
       T::direction_set_output();
       T::direction_flush();
    }
-   
+
 };
 
 
 // ==========================================================================
 //
-// the direct<> decorator
+// opt in to the direct<> decorator and provide it
 //
 // ==========================================================================
 
 template< typename T >
-concept can_direct = requires {
+concept can_box_direct = requires {
    item< T >;
 };
 
-template< can_direct T >
-struct direct : 
-   _direct_read< 
-   _direct_write< 
+template< can_box_direct T >
+struct direct_supported< T > {
+    static constexpr bool supported = true;
+};
+
+template< typename T >
+   requires can_box_direct< T >
+struct direct< T > :
+   _direct_read<
+   _direct_write<
    _direct_direction < T >>> {};

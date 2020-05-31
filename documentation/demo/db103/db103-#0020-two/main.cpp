@@ -1,12 +1,8 @@
 // ==========================================================================
 //
-// Test whether a project can contain two source files.
+// Test if a project can contain two source files.
 //
-// This causes some trouble with the MingW linker, because it doesn't
-// handle weak definitions. Hence being weak is sufficient for an embedded
-// build, but not for a windows-hosted build.
-//
-// (c) Wouter van Ooijen (wouter@voti.nl) 2017
+// (c) Wouter van Ooijen (wouter@voti.nl) 2017-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at 
@@ -19,7 +15,6 @@
 void test();
 
 int main(){
-   test();
-//   hwlib::cout << "Two sources test\n";   
+   test();   
 }   
 

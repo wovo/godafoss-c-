@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// blink the LED on an Arduino Due
+// blink a LED on a DB103 board
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //

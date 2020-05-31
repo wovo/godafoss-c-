@@ -1,20 +1,43 @@
 // ==========================================================================
 //
-// file : hc595.hpp
+// gf-595.hpp
 //
-// ==========================================================================   
+// ==========================================================================
+//
+// This is the interface to the SPI-like 74HC(T)595 chip(s).
+//
+// It provides access to the individual pins as pin_out's, and
+// to all pins together as a port_out.
+//
+// ==========================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright 
+//    Wouter van Ooijen 2019-2020
+// 
+// Distributed under the Boost Software License, Version 1.0.
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// ==========================================================================
  
 
 template< 
    typename            bus,
-   pin_out_compatible  _cs
+   pin_out_compatible  _cs,
+   uint32_t            n_chips = 1
 >   
 struct hc595 :
-   port_out_root< 8 >
+   port_out_root< 8 * n_chips >
 {
    using chip = hc595< bus, _cs >;	 
+   using root = port_out_root< 8 * n_chips >;
+   
    using cs = direct< pin_out_from< _cs >>;
-   static inline uint_fast8_t buffer;
+   
+   static inline root::value_type buffer;
    static inline bool dirty;
    
    static void GODAFOSS_INLINE init(){
@@ -23,7 +46,7 @@ struct hc595 :
       cs::init();    
    }
      
-   static void GODAFOSS_INLINE write( uint_fast8_t d ){
+   static void GODAFOSS_INLINE write( root::value_type d ){
       buffer = d;
 	  dirty = true;
    }
@@ -54,7 +77,7 @@ struct hc595 :
      
       static GODAFOSS_INLINE void flush() {
          chip::flush();		  
-      }   
+      }    
    
    };     
    

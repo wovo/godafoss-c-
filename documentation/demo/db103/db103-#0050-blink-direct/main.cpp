@@ -1,8 +1,8 @@
 // ==========================================================================
 //
-// blink the LED on an Arduino Due
+// blink a LED using the peripheral registers
 //
-// (c) Wouter van Ooijen (wouter@voti.nl) 2017
+// (c) Wouter van Ooijen (wouter@voti.nl) 2017-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at 
@@ -22,16 +22,17 @@ volatile uint32_t *gpioreg( uint32_t port, uint32_t offset ){
 
 int main( void ){
 
-   *gpioreg( port, 0x8000 ) |= mask;    
+   *gpioreg( port, 0x8000 ) = 
+      *gpioreg( port, 0x8000 ) | mask;    
    
    for(;;){
       *gpioreg( port, 0x04 << pin ) = -1;
       
-      for( volatile int i = 0; i < 200'000; ++i ){}
+      for( int i = 0; i < 200'000; ++i ){ asm( "nop" ); }
 
       *gpioreg( port, 0x04 << pin ) = 0; 
 
-      for( volatile int i = 0; i < 200'000; ++i ){}
+      for( int i = 0; i < 200'000; ++i ){ asm( "nop" ); }
    }
 }
 

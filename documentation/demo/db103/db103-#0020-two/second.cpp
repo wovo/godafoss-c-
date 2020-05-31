@@ -1,8 +1,8 @@
 // ==========================================================================
 //
-// Test whether a project can contain two source files.
+// Test if a project can contain two source files.
 //
-// (c) Wouter van Ooijen (wouter@voti.nl) 2017
+// (c) Wouter van Ooijen (wouter@voti.nl) 2017-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at 
@@ -13,5 +13,4 @@
 #include "godafoss.hpp"
 
 void test(){
-//   hwlib::cout << "Test function called\n";
 }

@@ -17,15 +17,15 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using led     = target::p1_3;
 
-using leds = gf::port_out<
-   gf::pin_out_from_pins< target::scl,  target::sda  >,
-   gf::pin_out_from_pins< target::p0_6, target::p0_7 >,
+using leds = gf::port_out_from<
+   gf::all< target::scl,  target::sda  >,
+   gf::all< target::p0_6, target::p0_7 >,
 
-   gf::pin_out_from_pins< target::p1_0, target::p1_1 >,
-   gf::pin_out_from_pins< target::p1_2, target::p1_3 >,
+   gf::all< target::p1_0, target::p1_1 >,
+   gf::all< target::p1_2, target::p1_3 >,
    
-   gf::pin_out_from_pins< target::p1_4, target::p1_5 >,
-   gf::pin_out_from_pins< target::p1_8, target::p1_9 >
+   gf::all< target::p1_4, target::p1_5 >,
+   gf::all< target::p1_8, target::p1_9 >
 >;   
 
 int main( void ){     

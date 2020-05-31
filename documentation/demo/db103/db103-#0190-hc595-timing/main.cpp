@@ -52,6 +52,19 @@ int main( void ){
    chip::p6::write( 0 ); 
    chip::p7::write( 1 );   
    chip::p0::flush();
+   t2 = timing::now_ticks();
+   cout << "write 8 pins buffered + flush (one) " << ( t2 - t1 ) / 12 << " us\n";
+   
+   t1 = timing::now_ticks();
+   chip::p0::write( 1 );
+   chip::p1::write( 0 );
+   chip::p2::write( 1 );
+   chip::p3::write( 1 );
+   chip::p4::write( 1 );
+   chip::p5::write( 0 );
+   chip::p6::write( 0 ); 
+   chip::p7::write( 1 );   
+   chip::p0::flush();
    chip::p1::flush();
    chip::p2::flush();
    chip::p3::flush();
@@ -60,7 +73,7 @@ int main( void ){
    chip::p6::flush();
    chip::p7::flush();
    t2 = timing::now_ticks();
-   cout << "write 8 pins buffered + flush each " << ( t2 - t1 ) / 12 << " us\n";
+   cout << "write 8 pins buffered + flush (each) " << ( t2 - t1 ) / 12 << " us\n";
    
    t1 = timing::now_ticks();
    chip::p0::write( 1 );
@@ -80,7 +93,7 @@ int main( void ){
    chip::p7::write( 1 );   
    chip::p7::flush();
    t2 = timing::now_ticks();
-   cout << "write 8 pins buffered + flush immediate " << ( t2 - t1 ) / 12 << " us\n";
+   cout << "write + flush 8 pins buffered " << ( t2 - t1 ) / 12 << " us\n";
    
 }
 

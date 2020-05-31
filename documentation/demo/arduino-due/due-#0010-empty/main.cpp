@@ -10,7 +10,7 @@
 //
 // ==========================================================================
 
-// #include "godafoss.hpp"
+#include "godafoss.hpp"
 
 int main( void ){}
 
@@ -20,6 +20,7 @@ int __wrap_atexit(void __attribute__((unused)) (*function)(void)) {
     return -1;
 }
 
+/*
 void *memset(void *str, int c, unsigned int n){
    unsigned char *p = (unsigned char *) str;
    while( n ){
@@ -30,7 +31,7 @@ void *memset(void *str, int c, unsigned int n){
 }
 
 void *memcpy(void *dest, const void * src, unsigned int n){
-   unsigned char *ps = (unsigned char *) src;
+   unsigned const char *ps = (unsigned const char *) src;
    unsigned char *pd = (unsigned char *) dest;
    while( n ){
       *pd++ = *ps++;
@@ -39,5 +40,6 @@ void *memcpy(void *dest, const void * src, unsigned int n){
     
    return dest;
 }
+*/
 
 }

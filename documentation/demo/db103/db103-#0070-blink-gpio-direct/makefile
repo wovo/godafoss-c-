@@ -2,7 +2,7 @@
 #
 # simple project makefile (just a main file)
 #
-# (c) Wouter van Ooijen (wouter@voti.nl) 2017
+# (c) Wouter van Ooijen (wouter@voti.nl) 2017-2020
 #
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at 
@@ -11,13 +11,16 @@
 #============================================================================
 
 # source files in this project (main.* is automatically assumed)
-SOURCES :=
+SOURCES +=
 
 # header files in this project
-HEADERS :=
+HEADERS +=
 
 # other places to look for files for this project
-SEARCH  := 
+SEARCH  += 
+
+# other things to build (for instance main.lss)
+RESULTS +=  
 
 # set RELATIVE to the next higher directory 
 # and defer to the appropriate Makefile.* there

@@ -1,16 +1,16 @@
 #============================================================================
 #
-# makefile-include for bmptk: 
-# sets 
+# makefile-include for bmptk:
+# sets
 # - CPP_LANGUAGE to C++ 17, and enables concepts
 # - the search path (the GODAFOSS/include, targets, and avr8-hacks)
 # - the dependencies (all hwlib source files)
-# 
+#
 # (c) Wouter van Ooijen (wouter@voti.nl) 2017
 #
 # Distributed under the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE_1_0.txt or copy at 
-# http://www.boost.org/LICENSE_1_0.txt)   
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
 #
 #============================================================================
 
@@ -75,6 +75,7 @@ HEADERS           += char-io/gf-terminal-demos.hpp
 
 HEADERS           += graphics/gf-color.hpp
 HEADERS           += graphics/gf-window.hpp
+HEADERS           += graphics/gf-window-all.hpp
 HEADERS           += graphics/gf-window-decorators.hpp
 HEADERS           += graphics/gf-drawables.hpp
 HEADERS           += graphics/gf-window-demos.hpp

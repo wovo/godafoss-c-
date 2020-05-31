@@ -8,12 +8,12 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright 
+// Copyright
 //    Wouter van Ooijen 2019-2020
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -26,46 +26,47 @@ template< typename... arg_tail >
 struct _pin_out_from_pins {};
 
 // recursion endpoint
-template<> 
-struct _pin_out_from_pins<> : 
+template<>
+struct _pin_out_from_pins<> :
    pin_out_dummy
 {};
 
 // workhorse
 template< typename head, typename... tail >
 struct _pin_out_from_pins< head, tail... > {
-	
-   using pin = pin_out_from< head >	;
-	
+
+   using pin = pin_out_from< head > ;
+
    static void GODAFOSS_INLINE init(){
       pin::init();
-      _pin_out_from_pins<  tail... >::init();	  
-   }	
-   
+      _pin_out_from_pins<  tail... >::init();
+   }
+
    static void GODAFOSS_INLINE write( bool v ){
       pin::write( v );
-      _pin_out_from_pins<  tail... >::write( v );	  
-   }	   
-   
+      _pin_out_from_pins<  tail... >::write( v );
+   }
+
    static void GODAFOSS_INLINE flush(){
       pin::flush();
-      _pin_out_from_pins<  tail... >::flush();	  
-   }	
-   
+      _pin_out_from_pins<  tail... >::flush();
+   }
+
 };
 
 // opt into all<>
-template< pin_out_compatible_list... tail >
-struct support_all< tail... > {
-   static constexpr bool value = true;
+template< typename first, typename... tail >
+   requires pin_out_compatible< first >
+         && pin_out_compatible_list< tail... >
+struct all_supported< first, tail... > {
+   static constexpr bool supported = true;
 };
 
 // wrapper
-/*
-template< pin_out_compatible_list... tail >
-   requires pin_out_compatible_list< tail... >
-struct all< tail... > :
+template< typename first, typename... tail >
+   requires pin_out_compatible< first >
+         && pin_out_compatible_list< tail... >
+struct all< first, tail... > :
    pin_out_root,
-   _pin_out_from_pins< tail... >
+   _pin_out_from_pins< first, tail... >
 {};
-*/

@@ -1,8 +1,8 @@
 // ==========================================================================
 //
-// blink the LED on an Arduino Due
+// blink a LED using a pin with flush
 //
-// (c) Wouter van Ooijen (wouter@voti.nl) 2017
+// (c) Wouter van Ooijen (wouter@voti.nl) 2017-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at 
@@ -25,11 +25,11 @@ int main( void ){
       
       led::write( 1 );led::flush();
 
-      for( volatile uint32_t i = 0; i < 200'000; i++ ){}
+      for( int i = 0; i < 200'000; ++i ){ asm( "nop" ); }
 
       led::write( 0 );led::flush();
 
-      for( volatile uint32_t i = 0; i < 200'000; i++ ){}
+      for( int i = 0; i < 200'000; ++i ){ asm( "nop" ); }
 
    }
 }

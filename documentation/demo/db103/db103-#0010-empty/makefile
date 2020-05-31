@@ -11,13 +11,16 @@
 #============================================================================
 
 # source files in this project (main.* is automatically assumed)
-SOURCES :=
+SOURCES +=
 
 # header files in this project
-HEADERS :=
+HEADERS +=
 
 # other places to look for files for this project
-SEARCH  := 
+SEARCH  += 
+
+# other things to build (for instance main.lss)
+RESULTS +=  
 
 # set RELATIVE to the next higher directory 
 # and defer to the appropriate Makefile.* there

@@ -4,13 +4,13 @@
 //
 // ==========================================================================
 //
-// This file includes all target-independent files. 
+// This file includes all target-independent files.
 //
 // To add a file, add it here and in the Makefile.inc
 //
-// C/C++ library files are included here rather than in 
+// C/C++ library files are included here rather than in
 // the individual library files.
-// The individual header files depend on the order in which they 
+// The individual header files depend on the order in which they
 // are included here, and don't have multiple-include guards.
 // They are not meant to be included individually.
 //
@@ -18,12 +18,12 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright 
+// Copyright
 //    Wouter van Ooijen 2019-2020
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -36,8 +36,8 @@
 
 // ==========================================================================
 //
-// The library headers we need are included here 
-// rather than in the files that need them. 
+// The library headers we need are included here
+// rather than in the files that need them.
 //
 // A dirty hack is needed because the AVR8 compiler lacks certain headers
 // https://github.com/maniacbug/StandardCplusplus
@@ -67,12 +67,12 @@
 
 /*
 namespace std {
-	
+
 namespace detail {
     template< class T, class U >
     concept SameHelper = std::is_same_v<T, U>;
 }
- 
+
 template< class T, class U >
 concept same_as = detail::SameHelper<T, U> && detail::SameHelper<U, T>;
 
@@ -137,13 +137,13 @@ concept same_as = detail::SameHelper<T, U> && detail::SameHelper<U, T>;
 
 // ==========================================================================
 //
-// include all non-HAL library files, 
+// include all non-HAL library files,
 // enclosed in the godafoss namespace
 //
 // ==========================================================================
 
 namespace godafoss {
-   
+
 #include "../externals/torsor.hpp"
 
 #include "core/gf-basics.hpp"
@@ -191,7 +191,8 @@ namespace godafoss {
 
 #include "graphics/gf-color.hpp"
 #include "graphics/gf-window.hpp"
-//#include "graphics/gf-window-decorators.hpp"
+#include "graphics/gf-window-all.hpp"
+#include "graphics/gf-window-decorators.hpp"
 #include "graphics/gf-drawables.hpp"
 #include "graphics/gf-window-demos.hpp"
 

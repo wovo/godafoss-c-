@@ -53,7 +53,7 @@ public:
    constexpr xy():x{ zero }, y{ zero }{}
    
    template< typename X >
-   constexpr xy( const & xy< X > rhs ): x( rhs.x ), y( rhs.y ) {}
+   constexpr xy( const xy< X > & rhs ): x( rhs.x ), y( rhs.y ) {}
    
    static constexpr auto origin = xy{};
 

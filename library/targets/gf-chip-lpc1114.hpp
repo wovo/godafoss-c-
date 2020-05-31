@@ -87,7 +87,8 @@ static GODAFOSS_INLINE void configure_as_gpio(
    uint32_t port, 
    uint32_t pin 
 ){
-   LPC_SYSCON->SYSAHBCLKCTRL |= (1<<16);     // enable IOCON
+   LPC_SYSCON->SYSAHBCLKCTRL = 
+      LPC_SYSCON->SYSAHBCLKCTRL | (1<<16);     // enable IOCON
    switch( ( port << 8 ) | pin ){
       case 0x0000: pin_gp_conf( &LPC_IOCON->RESET_PIO0_0,  0x01 ); break;
       case 0x0001: pin_gp_conf( &LPC_IOCON->PIO0_1,        0x00 ); break;
@@ -147,7 +148,7 @@ static GODAFOSS_INLINE void configure_as_gpio(
     
 template< uint32_t port, uint32_t pin >
 struct _pin_in_out : 
-   be_pin_in_out
+   pin_in_out_root
 {
 	   
    static const uint32_t mask = 0x1U << pin;
@@ -159,7 +160,8 @@ public:
    }
    
    static GODAFOSS_INLINE void direction_set_input(){
-      *gpioreg( port, 0x8000 ) &= ~ mask;
+      *gpioreg( port, 0x8000 ) = 
+         *gpioreg( port, 0x8000 ) & ~ mask;
    }
    
    static GODAFOSS_INLINE bool read(){
@@ -167,7 +169,8 @@ public:
    }
    
    static GODAFOSS_INLINE void  direction_set_output(){
-     *gpioreg( port, 0x8000 ) |= mask ;    
+     *gpioreg( port, 0x8000 ) = 
+        *gpioreg( port, 0x8000 )  | mask ;    
    }
    
    static GODAFOSS_INLINE void write( bool v ) {
@@ -198,10 +201,12 @@ static uint32_t configure_as_adc(
 ){ 
  
    // enable IOCON & A/D clock
-   LPC_SYSCON->SYSAHBCLKCTRL |= ( 0x01 << 16 ) | ( 0x01 << 13 );
+   LPC_SYSCON->SYSAHBCLKCTRL = 
+      LPC_SYSCON->SYSAHBCLKCTRL |( 0x01 << 16 ) | ( 0x01 << 13 );
    
       // enable A/D power
-   LPC_SYSCON->PDRUNCFG &= ~( 1 << 4 );      
+   LPC_SYSCON->PDRUNCFG = 
+      LPC_SYSCON->PDRUNCFG & ~( 1 << 4 );      
 
    switch( pin ){
       case 0x000B: pin_ad_conf( &LPC_IOCON->R_PIO0_11,    0x02 ); return 0;
@@ -235,7 +240,8 @@ struct pin_adc :
       LPC_ADC->CR = ( 0x01 << channel ) | ( 12 << 8 );
      
       // start the conversion
-      LPC_ADC->CR |= ( 0x01 << 24 );
+      LPC_ADC->CR = 
+         LPC_ADC->CR | ( 0x01 << 24 );
    
       // wait for the conversion to complete
       while( ( LPC_ADC->GDR & ( 1 << 31 )) == 0 );
@@ -269,14 +275,16 @@ struct uart :
    static void init(){   
 	   
 	// Enable IOCON block
-	SYSAHBCLKCTRL |= (1 << SYSAHBCLKCTRL_IOCON_BIT);
+	SYSAHBCLKCTRL = 
+	   SYSAHBCLKCTRL | (1 << SYSAHBCLKCTRL_IOCON_BIT);
 	
 	// Configure IO Mode and Function of pins 6 and 7 for UART use. FUNC bits (2:0) = 0x01 (RX/TX) respectively.
 	IOCON_PIO1_6 = 0x01;		// RX
 	IOCON_PIO1_7 = 0x01;		// TX
 	
 	// Enable power to UART block
-	SYSAHBCLKCTRL |= (1 << SYSAHBCLKCTRL_UART_BIT);
+	SYSAHBCLKCTRL = 
+	   SYSAHBCLKCTRL | (1 << SYSAHBCLKCTRL_UART_BIT);
 	
 	// Set transmission parameters to 8N1 (8 data bits, NO partity, 1 stop bit, DLAB=1)
 	UART_LCR = (UART_LCR_WORDLENGTH_08 << UART_LCR_WORDLENGTH_BIT) | (1 << UART_LCR_DLAB_BIT);
@@ -287,7 +295,8 @@ struct uart :
 	UART_FDR = 0x85;		// FDR = (MULVAL << 4 ) | DIVADDVAL
 	
 	// Turn off DLAB
-	UART_LCR ^= (1 << UART_LCR_DLAB_BIT);
+	UART_LCR = 
+	   UART_LCR ^ (1 << UART_LCR_DLAB_BIT);
 	
 	// Enable UART_PCKL divider to supply clock to the baud generator
 	UARTCLKDIV = 0x01;

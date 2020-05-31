@@ -150,7 +150,7 @@ struct glcd_ssd1306 :
    >;  
    
    static void init(){
-      chip::bus::write( ssd1306_initialization );
+   //   chip::bus::write( ssd1306_initialization );
    }
 
    // current cursor setting in the controller;
