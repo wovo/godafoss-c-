@@ -16,6 +16,8 @@ __codelite.workspace
 *.pdf
 *.html
 _run.bat
+_cpp_flags
+_linker_flags
 _dummy.jpg
 bmptk_*_stack.c
 _push.bat
