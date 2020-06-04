@@ -44,6 +44,10 @@ struct port_in_out_dummy :
 
    static void GODAFOSS_INLINE direction_set_output(){
    }
+   
+   static void GODAFOSS_INLINE direction_flush(){
+   }
+   
 };
 
 
@@ -76,6 +80,12 @@ struct port_oc_dummy :
    static void GODAFOSS_INLINE write( _vt v ){ 
       (void) v; 
    }      
+   
+   static void GODAFOSS_INLINE flush(){
+   }
+
+   static void GODAFOSS_INLINE refresh(){
+   }   
 	  
    static _vt GODAFOSS_INLINE read(){ 
       return 0; 

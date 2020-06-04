@@ -36,7 +36,7 @@
 \section{First steps}
 
 % ---------------------------------------------------------------------------
-\subsection{Blink}
+\subsection{First blood: blink}
 
 The first thing to do on micro-controller system is to blink a LED.
 It proves that your system is working and that you are a genius.
@@ -61,7 +61,7 @@ The first line makes the godafoss features available for use in the code.
 It must be on a line by itself, and it is the first line of every godafoss
 application.
 
-The int main(){ on line 3 upto the matching } on line 8 are required
+The "int main(){" on line 3 upto the matching "}" on line 8 are required
 by the C++ language to identify what the application does when it is run.
 You will find such a 'main function' in every C++ application. 
 The int before main is required by the C++ language because it is 
@@ -71,7 +71,8 @@ present.
 Just pretend that it is not there.
 
 The lines 4 .. 7 are the interesting part.
-The godafoss::blink phrase means 'the blink within the godafoss namespace'. 
+The "godafoss::blink" on line 4 phrase means 
+'the blink within the godafoss namespace'. 
 A namsepace is a bit like a family.
 There are many persons named Martin in the world, so to identify a specific
 Martin you say something like Martin King: the person named Martin
@@ -79,8 +80,12 @@ within the King family.
 (Assuming there is only one King family, and only one
 Martin in that family.)
 In C++ you would write this as King::Martin.
-The godafoss namespace
-has a blink function, which is used here to do the blinking.
+The godafoss namespace has a blink function, 
+which is used here to do the blinking.
+
+The things between the "<" on line 4 and the ">;" on line 7 are 
+fixed things we pass to blink to configure it for our purpose,
+in this case the LED pin and the blink time.
 
 We want to blink the LED that is on the target board.
 This LED is connected to a specific pin of the micro-controller
@@ -104,7 +109,7 @@ In this example 500 ms (half a second) is specified
 so the blinking will be at a rate of 2 per second (2 Hertz).
 
 The fully configured godafoss::blink doesn't need any run-time information 
-to do its work, so the () on line 7 specifies that it is called,
+to do its work, so the "();" on line 7 specifies that it is called,
 which means that its code is executed.
 As configured godafoss::blink will blink forever, so that
 is all there is to blinking the LED on a target board.
@@ -140,8 +145,10 @@ image
 Provided that the correct Arduino target board is selected in the 
 development environment, the godafoss::target namsepace will contain
 the pins as d0, d1, etc and a0, a1, etc.
-The LED is connected to the d7 pin, so that pin must be used
-to configure the blink function.
+(For another target board the pins available in godfafoss::target<>
+will likely be different.)
+In this example LED is connected to the d7 pin, 
+so that pin must be used to configure the blink function.
 
 % update quote( input, "due-01-01-02-blink-d2", "", numbers = 1 )
 \lstset {language=C++}
@@ -156,7 +163,8 @@ to configure the blink function.
 [ 8] }
 \end{lstlisting}
 
-All this godafoss and godafoss::target is a bit longwieldy and repetitive.
+All this godafoss, godafoss::target and godafoss::target<>::timing
+is a bit unwieldy and repetitive.
 Aliases can be created via 'using' statements to make the application 
 code itself (the main) shorter and easier to read, at the cost of 
 a few extra lines at the top.
@@ -189,12 +197,12 @@ blinking period can be lifted out of the blink call.
 \begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
-[ 3] using gf     = godafoss;
-[ 4] using target = gf::target<>;
-[ 5] using timing = gf::timing;
+[ 3] namespace gf  = godafoss;
+[ 4] using target  = gf::target<>;
+[ 5] using timing  = gf::timing;
 [ 6] 
-[ 7] using led    = target::d2;
-[ 8] using period = timing::ms< 500 >; 
+[ 7] using led     = target::d2;
+[ 8] using period  = timing::ms< 500 >; 
 [ 9] 
 [10] int main(){
 [11]    gf::blink< led, period >();
@@ -207,28 +215,30 @@ where the led and the period are likely to be used at
 multiple locations in the source.
 
 % ---------------------------------------------------------------------------
-\subsection{Morse}
+\subsection{Timing : morse}
 
 Morse is a way to encode letters and digits in a sequence of 
-short and long beeps (or flashes of light). 
+short and long beeps (or flashes of light) and pauses. 
 A famous example is the sequence that was used as a distress
 (call for help) signal: three short beeps, three longer beeps, 
 three short beeps. 
-Interpreted as morse code this can be read as SOS, 
+Interpreted as morse code this can be read as SOS,
+\footnote{The real morse code for the letters SOS would be
+three short beeps, \textit{a pause}, three long beeps, \textit{a pause},
+three short beeps. The pauses are needed to separate the letters.}
 which was in popular culture read as Save Our Ship or 
 (later) Save Our Souls.
-(Note: the real morse code for the letters SOS would be
-three short beeps, *a pause*, three long beeps, *a pause*,
-three short beeps. The pauses are needed to separate the letters.)
 
 Beeping is much like blinking an LED, only faster.
 The so-called middle A note, commonly used for tuning, has a frequency 
 of 440 Hz, which means that the full period is 1/440 s = 2.27 ms.
 Hence the configuration parameter for blink to produce a middle A
 is half that value: 2270 us.
+\footnote{A millisecond or ms is 1/1000 of a second, a microsecond or us 
+is 1/1000 of a millisecond.}
 
 To physically produce a beep, a speaker must be connected to the target.
-As for the LED, a series resistor must be used to limit the current.
+As with the LED, a series resistor must be used to limit the current.
 Like a resistor, a speaker is symmetrical 
 (swapping the connections has no effect).
 A 1k resistor can be used to get a soft sound, 100 Ohm 
@@ -245,12 +255,12 @@ a continuous 440 Hz tone.
 \begin{lstlisting}
 [ 1] #include "godafoss.hpp"
 [ 2] 
-[ 3] using gf     = godafoss;
-[ 4] using target = gf::target;
-[ 5] using timing = gf::timing;
+[ 3] namespace gf  = godafoss;
+[ 4] using target  = gf::target;
+[ 5] using timing  = gf::timing;
 [ 6] 
-[ 7] using led    = target::d3;
-[ 8] using period = timing::us< 1120 >; 
+[ 7] using led     = target::d3;
+[ 8] using period  = timing::us< 1120 >; 
 [ 9] 
 [10] int main(){
 [11]    gf::blink< led, period >();
@@ -262,12 +272,48 @@ image frequency meter 440 Hz
 The blink function that was used so far blinks forever.
 A second version of this function exists, that takes a second
 duration parameter, to specify how long the blinking
-(or in this case, the beeping) must be done.
+(or in this case, the beeping) must last.
 
 
 - beep
 - blink an amount of time
 - different on and off periods
+
+% ---------------------------------------------------------------------------
+\subsection{Kitt}
+
+A Kitt display (from the once famous Knight Rider series) is a line
+of LEDs, where the one LED that is on moves back and forth.
+The next code does this manually with four LEDs connected to the pins
+d2 .. d5.
+\footnote{On most Arduino boards, the pins d0 and d1 are used 
+for the communication between the Arduino and the PC, so these pins
+can't be used for other purposes.}
+
+
+
+- how to write a kitt yourself
+   - create 
+
+Each 
+
+subsection boxes, concepts, modifiers-constructors
+
+text display
+
+graphics
+
+decorators
+
+opt-in decorators
+
+background functions
+
+multithreading
+
+C++ subset
+
+
 
 % =======================================================
 \section{Scale factors}

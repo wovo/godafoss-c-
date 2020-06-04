@@ -62,14 +62,17 @@ struct _windows_all {
 template< typename w >
 struct _windows_all< w > {
 
-   static void init(){}
-
-   static void write( torsor< xy<> > address, color col ){
-      (void)address;
-      (void)col;
+   static void init(){
+      w::init();
    }
 
-   static void flush(){}
+   static void write( torsor< xy<> > address, color col ){
+      w::write( address, col );
+   }
+
+   static void flush(){
+      w::flush();
+   }
 
 };
 

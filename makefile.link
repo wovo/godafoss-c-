@@ -15,7 +15,7 @@ GODAFOSS           ?= $(RELATIVE)
 include            $(GODAFOSS)/makefile.inc
 
 # C++20 required
-CPP_LANGUAGE    ?= -std=c++2a
+CPP_LANGUAGE    := -std=c++2a -fconcepts-diagnostics-depth=3
 
 # add Catch
 SEARCH             += $(RELATIVE)/../Catch/include

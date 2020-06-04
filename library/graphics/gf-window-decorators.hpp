@@ -11,5 +11,93 @@
 // ==========================================================================
 
 
+// ==========================================================================
+//
+// ==========================================================================
+
+template< typename minion >
+struct flip_horizontally :
+   window_root<
+      flip_horizontally< minion >,
+      typename minion::offset_t,
+      typename minion::color_t,
+      minion::size
+   >
+{
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write_implementation(
+      minion::location_t pos,
+      minion::color_t color
+   ){
+      auto offset = pos - minion::origin;
+      minion::write(
+         minion::origin
+            + typename minion::offset_t(
+               minion::size.x - offset.x, offset.y ),
+         color
+      );
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+
+};
 
 
+// ==========================================================================
+//
+// invert
+//
+// ==========================================================================
+
+
+template< window T >
+struct invert_supported< T >{
+   static constexpr bool supported = true;
+};
+
+template< window minion >
+struct invert< minion >:
+   window_root<
+      invert< minion >,
+      typename minion::offset_t,
+      typename minion::color_t,
+      minion::size
+   >
+{
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write_implementation(
+      minion::location_t pos,
+      minion::color_t color
+   ){
+      minion::write( pos, - color );
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+
+};
+
+
+
+
+// direct
+// buffered
+// mirror_horizontally
+// mirror_vertically
+// sub_window
+// combine windows
+// make black-n-white
+// address transformation
+// color transformation
+//

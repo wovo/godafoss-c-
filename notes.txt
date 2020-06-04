@@ -6,16 +6,19 @@ bmptk modified:
 random blocks two-files project!
 db103 needs two 595 board and test
 db103 ADC not tested
-port< > isntead of port_out_from<> etc?
+port< > instead of port_out_from<> etc?
 gpio direct werkt niet, daarmee verder
 decorators have commented out requires clauses
 compatible should have
-all must now be at least two...
-pin_out<> == decorator, pin_out_type is the concept??
+all<> must now be at least two...
+pin_out<> == decorator, pin_out_type (_concept) is the concept??
+a torsor can be created location_t( x, y ) ??? and it is wrong!
+in window-all : xy zonder <> ??
+uart has no flush??
 
 - geany as editor, make build, make run (clean?)
 - start geany with sudo
-- run through a run script with setuid?
+- run the excutable through a run script with setuid?
 - where is my PCF8574A demo board??
 - add NO_TERMINAL option to bmptk
 
@@ -28,8 +31,6 @@ ubuntu notes
 -> make codelite startup script
 - codelite start de exe niet goed
 - use 'ubuntu software' to install notepad++
-
-
 
 - xy in hd44780 should be smaller
 - component should be torsor< int > ???

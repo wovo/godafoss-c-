@@ -68,7 +68,10 @@ public:
    template< typename T>
    friend T & operator<<( T & lhs, const color & rhs ){
       return lhs 
-         << "[" << hex << setw(4) << setfill( '0' )
+         << "[" 
+<< std::hex 
+//<< setw( 2 ) 
+//<< setfill( '0' )
          << rhs.red << "," 
          << rhs.green << ","
          << rhs.blue << "]";
@@ -110,9 +113,12 @@ public:
 
    bool is_black;
    
-   black_or_white( color c ):
+   constexpr black_or_white( color c ):
       is_black( c == black )
    {}
+   
+//   static constexpr auto white = black_or_white( false );
+//   static constexpr auto black = black_or_white( true );
    
    template< typename T>
    friend T & operator<<( T & lhs, const black_or_white rhs ){

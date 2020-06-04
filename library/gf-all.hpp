@@ -198,6 +198,7 @@ namespace godafoss {
 
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"
+#include "chips/gf-ks0108.hpp"
 #include "chips/gf-hc595.hpp"
 #include "chips/gf-pcf8574.hpp"
 //#include "chips/gf-pcf8591.hpp"

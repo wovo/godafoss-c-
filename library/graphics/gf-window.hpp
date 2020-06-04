@@ -18,7 +18,7 @@ concept color_compatible = true;
 
 template< typename T >
 concept window = requires(
-   typename T::offset_t  a,
+   typename T::location_t  a,
    typename T::color_t   c
 ){
    T::_window_marker;
@@ -70,79 +70,3 @@ struct window_root {
    }
 
 };
-
-template< typename minion >
-struct flip_horizontally :
-   window_root<
-      flip_horizontally< minion >,
-      typename minion::location_t,
-      typename minion::color_t,
-      minion::size
-   >
-{
-
-   static void init(){
-      minion::init();
-   }
-
-   static void write_implementation(
-      minion::location_t pos,
-      minion::color_t color
-   ){
-      minion::write(
-         typename minion::location_t( minion::size.x - pos.x, pos.y ),
-         color
-      );
-   }
-
-   static void flush(){
-      minion::flush();
-   }
-
-};
-
-template< window T >
-struct invert_supported< T >{
-   static constexpr bool supported = true;
-};
-
-template< window minion >
-struct invert< minion >:
-   window_root<
-      invert< minion >,
-      typename minion::address_t,
-      typename minion::color_t,
-      minion::size
-   >
-{
-
-   static void init(){
-      minion::init();
-   }
-
-   static void write_implementation(
-      minion::address_t pos,
-      minion::color_t color
-   ){
-      minion::write( pos, - color );
-   }
-
-   static void flush(){
-      minion::flush();
-   }
-
-};
-
-
-
-
-// direct
-// buffered
-// mirror_horizontally
-// mirror_vertically
-// sub_window
-// combine windows
-// make black-n-white
-// address transformation
-// color transformation
-//

@@ -83,6 +83,7 @@ HEADERS           += graphics/gf-window-demos.hpp
 
 HEADERS           += chips/gf-servo.hpp
 HEADERS           += chips/gf-hd44780.hpp
+HEADERS           += chips/gf-ks0108.hpp
 HEADERS           += chips/gf-hc595.hpp
 HEADERS           += chips/gf-pcf8574.hpp
 HEADERS           += chips/gf-pcf8591.hpp

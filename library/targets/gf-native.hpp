@@ -20,6 +20,8 @@
 #include "gf-all.hpp"
 #include "SFML/Graphics.hpp"
 
+#include <iostream>
+
 namespace godafoss {
 
 template< typename _dummy = void >
@@ -62,7 +64,7 @@ private:
 
    static void make_render_window(){
       GODAFOSS_RUN_ONCE;
-      name[ 2 ] = '0' + number;
+      // change the name!
       static sf::RenderWindow ww(
          sf::VideoMode( m * size.x, m * size.y ),
          name );
@@ -103,7 +105,7 @@ public:
 
    static void flush(){
        make_render_window();
-        wp->clear();
+       wp->clear();
 
        sf::Texture texture;
        texture.loadFromImage( image) ;
@@ -116,6 +118,39 @@ public:
 
         poll();
    }
+};
+
+
+// ==========================================================================
+//
+// cout
+//
+// ==========================================================================
+
+template< uint64_t dummy_baudrate = 0 >
+struct uart :
+   be_uart< uart< baudrate > >
+{
+	
+   static void init(){}
+
+   static bool GODAFOSS_INLINE write_blocks(){
+      return false;
+   }
+
+   static void GODAFOSS_INLINE write_unchecked( char c ){
+      std::cout << c;
+   }
+   	
+   static bool GODAFOSS_INLINE read_blocks(){	
+      return false; // peek??
+   }
+
+   static char GODAFOSS_INLINE read_unchecked(){
+      char c << std::cin;
+      return c; 
+   }
+
 };
 
 

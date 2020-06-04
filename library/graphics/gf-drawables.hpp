@@ -51,23 +51,25 @@ private:
 public:
 
    offset_t  origin;
-   offset_t  size;  
+   offset_t  endpoint;  
    color_t   ink;
    
    line( location_t origin, offset_t size, color_t ink )
-      : origin{ origin - w::origin }, size{ size }, ink{ ink }
+      : origin{ origin - w::origin }, endpoint{ origin + size }, ink{ ink }
    {}   
            
    line( location_t origin, location_t end, color_t ink )
-      : origin{ origin - w::origin }, size{ origin - end }, ink{ ink }
+      : origin{ origin - w::origin }, endpoint{ end - w::origin }, ink{ ink }
    {}   
       
    void write(){ 
          
       value_t x0 = origin.x;
       value_t y0 = origin.y;
-      value_t x1 = origin.x + size.x; 
-      value_t y1 = origin.y + size.y;
+      value_t x1 = endpoint.x; 
+      value_t y1 = endpoint.y;
+      
+//      std::cout << x0 << " " << y0 << " " << x1 << " " << y1 << "\n";
                    
       // http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
       // http://homepages.enterprise.net/murphy/thickline/index.html
@@ -111,7 +113,7 @@ public:
             yDraw = y;
          }
 
-         w::write( location_t( xDraw, yDraw ), ink );
+         w::write( w::origin + offset_t( xDraw, yDraw ), ink );
 
          if( E > 0 ){
             E += TwoDyTwoDx; //E += 2*Dy - 2*Dx;

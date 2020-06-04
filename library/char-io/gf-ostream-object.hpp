@@ -48,7 +48,7 @@ struct NAME {                                               \
                                                             \
 template< typename ostream >                                \
 ostream & operator<<( ostream & lhs, const NAME & rhs ){    \
-   ostream::base_type::format.FIELD = rhs.v;	               \
+   ostream::base_type::format.FIELD = rhs.v;	            \
    return lhs;                                              \
 }   
 

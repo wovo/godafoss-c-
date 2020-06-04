@@ -1,4 +1,3 @@
-#include <iostream>
 #include "godafoss.hpp"
 
 namespace gf = godafoss;
