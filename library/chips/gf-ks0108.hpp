@@ -39,44 +39,52 @@ private:
       { 128, 64 }
    >;
 	
+   // cs1, cs2, e are (internally) active high
+   //(the electrical pins are active low)
    using port    = port_out_from< _port >;  
    using cs1     = pin_oc_from< invert< _cs1 > >;
    using cs2     = pin_oc_from< invert< _cs2 > >;
    using cd      = pin_oc_from< _cd >;
-   using e       = pin_oc_from< _e >;
+   using e       = pin_oc_from< invert< _e > >;
    
+   // KS0108 commands
    static constexpr uint_fast8_t cmd_on  = 0x3E;
    static constexpr uint_fast8_t cmd_off = 0x3F;
    static constexpr uint_fast8_t cmd_x   = 0xB8;
    static constexpr uint_fast8_t cmd_y   = 0x40;
    static constexpr uint_fast8_t cmd_dsl = 0xC0;  
    
-   static void write8( bool is_command, uint_fast8_t d ){
+   // pixel buffer
+   static inline uint8_t buffer[ root::size.x * root::size.y / 8 ];
+
+   // write on byte, command or data
+   static void write8( bool is_data, uint_fast8_t d ){
    
-      direct< cd >::write( is_command );
+      direct< cd >::write( is_data );
       direct< port >::write( d );
 
-      direct< e >::write( 1 );
+      direct< e >::write( 0 );
       timing::template us< 1 >::wait();
-      direct< e >::write( 0 );      
+      direct< e >::write( 1 );      
       timing::template us< 1 >::wait();
    }      
-           
-   static void chip( bool c ){
+          
+   // select chip 0 or chip 1          
+   static void select_chip( bool c ){
       direct< cs1 >::write( ! c );
       direct< cs2 >::write( c );
    }
 
-   static void GODAFOSS_INLINE command( uint_fast8_t d ){
-      write8( true, d );
-   }
-
-   static void GODAFOSS_INLINE data( uint_fast8_t d ){
+   // write one command byte
+   static void GODAFOSS_INLINE write_command( uint_fast8_t d ){
       write8( false, d );
    }
-   
-   static inline uint8_t buffer[ root::size.x * root::size.y / 8 ];
 
+   // write one data byte
+   static void GODAFOSS_INLINE write_data( uint_fast8_t d ){
+      write8( true, d );
+   }
+   
 public:   
 
    static void init(){
@@ -86,10 +94,10 @@ public:
       cd::init();
       e::init();
    
-      chip( 0 );
+      select_chip( 0 );
       command( cmd_dsl );   
       command( cmd_on );   
-      chip( 1 );
+      select_chip( 1 );
       command( cmd_dsl );   
       command( cmd_on );   
    }
@@ -110,23 +118,23 @@ public:
    }
    
    static void flush(){
-      chip( 0 );	   
+      select_chip( 0 );	   
       for( int x = 0; x < 8; ++x ){		  
-         command( cmd_x + x );
-         command( cmd_y + 0 );
+         write_command( cmd_x + x );
+         write_command( cmd_y + 0 );
          for( int y = 0; y < 64; ++y ){
-            // data( buffer[ x * 128 + y ] );		
-            data( 0xAA );	 
-		 }
+            // write_data( buffer[ x * 128 + y ] );		
+            write_data( 0xAA );	 
+         }
       }		 
-      chip( 1 );	   
+      select_chip( 1 );	   
       for( int x = 0; x < 8; ++x ){		  
-         command( cmd_x + x );
-         command( cmd_y + 0 );
+         write_command( cmd_x + x );
+         write_command( cmd_y + 0 );
          for( int y = 0; y < 64; ++y ){
-            //data( buffer[ x * 128 + 64 + y ] );			 
-            data( 0x0FF );	 
-		 }
+            //write_data( buffer[ x * 128 + 64 + y ] );			 
+            write_data( 0x0FF );	 
+         }
       }		   
    }
  
