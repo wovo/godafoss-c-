@@ -51,6 +51,53 @@ struct flip_horizontally :
 
 // ==========================================================================
 //
+// fold
+//
+// ==========================================================================
+
+template< typename minion, unsigned int n_fold = 2 >
+struct fold :
+   window_root<
+      fold< minion >,
+      typename minion::offset_t,
+      typename minion::color_t,
+      xy<>( minion::size.x / n_fold, minion::size.y * n_fold )
+   >
+{
+
+   using root = window_root<
+      fold< minion >,
+      typename minion::offset_t,
+      typename minion::color_t,
+      xy<>( minion::size.x / n_fold, minion::size.y * n_fold )
+   >;
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write_implementation(
+      minion::location_t pos,
+      minion::color_t color
+   ){
+      auto offset = pos - minion::origin;
+      minion::write(
+         minion::origin + typename minion::offset_t(
+            offset.x + ( ( offset.y / minion::size.y ) * root::size.x ),
+            offset.y % minion::size.y ),
+         color
+      );
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+
+};
+
+
+// ==========================================================================
+//
 // invert
 //
 // ==========================================================================

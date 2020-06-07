@@ -129,9 +129,9 @@ public:
 
 template< uint64_t dummy_baudrate = 0 >
 struct uart :
-   be_uart< uart< baudrate > >
+   be_uart< uart< dummy_baudrate > >
 {
-	
+
    static void init(){}
 
    static bool GODAFOSS_INLINE write_blocks(){
@@ -141,14 +141,14 @@ struct uart :
    static void GODAFOSS_INLINE write_unchecked( char c ){
       std::cout << c;
    }
-   	
-   static bool GODAFOSS_INLINE read_blocks(){	
+
+   static bool GODAFOSS_INLINE read_blocks(){
       return false; // peek??
    }
 
    static char GODAFOSS_INLINE read_unchecked(){
-      char c << std::cin;
-      return c; 
+      char c = 'x'; // << std::cin;
+      return c;
    }
 
 };

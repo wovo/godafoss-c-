@@ -1,0 +1,27 @@
+################################################################################
+#
+# makefile.link
+#
+################################################################################
+#
+# (c) Wouter van Ooijen (www.voti.nl) 2017-2020
+#
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+#
+################################################################################
+
+
+# add the files as dependencies
+HEADERS           += tests/gf-test-framework.hpp
+HEADERS           += tests/gf-test-case-attributes.hpp
+HEADERS           += tests/gf-test-case-shared-names.hpp
+HEADERS           += tests/gf-test-case-ints.hpp
+HEADERS           += tests/gf-test-case-random.hpp
+HEADERS           += tests/gf-test-case-box.hpp
+
+# defer to the next-level makefile.link
+RELATIVE          ?= .
+RELATIVE          := $(RELATIVE)/..
+include           $(RELATIVE)/makefile.link

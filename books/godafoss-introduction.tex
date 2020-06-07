@@ -1,0 +1,414 @@
+\documentclass{article}
+
+\author{Wouter van Ooijen}
+\title{Programming micro-controllers with godafoss}
+\date{\today}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset { %
+    language=C++,
+    backgroundcolor=\color{black!5}, % set backgroundcolor
+    basicstyle=\footnotesize,% basic font setting
+}
+
+\begin{document}
+
+\maketitle
+
+% ==============================================================================
+\section{Introduction}
+
+\begin{itemize}
+\item  introductory text, not a reference
+\item  target system
+\item  target micro-controller
+\item  download
+\item  compile/build versus run
+\item  C++ versus godafoss
+\item  electronics 'on the fly'
+\item  format, whitespace
+\end{itemize}
+
+% ==============================================================================
+%
+\section{First steps}
+%
+% ==============================================================================
+
+% ------------------------------------------------------------------------------
+\subsection{First blood: blink}
+
+The first thing to do on micro-controller system is to blink a LED.
+It proves that your system is working and that you are a genius.
+So let's look at the code for a blink-a-led application in godafoss.
+The line numbers are for reference, they are not part of the real
+source code.
+
+% update quote( input, "due-01-01-01-blink-led", "", numbers = 1 )
+\lstset {language=C++}
+\begin{lstlisting}
+[ 1] #include "godafoss.hpp"
+[ 2]
+[ 3] int main(){
+[ 4]    godafoss::blink<
+[ 5]       godafoss::target<>::led,
+[ 6]       godafoss::target<>::timing::ms< 500 >
+[ 7]    >();
+[ 8] }
+\end{lstlisting}
+
+The first line makes the godafoss features available for use in the code.
+It must be on a line by itself, and it is the first line of every godafoss
+application.
+
+The "int main(){" on line 3 upto the matching "}" on line 8 are required
+by the C++ language to identify what the application does when it is run.
+You will find such a 'main function' in every C++ application.
+The int before main is required by the C++ language because it is
+useful in C++ applications that run on a PC.
+For a micro-controller application it has no meaning, but it must still be
+present.
+Just pretend that it is not there.
+
+The lines 4 .. 7 are the interesting part.
+The "godafoss::blink" on line 4 phrase means
+'the blink within the godafoss namespace'.
+A namsepace is a bit like a family.
+There are many persons named Martin in the world, so to identify a specific
+Martin you say something like Martin King: the person named Martin
+within the King family.
+(Assuming there is only one King family, and only one
+Martin in that family.)
+In C++ you would write this as King::Martin.
+The godafoss namespace has a blink function,
+which is used here to do the blinking.
+
+The things between the "<" on line 4 and the ">;" on line 7 are
+fixed things we pass to blink to configure it for our purpose,
+in this case the LED pin and the blink time.
+
+We want to blink the LED that is on the target board.
+This LED is connected to a specific pin of the micro-controller
+on which the application will run.
+To have the desired effect, the blink function must be configured to
+do the blinking on the correct micro-controller pin.
+The godafoss namespace has a target<> in it that contains the
+features available on the target system.
+For each target that has an LED, godafoss provides this pin
+as godafoss::target<>::led, so this is the first item used
+to configure the blink function.
+The angle brackets <> after target are required because a target
+can be configured.
+Specifying <> means that the default(s) are used.
+
+The next thing that must be configured is how long a blink period
+(the sum of the on and off times) must be.
+This is specified via the timing service that is provided by each godafoss target.
+In this example 500 ms (half a second) is specified
+(to be divided evenly among the on and the off period),
+so the blinking will be at a rate of 2 per second (2 Hertz).
+
+The fully configured godafoss::blink doesn't need any run-time information
+to do its work, so the "();" on line 7 specifies that it is called,
+which means that its code is executed.
+As configured godafoss::blink will blink forever, so that
+is all there is to blinking the LED on a target board.
+
+The next step is to blink an LED that is external to the board.
+This requires the LED to be connected properly, and
+the blink function must be configured with the micro-controller
+pin that it is connected to.
+A suitable series resistor is needed to limit the current,
+otherwise the LED or the micro-controller might be damaged.
+In nearly all cases, a 1 kOhm (1000 Ohm) resistor will do.
+Such a resistor has a color code of brown-black-red
+or brown-black-black-brown,
+in both cases followed by other rings that are not important to us.
+
+image
+
+A resistor is symmetrical (apart from aesthetics you can swap its two leads).
+An LED however is not: it must be connected the right way round,
+or it will not work.
+
+image
+
+Use a solderless breadboard and plug-in wires to connect
+the pin marked 2 or D2 to the resistor,
+the other side of the resistor to the LED pin at the round side
+of the LED, and the other (flat) side of the LED to the ground
+(marked GND on most boards).
+
+image
+image
+
+Provided that the correct Arduino target board is selected in the
+development environment, the godafoss::target namsepace will contain
+the pins as d0, d1, etc and a0, a1, etc.
+(For another target board the pins available in godfafoss::target<>
+will likely be different.)
+In this example LED is connected to the d7 pin,
+so that pin must be used to configure the blink function.
+
+% update quote( input, "due-01-01-02-blink-d2", "", numbers = 1 )
+\lstset {language=C++}
+\begin{lstlisting}
+[ 1] #include "godafoss.hpp"
+[ 2]
+[ 3] int main(){
+[ 4]    godafoss::blink<
+[ 5]       godafoss::target<>::d2,
+[ 6]       godafoss::target<>::timing::ms< 500 >
+[ 7]    >();
+[ 8] }
+\end{lstlisting}
+
+All this godafoss, godafoss::target and godafoss::target<>::timing
+is a bit unwieldy and repetitive.
+Aliases can be created via 'using' statements to make the application
+code itself (the main) shorter and easier to read, at the cost of
+a few extra lines at the top.
+
+% update quote( input, "due-01-01-03-blink-using", "", numbers = 1 )
+\lstset {language=C++}
+\begin{lstlisting}
+[ 1] #include "godafoss.hpp"
+[ 2]
+[ 3] using gf     = godafoss;
+[ 4] using target = gf::target<>;
+[ 5] using timing = gf::timing;
+[ 6]
+[ 7] int main(){
+[ 8]    gf::blink<
+[ 9]       target::d2,
+[10]       timing::ms< 500 >
+[11]    >();
+[12] }
+\end{lstlisting}
+
+One step further, it is often considered good practice to separate
+the 'flexible' (easily changeable) part of the application from
+the details of how how it works.
+In the case of the blink application, the pin that is used and the
+blinking period can be lifted out of the blink call.
+
+% update quote( input, "due-01-01-04-blink-using-led-period", "", numbers = 1 ) -->
+\lstset {language=C++}
+\begin{lstlisting}
+[ 1] #include "godafoss.hpp"
+[ 2]
+[ 3] namespace gf  = godafoss;
+[ 4] using target  = gf::target<>;
+[ 5] using timing  = gf::timing;
+[ 6]
+[ 7] using led     = target::d2;
+[ 8] using period  = timing::ms< 500 >;
+[ 9]
+[10] int main(){
+[11]    gf::blink< led, period >();
+[12] }
+\end{lstlisting}
+
+This separation might seem unnecessary for such a small and simple
+program, but it pays off for a larger application,
+where the led and the period are likely to be used at
+multiple locations in the source.
+
+% ------------------------------------------------------------------------------
+\subsection{Timing : morse}
+
+Morse is a way to encode letters and digits in a sequence of
+short and long beeps (or flashes of light) and pauses.
+A famous example is the sequence that was used as a distress
+(call for help) signal: three short beeps, three longer beeps,
+three short beeps.
+Interpreted as morse code this can be read as SOS,
+\footnote{The real morse code for the letters SOS would be
+three short beeps, \textit{a pause}, three long beeps, \textit{a pause},
+three short beeps. The pauses are needed to separate the letters.}
+which was in popular culture read as Save Our Ship or
+(later) Save Our Souls.
+
+Beeping is much like blinking an LED, only faster.
+The so-called middle A note, commonly used for tuning, has a frequency
+of 440 Hz, which means that the full period is 1/440 s = 2.27 ms.
+Hence the configuration parameter for blink to produce a middle A
+is half that value: 2270 us.
+\footnote{A millisecond or ms is 1/1000 of a second, a microsecond or us
+is 1/1000 of a millisecond.}
+
+To physically produce a beep, a speaker must be connected to the target.
+As with the LED, a series resistor must be used to limit the current.
+Like a resistor, a speaker is symmetrical
+(swapping the connections has no effect).
+A 1k resistor can be used to get a soft sound, 100 Ohm
+(brown-black-brown or brown-black-black-black)
+will produce a louder sound.
+
+image
+
+Changing the 500 ms used in the blink applications to 2270 us produces
+a continuous 440 Hz tone.
+
+% update quote( input, "due-01-02-01-beep-440", "", numbers = 1 ) -->
+\lstset {language=C++}
+\begin{lstlisting}
+[ 1] #include "godafoss.hpp"
+[ 2]
+[ 3] namespace gf  = godafoss;
+[ 4] using target  = gf::target;
+[ 5] using timing  = gf::timing;
+[ 6]
+[ 7] using led     = target::d3;
+[ 8] using period  = timing::us< 1120 >;
+[ 9]
+[10] int main(){
+[11]    gf::blink< led, period >();
+[12] }
+\end{lstlisting}
+
+image frequency meter 440 Hz
+
+The blink function that was used so far blinks forever.
+A second version of this function exists, that takes a second
+duration parameter, to specify how long the blinking
+(or in this case, the beeping) must last.
+
+
+- beep
+- blink an amount of time
+- different on and off periods
+
+% ------------------------------------------------------------------------------
+\subsection{Kitt}
+
+A Kitt display (from the once famous Knight Rider series) is a line
+of LEDs, where the one LED that is on moves back and forth.
+The next code does this manually with four LEDs connected to the pins
+d2 .. d5.
+\footnote{On most Arduino boards, the pins d0 and d1 are used
+for the communication between the Arduino and the PC, so these pins
+can't be used for other purposes.}
+
+
+
+- how to write a kitt yourself
+   - create
+
+Each
+
+subsection boxes, concepts, modifiers-constructors
+
+text display
+
+graphics
+
+decorators
+
+opt-in decorators
+
+background functions
+
+multithreading
+
+C++ subset
+
+
+
+% ==============================================================================
+
+\section{Scale factors}
+
+
+% ==============================================================================
+
+\section{Resistor color codes}
+
+% ==============================================================================
+
+\section{Arduino pin names}
+
+
+% ==============================================================================
+
+\section{Geany}
+
+% ==============================================================================
+
+Geany is a text editor that can can be used to invoke an external makefile.
+Some points to note:
+- Build-> Make : call the make file, build is the default goal
+- you will build in the dircetory of your current file,
+  there is no notion of a current project
+  - geany as editor, make build, make run (clean?)
+- start geany with sudo
+- run the excutable through a run script with setuid?
+
+% ==============================================================================
+
+\section{Using a solderless breadboard}
+
+% ==============================================================================
+
+\section{Code style and conventions}
+
+- everything is in godafoss::
+- if it can be a class/struct, make it so
+- no blanket 'using' in the examples
+- 1'000'000
+- snake_case for everything (template parameters?)
+- indentation is 3 spaces
+- max line length is 80 characters
+- 1TBS
+- when vertical separator alignment, 2 spaces before
+- prefer short files, a few pages at most in GreenPrint
+- Boost license (for godafoss code, chip headers may vary)
+- start with _underscore for private stuff (like Python)
+- encode parameter order in name (this encourages shorter parameter lists!)
+- macro's start with GODAFOSS_
+- C++20, might switch to later version when available
+- -Werror, enable as much warnings as reasonably possible
+- be kind to a reader of the code
+- overload names (keep the set of names limited)
+- RAM is more scarce than ROM
+- the user should not be able to trigger UB inside library code
+- native support is for testing and debugging, not for developing applications
+- windows support is MinGW64 only (problem with weak)
+- DRY even if that requires a MACRO
+- no heap, no exceptions, no RTTI,
+- no code indirections, except for background and threading
+- no floats unless told to do so by the user
+- library files start with gf-, except for godafoss.hpp
+- when contributing: add name and year to the Copyright notice
+- application reader > application writer > library reader > library writer
+- gf-all handles: std includes, external includes, warnings, namespace godafoss
+- explicit private: / public:
+- use by_const<> instead of by-value passing
+
+naming and architecture
+- no heap, no RTTI, no exceptions, no function indirection
+- constexpr rulez! (provide alternative to math?)
+- bikesheds are important, especially their color
+- header-only, (only) include the target
+- lowercase with _ separators
+- name composition order is from outer to inner, then verb, then variations
+- leading _ is library-internal (can change without notice)
+- macro's moeten _lowercase zijn!
+- avoid verb / noun / adjective confusion
+- avoid negatives (no-, not-, un- etc)
+- avoid similar things or couples with the same prefix (source / sink)
+- a concept is a type, so it doesn't need an is_ prefix (you don't use is_int!)
+- prefer composition that changes features over extra object features (direct<> instead of read_flush in the class)
+- avoid using the name of what you are in, it might change (including the library name)
+- short names for small scopes, longer name for wider scopes
+- short names for common operations, longer names for less common / dangerous operations (shared_ptr.get() is defintely wrong!)
+- conserve the namespaces: don't use many names, prefer modifiers/adjectives. write a glossary!
+- avoid abbreviations, _t, etc. (gpio?)
+
+
+\end{document}
+

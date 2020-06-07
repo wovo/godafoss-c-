@@ -41,15 +41,15 @@ private:
 	
    // cs1, cs2, e are (internally) active high
    //(the electrical pins are active low)
-   using port    = port_out_from< _port >;  
+   using port    = port_oc_from< _port >;  
    using cs1     = pin_oc_from< invert< _cs1 > >;
    using cs2     = pin_oc_from< invert< _cs2 > >;
    using cd      = pin_oc_from< _cd >;
    using e       = pin_oc_from< invert< _e > >;
    
    // KS0108 commands
-   static constexpr uint_fast8_t cmd_on  = 0x3E;
-   static constexpr uint_fast8_t cmd_off = 0x3F;
+   static constexpr uint_fast8_t cmd_off = 0x3E;
+   static constexpr uint_fast8_t cmd_on  = 0x3F;
    static constexpr uint_fast8_t cmd_x   = 0xB8;
    static constexpr uint_fast8_t cmd_y   = 0x40;
    static constexpr uint_fast8_t cmd_dsl = 0xC0;  
@@ -60,19 +60,29 @@ private:
    // write on byte, command or data
    static void write8( bool is_data, uint_fast8_t d ){
    
+      timing::template us< 10 >::wait();
+
+      // select command or data
       direct< cd >::write( is_data );
+      
+      timing::template us< 10 >::wait();
+
+      // write the data byte 
       direct< port >::write( d );
 
+      timing::template us< 10 >::wait();
+
+      // e pulse
       direct< e >::write( 0 );
-      timing::template us< 1 >::wait();
+      timing::template us< 10 >::wait();
       direct< e >::write( 1 );      
-      timing::template us< 1 >::wait();
+      timing::template us< 10 >::wait();
    }      
           
-   // select chip 0 or chip 1          
-   static void select_chip( bool c ){
-      direct< cs1 >::write( ! c );
-      direct< cs2 >::write( c );
+   // select chip 0 or chip 1, 2 selects both chips          
+   static void select_chip( int c ){
+      direct< cs1 >::write( c != 1 );
+      direct< cs2 >::write( c != 0 );
    }
 
    // write one command byte
@@ -93,13 +103,26 @@ public:
       cs2::init();
       cd::init();
       e::init();
-   
+      
+      timing::template us< 100'000 >::wait();
+         
       select_chip( 0 );
-      command( cmd_dsl );   
-      command( cmd_on );   
+      write_command( cmd_dsl );   
+      write_command( cmd_on );    
+       
       select_chip( 1 );
-      command( cmd_dsl );   
-      command( cmd_on );   
+      write_command( cmd_dsl );   
+      write_command( cmd_on );  
+        
+      timing::template us< 1000 >::wait();
+         
+      select_chip( 0 );
+      write_command( cmd_dsl );   
+      write_command( cmd_on );    
+       
+      select_chip( 1 );
+      write_command( cmd_dsl );   
+      write_command( cmd_on );     
    }
    
    static void write_implementation( 
@@ -124,7 +147,7 @@ public:
          write_command( cmd_y + 0 );
          for( int y = 0; y < 64; ++y ){
             // write_data( buffer[ x * 128 + y ] );		
-            write_data( 0xAA );	 
+            write_data( y );	 
          }
       }		 
       select_chip( 1 );	   
@@ -133,7 +156,7 @@ public:
          write_command( cmd_y + 0 );
          for( int y = 0; y < 64; ++y ){
             //write_data( buffer[ x * 128 + 64 + y ] );			 
-            write_data( 0x0FF );	 
+            write_data( 0x0F );	 
          }
       }		   
    }

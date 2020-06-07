@@ -1,8 +1,8 @@
 // ==========================================================================
 //
 // gf-box.hpp
-// 
-// ==========================================================================
+//
+// =============================================================================
 //
 // the basic interface properties:
 //    - box: holds some data elements(s))
@@ -14,39 +14,39 @@
 //    - duplex: both input and output at the same time
 //    - simplex: both input and output, but only one at a time
 //
-// ==========================================================================
+// =============================================================================
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright 
+// Copyright
 //    Wouter van Ooijen 2019-2020
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
 
 
-// ==========================================================================
+// =============================================================================
 //
 // box
 //
 // holds some data elements(s))
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''box'' };
 template< typename T >
-concept box = requires {  
+concept box = requires {
    T::_box_marker;
    { T::init() } -> std::same_as< void >;
 };
 
 template< typename T >
 struct _box_root {
-   static const bool _box_marker = true;	
+   static const bool _box_marker = true;
    using value_type = T;
 };
 
@@ -59,18 +59,18 @@ struct box_root< bool > :
    _box_root< bool >
 {
    GODAFOSS_INLINE static bool invert( bool v ){
-      return !v;	   
-   }   
+      return !v;
+   }
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
-// item 
+// item
 //
 // box that always holds one element of the data
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''item'' );
 template< typename T >
@@ -80,20 +80,20 @@ concept item = requires {
 };
 
 template< typename T >
-struct item_root : 
-   box_root< T > 
+struct item_root :
+   box_root< T >
 {
-   static const bool _item_marker = true;	
+   static const bool _item_marker = true;
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // stream
 //
 // box that holds a sequence of data elements
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''stream'' );
 template< typename T >
@@ -103,20 +103,20 @@ concept stream = requires {
 };
 
 template< typename T >
-struct stream_root : 
-   box_root< T > 
+struct stream_root :
+   box_root< T >
 {
-   static const bool _stream_marker = true;	
+   static const bool _stream_marker = true;
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // input
 //
 // box that supports read()
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''input'' };
 template< typename T >
@@ -128,24 +128,24 @@ concept input = requires {
 };
 
 template< typename T >
-struct input_root : 
-   box_root< T > 
+struct input_root :
+   box_root< T >
 {
-   static const bool _input_marker = true;	
+   static const bool _input_marker = true;
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // output
 //
 // box that supports write()
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''output'' };
 template< typename T >
-concept output = requires ( 
+concept output = requires (
    typename T::value_type v
 ){
    box< T >;
@@ -155,20 +155,20 @@ concept output = requires (
 };
 
 template< typename T >
-struct output_root : 
-   box_root< T > 
+struct output_root :
+   box_root< T >
 {
-   static const bool _output_marker = true;	
+   static const bool _output_marker = true;
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // input_output
 //
 // both input and output
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''input_output'' );
 template< typename T >
@@ -178,19 +178,19 @@ concept input_output = requires {
 };
 
 template< typename T >
-struct input_output_root : 
-   input_root< T >, 
-   output_root< T > 
+struct input_output_root :
+   input_root< T >,
+   output_root< T >
 {};
 
 
-// ==========================================================================
+// =============================================================================
 //
 // duplex
 //
 // both input and output, at the same time
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''duplex'' );
 template< typename T >
@@ -200,24 +200,24 @@ concept duplex = requires {
 };
 
 template< typename T >
-struct duplex_root : 
-   input_output_root< T > 
+struct duplex_root :
+   input_output_root< T >
 {
-   static const bool _duplex_marker = true;	
+   static const bool _duplex_marker = true;
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // simplex
 //
 // both input and output, but only one at a time
 //
-// ==========================================================================
+// =============================================================================
 
 // quote ''simplex'' };
 template< typename T >
-concept simplex = requires ( 
+concept simplex = requires (
 ){
    input_output< T >;
    T::_simplex_marker;
@@ -228,5 +228,5 @@ concept simplex = requires (
 
 template< typename T >
 struct simplex_root : input_output_root< T > {
-   static const bool _simplex_marker = true;	
+   static const bool _simplex_marker = true;
 };

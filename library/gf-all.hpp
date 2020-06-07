@@ -146,13 +146,13 @@ namespace godafoss {
 
 #include "../externals/torsor.hpp"
 
-#include "core/gf-basics.hpp"
-#include "core/gf-ints.hpp"
-#include "core/gf-passing.hpp"
-#include "core/gf-output-stream.hpp"
-#include "core/gf-random.hpp"
-#include "core/gf-xy.hpp"
-#include "core/gf-decorators.hpp"
+#include "basics/gf-attributes.hpp"
+#include "basics/gf-shared-names.hpp"
+#include "basics/gf-ints.hpp"
+#include "basics/gf-passing.hpp"
+#include "basics/gf-output-stream.hpp"
+#include "basics/gf-random.hpp"
+#include "basics/gf-xy.hpp"
 
 #include "box/gf-box.hpp"
 #include "box/gf-box-inherit.hpp"
@@ -169,7 +169,7 @@ namespace godafoss {
 #include "pins/gf-pin-all.hpp"
 #include "pins/gf-pin-demos.hpp"
 
-#include "core/gf-analog.hpp"
+#include "basics/gf-analog.hpp"
 
 #include "ports/gf-port.hpp"
 #include "ports/gf-port-adapters.hpp"
@@ -180,8 +180,6 @@ namespace godafoss {
 #include "timing/gf-timing-wait.hpp"
 #include "timing/gf-timing-clock.hpp"
 #include "timing/gf-slow-down.hpp"
-#include "core/gf-spi.hpp"
-#include "core/gf-i2c.hpp"
 
 #include "char-io/gf-uart.hpp"
 #include "char-io/gf-ostream.hpp"
@@ -196,6 +194,9 @@ namespace godafoss {
 #include "graphics/gf-drawables.hpp"
 #include "graphics/gf-window-demos.hpp"
 
+#include "basics/gf-spi.hpp"
+#include "basics/gf-i2c.hpp"
+
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"
 #include "chips/gf-ks0108.hpp"
@@ -204,6 +205,7 @@ namespace godafoss {
 //#include "chips/gf-pcf8591.hpp"
 #include "chips/gf-ssd1306.hpp"
 #include "chips/gf-nrf24l01.hpp"
+#include "chips/gf-max7219.hpp"
 
 } // namespace godafoss
 

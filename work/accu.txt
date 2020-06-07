@@ -1,18 +1,1 @@
-- wouter / hbo-ict
-- embedded
-- my embedded niche
-- C/C++ styles
-- features to avoid
-- low-hanging fruit
-- dependency injection, #define/names, identifiers/parameters, objects/contsructors, classes/templates
-- concepts
-- test syntax versus test intended semantics
-- abstractions: pins, ports, timing
-- additive filters / limitative filters
-- performance aspects: injection styles, buffering
-- I2C & SPI: channel/transaction
-- timing abstraction, small delays
-- remaining issues: C++ user-defined template parameters
-- how to print without std::cout
-- problem with CRTP
-- remaining issues: users, abstractions, timing, testing, documentation (doxygen doesn't work)
+

@@ -6,7 +6,7 @@
 //
 // This is the file that an application that uses godafoss should include.
 //
-// It should first define the appropriate GF_TARGET_* marco and 
+// It should first define the appropriate GF_TARGET_* marco and
 // then include this godafoss.hpp file.
 //
 // The bmptk build system will define the appropriate GF_TARGET_* macro
@@ -14,12 +14,12 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright 
+// Copyright
 //    Wouter van Ooijen 2019-2020
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -29,6 +29,8 @@
 
 #ifndef GODAFOSS_H
 #define GODAFOSS_H
+
+#include "gf-all.hpp"
 
 #ifdef GF_TARGET_native
    #include "targets/gf-native.hpp"
@@ -62,7 +64,7 @@
 
 #ifndef GF_TARGET
    #error no valid GF_TARGET_* defined
-#endif   
+#endif
 
 // could pop the warning settings here?
 

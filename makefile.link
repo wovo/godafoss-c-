@@ -1,14 +1,28 @@
-#############################################################################
+################################################################################
 #
-# file : Makefile.link 
-# 
+# makefile.link
+#
+################################################################################
+#
 # common settings and link to the bmptk/makefile.inc
 #
-# (c) Wouter van Ooijen (www.voti.nl) 2017
+# This file is used by demos and tests as the last step
+# in the chain to bmptk.
 #
-# This file is in the public domain.
-# 
-#############################################################################
+################################################################################
+#
+# This file is part of godafoss (https://github.com/wovo/godafoss),
+# a C++ library for close-to-the-hardware programming.#
+#
+# Copyright
+#    Wouter van Ooijen 2017-2020
+#
+# Distributed under the Boost Software License, Version 1.0.
+# (See the accompanying LICENSE_1_0.txt in the root directory of this
+# library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+#
+################################################################################
+
 
 # add ourselves
 GODAFOSS           ?= $(RELATIVE)
@@ -17,20 +31,17 @@ include            $(GODAFOSS)/makefile.inc
 # C++20 required
 CPP_LANGUAGE    := -std=c++2a -fconcepts-diagnostics-depth=3
 
-# add Catch
-SEARCH             += $(RELATIVE)/../Catch/include
-
 # add SFML
 SFML ?= $(RELATIVE)/../SFML-2.5.1-10
 ifeq ($(TARGET),native)
    ifeq ($(OS),Windows_NT)
       SEARCH            += $(SFML)/include
-      LINKER_FLAGS      += -L$(SFML)/lib 
+      LINKER_FLAGS      += -L$(SFML)/lib
       LINKER_FLAGS      += -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
       LINKER_FLAGS      += -lopengl32 -lgdi32 -lws2_32 -lwinmm
       DEFINES           += -DSFML_STATIC
    else
-      LINKER_FLAGS      += -lsfml-graphics -lsfml-window -lsfml-system 
+      LINKER_FLAGS      += -lsfml-graphics -lsfml-window -lsfml-system
       DEFINES           += -DSFML_STATIC
    endif
 endif
@@ -40,7 +51,7 @@ BMPTK              ?= $(RELATIVE)/../bmptk
 
 ifeq ($(TARGET),native)
    # enable exceptions (disabled by default by bmptk)
-   PROJECT_CPP_FLAGS  += -fexceptions 
+   PROJECT_CPP_FLAGS  += -fexceptions
 endif
 
 # Defer to the bmptk/Makefile.inc to do the real work
