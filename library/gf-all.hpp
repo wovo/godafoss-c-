@@ -65,20 +65,6 @@
 
 #include <random>
 
-/*
-namespace std {
-
-namespace detail {
-    template< class T, class U >
-    concept SameHelper = std::is_same_v<T, U>;
-}
-
-template< class T, class U >
-concept same_as = detail::SameHelper<T, U> && detail::SameHelper<U, T>;
-
-};
-*/
-
 
 // ==========================================================================
 //
@@ -150,18 +136,25 @@ namespace godafoss {
 #include "basics/gf-shared-names.hpp"
 #include "basics/gf-ints.hpp"
 #include "basics/gf-passing.hpp"
-#include "basics/gf-output-stream.hpp"
 #include "basics/gf-random.hpp"
-#include "basics/gf-xy.hpp"
+#include "basics/gf-background.hpp"
 
 #include "box/gf-box.hpp"
 #include "box/gf-box-inherit.hpp"
 #include "box/gf-box-no-inline.hpp"
-
 #include "box/gf-box-invert.hpp"
 #include "box/gf-box-direct.hpp"
 #include "box/gf-box-buffered.hpp"
 #include "box/gf-box-adapters.hpp"
+
+#include "ostream/gf-ostream.hpp"
+#include "ostream/gf-uart.hpp"
+
+#include "adts/gf-string.hpp"
+#include "adts/gf-fraction.hpp"
+#include "adts/gf-subrange.hpp"
+#include "adts/gf-xy.hpp"
+#include "adts/gf-color.hpp"
 
 #include "pins/gf-pin.hpp"
 #include "pins/gf-pin-adapters.hpp"
@@ -181,21 +174,17 @@ namespace godafoss {
 #include "timing/gf-timing-clock.hpp"
 #include "timing/gf-slow-down.hpp"
 
-#include "char-io/gf-uart.hpp"
-#include "char-io/gf-ostream.hpp"
-#include "char-io/gf-ostream-object.hpp"
 #include "char-io/gf-terminal.hpp"
 #include "char-io/gf-terminal-demos.hpp"
 
-#include "graphics/gf-color.hpp"
 #include "graphics/gf-window.hpp"
 #include "graphics/gf-window-all.hpp"
 #include "graphics/gf-window-decorators.hpp"
 #include "graphics/gf-drawables.hpp"
 #include "graphics/gf-window-demos.hpp"
 
-#include "basics/gf-spi.hpp"
-#include "basics/gf-i2c.hpp"
+#include "protocols/gf-spi.hpp"
+#include "protocols/gf-i2c.hpp"
 
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"

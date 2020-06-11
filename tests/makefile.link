@@ -14,12 +14,17 @@
 
 
 # add the files as dependencies
-HEADERS           += tests/gf-test-framework.hpp
-HEADERS           += tests/gf-test-case-attributes.hpp
-HEADERS           += tests/gf-test-case-shared-names.hpp
-HEADERS           += tests/gf-test-case-ints.hpp
-HEADERS           += tests/gf-test-case-random.hpp
-HEADERS           += tests/gf-test-case-box.hpp
+HEADERS           += gf-test-framework.hpp
+HEADERS           += gf-test-case-attributes.hpp
+HEADERS           += gf-test-case-shared-names.hpp
+HEADERS           += gf-test-case-ints.hpp
+HEADERS           += gf-test-case-random.hpp
+HEADERS           += gf-test-case-passing.hpp
+
+HEADERS           += gf-test-case-box.hpp
+
+# search the test cases directory
+SEARCH            += $(RELATIVE)/cases
 
 # defer to the next-level makefile.link
 RELATIVE          ?= .

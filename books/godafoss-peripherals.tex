@@ -1,0 +1,318 @@
+This reference document describes target and peripheral chips and modules
+supported by the godafoss library.
+
+
+target chips
+target modules
+peripheral chips
+peripheral modules
+
+teensy 4.1 :)
+
+stm32f103c8
+
+
+/// \brief
+/// hwlib HAL for the stm32f103c8
+///
+/// This namespace contains the hwlib implementation of the pins, timing
+/// and (software) UART output for the stm32f103c8.
+///
+/// Initially, the chip runs from its HSI internal RC oscillator at 8 MHz.
+/// The first wait call configures the chip to run at 72 MHz,
+/// assuming an 8 MHz crystal.
+///
+/// The chip runs at 3.3 Volt and that is the level on its IO pins.
+///
+/// References:
+///    - <A HREF="http://www.st.com/content/ccc/resource/technical/document/reference_manual/59/b9/ba/7f/11/af/43/d5/CD00171190.pdf/files/CD00171190.pdf/jcr:content/translations/en.CD00171190.pdf">
+///       RM0008 STM32F1xxx reference manual</A> (pdf)
+///    - <A HREF="http://www.st.com/content/ccc/resource/technical/document/datasheet/33/d4/6f/1d/df/0b/4c/6d/CD00161566.pdf/files/CD00161566.pdf/jcr:content/translations/en.CD00161566.pdf">
+///       STM32Fl03x8 datasheet</A> (pdf)
+///
+
+db103
+
+/// \brief
+/// hwlib HAL for the DB103 board
+///
+/// \image html db103-pcb.jpg
+//
+/// This namespace contains the hwlib implementation of the pins, timing
+/// and (sotware) UART output for the DB103 board (LPC1114FN28/102 chip).
+/// The chip runs at its default speed of 12 MHz,
+/// from its internal RC oscillator.
+///
+/// The port and pin parameters to the constructors of the pin classes
+/// refer to the LPC1114 ports and pins, as shown on the DB103 PCB.
+///
+/// The chip runs at 3.3 Volt and that is the level on its IO pins.
+///
+/// This implementation doesn't (yet) offer:
+///    - hardware UART
+///    - full CPU speed (48 MHz)
+///    - hardware SPI
+///
+/// References:
+///    - <A HREF="http://www.nxp.com/documents/user_manual/UM10398.pdf">
+///       LPC1114 user manual</A> (pdf)
+///
+
+arduino due
+
+/// \brief
+/// hwlib HAL for the Arduino Due
+///
+/// \image html due-pcb.jpg
+//
+/// This namespace contains the hwlib implementation of the pins, timing
+/// and (software) UART output for the Arduino Due (ATSAM3X8E chip).
+/// The first wait call configures the chip to run at 84 MHz.
+///
+/// The port and pin parameters to the constructors of the pin classes
+/// can either use to the ATSAM3X8E ports and pins, or the Arduino names.
+///
+/// The Due has an on-board orange LED connected to port 1 pin 27.
+///
+/// The chip runs at 3.3 Volt and that is the level on its IO pins.
+///
+/// \image html due-pinout.png
+///
+/// The ATSAM3X8E chip has a watchdog system that is enabled by default.
+/// If left alone, the watchdog will reset the chip after a short time.
+/// To prevent this, the watchdog is disabled on the first
+/// timing call (wait_*() or now_*()).
+///
+/// References:
+///    - <A HREF="https://www.arduino.cc/en/uploads/Main/arduino-uno-schematic.pdf">
+///       Arduino Due circuit reference diagram</A> (pdf)
+///    - <A HREF="http://www.atmel.com/ru/ru/Images/Atmel-11057-32-bit-Cortex-M3-Microcontroller-SAM3X-SAM3A_Datasheet.pdf">
+///       ATSAM38XE datasheet</A> (pdf)
+///
+
+
+matrix keypad
+
+max7219
+
+
+pcf8591
+
+/// pcf8591 I2C A/D and D/A converter
+///
+/// This class implements an interface to a pcf8591 A/D & D/A converter chip.
+///
+/// \image html pcf8591-pinout.png
+///
+/// A pcf8591 is an I2C slave that provides 4 8-bits A/D inputs (that can
+/// be arranged in various combinations of single and balanced inputs),
+/// and a single 8-bits D/A output.
+/// The power supply range is 2.5 .. 5.5 Volt.
+/// Of the 7-bit slave address,
+/// 3 bits are set by the level of 3 input pins (A0..A2) of the chip.
+/// When all 3 are pulled low, the slave address is 0x48.
+///
+/// The next code repeatedly prints the values read
+/// by the 4 (single-ended) A/D converters.
+///
+/// \snippet "db103\pcf8591\main.cpp" [Doxygen pcf8591-adc example]
+///
+/// references:
+///    - <A HREF="http://www.nxp.com/documents/data_sheet/PCF8591.pdf">
+///       PCF8591 data sheet</A> (pdf)
+///
+
+pcf8574
+
+/// pcf8574 / pcf8574a I2C I/O extender
+///
+/// This class implements an interface to a pcf8574 and pcf8574a
+/// I2C I/O extender chip.
+///
+/// \image html pcf8574a-pinout.png
+///
+/// A pcf8574(a) is an I2C slave that provides 8 open-collector input/output
+/// pins with weak pull-ups.
+/// The power supply range is 2.5 .. 5.5 Volt.
+/// Of the 7-bit slave address,
+/// 3 bits are set by the level of 3 input pins (A0..A2) of the chip.
+/// With all pulled low the iw2c address is 0x38.
+///
+/// \image html pcf8574a-iopin.png
+///
+/// The chip has only one register, which can be read and written.
+/// When written, it determines the level of the 8 output pins:
+/// low when the bit is 0, pulled weakly high when the bit is 1.
+/// When read, the level of the 8 pins determines the value:
+/// 0 for a low pin, 1 for a high pin.
+///
+/// \image html pcf8574a-diagram.png
+///
+/// The next code shows a kitt display
+/// on 8 LEDs connected to the PCF8574A output pins.
+/// Because the output pins are open-collector, the LEDs
+/// are connected to power (instead of to the ground), hence
+/// the use of hwlib::port_out_invert().
+/// \snippet "db103\pcf8574a-blink\main.cpp" [Doxygen pcf8574a example]
+///
+/// The pcf8574 and pcf8574a are the same chips, but with a different
+/// I2C bus address.
+///
+/// \image html pcf8574a-addresses.png
+///
+/// references:
+///    - <A HREF="http://www.nxp.com/documents/data_sheet/PCF8574_PCF8574A.pdf">
+///       PCF8574A data sheet</A> (pdf)
+///
+
+5510
+
+/// Nokia 5510 B/W graphics LCD
+///
+/// This class implements an interface to the type of LCD
+/// that was used in older Nokia telephones.
+/// It is a 84 columns x 48 lines black-and-white LCD.
+///
+/// This type of LCD is cheap and available from lots of sources,
+/// but the quality is often abominable.
+///
+/// \image html lcd5510-empty.jpg
+///
+
+oled
+
+/// \brief
+/// Oled B/W graphics LCD
+/// \details
+/// This class implements an interface to an 128 x 64 pixel
+/// monochrome (on/off) OLED display. These displays are available
+/// in various colcors (green, red, white, etc.).
+/// The interface is I2C.
+/// The driver chip is an SSD1306.
+///
+/// The interface is buffered: all writes
+/// are buffered in memory until flush() is called.
+///
+/// When the PCB has regulator (3-legged component) the power can be 3 - 5V.
+/// If it hasn't, you can use only 3.3V.
+///
+/// There are variations of this display with more pins, which
+/// have more interface options (SPI as alternative interface).
+///
+/// This type of display is reasonably priced
+/// and available from lots of sources.
+///
+/// \image html oled.jpg
+//
+
+
+hd44780
+
+/// hd44780 character LCD interface
+///
+/// This class implements an interface to an hd44780 character LCD.
+///
+/// \image html hd44780-picture.jpg
+///
+/// The hd44780 is the standard chip for interfacing small dot-character
+/// LCD interfaces.
+/// It can display the ASCII table characters, 8 characters (0..7)
+/// that can be user-defined as 5x7 pixels, and a an upper 128 characters
+/// (128...255) that vary with the chip variant, often Japanese characters.
+///
+/// The chip and its digital pins run at 5V.
+/// The contrast input can in most cases be connected to 0V (ground), but
+/// better is to use a 10k potentiometer between 0V and 5V. Some
+/// displays (mostly extended-temperature-range types) need the lower
+/// size of this potentiometer tied to a negative voltage, for instance -5V.
+///
+/// The digital interface to the chip has 8 data lines, but the chip can be
+/// configured to use only 4. This adds some complexity to the driver
+/// software and slows it down a little, but the saving of 4 micro-controller
+/// more than compensates for this, hence nearly all software
+/// (including this driver) for is for the 4-bit interface.
+/// Note for the 4-bit interface the 4 highest data pins (D4..D7) are used.
+/// The lower 4 can be left unconnected.
+///
+/// The chip has some locations that can be writen and also read back,
+/// but this offers little advantage, so most software (including this driver)
+/// only writes to the chip, thus saving another pin.
+/// Hence 6 pins (+ ground and 5V)
+/// are needed to interface to an hd44780 display:
+/// 4 data lines, the R/S line (selects between command and data),
+/// and the E line (a strobe for the command).
+///
+/// \image html hd44780-connection.png
+///
+/// (Some larger displays use not one but two hd44780 chips.
+/// This interface is not compatible with such LCDs.)
+///
+/// Most hd44780 LCDs have a single row of connections,
+/// with the following pinout:
+///
+/// \image html hd44780-pinout.jpg
+///
+/// But as always, check the datasheet (in this case of the LCD) to be sure!
+///
+/// The hd44780 implements the ostream interface, but it doesn't scroll:
+/// while the cursor is outside the visible characters (beyond the end of the line,
+/// or beyond the number of lines) any character writes will be ignored.
+/// Some characters are treated special:
+///    - '\\n' clears the rest of the line, and then
+///      moves to the first position of the next line
+///    - '\\r' puts the cursor at the start of the current line
+///    - '\\c' moves the cursor to the top-left position
+///
+/// The best way to get a flicker-free display is to overwite
+/// instead of clear-and-then-write:
+/// use '\\c' to got to the 'origin', then rewrite the whole display,
+/// using '\\n' to go to a next line (because it clears the remainder of the line).
+///
+/// references:
+///    - <A HREF="https://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller">
+///       Hitachi HD44780 LCD controller</A> (wikipedia)
+///    - <A HREF="https://www.sparkfun.com/datasheets/LCD/HD44780.pdf">
+///       HD44780U data sheet</A> (pdf)
+///
+
+74hc595
+
+/// hc595 8-bit output shift register
+///
+/// This class implements an interface to
+/// an hc595 8-bit output shift register chip.
+///
+/// \image html hc595-pinout.png
+///
+/// The hc595 is an 8-bit serial-in parallel-out shift register,
+/// connected to an 8-bit data storage register.
+/// The 8 outputs of the data register are available on chip pins.
+/// The power supply range is 2.0 .. 6.0 Volt.
+///
+/// \image html hc595-diagram.png
+///
+/// The HC595 can be used as SPI output-only peripheral:
+///    - connect MR (active-low reset input) to the power
+///    - connect OE (active-low output enable) to gound
+///    - use DS as MOSI
+///    - use SHCP as SLCK
+///    - use STCP as SS
+///
+/// Note that STCP is not a real chip-select: the chip will always
+/// respond to the data that is clocked by storing it in the shift register.
+/// But only the chip that got the select signal will (on the rising edge
+/// of the SS) transfer the data from the shift register to the storage
+/// register, hence affecting the outputs.
+///
+/// The next code shows a kitt display
+/// on 8 LEDs connected to the HC595 output pins:
+/// \snippet "db103\hc595\main.cpp" [Doxygen hc595 example]
+///
+/// The 74HCT595 is a similar chip, but intended (only) for 5V power,
+/// and for use with the old TTL signal levels
+/// (HC chips are for the CMOS signal levels that are more common now).
+///
+/// references:
+///    - <A HREF="https://www.nxp.com/documents/data_sheet/74HC_HCT595.pdf">
+///       74HC595/74HCT595 data sheet</A> (nxp, pdf)
+///

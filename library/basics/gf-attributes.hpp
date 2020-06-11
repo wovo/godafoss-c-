@@ -11,6 +11,10 @@
 //    - weak
 // macro that makes (the remainder of) a function run once
 //
+// mixin classes that make a class
+//    - not constructible
+//    - not copyable/assignable
+//
 // =============================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss),
@@ -47,7 +51,8 @@
 
 // =============================================================================
 //
-// macro that causes a (void) function to be run only once
+// macro that causes the remainder of a (void) function
+// (the part after this macro) to be run only once
 //
 // =============================================================================
 
@@ -58,3 +63,23 @@
    }                                   \
    done = true;                        \
 }
+
+
+// =============================================================================
+//
+// inherit to make a class not constructible or not copyable
+//
+// =============================================================================
+
+class not_constructible {
+private:
+   not_constructible();
+};
+
+class not_copyable {
+private:
+   not_copyable( const not_copyable & );
+   not_copyable & operator=( const not_copyable & );
+public:
+   not_copyable();
+};

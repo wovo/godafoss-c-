@@ -40,7 +40,7 @@ int main(){
    test_case_shared_names();
    test_case_ints();
    test_case_passing();
-   test_case_random();
+//   test_case_random(); doesn't fit in the RAM
    test_case_passing();
 
    test_case_box();

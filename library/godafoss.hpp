@@ -58,7 +58,7 @@
 #endif
 
 #ifdef GF_TARGET_stm32f030f4
-   #define GF_TARGET
+   #define GF_TARGETDefined in header <type_traits>
    #include "targets/gf-chip-stm32f030f4.hpp"
 #endif
 

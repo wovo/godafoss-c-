@@ -1,4 +1,6 @@
-bmptk modified:
+ test random op een cortex
+
+ bmptk modified:
 - USB0 for db103
 - -control for DB103 terminal command
 
@@ -18,6 +20,8 @@ in window-all : xy zonder <> ??
 uart has no flush??
 lpc1114 uart  doesn't work
 lpc1114 only 12 MHz
+background gebruikt nu indirection
+test non-copyable, not-constructible
 
 - where is my PCF8574A demo board??
 - add NO_TERMINAL option to bmptk
@@ -35,24 +39,25 @@ ubuntu notes
 
 - xy in hd44780 should be smaller
 - component should be torsor< int > ???
-- how to access low-level of a torsor?
 - copy torsor back
-- specify location of an sfml window??
 - item -> value, single, atom
 - ICE from windows
-- check windowes 'uart'
+- check windows 'uart'
+- passing should take call into account, less efficient & 'x'??
+- small-scale test random embedded
 
 files to check
 
    t + basics/gf-attributes.hpp
    t + basics/gf-shared-names.hpp
    t + basics/gf-ints.hpp
-     + basics/gf-passing.hpp
+   t + basics/gf-passing.hpp
    t + basics/gf-random.hpp
+       basics/gf-background.hpp
 
-// adts?
-   basics/gf-output-stream.hpp
-   basics/gf-xy.hpp
+   adts/gf-output-stream.hpp
+   adts/gf-xy.hpp
+   adts/gf-color.hpp
 
    t + box/gf-box.hpp
     + box/gf-box-inherit.hpp
@@ -83,13 +88,12 @@ files to check
    core/gf-spi.hpp
    core/gf-i2c.hpp
 
-   char-io/gf-uart.hpp
-   char-io/gf-ostream.hpp
-   char-io/gf-ostream-object.hpp
+   ostream/gf-stream
+   ...
+
    char-io/gf-terminal.hpp
    char-io/gf-terminal-demos.hpp
 
-   graphics/gf-color.hpp
 //   graphics/gf-window.hpp
 //   graphics/gf-drawables.hpp
 //   graphics/gf-window-demos.hpp
@@ -270,3 +274,25 @@ todo
 - how to print without std::cout
 - problem with CRTP
 - remaining issues: users, abstractions, timing, testing, documentation (doxygen doesn't work)
+
+development board 2.0
+blue pill
+switches
+4x4 keypad
+LCD / oled
+beeper
+2 x AA battery
+IR RX, TX
+options
+NRF905/2401
+MPU6050
+SRF04
+ESP8266
+memory card?? eeprom chip
+LCD met touch
+smartpixel  3/4 pin output
+LDR
+DHT11
+dallas (5V)
+I2C
+2 x joystick

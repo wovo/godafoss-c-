@@ -7,10 +7,14 @@
 // uint_bits< N >::fast is the smallest 'fast'
 // unsigned integer type that stores (at least) N bits.
 //
-// uint_bits< N >::least is the smallest
+// uint_bits< N >::least is the smallest (not necesarrily fast)
 // unsigned integer type that stores (at least) N bits.
 //
-// Both should be used for bit patterns, not for amounts.
+// As both are unsigned they should be used for bit patterns, not for amounts.
+//
+// Note that both can be larger than requested, so they should not be used
+// for modulo arithmetic (at least not without masking out excess bits).
+//
 // Use ::fast for parameters, use ::least for array storage.
 //
 // =============================================================================

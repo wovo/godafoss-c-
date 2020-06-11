@@ -7,6 +7,9 @@
 // This is a very simple test framework, that can be used
 // both running native, and running on a target that has a uart<>.
 //
+// This is not realy a header file.
+// For its use, check the tests for the various targets.
+//
 // =============================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss),
@@ -31,18 +34,27 @@ public:
    static inline int _equal_calls_count = 0;
    static inline int _equal_failures_count = 0;
 
+   static void start(){
+      timing::init();
+      timing::ms< 1'000>::wait();
+      static gf::ostream< gf::formatter< uart > > cout;
+      cout
+         << "\nTest starts.\n";
+
+   }
+
    static void end(){
       static gf::ostream< gf::formatter< uart > > cout;
       if( _equal_failures_count == 0 ){
          cout
 	         << "\nTest success: "
             << gf::dec << _equal_calls_count
-		      << " test were successfull\n";
+		      << " test were successfull.\n";
       } else {
          cout
 	         << "\nTEST FAILURE: "
 		      << gf::dec << _equal_failures_count
-		      << " test were NOT successfull\n";
+		      << " test were NOT successfull.\n";
       }
    }
 

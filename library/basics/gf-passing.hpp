@@ -4,7 +4,8 @@
 //
 // =============================================================================
 //
-// by_const< T > : best way (copy or reference)
+// by_const< T > : best way (copy or reference,
+// epending on the sizeof T compared to a reference)
 // to pass a const value of type T
 //
 // =============================================================================
@@ -22,18 +23,32 @@
 // =============================================================================
 
 
-// when no exact match: pass as a 1 byte smaller data type would be passed
-template< int N, typename T >
-struct _by_const { using type = _by_const< N - 1, T >::type; };
-
-// when up to the size of a pointer: pass by value
+// default: pass by reference
 template< typename T >
-struct _by_const< 1, T > { using type = const T; };
+struct _by_const { using type = const T &; };
 
-// when larger than a pointer: pass by reference
+#ifdef __x86_64__
+constexpr auto _max_by_value = 2;
+#endif
+
+#ifdef __thumb__
+constexpr auto _max_by_value = 1;
+#endif
+
+// when trivially copyable,
+// and either a fundamental type, or small: pass by value
 template< typename T >
-struct _by_const< 1 + sizeof( int * ), T > { using type = const T &; };
+   requires (
+      std::is_trivially_copy_constructible< T >::value
+      && (
+         std::is_fundamental_v< T >
+         || ( sizeof( T ) <= _max_by_value )
+      ))
+struct _by_const< T > { using type = const T; };
+
+
+// =============================================================================
 
 // interface: use by_const< T > when passing a T
 template< typename T >
-using by_const = _by_const< sizeof( T ), T >::type;
+using by_const = _by_const< T >::type;

@@ -4,19 +4,19 @@
 //
 // ==========================================================================
 //
-// The xy< T > ADT is a pair of two T values named x and y. 
-// It is used for distances in an xy plane, like a window or terminal.
+// The xy< T > ADT is a pair of two T values named x and y.
+// It is used for distances in an xy plane, like on a window or terminal.
 //
-// The xy< torsor< T > > is used to identify a location on an xy plaae. 
+// The xy< torsor< T > > is used to identify a location on an xy plane.
 //
 // ==========================================================================
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss), 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright 
+// Copyright
 //    Wouter van Ooijen 2018-2020
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -45,50 +45,50 @@ public:
    using value_t = T;
 
    value_t x, y;
-   
+
    constexpr xy( value_t x, value_t y ): x{ x }, y{ y }{}
-   
+
    constexpr xy( value_t x ): x{ x }, y{ x }{}
-   
+
    constexpr xy():x{ zero }, y{ zero }{}
-   
+
    template< typename X >
    constexpr xy( const xy< X > & rhs ): x( rhs.x ), y( rhs.y ) {}
-   
+
    static constexpr auto origin = xy{};
 
    template< typename V >
 //      requires requires( V b ){ { x + b }; }   - GCC 10.0.1 ICE segfault
-      requires requires( T x, V b ){ { x + b }; }      
+      requires requires( T x, V b ){ { x + b }; }
    constexpr auto operator+( const xy< V > rhs ) const {
-      return xy< decltype( x + rhs.x ) > { 
+      return xy< decltype( x + rhs.x ) > {
           static_cast< value_t >( x + rhs.x ),
           static_cast< value_t >( y + rhs.y )
-      };      
-   }      
-   
+      };
+   }
+
    template< typename V >
-      requires requires( T x, V b ){ { x - b }; }      
+      requires requires( T x, V b ){ { x - b }; }
    constexpr auto operator-( const xy< V > rhs ) const {
       return xy< decltype( x + rhs.x ) > {
           static_cast< value_t >( x - rhs.x ),
           static_cast< value_t >( y - rhs.y )
-      };         
-   }      
+      };
+   }
 
    constexpr auto operator/( const value_t rhs ) const {
-      return xy { 
+      return xy {
           static_cast< value_t >( x / rhs ),
           static_cast< value_t >( y / rhs )
-      };         
-   }    
+      };
+   }
 
    constexpr xy operator*( const value_t rhs ) const {
-      return xy { 
+      return xy {
           static_cast< value_t >( x * rhs ),
           static_cast< value_t >( y * rhs )
-      };         
-   }    
+      };
+   }
 
    constexpr bool operator==( const xy & rhs ) const {
       return ( x == rhs.x ) && ( y == rhs.y );
@@ -98,10 +98,15 @@ public:
       return ! ( *this == rhs );
    }
 
-}; 
+};
 
-template< is_output_stream T, typename V >
-T & operator<<( T & lhs, xy< V > rhs ){
+template< typename stream, typename value >
+   requires requires( stream & s, char c, value v ){
+      { s << 'c' } -> std::same_as< stream & >;
+      { s << v   } -> std::same_as< stream & >;
+   }
+}
+T & operator<<( stream & lhs, xy< value > rhs ){
    return lhs << '(' << rhs.x << ',' << rhs.y << ')';
 }
 
@@ -122,10 +127,10 @@ private:
 
 public:
 
-   xy_iterator_t( xy< T > start, xy< T > limit ): 
+   xy_iterator_t( xy< T > start, xy< T > limit ):
       current( start ),
-      start( start ), 
-      limit( limit ) 
+      start( start ),
+      limit( limit )
    {}
 
    xy< T > operator*() const {
@@ -147,7 +152,7 @@ public:
    bool operator!=( const xy_iterator_t rhs ) const {
       return current != rhs.current;
    }
-      
+
 };
 
 
@@ -159,8 +164,8 @@ public:
 
 template< typename T, T v >
    requires requires( T & x ){
-      { ++x };      
-   }      
+      { ++x };
+   }
 class range {
 private:
 
@@ -200,7 +205,7 @@ a r -> a
 
 template< typename limits_t >
 limits_t random_xy( limits_t limits ){
-   return limits_t( 
+   return limits_t(
       random_in_range< typename limits_t::value_t >( 0, limits.x ),
       random_in_range< typename limits_t::value_t >( 0, limits.y ) );
-} 
+}

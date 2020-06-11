@@ -85,7 +85,7 @@ struct NAME_2 {                                                 \
 
 // =============================================================================
 //
-// common names that other parts of the library can opt-in to use
+// ahred names that other parts of the library can support
 //
 // =============================================================================
 
