@@ -4,6 +4,9 @@
 //
 // ==========================================================================
 
+template< typename T >
+concept spi = true;
+
 template<
    pin_out_compatible  _sclk,
    pin_in_compatible   _miso,
@@ -162,3 +165,30 @@ public:
    };
 
 }; // struct spi_bus_bb_sclk_miso_mosi
+
+// an output-only SPI bus
+template<
+   pin_out_compatible  _sclk,
+   pin_out_compatible  _mosi,
+   typename            timing
+>
+using spi_bus_bb_sclk_mosi = spi_bus_bb_sclk_miso_mosi<
+   _sclk,
+   pin_in_dummy,
+   _mosi,
+   timing
+>;
+
+// an input-only SPI bus
+template<
+   pin_out_compatible  _sclk,
+   pin_in_compatible   _miso,
+   typename            timing
+>
+using spi_bus_bb_sclk_miso = spi_bus_bb_sclk_miso_mosi<
+   _sclk,
+   _miso,
+   pin_in_dummy,
+   timing
+>;
+

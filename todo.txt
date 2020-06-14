@@ -1,4 +1,5 @@
  test random op een cortex
+ - string size should be int with max value
 
  bmptk modified:
 - USB0 for db103

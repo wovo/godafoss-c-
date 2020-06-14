@@ -45,11 +45,15 @@ struct window_root {
    using location_t  = torsor< _offset_t >;
    using color_t     = _color_t;
 
-   static constexpr location_t origin = location_t( 0, 0 );
+   static constexpr location_t origin = location_t();
    static constexpr offset_t   size   = _size;
 
    template< typename T >
    static bool within( T value, T limit ){
+
+//   ostream< formatter< target::uart<> > > cout;
+//   cout << value << " " << limit << "\n";
+
       return ( value >= 0 ) && ( value < limit );
    }
 
@@ -59,13 +63,13 @@ struct window_root {
          within( loc.x, size.x )
          && within( loc.y, size.y )
       ){
-         _implementation::write_implementation( location, color );
+         _implementation::write_implementation( loc, color );
       }
    }
 
    static void clear( color_t color ){
-      for( const auto location : range( size )){
-         _implementation::write_implementation( origin + location, color );
+      for( const auto offset : range( size )){
+         write( origin + offset, color );
       }
    }
 

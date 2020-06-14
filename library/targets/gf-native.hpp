@@ -89,11 +89,10 @@ public:
    static void init(){}
 
    static void write_implementation(
-      root::location_t _pos,
+      root::offset_t pos,
       color col
    ){
       make_render_window();
-      auto pos = _pos - root::origin;
       for( int x = 0; x < m; ++x ){
          for( int y = 0; y < m; ++y ){
             image.setPixel(

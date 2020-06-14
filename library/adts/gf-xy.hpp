@@ -48,7 +48,7 @@ public:
 
    constexpr xy( value_t x, value_t y ): x{ x }, y{ y }{}
 
-   constexpr xy( value_t x ): x{ x }, y{ x }{}
+   // constexpr xy( value_t x ): x{ x }, y{ x }{}
 
    constexpr xy():x{ zero }, y{ zero }{}
 
@@ -105,8 +105,7 @@ template< typename stream, typename value >
       { s << 'c' } -> std::same_as< stream & >;
       { s << v   } -> std::same_as< stream & >;
    }
-}
-T & operator<<( stream & lhs, xy< value > rhs ){
+stream & operator<<( stream & lhs, xy< value > rhs ){
    return lhs << '(' << rhs.x << ',' << rhs.y << ')';
 }
 

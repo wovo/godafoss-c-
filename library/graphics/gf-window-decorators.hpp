@@ -30,10 +30,9 @@ struct flip_horizontally :
    }
 
    static void write_implementation(
-      minion::location_t pos,
+      minion::offset_t offset,
       minion::color_t color
    ){
-      auto offset = pos - minion::origin;
       minion::write(
          minion::origin
             + typename minion::offset_t(
@@ -77,10 +76,9 @@ struct fold :
    }
 
    static void write_implementation(
-      minion::location_t pos,
+      minion::offset_t offset,
       minion::color_t color
    ){
-      auto offset = pos - minion::origin;
       minion::write(
          minion::origin + typename minion::offset_t(
             offset.x + ( ( offset.y / minion::size.y ) * root::size.x ),
@@ -123,10 +121,10 @@ struct invert< minion >:
    }
 
    static void write_implementation(
-      minion::location_t pos,
+      minion::offset_t offset,
       minion::color_t color
    ){
-      minion::write( pos, - color );
+      minion::write( minion::origin + offset, - color );
    }
 
    static void flush(){

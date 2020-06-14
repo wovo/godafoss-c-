@@ -47,9 +47,9 @@ struct _windows_all {
       _windows_all< tail... >::init();
    }
 
-   static void write( torsor< xy<> > address, color col ){
-      w::write( address, col );
-      _windows_all< tail... >::write( address, col );
+   static void write( xy<> offset, color col ){
+      w::write( w::origin + offset, col );
+      _windows_all< tail... >::write( offset, col );
    }
 
    static void flush(){
@@ -66,8 +66,8 @@ struct _windows_all< w > {
       w::init();
    }
 
-   static void write( torsor< xy<> > address, color col ){
-      w::write( address, col );
+   static void write( xy<> offset, color col ){
+      w::write( w::origin + offset, col );
    }
 
    static void flush(){
@@ -112,8 +112,8 @@ struct all< first, tail... > :
       _windows_all< first, tail... >::init();
    }
 
-   static void write_implementation( torsor< xy<> > address, color col ){
-      _windows_all< first, tail... >::write( address, col );
+   static void write_implementation( xy<> offset, color col ){
+      _windows_all< first, tail... >::write( offset, col );
    }
 
    static void flush(){

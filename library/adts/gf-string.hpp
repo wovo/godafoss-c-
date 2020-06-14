@@ -20,17 +20,78 @@
 //
 // =============================================================================
 
-/// return the end iterator from an asciz string
-constexpr const char * asciz_beyond( const char * p ){
-   while( *p != '\0' ){
-      ++p;
+
+// =============================================================================
+//
+// iterate over something that can be used to
+// construct a godafoss::string
+//
+// =============================================================================
+
+class _char_iterate {
+
+private:
+
+   const char c;
+   const char * const start;
+   const char * const beyond;
+
+   // end iterator from an asciz string
+   constexpr const char * asciz_beyond( const char * p ){
+      while( *p != '\0' ){
+         ++p;
+      }
+      return p;
    }
-   return p;
-}
+
+public:
+
+   // a single char
+   constexpr _char_iterate( char ch ) :
+      c( ch ), start( &c ), beyond( &this->c + 1)
+   {}
+
+   // an asciz string
+   constexpr _char_iterate( const char *p ) :
+      c( 0 ), start( p ), beyond( asciz_beyond( p )) {
+   }
+
+   // anything that has begin() and end()
+   template< typename T >
+   requires requires( const T s ){
+      // use an std conecpt when one is available
+      { * s.begin() } -> std::same_as< char >;
+      { * s.end() }   -> std::same_as< char >;
+   }
+   constexpr _char_iterate( const T & s ) :
+      c( 0 ), start( s.begin() ), beyond( s.end() )
+   {}
+
+   constexpr const char * begin() const {
+      return start;
+   }
+
+   constexpr const char * end() const {
+      return beyond;
+   }
+
+};
 
 
-template< size_t maximum_length >
-class string: public string_base {
+// =============================================================================
+//
+// string<> class
+//
+// =============================================================================
+
+template< std::size_t _maximum_length >
+class string {
+
+public:
+
+   using size_t = std::size_t;
+   static constexpr size_t maximum_length = _maximum_length;
+
 private:
 
    // the store for the characters
@@ -39,85 +100,8 @@ private:
    // current length (number of valid characters) of the string
    size_t current_length;
 
-
    // dummy char returned on out-of-bounds accesses
    static char dummy;
-
-
-   // return a pointer into the context, clipped to the valid range
-   const char * sanitize( size_t n ) const {
-      return ( n <= current_length )
-         ? content + n
-         : content + current_length;
-   }
-   char * sanitize( size_t n ){
-      return ( n <= current_length )
-         ? content + n
-         : content + current_length;
-   }
-
-   // object constructor, called by string< N >'s constructors
-   template< typename T >
-   constexpr string_base( size_t allocated_length, char * content, const T & x ):
-      allocated_length{ allocated_length },
-      current_length{ 0 },
-      content{ content }
-   {
-      for( char c : iterate( x ) ){
-         if( current_length < allocated_length ){
-            content[ current_length++ ] = c;
-         }
-      }
-   }
-
-   // range constructor, called by range()
-   // not used directly, because the result must be a const
-   constexpr string_base( char * start, char * beyond ):
-      allocated_length( beyond - start ),
-      current_length( beyond - start ),
-      content( start )
-   {}
-
-
-   //=========================================================================
-   //
-   // iterator(s) for char sources
-   //
-   //=========================================================================
-
-   class iterate {
-
-   public:
-
-      // iterate over a single char
-      constexpr iterate( char ch ) :
-         c( ch ), start( &c ), beyond( &this->c + 1)
-      {}
-
-      // iterate over an asciz string
-      constexpr iterate( const char *p ) :
-         c( 0 ), start( p ), beyond( asciz_beyond( p )) {
-      }
-
-      // iterate over anything that has begin() and end()
-      template< typename T >
-      constexpr iterate( const T & s ) :
-         c( 0 ), start( s.begin() ), beyond( s.end() )
-      {}
-
-      constexpr const char * begin() const {
-         return start;
-      }
-
-      constexpr const char * end() const {
-         return beyond;
-      }
-
-   private:
-      const char c;
-      const char * const start;
-      const char * const beyond;
-   };
 
 public:
 
@@ -127,29 +111,25 @@ public:
    //
    //=========================================================================
 
-   /// special value for beyond-end or not-found
+   // special value for beyond-end or not-found
    static const size_t nsize = 0xFFFF;
 
-   /// the maximum number of characters that can be stored
-   constexpr size_t max_size() const {
-      return allocated_length;
-   }
-
-   /// the number of characters that are currently stored
+   // the number of characters that are currently stored
    constexpr size_t length() const {
       return current_length;
    }
 
-   /// check index for validity
-   ///
-   /// Return whether n is a valid index.
+   // Return whether n is a valid index.
    constexpr bool valid_index( const size_t n ) const {
-      return( n < allocated_length );
+      return( n < maximum_length );
    }
 
-   /// output to any target that supports operator<< for a char *
-   template< typename T >
-   friend T & operator<< ( T & lhs, const string_base & rhs ){
+   // output to any target that supports operator<< for a char
+   template< typename sink >
+   requires requires( sink s, char c ){
+      { s << c };
+   }
+   friend sink & operator<< ( sink & lhs, const string & rhs ){
       for( char c : rhs ){
          lhs << c;
       }
@@ -159,40 +139,37 @@ public:
 
    //=========================================================================
    //
-   // append
+   // append something (as far as possible, ignore the excess)
    //
    //=========================================================================
 
-   /// append the char if possible, otherwise ignore it
-   string_base & append( char c ){
-      if( current_length < allocated_length ){
+   string & append( char c ){
+      if( current_length < maximum_length ){
          content[ current_length++ ] = c;
       }
       return *this;
    }
 
-   /// append a char if possible, otherwise ignore it
-   string_base & operator+=( char c ){
+   string & operator+=( char c ){
       return append( c );
    }
 
-   /// append a char if possible, otherwise ignore it
-   string_base & operator<<( char c ){
+   string & operator<<( char c ){
       return append( c );
    }
 
-   /// append something (as far as possible, ignore the excess)
    template< typename T >
-   string_base & operator+=( const T & rhs ){
+   // must be a readonly char forward iterator
+   string & operator+=( const T & rhs ){
       for( char c : iterate( rhs ) ){
          append( c );
       }
       return *this;
    }
 
-   /// append something (as far as possible, ignore the excess)
    template< typename T >
-   string_base & operator<<( const T & rhs ){
+   // idem??
+   string & operator<<( const T & rhs ){
       return operator+=( rhs );
    }
 
@@ -203,41 +180,41 @@ public:
    //
    //=========================================================================
 
-   /// set to ""
-   string_base & clear(){
+   // set to ""
+   string & clear(){
       current_length = 0;
       return *this;
    }
 
-   /// assign something
+   // assign something
    template< typename T >
-   string_base & operator=( const T & rhs ){
+   string & operator=( const T & rhs ){
       return clear() += rhs;
    }
 
 
    //=========================================================================
    //
-   // iterate
+   // iterators
    //
    //=========================================================================
 
-   /// start iterator
+   // start
    char * begin() {
       return content;
    }
 
-   /// end iterator
+   // end
    char * end() {
       return content + current_length;
    }
 
-   /// start const iterator
+   // start const
    const char * begin() const {
       return content;
    }
 
-   /// end const iterator
+   // end const
    const char * end() const {
       return content + current_length;
    }
@@ -257,19 +234,20 @@ public:
    ///
    /// The object is a non-owning range: it doesn't make a copy.
    /// Hence any change to the characters will be reflected in the range.
-   static constexpr const string_base range(
+   static constexpr const string range(
       const char * start,
       const char * beyond
    ){
       // Casting the const away is OK because the returned range object is
       // returned as const, so the stored char pointers are const again.
       // Blame C++ for not having a const constructor :(
-      return string_base(
+      return string(
          const_cast< char * >( start ),
          const_cast< char * >( beyond )
       );
    }
 
+/*
    /// non-owning string (sub)range from an asciz string
    ///
    /// This function returns a const string object that appears to contains
@@ -277,15 +255,16 @@ public:
    ///
    /// The object is a non-owning range: it doesn't make a copy.
    /// Hence any change to the characters will be reflected in the range.
-   static constexpr const string_base range(
+   static constexpr const string range(
       const char * start
    ){
       // see above
-      return string_base(
+      return string(
          const_cast< char * >( start ),
          const_cast< char * >( asciz_beyond( start ) )
       );
    }
+*/
 
 
    //=========================================================================
@@ -399,25 +378,42 @@ public:
    //
    //=========================================================================
 
+private:
+
+   // return a pointer into the context, clipped to the valid range
+   const char * sanitize( size_t n ) const {
+      return ( n <= current_length )
+         ? content + n
+         : content + current_length;
+   }
+
+   char * sanitize( size_t n ){
+      return ( n <= current_length )
+         ? content + n
+         : content + current_length;
+   }
+
+public:
+
    /// subrange based on start index and length
-   string_base range_start_length( size_t a, size_t b ){
+   string range_start_length( size_t a, size_t b ){
       return string_base( sanitize( a ), sanitize( a + b ) );
    }
 
    /// subrange based on start index and end index
-   string_base range_start_end( size_t a, size_t b ){
+   string range_start_end( size_t a, size_t b ){
       return string_base( sanitize( a ), sanitize( b ) );
    }
 
    /// subrange based on substring start and length
    template< typename T >
-   string_base range_find_length( const T & a, size_t b ){
+   string range_find_length( const T & a, size_t b ){
       return string_base( sanitize( a ), sanitize( a + b ) );
    }
 
    /// subrange based on first substring start and second substring start
    template< typename T, typename Q >
-   string_base range_find_find( const T & a, const Q & b ){
+   string range_find_find( const T & a, const Q & b ){
       return string_base( sanitize( a ), sanitize( a + b ) );
    }
 
@@ -518,7 +514,7 @@ public:
 //
 //============================================================================
 
-#ifndef BMPTK_CHIP_atmega328
+/*
 
 /// compare for equality
 template< typename T >
@@ -568,6 +564,4 @@ operator<=( const T & lhs, const string_base & rhs ){
    return ! rhs.operator>( lhs );
 }
 
-#endif
-
-
+*/
