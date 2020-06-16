@@ -33,46 +33,11 @@
 namespace torsor_concepts {
 
 
-// concept for the torsor copy constructor
-template< typename V, typename W >
-concept can_be_constructed_from
-= requires ( W w ) {
-   V( w );
-};
-
-// concept for the torsor assignment operator
-template< typename V, typename W >
-concept can_be_assigned_from
-= requires ( V & v, W w ) {
-   v = w;
-};
-
-// conecpt for the ( + torsor ) operator
-template< typename V >
-concept can_be_plussed
-= requires ( V v ) {
-   ( + v );
-};
-
-// conecpt for the ( torsor + value ) operator
-template< typename V, typename W >
-concept can_be_added_with_value
-= requires ( V v, W w ) {
-   ( v + w );
-};
-
 // concept for the ( torsor - value ) operators
 template< typename V, typename W >
 concept can_be_subtracted_with_value
 = requires ( V v, W w ) {
    ( v - w );
-};
-
-// concept for the ( torsor += value ) operator
-template< typename V, typename W >
-concept can_be_update_added_with_value
-= requires ( V v, W w ) {
-   ( v += w );
 };
 
 // concept for the ( torsor -= value ) operator
@@ -166,26 +131,46 @@ concept can_be_printed_to
 // =============================================================================
 
 
-template< typename T, T zero >
+template<
+   typename    _data_type,
+   _data_type  _zero
+>
 class torsor final {
+public:
+
+   // torsors can access each others private parts
+   template< typename other_type, other_type other_zero >
+   friend class torsor;
+
+   // the type this torsor stores
+   using data_type = _data_type;
+
+   // the root (zero) of this torsor
+   static constexpr data_type zero = _zero;
+
 private:
 
-   // (only) torsors (of any type) can
-   // - access the value of torsors of any (same or other) type
-   // - create non-zero torsors of any (same or other) type
-   template<typename, typename> friend class torsor;
-
    // the stored base type value
-   T value;
+   data_type stored_value = zero;
 
-   // create a (possibly non-zero) torsor value
-   __attribute__((always_inline))
-   constexpr explicit torsor( const T & value ):
-      value( value )
+   // create a (possibly non-zero) torsor
+   __attribute__(( always_inline ))
+   constexpr explicit torsor( const data_type & value ):
+      _value( _zero + value )
    {}
 
+   // retrieve the torsor value
+   __attribute__(( always_inline ))
+   data_type value(){
+      return stored_value - zero;
+   }
 
-public:
+   // update the torsor value
+   __attribute__(( always_inline ))
+   void value( const data_type & new_value ){
+      stored_value = zero + new_value;
+   }
+
 
    // ==========================================================================
    //
@@ -193,34 +178,35 @@ public:
    //
    // ==========================================================================
 
-   /// default torsor constructor
-   ///
-   /// Create a torsor with the zero (anchor) value.
-   __attribute__(( always_inline ))
-   constexpr torsor():value( zero ){}
+public:
 
-   /// create from another torsor
-   ///
-   /// Create a torsor from another torsor, which must have a base type
-   /// from which our own base type can be copy-constructed.
-   template< typename U >
-   requires torsor_concepts::can_be_constructed_from< T, U >
+   // Create a torsor with the zero (anchor) value.
    __attribute__(( always_inline ))
-   constexpr torsor( const torsor< U > & right ):
-      value( right. value )
+   constexpr torsor(){}
+
+   // Create a torsor from another torsor, which must have a base type
+   // from which our own base type can be constructed.
+   template< typename other_type, other_type other_zero >
+   requires requires( other_type v ){
+      torsor( v )
+   }
+   __attribute__(( always_inline ))
+   constexpr torsor( const torsor< other_type, other_zero > & right ):
+      value( right.value() )
    {}
 
-   /// assign a torsor from another torsor
-   ///
-   /// Copy the value from another torsor, which must have a base type
-   /// that can be assigned to our base type.
-   template< typename U >
-   requires torsor_concepts::can_be_assigned_from< T, U >
+   // Assign (copy) the value from another torsor,
+   // which must have a base type that can be assigned to our base type.
+   template< typename other_type, other_type other_zero >
+   requires requires( other_type v ){
+      set( v )
+   }
    __attribute__(( always_inline ))
-   torsor & operator=( const torsor< U, M > & right ){
-      value = right.value;
+   torsor & operator=( onst torsor< other_type, other_zero > & right ){
+      set( right.value() );
       return *this;
    }
+
 
    // ==========================================================================
    //
@@ -228,39 +214,47 @@ public:
    //
    // ==========================================================================
 
-   /// positive of a torsor
-   ///
-   /// This unary plus operator just returns the torsor (value) itself.w
+public:
+
+   // The unary plus operator returns the + of its torsor value
    constexpr auto operator+() const
-   requires torsor_concepts::can_be_plussed< T >
+   requires requires( data_type v ) {
+      set( + v );
+   }
    __attribute__(( always_inline ))
    {
-      return torsor< decltype( + value ), M >( + value );
+      return torsor< decltype( + value() ), _zero >( + value() );
    }
 
-   /// add a torsor with a value
-   ///
-   /// Add a value to ourself.
-   /// The base types of our torsor and the value must be addable.
-   /// The result is a torsor of the type
-   /// and with the value of that addition.
-   template< typename U >
-   requires torsor_concepts::can_be_added_with_value< T, U >
+   // Add a value to ourself.
+   // The base types of our torsor and the value must be addable.
+   // The result is a torsor of the type
+   // and with the value of that addition.
+   template< typename other_type >
+   requires requires( data_type v ) {
+      set( + v );
+   }
    __attribute__(( always_inline ))
-   constexpr auto operator+( const U & right ) const {
-      return torsor< decltype( value + right ), M >( value + right );
+   constexpr auto operator+( const other_type & right ) const {
+      return torsor< decltype( value() + right ), _zero >( value() + right );
    }
 
-   /// update add a torsor with a value
-   ///
-   /// Add a value into ourself.
-   /// The base types of our torsor and the value
-   /// must be update addable.
-   /// The result is a ourself, updated appropriately.
-   template< typename U >
-   requires torsor_concepts::can_be_update_added_with_value< T, U >
+   // Add a value into ourself.
+   // The base types of our torsor and the value
+   // must be update addable.
+   // The result is a ourself, updated appropriately.
+   template< typename other_type >
+   requires requires( data_type v ) {
+      set( + v );
+   }
+// concept for the ( torsor += value ) operator
+template< typename V, typename W >
+concept can_be_update_added_with_value
+= requires ( V v, W w ) {
+   ( v += w );
+};
    __attribute__(( always_inline ))
-   torsor & operator+=( const U & right ){
+   torsor & operator+=( const other_type & right ){
       value += right;
       return *this;
    }
@@ -272,12 +266,12 @@ public:
    //
    // ==========================================================================
 
-   /// subtract a torsor with a value
-   ///
-   /// Subtract a value from ourself.
-   /// The base types of our torsor and the value must be subtractable.
-   /// The result is a torsor of the type
-   /// and with the value of that subtraction.
+   // subtract a torsor with a value
+   //
+   // Subtract a value from ourself.
+   // The base types of our torsor and the value must be subtractable.
+   // The result is a torsor of the type
+   // and with the value of that subtraction.
    template< typename U >
    requires torsor_concepts::can_be_subtracted_with_value< T, U >
    __attribute__(( always_inline ))
@@ -285,12 +279,12 @@ public:
       return torsor< decltype( value - right ), M >( value - right );
    }
 
-   /// subtract two torsors
-   ///
-   /// Subtract a torsor from ourself.
-   /// The base types of our torsor and the other torsor
-   /// must be subtractable.
-   /// The result is of the type and has the value of that subtraction.
+   // subtract two torsors
+   //
+   // Subtract a torsor from ourself.
+   // The base types of our torsor and the other torsor
+   // must be subtractable.
+   // The result is of the type and has the value of that subtraction.
    template< typename U >
    requires torsor_concepts::can_be_subtracted_with_value< T, U >
    __attribute__(( always_inline ))
@@ -298,12 +292,12 @@ public:
       return value - right.value;
    }
 
-   /// update subtract a torsor with a value
-   ///
-   /// Subtract a value into ourself.
-   /// The base types of our torsor and the value
-   /// must be update subtractable.
-   /// The result is a ourself, updated appropriately.
+   // update subtract a torsor with a value
+   //
+   // Subtract a value into ourself.
+   // The base types of our torsor and the value
+   // must be update subtractable.
+   // The result is a ourself, updated appropriately.
    template< typename U >
    requires torsor_concepts::can_be_update_subtracted_with_value< T, U >
    __attribute__(( always_inline ))
@@ -319,11 +313,11 @@ public:
    //
    // ==========================================================================
 
-   /// compare torsors for equality
-   ///
-   /// Compare two torsors for equality.
-   /// The base types of te torsors must support comparing for equality.
-   /// The result is te result of that comparison.
+   // compare torsors for equality
+   //
+   // Compare two torsors for equality.
+   // The base types of te torsors must support comparing for equality.
+   // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_equal< T, U >
    __attribute__(( always_inline ))
@@ -331,11 +325,11 @@ public:
       return value == right.value;
    }
 
-   /// compare torsors for inequality
-   ///
-   /// Compare two torsors for inequality.
-   /// The base types of te torsors must support comparing for inequality.
-   /// The result is te result of that comparison.
+   // compare torsors for inequality
+   //
+   // Compare two torsors for inequality.
+   // The base types of te torsors must support comparing for inequality.
+   // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_unequal< T, U >
    __attribute__(( always_inline ))
@@ -350,11 +344,11 @@ public:
    //
    // ==========================================================================
 
-   /// compare torsors for larger
-   ///
-   /// Compares a torsor for being larger than another torsor.
-   /// The base types of te torsors must support the comparison.
-   /// The result is te result of that comparison.
+   // compare torsors for larger
+   //
+   // Compares a torsor for being larger than another torsor.
+   // The base types of te torsors must support the comparison.
+   // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_larger< T, U >
    __attribute__(( always_inline ))
@@ -362,11 +356,11 @@ public:
       return value > right.value;
    }
 
-   /// compare torsors for larger or equal
-   ///
-   /// Compares a torsor for being larger than or equal to another torsor.
-   /// The base types of te torsors must support the comparison.
-   /// The result is te result of that comparison.
+   // compare torsors for larger or equal
+   //
+   // Compares a torsor for being larger than or equal to another torsor.
+   // The base types of te torsors must support the comparison.
+   // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_larger_or_equal< T, U >
    __attribute__(( always_inline ))
@@ -381,11 +375,11 @@ public:
    //
    // ==========================================================================
 
-   /// compare torsors for smaller
-   ///
-   /// Compares a torsor for being smaller than another torsor.
-   /// The base types of te torsors must support the comparison.
-   /// The result is te result of that comparison.
+   // compare torsors for smaller
+   //
+   // Compares a torsor for being smaller than another torsor.
+   // The base types of te torsors must support the comparison.
+   // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_smaller< T, U >
    __attribute__(( always_inline ))
@@ -393,11 +387,11 @@ public:
       return value < right.value;
    }
 
-   /// compare torsors for smaller or equal
-   ///
-   /// Compares a torsor for being smaller than or equal to another torsor.
-   /// The base types of te torsors must support the comparison.
-   /// The result is te result of that comparison.
+   // compare torsors for smaller or equal
+   //
+   // Compares a torsor for being smaller than or equal to another torsor.
+   // The base types of te torsors must support the comparison.
+   // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_smaller_or_equal< T, U >
    __attribute__(( always_inline ))
@@ -419,12 +413,12 @@ public:
       (void) n;
    }
 
-   /// add a value and a torsor
-   ///
-   /// Add ourself to a value.
-   /// The base types of our torsor and the value must be addable.
-   /// The result is a torsor of the type
-   /// and with the value of that addition.
+   // add a value and a torsor
+   //
+   // Add ourself to a value.
+   // The base types of our torsor and the value must be addable.
+   // The result is a torsor of the type
+   // and with the value of that addition.
    template< typename U >
    requires torsor_concepts::can_be_added_with_value< U, T >
    __attribute__(( always_inline ))
@@ -443,12 +437,12 @@ public:
 //
 // =============================================================================
 
-/// print a torsor to a cout-like object
-///
-/// The torsor value is printed, preceded by a '@'
-/// character.
-/// The left argument must support printing (using operator<<)
-/// of a char and of a base type value.
+// print a torsor to a cout-like object
+//
+// The torsor value is printed, preceded by a '@'
+// character.
+// The left argument must support printing (using operator<<)
+// of a char and of a base type value.
 template< typename osteream, typename T, typename M >
 requires torsor_concepts::can_be_printed_to< ostream, T >
 ostream & operator<<( ostream & cout, const torsor< T, M > & right ){
