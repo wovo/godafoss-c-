@@ -16,6 +16,7 @@ __codelite.workspace
 *.pdf
 *.html
 _run.bat
+_c_flags
 _cpp_flags
 _linker_flags
 _linker_libs
