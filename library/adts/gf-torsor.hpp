@@ -265,7 +265,7 @@ public:
    // The result is a torsor of the type
    // and with the value of that subtraction.
    template< typename other_type >
-   requires requires( torsor t, data_type v ) {
+   requires requires( torsor< _data_type, _zero> t, other_type v ) {
       t.set( t.value() - v );
    }
    __attribute__(( always_inline ))
@@ -284,7 +284,7 @@ public:
       const torsor left,
       const torsor< other_type, other_zero > right
    ){
-      left.value - right.value();
+      left.value() - right.value();
    }
    constexpr auto operator-(
       const torsor< other_type, other_zero > & right
