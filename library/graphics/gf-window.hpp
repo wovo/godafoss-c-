@@ -42,7 +42,7 @@ struct window_root {
    static constexpr bool _window_marker = true;
 
    using offset_t    = _offset_t;
-   using location_t  = torsor< _offset_t >;
+   using location_t  = torsor< _offset_t, { 0, 0 } >;
    using color_t     = _color_t;
 
    static constexpr location_t origin = location_t();

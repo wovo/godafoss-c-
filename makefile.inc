@@ -28,10 +28,6 @@
 
 # externals
 
-SEARCH            += $(GODAFOSS)/externals
-
-HEADERS           += torsor.hpp
-
 # godafoss files
 
 SEARCH            += $(GODAFOSS)/library
@@ -57,6 +53,7 @@ HEADERS           += box/gf-box-adapters.hpp
 HEADERS           += ostream/gf-ostream.hpp
 HEADERS           += ostream/gf-uart.hpp
 
+HEADERS           += adts/gf-torsor.hpp
 HEADERS           += adts/gf-string.hpp
 HEADERS           += adts/gf-fraction.hpp
 HEADERS           += adts/gf-subrange.hpp

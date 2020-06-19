@@ -130,8 +130,6 @@
 
 namespace godafoss {
 
-#include "../externals/torsor.hpp"
-
 #include "basics/gf-attributes.hpp"
 #include "basics/gf-shared-names.hpp"
 #include "basics/gf-ints.hpp"
@@ -150,6 +148,7 @@ namespace godafoss {
 #include "ostream/gf-ostream.hpp"
 #include "ostream/gf-uart.hpp"
 
+#include "adts/gf-torsor.hpp"
 #include "adts/gf-string.hpp"
 #include "adts/gf-fraction.hpp"
 #include "adts/gf-subrange.hpp"
