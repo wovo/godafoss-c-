@@ -134,6 +134,133 @@ struct invert< minion >:
 };
 
 
+// ==========================================================================
+//
+// recolor
+//
+// ==========================================================================
+
+
+template<
+   window minion,
+   typename input_color_t,
+   typename minion::color_t (* remap )( const input_color_t & )
+>
+struct recolor :
+   public window_root<
+      recolor< minion, input_color_t, remap >,
+      typename minion::offset_t,
+      input_color_t,
+      minion::size
+   >
+{
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write_implementation(
+      minion::offset_t offset,
+      input_color_t color
+   ){
+      minion::write( minion::origin + offset, remap( color ) );
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+
+};
+
+
+// ==========================================================================
+//
+// monochrome
+//
+// ==========================================================================
+
+/*
+ *
+ * warning: whose type uses the anonymous namespace
+ *
+template<
+   window minion,
+   minion::color_t for_white,
+   minion::color_t for_black
+>
+struct monochrome: public recolor<
+   minion,
+   black_or_white,
+   []( const black_or_white & c ){
+      return ( c.is_black ) ? for_black : for_white;
+   }
+> {};
+*/
+
+template<
+   window minion,
+   minion::color_t for_white,
+   minion::color_t for_black
+>
+struct monochrome :
+   public window_root<
+      monochrome< minion, for_black, for_white >,
+      typename minion::offset_t,
+      black_or_white,
+      minion::size
+   >
+{
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write_implementation(
+      minion::offset_t offset,
+      const black_or_white & c
+   ){
+      minion::write(
+         minion::origin + offset,
+         ( c.is_black ) ? for_black : for_white );
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+
+};
+
+// ==========================================================================
+//
+// port from window
+//
+// ==========================================================================
+
+
+template<
+   window minion
+>
+struct port_from_window:
+   public port_out_root< minion::size.x >
+{
+   using root = port_out_root< minion::size.x >;
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write( typename root::value_type v ){
+      for( int i = 0; i < root::n_pins; ++i ){
+         minion::write(
+            minion::origin + typename minion::offset_t( i, 0 ),
+            black_or_white( ( v & ( 0x01 << i ) ) != 0 ) );
+      }
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+};
 
 
 // direct

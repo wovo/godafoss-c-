@@ -19,14 +19,21 @@ using bus = gf::spi_bus_bb_sclk_mosi<
    target::d2,
    target::d3,
    timing >;
-using chip = gf::ws2801< bus, timing, 3 >;
+using chip = gf::ws2801< bus, timing, 9 >;
+//using chip = gf::recolor< _chip, gf::color, []( const gf::color & c ){ return - c; } >;
+
+//using port = gf::port_from_window< gf::invert< gf::monochrome< chip, gf::black, gf::red > > >;
+using port = gf::port_from_window< gf::monochrome< chip, gf::black, gf::red > >;
 
 int main( void ){
+   gf::kitt< port, timing::ms< 20 > >();
+   /*
    chip::init();
    chip::clear( gf::green );
-   chip::write( chip::origin + chip::location_t( 0, 0 ), gf::red );
-   chip::write( chip::location_t( 1, 0 ), gf::blue );
-   chip::write( chip::location_t( 2, 0 ), gf::red );
+   chip::write( chip::origin + chip::offset_t( 0, 0 ), gf::red );
+   chip::write( chip::origin + chip::offset_t( 1, 0 ), gf::blue );
+   chip::write( chip::origin + chip::offset_t( 2, 0 ), gf::green );
    chip::flush();
+   * */
 }
 

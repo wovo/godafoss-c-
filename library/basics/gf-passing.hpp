@@ -35,14 +35,18 @@ constexpr auto _max_by_value = 2;
 constexpr auto _max_by_value = 1;
 #endif
 
+#ifdef __AVR_ARCH__
+constexpr auto _max_by_value = 1;
+#endif
+
 // when trivially copyable,
 // and either a fundamental type, or small: pass by value
 template< typename T >
    requires (
-      std::is_trivially_copy_constructible< T >::value
-      && (
-         std::is_fundamental_v< T >
-         || ( sizeof( T ) <= _max_by_value )
+//      std::is_trivially_copy_constructible< T >::value &&
+      (
+//         std::is_fundamental_v< T > ||
+         ( sizeof( T ) <= _max_by_value )
       ))
 struct _by_const< T > { using type = const T; };
 

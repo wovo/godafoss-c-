@@ -46,13 +46,11 @@ ifeq ($(TARGET),native)
    endif
 endif
 
+# disable sudo
+SUDO ?=
+
 # set BMPTK to the bmptk subdirectory
 BMPTK              ?= $(RELATIVE)/../bmptk
-
-ifeq ($(TARGET),native)
-   # enable exceptions (disabled by default by bmptk)
-   PROJECT_CPP_FLAGS  += -fexceptions
-endif
 
 # Defer to the bmptk/Makefile.inc to do the real work
 include            $(BMPTK)/Makefile.inc

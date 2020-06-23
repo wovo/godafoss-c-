@@ -30,6 +30,10 @@
 
 # godafoss files
 
+#SEARCH += /usr/arm-none-eabi/include
+#SEARCH += /usr/arm-none-eabi/include/c++/10.1.0
+#SEARCH += /usr/arm-none-eabi/include/c++/10.1.0/arm-none-eabi
+
 SEARCH            += $(GODAFOSS)/library
 
 HEADERS           += godafoss.hpp

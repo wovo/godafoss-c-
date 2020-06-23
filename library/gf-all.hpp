@@ -40,30 +40,33 @@
 // rather than in the files that need them.
 //
 // A dirty hack is needed because the AVR8 compiler lacks certain headers
+//
 // https://github.com/maniacbug/StandardCplusplus
+// https://archive.codeplex.com/?p=libavrstdcpp
 //
 // ==========================================================================
 
+/*
 #ifdef HWCPP_TARGET_use_avr8_hacks
-   #include HWCPP_INCLUDE( targets/avr8-hacks/cstddef )
+   #include HWCPP_INCLUDE( avr8-hacks/cstddef )
    #include HWCPP_INCLUDE( targets/avr8-hacks/climits )
    #include HWCPP_INCLUDE( targets/avr8-hacks/cstdint )
    #include HWCPP_INCLUDE( targets/avr8-hacks/algorithm )
    #include HWCPP_INCLUDE( targets/avr8-hacks/ratio )
    #include HWCPP_INCLUDE( targets/avr8-hacks/type_traits )
    #include HWCPP_INCLUDE( targets/avr8-hacks/array )
+//   #include HWCPP_INCLUDE( targets/avr8-hacks/concepts )
 #else
+*/
    #include <cstddef>
    #include <climits>
    #include <algorithm>
-   #include <cstdint>
-   #include <ratio>
+//   #include <cstdint>
+//   #include <ratio>
    #include <type_traits>
    #include <array>
    #include <concepts>
-#endif
-
-#include <random>
+// #endif
 
 
 // ==========================================================================

@@ -69,7 +69,7 @@ public:
    friend T & operator<<( T & lhs, const color & rhs ){
       return lhs
          << "["
-<< std::hex
+<< hex
 //<< setw( 2 )
 //<< setfill( '0' )
          << rhs.red << ","
@@ -119,6 +119,10 @@ public:
 
 //   static constexpr auto white = black_or_white( false );
 //   static constexpr auto black = black_or_white( true );
+
+   constexpr black_or_white operator- ( void ) const {
+      return black_or_white( is_black ); // why does this invert??
+   }
 
    template< typename T>
    friend T & operator<<( T & lhs, const black_or_white rhs ){
