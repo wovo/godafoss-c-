@@ -198,6 +198,7 @@ namespace godafoss {
 #include "chips/gf-nrf24l01.hpp"
 #include "chips/gf-max7219.hpp"
 #include "chips/gf-ws2801.hpp"
+#include "chips/gf-ws2812.hpp"
 
 } // namespace godafoss
 
