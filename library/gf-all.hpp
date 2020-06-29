@@ -200,6 +200,7 @@ namespace godafoss {
 #include "chips/gf-ws2801.hpp"
 #include "chips/gf-ws2812.hpp"
 #include "chips/gf-st6567.hpp"
+#include "chips/gf-ds1302.hpp"
 
 } // namespace godafoss
 

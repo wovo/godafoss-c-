@@ -106,6 +106,7 @@ HEADERS           += chips/gf-max7219.hpp
 HEADERS           += chips/gf-ws2801.hpp
 HEADERS           += chips/gf-ws2812.hpp
 HEADERS           += chips/gf-st7567.hpp
+HEADERS           += chips/gf-ds1302.hpp
 
 HEADERS           += targets/gf-chip-atmega328.hpp
 HEADERS           += targets/gf-chip-lpc1114.hpp
