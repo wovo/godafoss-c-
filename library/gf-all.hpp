@@ -157,6 +157,7 @@ namespace godafoss {
 #include "adts/gf-subrange.hpp"
 #include "adts/gf-xy.hpp"
 #include "adts/gf-color.hpp"
+#include "adts/gf-date-time.hpp"
 
 #include "pins/gf-pin.hpp"
 #include "pins/gf-pin-adapters.hpp"
@@ -199,8 +200,10 @@ namespace godafoss {
 #include "chips/gf-max7219.hpp"
 #include "chips/gf-ws2801.hpp"
 #include "chips/gf-ws2812.hpp"
-#include "chips/gf-st6567.hpp"
+#include "chips/gf-st7567.hpp"
 #include "chips/gf-ds1302.hpp"
+#include "chips/gf-ds1307.hpp"
+#include "chips/gf-ds3231.hpp"
 
 } // namespace godafoss
 

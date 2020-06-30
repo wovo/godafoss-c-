@@ -63,6 +63,7 @@ HEADERS           += adts/gf-fraction.hpp
 HEADERS           += adts/gf-subrange.hpp
 HEADERS           += adts/gf-xy.hpp
 HEADERS           += adts/gf-color.hpp
+HEADERS           += adts/gf-date-time.hpp
 
 HEADERS           += pins/gf-pin.hpp
 HEADERS           += pins/gf-pin-adapters.hpp
@@ -107,6 +108,8 @@ HEADERS           += chips/gf-ws2801.hpp
 HEADERS           += chips/gf-ws2812.hpp
 HEADERS           += chips/gf-st7567.hpp
 HEADERS           += chips/gf-ds1302.hpp
+HEADERS           += chips/gf-ds1307.hpp
+HEADERS           += chips/gf-ds3231.hpp
 
 HEADERS           += targets/gf-chip-atmega328.hpp
 HEADERS           += targets/gf-chip-lpc1114.hpp
