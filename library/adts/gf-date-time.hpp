@@ -38,31 +38,10 @@ struct date_and_time {
    uint8_t weekday;
 };
 
-// =============================================================================
-//
-// pin_oc
-//
-// =============================================================================
-
-// quote ''pin_oc'' );
-template< typename T >
-concept pin_oc = requires {
-   item< bool >;
-   duplex< bool >;
-   T::_pin_oc_marker;
-};
-
-struct pin_oc_root :
-   item_root< bool >,
-   duplex_root< bool >
-{
-   static constexpr bool _pin_oc_marker = true;
-};
-
 
 // =============================================================================
 //
-// pin_oc
+// operator<<
 //
 // =============================================================================
 
