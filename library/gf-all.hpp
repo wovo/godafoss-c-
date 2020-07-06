@@ -205,6 +205,8 @@ namespace godafoss {
 #include "chips/gf-ds1307.hpp"
 #include "chips/gf-ds3231.hpp"
 #include "chips/gf-hx711.hpp"
+#include "chips/gf-pca9685.hpp"
+#include "chips/gf-dht11.hpp"
 
 } // namespace godafoss
 

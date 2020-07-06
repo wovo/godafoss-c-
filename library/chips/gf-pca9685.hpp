@@ -4,9 +4,9 @@
 //
 // ==========================================================================
 //
-// This is an interface to the DS3231 time-keeping
+// This is an interface to thge DS1302 time-keeping
 // (real-time clock) chip with trickle-charge feature.
-//
+//a
 // Interface:
 //    read(), write()
 //       access to register and RAM bytes
@@ -19,7 +19,7 @@
 // a C++ library for close-to-the-hardware programming.
 //
 // Copyright
-//    Wouter van Ooijen 2020
+//    Wouter van Ooijen 2019-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this

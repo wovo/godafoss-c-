@@ -1,24 +1,25 @@
-// ==========================================================================
+// =============================================================================
 //
 // gf-date-time.hpp
 //
-// ==========================================================================
+// =============================================================================
 //
-// Datatype for
+// This is a datatype for representing a date-and-time,
+// intended for use with a timekeeping chip or peripheral.
 //
-// ==========================================================================
+// =============================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
 // Copyright
-//    Wouter van Ooijen 2019-2020
+//    Wouter van Ooijen 2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
 
 
 // =============================================================================
@@ -29,6 +30,8 @@
 //    - seconds (0-59), minutes (0-59), hours (0-23)
 //    - day (1..28/29/30/31), month (1-12), year (0-99)
 //    - weekday (1..7)
+//
+// When the weekday is not known (some chips don't have it), it is set to 0.
 //
 // =============================================================================
 

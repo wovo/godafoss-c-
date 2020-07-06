@@ -111,6 +111,8 @@ HEADERS           += chips/gf-ds1302.hpp
 HEADERS           += chips/gf-ds1307.hpp
 HEADERS           += chips/gf-ds3231.hpp
 HEADERS           += chips/gf-hx711.hpp
+HEADERS           += chips/gf-pca9685.hpp
+HEADERS           += chips/gf-dht11.hpp
 
 HEADERS           += targets/gf-chip-atmega328.hpp
 HEADERS           += targets/gf-chip-lpc1114.hpp
