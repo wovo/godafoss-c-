@@ -19,7 +19,7 @@ concept color_compatible = true;
 template< typename T >
 concept window = requires(
    typename T::location_t  a,
-   typename T::color_t   c
+   typename T::color_t     c
 ){
    T::_window_marker;
    { T::size }           -> std::same_as< const typename T::offset_t & >;
@@ -50,20 +50,16 @@ struct window_root {
 
    template< typename T >
    static bool within( T value, T limit ){
-
-//   ostream< formatter< target::uart<> > > cout;
-//   cout << value << " " << limit << "\n";
-
       return ( value >= 0 ) && ( value < limit );
    }
 
-   static void write( location_t location, color_t color ){
-      auto loc = location - origin;
+   static void write( location_t _location, color_t color ){
+      auto location = _location - origin;
       if(
-         within( loc.x, size.x )
-         && within( loc.y, size.y )
+         within( location.x, size.x )
+         && within( location.y, size.y )
       ){
-         _implementation::write_implementation( loc, color );
+         _implementation::write_implementation( location, color );
       }
    }
 
