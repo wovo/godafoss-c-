@@ -4,21 +4,6 @@
 //
 // =============================================================================
 //
-// uint_bits< N >::fast is the smallest 'fast'
-// unsigned integer type that stores (at least) N bits.
-//
-// uint_bits< N >::least is the smallest (not necesarrily fast)
-// unsigned integer type that stores (at least) N bits.
-//
-// As both are unsigned they should be used for bit patterns, not for amounts.
-//
-// Note that both can be larger than requested, so they should not be used
-// for modulo arithmetic (at least not without masking out excess bits).
-//
-// Use ::fast for parameters, use ::least for array storage.
-//
-// =============================================================================
-//
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
@@ -30,6 +15,26 @@
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 // =============================================================================
+//
+// @title ints specified by number of bits
+// @name godafoss::uint_bits
+//
+// uint_bits< N >::fast is the smallest 'fast'
+// unsigned integer type that stores (at least) N bits.
+//
+// uint_bits< N >::least is the smallest (but not necesarrily fast)
+// unsigned integer type that stores (at least) N bits.
+//
+// As both are unsigned they should be used for bit patterns, not for amounts.
+//
+// Note that both can be larger than requested, so they should not be used
+// for modulo arithmetic (at least not without masking out excess bits).
+//
+// Use uint_bits< N >::fast for parameters,
+// use uint_bits< N >::least for array storage.
+//
+// =============================================================================
+
 
 // if no exact match, get something bigger
 template< uint64_t n > struct _uint_bits_fast {

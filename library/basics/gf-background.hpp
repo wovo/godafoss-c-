@@ -4,13 +4,28 @@
 //
 // =============================================================================
 //
-// background processing
+// This file is part of godafoss (https://github.com/wovo/godafoss),
+// a C++ library for close-to-the-hardware programming.
 //
-// This class implements run-to-completion style background processing.
+// Copyright
+//    Wouter van Ooijen 2019-2020
+//
+// Distributed under the Boost Software License, Version 1.0.
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// =============================================================================
+//
+// @title background processing
+// @name godafoss::background
+//
+// The background class implements run-to-completion style
+// background processing.
 //
 // A class that needs background processing must inherit from background
 // and implement the work function. This work function will be called
-// from the wait functions.
+// when plain wait functions (the ones that allow background processing)
+// are called.
 //
 // When an application contains background work,
 // all plain wait functions can take longer than the specified time,
@@ -24,17 +39,11 @@
 // This is not UB: the background destructor
 // removes itself from the list of background jobs.
 //
-// =============================================================================
+// When the application would terminate (exit from its main()),
+// background::run() can be called instead, which will serve
+// the background processing (it will never return).
 //
-// This file is part of godafoss (https://github.com/wovo/godafoss),
-// a C++ library for close-to-the-hardware programming.
-//
-// Copyright
-//    Wouter van Ooijen 2019-2020
-//
-// Distributed under the Boost Software License, Version 1.0.
-// (See the accompanying LICENSE_1_0.txt in the root directory of this
-// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+// @example background/main.cpp
 //
 // =============================================================================
 
