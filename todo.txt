@@ -1,3 +1,10 @@
+ init() with value -> all boxes must CRTP
+ init_as_input for input-output boxes??
+ struct everywhere
+ script that makes one giant include file
+ i2c::read_transaction + i2c:read_register( reg )
+ use std::byte
+
  test random op een cortex
  - string size should be int with max value
 

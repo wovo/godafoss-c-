@@ -28,21 +28,24 @@
 //
 // =============================================================================
 
-uint32_t _random_seed = 0;
+template< typename T = void >
+struct seed {
+   static inline uint32_t _random_seed = 0;
+};
 
 void random_seed( by_const< uint32_t > x ){
-   _random_seed = x;
+   seed<>::_random_seed = x;
 }
 
 uint32_t random16(){
-   _random_seed = _random_seed * 214013 + 2531011;
-    return ( _random_seed >> 8 ) & 0xFFFF;
+   seed<>::_random_seed = seed<>::_random_seed * 214013 + 2531011;
+   return ( seed<>::_random_seed >> 8 ) & 0xFFFF;
 }
 
 uint32_t random32(){
-    auto a = random16();
-    auto b = random16();
-    return ( a << 16 ) | b;
+   auto a = random16();
+   auto b = random16();
+   return ( a << 16 ) | b;
 }
 
 template< typename t >
