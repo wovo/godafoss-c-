@@ -5,7 +5,7 @@
 // =============================================================================
 //
 // This is a datatype for representing a date-and-time,
-// intended for use with a timekeeping chip or peripheral.
+// intended for use with timekeeping chips or peripherals.
 //
 // =============================================================================
 //
@@ -50,18 +50,20 @@ struct date_and_time {
 
 template< typename stream >
    requires requires( stream & s, char c, uint8_t v ){
-      { s << 'c' } -> std::same_as< stream & >;
-      { s << v   } -> std::same_as< stream & >;
-      // formatters
+      { s << x          } -> std::same_as< stream & >;
+      { s << v          } -> std::same_as< stream & >;
+      { s << setw( 2 )  } -> std::same_as< stream & >;
+      { s << right      } -> std::same_as< stream & >;
+      { s << dec        } -> std::same_as< stream & >;
    }
 stream & operator<<( stream & lhs, date_and_time dt ){
    return lhs
-      << setfill( '0' ) << setw( 2 ) << right
-      << dt.year  << '-'
-      << dt.month << '-'
-      << dt.day   << ' '
-      << dt.hours   << ':'
-      << dt.minutes << '.'
-      << dt.seconds << ' ' << 'd'
-      << dt.weekday;
+      << setfill( '0' ) << setw( 2 ) << right << dec
+      << dt.year     << '-'
+      << dt.month    << '-'
+      << dt.day      << ' '
+      << dt.hours    << ':'
+      << dt.minutes  << '.'
+      << dt.seconds  << ' '
+      << 'd' << dt.weekday;
 }

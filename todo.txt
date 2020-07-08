@@ -304,3 +304,12 @@ DHT11
 dallas (5V)
 I2C
 2 x joystick
+
+GCC 10 on Arch
+
+download https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-src.tar.bz2?revision=e2232c7c-4893-46b6-b791-356bdc29fd7f&la=en&hash=8E864863FA6E16582633DEABE590A7C010C8F750
+from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads
+unpack it to a build directory
+there: git clone git://gcc.gnu.org/git/gcc.git
+
+

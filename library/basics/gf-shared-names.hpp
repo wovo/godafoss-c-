@@ -85,7 +85,7 @@ struct NAME_2 {                                                 \
 
 // =============================================================================
 //
-// ahred names that other parts of the library can support
+// shared names that other parts of the library support
 //
 // =============================================================================
 
