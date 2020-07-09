@@ -17,7 +17,8 @@
 // =============================================================================
 //
 // @title background processing
-// @name godafoss::background
+//
+// @define godafoss::background
 //
 // The background class implements run-to-completion style
 // background processing.
@@ -47,8 +48,8 @@
 //
 // =============================================================================
 
-
-class background : public not_copyable {
+// @quote 1 background
+struct background : public not_copyable {
 private:
 
    static inline background * first = nullptr;
@@ -79,6 +80,7 @@ public:
    }
 
    // This function will be called to do background work for its object.
+   // @quote 1 background
    virtual void work() = 0;
 
    // This function is called by the wait functions to do background work.
@@ -116,4 +118,5 @@ public:
       }
    }
 
+// @quote 1 background
 };

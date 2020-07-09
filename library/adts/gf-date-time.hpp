@@ -4,11 +4,6 @@
 //
 // =============================================================================
 //
-// This is a datatype for representing a date-and-time,
-// intended for use with timekeeping chips or peripherals.
-//
-// =============================================================================
-//
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
@@ -24,7 +19,11 @@
 
 // =============================================================================
 //
-// date and time datatype
+// @title date and time
+// @define date_and_time
+//
+// This is a datatype for representing a date-and-time,
+// intended for use with timekeeping chips or peripherals.
 //
 // data_and_time fields:
 //    - seconds (0-59), minutes (0-59), hours (0-23)
@@ -35,6 +34,7 @@
 //
 // =============================================================================
 
+@quote 5 date_and_time
 struct date_and_time {
    uint8_t seconds, minutes, hours;
    uint8_t day, month, year;

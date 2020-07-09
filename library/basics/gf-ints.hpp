@@ -17,7 +17,8 @@
 // =============================================================================
 //
 // @title ints specified by number of bits
-// @name godafoss::uint_bits
+//
+// @define godafoss::uint_bits
 //
 // uint_bits< N >::fast is the smallest 'fast'
 // unsigned integer type that stores (at least) N bits.

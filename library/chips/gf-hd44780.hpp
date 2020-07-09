@@ -1,26 +1,27 @@
-// ==========================================================================
+// =============================================================================
 //
 // file : hwcpp-hd44780.hpp
 //
-// ==========================================================================
+// =============================================================================
 //
-// This file is part of HwCpp, 
+// This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2017
-// 
+// Copyright
+//    Wouter van Ooijen 2017-2020
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
+
 
 template< 
    pin_out_compatible   _rs,
    pin_out_compatible   _e,
    port_out_compatible  _port,
-   uint32_t             _size_x,
-   uint32_t             _size_y,
+   xy<>                 _size,
    typename             timing
 > struct _hd44780_rs_e_d_x_y_timing {
 private:	
@@ -33,8 +34,8 @@ private:
    
 public:   
    
-   static constexpr auto size = xy( _size_x, _size_y );     
-   static inline    xy cursor; 
+   static constexpr auto size = _size;     
+   static inline xy cursor; 
    
 private:
    
@@ -57,7 +58,7 @@ private:
       
       // minumum TcycE = 1000 ns - PW-EH
       // snark: must be enlarged to get things working??
-	   timing::template ns< 100L * 500 >::wait();
+      timing::template ns< 100L * 500 >::wait();
    }
 
    static void write8( bool is_data, uint_fast8_t d ){
@@ -65,8 +66,8 @@ private:
       write4( d >> 4 );
       write4( d );
       
-	  // enough for most instructions
-	  // if an instruction needs more, that is his responsibilitty
+      // enough for most instructions
+      // if an instruction needs more, that is his responsibilitty
       timing::template us< 100 >::wait();
    }      
            
@@ -89,14 +90,14 @@ public:
    static void goto_xy( xy<> target ){
 
       if( size.y == 1 ){
-		  
+
          // 1-line LCDs have a split after the 8'th char
          if( target.x < 8 ){
             command( 0x80 + target.x );
          } else {
             command( 0x80 + 0x40 + ( target.x - 8 ));
          }
-		 
+
       } else {
          if( size.y == 2 ){
             command( 
@@ -119,8 +120,8 @@ public:
              );              
          }
       }
-	  
-	  cursor = target;
+
+      cursor = target;
    }
    
    static bool GODAFOSS_INLINE write_blocks(){
@@ -138,11 +139,11 @@ public:
       }   
       
       data( chr );
-	  ++cursor.x;
+      ++cursor.x;
    }     
    
    static void init(){
-	  
+      
       // init the dependencies 
       rs::init();
       e:: init();
@@ -172,14 +173,42 @@ public:
    
 }; // class _hd44780_rs_e_d_x_y_timing_foundation
 
+
+// =============================================================================
+//
+// @title hd44780
+//
+// @define godafoss::hd44780_rs_e_d_s_timing
+//
+// @insert hd447s80_rs_e_d_s_timing
+//
+// This template implements a 
+// @ref terminal 
+// on an hd44780 character lcd.
+//
+// The rs, e and port must connect to the corresponding pins of the lcd.
+// The lcd is used in 4-bit mode, so the port must connect to the
+// d0..d3 of the lcd, the d4..d7 can be left unconnected.
+// Only writes to the lcd are used. 
+// The _r/w pin must be connected to ground.
+// 
+// The size of the lcd must be specified 
+// in characters in the x and y direction.
+// Common sizes are 16x1, 16x2, 20x2 and 20x4.
+//
+// The timing is used for the waits as required by the hd44780 datasheet.
+//
+// =============================================================================
+
+// @quote 8 hd44780_rs_e_d_s_timing
 template< 
    pin_out_compatible   rs,
    pin_out_compatible   e,
    port_out_compatible  port,
-   uint32_t             size_x,
-   uint32_t             size_y,
+   xy<>                 size,
    typename             timing
-> using hd44780_rs_e_d_x_y_timing = 
+> using hd44780_rs_e_d_s_timing = 
     terminal<
     _hd44780_rs_e_d_x_y_timing< 
-       rs, e, port, size_x, size_y, timing > >;
+       rs, e, port, size, timing > >;
+       

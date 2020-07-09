@@ -16,6 +16,7 @@
 # ==============================================================================
 
 # highlighter can't handle 1'000
+# show first appearance of defined word
 # in header code generalization like struct bla { ... };
 # example select part of the file
 # example link to example file
@@ -25,6 +26,13 @@
 # crosslinks
 # mark code in running text
 # ref to source code
+
+def sortedkeys( map ):
+   list = []
+   for key in map.keys():
+      list.append( key )
+   list.sort( key=str.casefold )
+   return list 
 
 def strip_leading_spaces( lines ):
    result = ""
@@ -104,7 +112,31 @@ class code:
       return self.s
 
    def html( self ):
-      return '<pre><code class="c++">' + self.s + "\n</code></pre>"
+      return '<pre><code class="c++">%s\n</code></pre>' % self.s
+
+class define:
+
+   def __init__( self, s ):
+      self.s = s
+
+   def markdown( self ):
+      return self.s
+
+   def html( self ):
+      return '<a name="%s"></a>' % self.s
+
+class colofon:
+
+   def __init__( self, item ):
+      self.item = item
+
+   def markdown( self ):
+      return self.item
+
+   def html( self ):
+      return 'from <A HREF="%s">%s</A><P>\n' % (
+         "../" + self.item.file_name, 
+         self.item.file_name.replace( "../", "" ) )
 
 
 
@@ -124,26 +156,35 @@ class item:
       self.title = None
       self.names = []
       self.content = []
+      self.defines = []
       line_number = self.line_number - 1
 
       for line in self.lines:
          line_number += 1
+         
          if line.startswith( "@title" ):
             self.content.append( title( after( line, "@title" )))
+            self.content.append( colofon( self ))
             self.title = after( line, "@title" )
+            
          elif line.startswith( "@example" ):
             t = read_file( "../examples/" + after( line, "@example" ))
             self.content.append( code( t ) )
-         elif line.startswith( "@name" ):
-            pass
+            
+         elif line.startswith( "@define" ):
+            t = after( line, "@define" ).replace( "godafoss::", "" )
+            self.defines.append( t )
+            self.content.append( define( t ))
+            
          elif not line.startswith( "@" ):
             self.content.append( text_line( line ))
+            
          else:
             error( file_name, line_number, "unknown @ '%s'" % line )
 
       if self.title == None:
          error( self.file_name, self.line_number, "missing @title" )
-
+         self.title = "<missing>"
 
    def markdown( self ):
       s = ""
@@ -202,12 +243,24 @@ class documentation:
       pass
 
    def html( self, dir = "html" ):
-      s = "<H2>Index</H2>\n"
       for item in self.items:
-         if item.title != None:
-            write_html( dir, item.title, item.html() )
-            s += "<LI><A HREF='%s'>%s</A>\n" % \
-               ( item.title + ".html", item.title )
+         write_html( dir, item.title, item.html() )
+         
+      s = "<H2>Pages</H2>\n"
+      for item in self.items:
+         s += "<LI><A HREF='%s'>%s</A>\n" % \
+            ( item.title + ".html", item.title )
+     
+      map = {}
+      for item in self.items:
+         for define in item.defines:         
+            map[ define ] = item
+        
+      s += "<H2>Index</H2>\n"
+      for d in sortedkeys( map ):
+         s += "<LI><A HREF='%s#%s'>%s</A>\n" % \
+            ( map[ d ].title + ".html", d, d )
+      
       write_html( dir, "index", s )
 
 
@@ -221,6 +274,7 @@ list = [
    "../basics/gf-background.hpp",
    "../basics/gf-ints.hpp",
    "../basics/gf-attributes.hpp",
+   "../chips/gf-hd44780.hpp",
    ]
 d = documentation( list )
 d.html()
