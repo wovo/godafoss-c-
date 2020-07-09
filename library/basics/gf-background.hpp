@@ -43,7 +43,7 @@
 // background::run() can be called instead, which will serve
 // the background processing (it will never return).
 //
-// @example background/main.cpp
+// @example native/background/main.cpp
 //
 // =============================================================================
 
