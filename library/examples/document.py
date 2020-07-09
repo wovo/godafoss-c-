@@ -220,6 +220,7 @@ class documentation:
 list = [
    "../basics/gf-background.hpp",
    "../basics/gf-ints.hpp",
+   "../basics/gf-attributes.hpp",
    ]
 d = documentation( list )
 d.html()
