@@ -23,6 +23,8 @@
 // The background class implements run-to-completion style
 // background processing.
 //
+// @insert
+//
 // A class that needs background processing must inherit from background
 // and implement the work function. This work function will be called
 // when plain wait functions (the ones that allow background processing)
@@ -48,7 +50,7 @@
 //
 // =============================================================================
 
-// @quote 1 background
+// @quote 1
 struct background : public not_copyable {
 private:
 
@@ -79,8 +81,8 @@ public:
       }
    }
 
+   // @quote 2
    // This function will be called to do background work for its object.
-   // @quote 1 background
    virtual void work() = 0;
 
    // This function is called by the wait functions to do background work.
@@ -118,5 +120,5 @@ public:
       }
    }
 
-// @quote 1 background
+// @quote 1
 };

@@ -1,13 +1,8 @@
-// ==========================================================================
+// =============================================================================
 //
 // gf-hx711.hpp
 //
-// ==========================================================================
-//
-// This is an interface to the HX711 24-bit analog-to-digital converter
-// (ADC) chip, intended to interface to a load cell (force sensor).
-//
-// ==========================================================================
+// =============================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
@@ -19,20 +14,50 @@
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
+//
+// @title hx711
+//
+// @define godafoss::hx711
+//
+// This template implements an interface to the
+// hx711 24-Bit Analog-to-Digital Converter (ADC).
+// This chip is intended to interface to a load cell (force sensor).
+//
+// @insert
+//
+// The chip interface consist of a master-to-slave clock pin (sck),
+// and a slave-to-master data pin (dout).
+//
+// The timing is used for the waits as required by the hx711 datasheet.
+//
+// The mode offers a choice between the A differential inputs with
+// a gain of 128 or 64, and the B inputs with a gain of 32.
+// The A inputs are meant to be used with a load cell.
+// The datasheet suggest that the B inputs could be used to monitior
+// the battery voltage.
+// The mode is set at the initialization (the defauylt is a_128),
+// and can be changed by the mode_set() function.
+//
+// The chip can be powered down. When a read is done the chip
+// is first (automatically) powered up.
+//
+// =============================================================================
 
+// @quote 6
 template<
    pin_out_compatible  _sck,
    pin_in_compatible   _dout,
    typename            timing
 >
-class hx711 {
+struct hx711 {
 public:
 
+   // @quote 5
    enum class mode {
-      a_128  = 1,
-      b_32   = 2,
-      a_64   = 3
+      a_128  = 1,  // A inputs, gain 128
+      b_32   = 2,  // B inputs, gain 32
+      a_64   = 3   // A inputs, gain 64
    };
 
 private:
@@ -80,6 +105,19 @@ private:
 
 public:
 
+   // @quote 1
+   static void init( mode m = mode::a_128 ){
+      current_mode = m;
+      powered_down = true;
+
+      sck::init();
+      dout::init();
+      timing::init();
+
+      sck::write( 1 );
+   }
+
+   // @quote 1
    static int32_t read(){
 
       // be sure the chip is active
@@ -95,20 +133,19 @@ public:
       return read_value();
    }
 
+   // @quote 1
    static void power_down(){
       sck::write( 1 );
       powered_down = true;
    }
 
-   static void init( mode m = mode::a_128 ){
+   // @quote 1
+   static void mode_set( mode m ){
       current_mode = m;
+
+      // force a dummy read that puts the chip in the new mode
       powered_down = true;
-
-      sck::init();
-      dout::init();
-      timing::init();
-
-      sck::write( 1 );
    }
 
+// @quote 1
 };

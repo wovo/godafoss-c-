@@ -32,7 +32,7 @@ def sortedkeys( map ):
    for key in map.keys():
       list.append( key )
    list.sort( key=str.casefold )
-   return list 
+   return list
 
 def strip_leading_spaces( lines ):
    result = ""
@@ -45,6 +45,12 @@ def strip_leading_comment( s, remove = [ "//" ] ):
    for prefix in remove:
       if s.startswith( prefix ):
          s = s[ len( prefix ) : ].strip()
+   return s
+
+def strip_end( s, remove ):
+   s = s[ : ]
+   while ( "x" + s )[ -1 ] in remove:
+      s = s[ : -1 ]
    return s
 
 def after( s, prefix ):
@@ -92,6 +98,31 @@ class text_line:
       if self.s == "": return "<P>"
       return self.s
 
+class text_ref:
+
+   def __init__( self, s ):
+      self.s = s
+
+   def markdown( self ):
+      return self.s
+
+   def html( self ):
+      if self.s == "": return "<P>"
+      return self.s
+
+
+class text_insert:
+
+   def __init__( self, s ):
+      if s.endswith( "{\n" ): s = s[ : -1 ] + " ... };\n"
+      self.s = strip_end( s, "\n " )
+
+   def markdown( self ):
+      return self.s
+
+   def html( self ):
+      return '<pre><code class="c++">%s\n</code></pre>' % self.s
+
 class title:
 
    def __init__( self, s ):
@@ -135,7 +166,7 @@ class colofon:
 
    def html( self ):
       return 'from <A HREF="%s">%s</A><P>\n' % (
-         "../" + self.item.file_name, 
+         "../" + self.item.file_name,
          self.item.file_name.replace( "../", "" ) )
 
 
@@ -148,7 +179,7 @@ class colofon:
 
 class item:
 
-   def __init__( self, file_name, line_number, lines ):
+   def __init__( self, file_name, line_number, lines, refs ):
       self.file_name = file_name
       self.line_number = line_number
       self.lines = lines
@@ -161,24 +192,34 @@ class item:
 
       for line in self.lines:
          line_number += 1
-         
+
          if line.startswith( "@title" ):
             self.content.append( title( after( line, "@title" )))
             self.content.append( colofon( self ))
             self.title = after( line, "@title" )
-            
+
          elif line.startswith( "@example" ):
             t = read_file( "../examples/" + after( line, "@example" ))
             self.content.append( code( t ) )
-            
+
          elif line.startswith( "@define" ):
             t = after( line, "@define" ).replace( "godafoss::", "" )
             self.defines.append( t )
             self.content.append( define( t ))
-            
+
+         elif line.startswith( "@insert" ):
+            t = after( line, "@insert" ).strip()
+            if not t in refs:
+               error( file_name, line_number, "uknown insert '%s'" % t )
+            self.content.append( text_insert( refs.get( t, "<>" )))
+
+         elif line.startswith( "@ref" ):
+            t = after( line, "@ref" )
+            self.content.append( text_ref( t ))
+
          elif not line.startswith( "@" ):
             self.content.append( text_line( line ))
-            
+
          else:
             error( file_name, line_number, "unknown @ '%s'" % line )
 
@@ -223,17 +264,51 @@ class documentation:
          self.read_file( file )
 
    def read_file( self, file_name ):
-      processing = 0
+
+      refs = {}
       line_number = 0
+      count = 0
+      for original_line in open( file_name ).readlines():
+         line_number += 1
+         line = strip_leading_comment( original_line )
+
+         if count > 0:
+            count -= 1
+            quote += original_line
+            if count == 0:
+               s = strip_end( quote, " " )
+               if s.endswith( "=\n" ): s = s[ : -1 ] + " ...\n"
+               if s.endswith( "){\n" ): s = s[ : -1 ] + " ... }\n"
+               if s.endswith( "\\\n" ): s = s[ : -2 ] + " ... \n"
+               refs[ name ] = refs.get( name, "" ) + s
+
+         elif line.startswith( "@quote" ):
+            a = after( line, "@quote" )
+            n = a.split( " " )[ 0 ]
+            name = a.replace( n, "", 1 ).strip()
+            if a.strip() in [ "...", None ]:
+               refs[ "" ] = refs.get( "", "" )[ : - 1 ]  + " " + a.strip() + " "
+            else:
+               try:
+                  count = int( n )
+               except:
+                  error( file_name, line_number,
+                     "@quote not followed by a number" )
+               quote = ""
+
+      processing = 0
       lines = []
+      line_number = 0
       for line in open( file_name ).readlines():
          line_number += 1
          line = strip_leading_comment( line )
-         if line.startswith( "@" ):
+         if line.startswith( "@quote" ):
+            pass
+         elif line.startswith( "@" ):
             processing = 1
          if line.startswith( "=========" ):
             if processing:
-               self.items.append( item( file_name, line_number, lines ) )
+               self.items.append( item( file_name, line_number, lines, refs ) )
                processing = 0
                lines = []
          if processing:
@@ -245,22 +320,22 @@ class documentation:
    def html( self, dir = "html" ):
       for item in self.items:
          write_html( dir, item.title, item.html() )
-         
+
       s = "<H2>Pages</H2>\n"
       for item in self.items:
          s += "<LI><A HREF='%s'>%s</A>\n" % \
             ( item.title + ".html", item.title )
-     
+
       map = {}
       for item in self.items:
-         for define in item.defines:         
+         for define in item.defines:
             map[ define ] = item
-        
+
       s += "<H2>Index</H2>\n"
       for d in sortedkeys( map ):
          s += "<LI><A HREF='%s#%s'>%s</A>\n" % \
             ( map[ d ].title + ".html", d, d )
-      
+
       write_html( dir, "index", s )
 
 
@@ -275,6 +350,7 @@ list = [
    "../basics/gf-ints.hpp",
    "../basics/gf-attributes.hpp",
    "../chips/gf-hd44780.hpp",
+   "../chips/gf-hx711.hpp",
    ]
 d = documentation( list )
 d.html()

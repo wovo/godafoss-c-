@@ -17,45 +17,45 @@
 // =============================================================================
 
 
-template< 
+template<
    pin_out_compatible   _rs,
    pin_out_compatible   _e,
    port_out_compatible  _port,
    xy<>                 _size,
    typename             timing
 > struct _hd44780_rs_e_d_x_y_timing {
-private:	
-	
+private:
+
    using rs      = pin_out_from< _rs >;
    using e       = pin_out_from< _e >;
-   using port    = port_out_from< _port >;  
-   
+   using port    = port_out_from< _port >;
+
    using xy_t    = uint_fast8_t;
-   
-public:   
-   
-   static constexpr auto size = _size;     
-   static inline xy cursor; 
-   
+
+public:
+
+   static constexpr auto size = _size;
+   static inline xy cursor;
+
 private:
-   
+
    static void write4( uint_fast8_t d ){
 
-      port::write( d );      
-      
+      port::write( d );
+
       // minimum tDBW
       timing::template ns< 200 >::wait();
-      
+
       e::write( 1 );
 
       port::flush();
       e::flush();
-      
+
       // minimum PW-EH
       timing::template ns< 500 >::wait();
-      
+
       direct< e >::write( 0 );
-      
+
       // minumum TcycE = 1000 ns - PW-EH
       // snark: must be enlarged to get things working??
       timing::template ns< 100L * 500 >::wait();
@@ -65,12 +65,12 @@ private:
       direct< rs >::write( is_data );
       write4( d >> 4 );
       write4( d );
-      
+
       // enough for most instructions
       // if an instruction needs more, that is his responsibilitty
       timing::template us< 100 >::wait();
-   }      
-           
+   }
+
 public:
 
    static void GODAFOSS_INLINE command( uint_fast8_t cmd ){
@@ -85,8 +85,8 @@ public:
       command( 0x01 );
       timing::template us< 5'000 >::wait();
       goto_xy( xy( 0, 0 ));
-   }   
-   
+   }
+
    static void goto_xy( xy<> target ){
 
       if( size.y == 1 ){
@@ -100,30 +100,30 @@ public:
 
       } else {
          if( size.y == 2 ){
-            command( 
+            command(
                0x80
-               + (( target.y > 0 ) 
-                  ? 0x40 
+               + (( target.y > 0 )
+                  ? 0x40
                   : 0x00 )
                + ( target.x )
             );
          } else {
-            command( 
+            command(
                0x80
                + (( target.y & 0x01 )
-                  ? 0x40 
+                  ? 0x40
                   : 0x00 )
                + (( target.y & 0x02 )
-                  ? 0x14 
+                  ? 0x14
                   : 0x00 )
                + ( target.x )
-             );              
+             );
          }
       }
 
       cursor = target;
    }
-   
+
    static bool GODAFOSS_INLINE write_blocks(){
       return false;
    }
@@ -136,19 +136,19 @@ public:
          if( cursor.x == 8 ){
             goto_xy( cursor );
          }
-      }   
-      
+      }
+
       data( chr );
       ++cursor.x;
-   }     
-   
+   }
+
    static void init(){
-      
-      // init the dependencies 
+
+      // init the dependencies
       rs::init();
       e:: init();
       port::init();
-      timing::init(); 
+      timing::init();
 
       // give LCD time to wake up
       direct< e >::write( 0 );
@@ -168,9 +168,9 @@ public:
       command( 0x28 );         // 4 bit mode, 2 lines, 5x8 font
       command( 0x0C );         // display on, no cursor, no blink
       clear();                 // clear display, 'cursor' home
-      goto_xy( xy( 0, 0 ) );   // 'cursor' home    
-   }    
-   
+      goto_xy( xy( 0, 0 ) );   // 'cursor' home
+   }
+
 }; // class _hd44780_rs_e_d_x_y_timing_foundation
 
 
@@ -180,19 +180,19 @@ public:
 //
 // @define godafoss::hd44780_rs_e_d_s_timing
 //
-// @insert hd447s80_rs_e_d_s_timing
+// @insert
 //
-// This template implements a 
-// @ref terminal 
+// This template implements a
+// @ref terminal
 // on an hd44780 character lcd.
 //
 // The rs, e and port must connect to the corresponding pins of the lcd.
 // The lcd is used in 4-bit mode, so the port must connect to the
 // d0..d3 of the lcd, the d4..d7 can be left unconnected.
-// Only writes to the lcd are used. 
+// Only writes to the lcd are used.
 // The _r/w pin must be connected to ground.
-// 
-// The size of the lcd must be specified 
+//
+// The size of the lcd must be specified
 // in characters in the x and y direction.
 // Common sizes are 16x1, 16x2, 20x2 and 20x4.
 //
@@ -200,15 +200,14 @@ public:
 //
 // =============================================================================
 
-// @quote 8 hd44780_rs_e_d_s_timing
-template< 
+// @quote 7
+template<
    pin_out_compatible   rs,
    pin_out_compatible   e,
    port_out_compatible  port,
    xy<>                 size,
    typename             timing
-> using hd44780_rs_e_d_s_timing = 
+> using hd44780_rs_e_d_s_timing =
     terminal<
-    _hd44780_rs_e_d_x_y_timing< 
+    _hd44780_rs_e_d_x_y_timing<
        rs, e, port, size, timing > >;
-       
