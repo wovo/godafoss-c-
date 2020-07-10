@@ -180,7 +180,7 @@ public:
 //
 // @define godafoss::hd44780_rs_e_d_s_timing
 //
-// @insert
+// @insert text
 //
 // This template implements a
 // @ref terminal
@@ -200,7 +200,7 @@ public:
 //
 // =============================================================================
 
-// @quote 7
+// @quote text 7
 template<
    pin_out_compatible   rs,
    pin_out_compatible   e,

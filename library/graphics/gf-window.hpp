@@ -1,14 +1,29 @@
-// ==========================================================================
+// =============================================================================
 //
-// File      : gf-window
-// Part of   : C++ hwlib library for close-to-the-hardware OO programming
-// Copyright : wouter@voti.nl 2017-2019
+// gf-window.hpp
+//
+// =============================================================================
+//
+// This file is part of godafoss (https://github.com/wovo/godafoss),
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright
+//    Wouter van Ooijen 2017-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
-// (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
+//
+// @title window
+//
+// @define window
+// @insert window
+// A window
+//
+// =============================================================================
+
 
 template< typename T >
 concept xy_compatible = true;

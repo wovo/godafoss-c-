@@ -24,7 +24,7 @@
 // hx711 24-Bit Analog-to-Digital Converter (ADC).
 // This chip is intended to interface to a load cell (force sensor).
 //
-// @insert
+// @insert text
 //
 // The chip interface consist of a master-to-slave clock pin (sck),
 // and a slave-to-master data pin (dout).
@@ -44,7 +44,7 @@
 //
 // =============================================================================
 
-// @quote 6
+// @quote text 6
 template<
    pin_out_compatible  _sck,
    pin_in_compatible   _dout,
@@ -53,7 +53,7 @@ template<
 struct hx711 {
 public:
 
-   // @quote 5
+   // @quote text 5
    enum class mode {
       a_128  = 1,  // A inputs, gain 128
       b_32   = 2,  // B inputs, gain 32
@@ -105,7 +105,7 @@ private:
 
 public:
 
-   // @quote 1
+   // @quote text 1
    static void init( mode m = mode::a_128 ){
       current_mode = m;
       powered_down = true;
@@ -117,7 +117,7 @@ public:
       sck::write( 1 );
    }
 
-   // @quote 1
+   // @quote text 1
    static int32_t read(){
 
       // be sure the chip is active
@@ -133,13 +133,13 @@ public:
       return read_value();
    }
 
-   // @quote 1
+   // @quote text 1
    static void power_down(){
       sck::write( 1 );
       powered_down = true;
    }
 
-   // @quote 1
+   // @quote text 1
    static void mode_set( mode m ){
       current_mode = m;
 
@@ -147,5 +147,5 @@ public:
       powered_down = true;
    }
 
-// @quote 1
+// @quote text 1
 };

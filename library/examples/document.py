@@ -23,9 +23,34 @@
 # set examples path
 # set html path
 # create markdown
+# create pdf -> fpdf
+# create rtf?
 # crosslinks
 # mark code in running text
 # ref to source code
+# a way to edit code while quoting, ... etc
+# multiple hpp files can contribute to the same page;
+#    in which order? with subheaders?
+# order of chapters??
+# check gf-attributes: should be between the code??
+# pdf title page has header and footer
+# pictures!
+
+# arch:
+#    sudo python -m ensurepip --upgrade
+#    sudo python -m pip install fpdf
+# https://www.blog.pythonlibrary.org/2018/06/05/creating-pdfs-with-pyfpdf-and-python/
+
+# pypdf2 // no
+
+# sudo python -m pip install restview
+# restview godafoss.rest &
+# sudo python -m pip install rst2pdf
+# rst2pdf mydocument.txt -o mydocument.pdf
+# https://docutils.sourceforge.io/docs/ref/rst/directives.html
+# http://rst2pdf.ralsina.me/handbook.html
+
+import os
 
 def sortedkeys( map ):
    list = []
@@ -79,6 +104,25 @@ def read_file( file_name ):
       s += line
    return s
 
+def indent( text, prefix = "   " ):
+   s = ""
+   for line in text.split( "\n" ):
+      s += prefix + line + "\n"
+   return s
+
+def rest_page_break( s = "oneColumn" ):
+   return "\n\n.. raw:: pdf\n\n    PageBreak %s\n\n" % s
+
+def run_rst2pdf( in_name, out_name ):
+   #try:
+   #   import rst2pdf
+   #except:
+   #   print( "install rst2pdf:\n   # sudo python -m pip install rst2pdf " )
+   #   return
+   #print( rstpdf.
+   #rst2pdf.createpdf.createPdf( input = in_name, output = out_name )
+   os.system( "rst2pdf %s -o %s " % ( in_name, out_name ) )
+
 
 # ==============================================================================
 #
@@ -94,9 +138,26 @@ class text_line:
    def markdown( self ):
       return self.s
 
+   def rest( self ):
+      return self.s
+
    def html( self ):
       if self.s == "": return "<P>"
       return self.s
+
+class text_bar:
+
+   def __init__( self ):
+      pass
+
+   def markdown( self ):
+      return "\n\n---------------------------------\n"
+
+   def rest( self ):
+     return "\n\n---------------------------------\n"
+
+   def html( self ):
+      return "\n\n<HR>\n"
 
 class text_ref:
 
@@ -106,22 +167,13 @@ class text_ref:
    def markdown( self ):
       return self.s
 
+   def rest( self ):
+      return self.s
+
    def html( self ):
       if self.s == "": return "<P>"
       return self.s
 
-
-class text_insert:
-
-   def __init__( self, s ):
-      if s.endswith( "{\n" ): s = s[ : -1 ] + " ... };\n"
-      self.s = strip_end( s, "\n " )
-
-   def markdown( self ):
-      return self.s
-
-   def html( self ):
-      return '<pre><code class="c++">%s\n</code></pre>' % self.s
 
 class title:
 
@@ -129,7 +181,14 @@ class title:
       self.s = s
 
    def markdown( self ):
-      return self.s
+      return self.s + "\n" + len( self.s ) * ""
+
+   def rest( self ):
+      t = self.s.replace( "\n", "" )
+      s = ""
+      s += rest_page_break()
+      s += t + "\n" + len( t ) * "=" + "\n"
+      return s
 
    def html( self ):
       return "<H2>%s</H2>" % self.s
@@ -142,8 +201,11 @@ class code:
    def markdown( self ):
       return self.s
 
+   def rest( self ):
+      return ":: \n\n" + indent( self.s, "  " )
+
    def html( self ):
-      return '<pre><code class="c++">%s\n</code></pre>' % self.s
+      return '<pre><code class="c++">%s</code></pre>' % self.s
 
 class define:
 
@@ -151,7 +213,10 @@ class define:
       self.s = s
 
    def markdown( self ):
-      return self.s
+       return "[>%s<]" % self.s
+
+   def rest( self ):
+      return "[>%s<]" % self.s
 
    def html( self ):
       return '<a name="%s"></a>' % self.s
@@ -162,7 +227,10 @@ class colofon:
       self.item = item
 
    def markdown( self ):
-      return self.item
+      return "from: " + self.item.file_name
+
+   def rest( self ):
+      return "from: " + self.item.file_name
 
    def html( self ):
       return 'from <A HREF="%s">%s</A><P>\n' % (
@@ -199,8 +267,25 @@ class item:
             self.title = after( line, "@title" )
 
          elif line.startswith( "@example" ):
-            t = read_file( "../examples/" + after( line, "@example" ))
-            self.content.append( code( t ) )
+            rest = after( line, "@example" ).split()
+            print( rest )
+            if len( rest ) != 2:
+               error( file_name, line_number, "example format error" )
+            else:
+               t = read_file( "../examples/" + rest[ 0 ] )
+               s = ""
+               use = 0
+               for line in t.split( "\n" ):
+                  if line.strip().startswith( "// @quote end" ):
+                     use = 0
+                  if use:
+                     s += line + "\n"
+                  if line.strip().startswith( "// @quote " + rest[ 1 ] ):
+                     use = 1
+               if( s == "" ):
+                  error( file_name, line_number,
+                     "example fragment '%s' not found" % rest[ 1 ] )
+               self.content.append( code( s ) )
 
          elif line.startswith( "@define" ):
             t = after( line, "@define" ).replace( "godafoss::", "" )
@@ -211,11 +296,14 @@ class item:
             t = after( line, "@insert" ).strip()
             if not t in refs:
                error( file_name, line_number, "uknown insert '%s'" % t )
-            self.content.append( text_insert( refs.get( t, "<>" )))
+            self.content.append( code( refs.get( t, "<>" )))
 
          elif line.startswith( "@ref" ):
             t = after( line, "@ref" )
             self.content.append( text_ref( t ))
+
+         elif line.startswith( "@bar" ):
+            self.content.append( text_bar())
 
          elif not line.startswith( "@" ):
             self.content.append( text_line( line ))
@@ -231,6 +319,12 @@ class item:
       s = ""
       for c in self.content:
          s += c.markdown() + "\n"
+      return s
+
+   def rest( self ):
+      s = ""
+      for c in self.content:
+         s += c.rest() + "\n"
       return s
 
    def html( self ):
@@ -280,21 +374,29 @@ class documentation:
                if s.endswith( "=\n" ): s = s[ : -1 ] + " ...\n"
                if s.endswith( "){\n" ): s = s[ : -1 ] + " ... }\n"
                if s.endswith( "\\\n" ): s = s[ : -2 ] + " ... \n"
+               s = s[ : -1 ] + extra + "\n"
                refs[ name ] = refs.get( name, "" ) + s
 
          elif line.startswith( "@quote" ):
-            a = after( line, "@quote" )
-            n = a.split( " " )[ 0 ]
-            name = a.replace( n, "", 1 ).strip()
-            if a.strip() in [ "...", None ]:
-               refs[ "" ] = refs.get( "", "" )[ : - 1 ]  + " " + a.strip() + " "
+            split = after( line, "@quote" ).split( " " )
+            if len( split ) < 2:
+               error( file_name, line_number,
+                  "@quote not followed by at least two elements" )
             else:
+               name = split[ 0 ]
                try:
-                  count = int( n )
+                  count = int( split[ 1 ] )
                except:
                   error( file_name, line_number,
-                     "@quote not followed by a number" )
+                     "@quote invalid count" )
                quote = ""
+               extra = ""
+               if len( split ) > 2:
+                  extra = " " + split[ 2 ]
+
+            #if a.strip() in [ "...", None ]:
+            #   refs[ "" ] = refs.get( "", "" )[ : - 1 ]  + " " + a.strip() + " "
+
 
       processing = 0
       lines = []
@@ -338,6 +440,25 @@ class documentation:
 
       write_html( dir, "index", s )
 
+   def rest( self, file_name = "godafoss.rest" ):
+      s = ""
+      s += rest_page_break( "coverPage" )
+      s += "==================\n"
+      s += "Godafoss reference\n"
+      s += "==================\n"
+      s += rest_page_break()
+
+      s += ".. header:: Godafoss reference\n\n"
+      s += ".. contents::\n\n"
+      s += ".. footer:: page ###Page###\n\n"
+      s += ".. sectnum::\n\n"
+
+      for item in self.items:
+         s += item.rest()
+
+      write_file( file_name, s )
+      run_rst2pdf( file_name, "gf.pdf" )
+
 
 # ==============================================================================
 #
@@ -346,6 +467,8 @@ class documentation:
 # ==============================================================================
 
 list = [
+   "../basics/gf-passing.hpp",
+   "../basics/gf-random.hpp",
    "../basics/gf-background.hpp",
    "../basics/gf-ints.hpp",
    "../basics/gf-attributes.hpp",
@@ -354,3 +477,4 @@ list = [
    ]
 d = documentation( list )
 d.html()
+d.rest()

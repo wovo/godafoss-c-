@@ -4,12 +4,6 @@
 //
 // =============================================================================
 //
-// by_const< T > : best way (copy or reference,
-// epending on the sizeof T compared to a reference)
-// to pass a const value of type T
-//
-// =============================================================================
-//
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
@@ -21,21 +15,36 @@
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 // =============================================================================
+//
+// @title passing a readonly parameter
+//
+// @insert by_const
+// @define godafoss::by_const
+//
+// The by_const< type > template is the preferred way to pass a
+// const value of the type passed_type.
+// This will be either a plain (by copy) const, or a const reference,
+// depending (among other things) on the size of the type compared
+// to a the size of a reference.
+//
+// @example native/passing/main.cpp text
+//
+// =============================================================================
 
 
 // default: pass by reference
 template< typename T >
 struct _by_const { using type = const T &; };
 
-#ifdef __x86_64__
+#ifdef x86_64__
 constexpr auto _max_by_value = 2;
 #endif
 
-#ifdef __thumb__
+#ifdef thumb__
 constexpr auto _max_by_value = 1;
 #endif
 
-#ifdef __AVR_ARCH__
+#ifdef AVR_ARCH__
 constexpr auto _max_by_value = 1;
 #endif
 
@@ -53,6 +62,8 @@ struct _by_const< T > { using type = const T; };
 
 // =============================================================================
 
-// interface: use by_const< T > when passing a T
-template< typename T >
-using by_const = _by_const< T >::type;
+// @quote by_const 3
+// use by_const< T > when passing a T
+template< typename passed_type >
+using by_const =
+   _by_const< passed_type >::type;

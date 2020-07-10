@@ -1,15 +1,8 @@
-// ==========================================================================
+// =============================================================================
 //
 // gf-xy.hpp
 //
-// ==========================================================================
-//
-// The xy< T > ADT is a pair of two T values named x and y.
-// It is used for distances in an xy plane, like on a window or terminal.
-//
-// The xy< torsor< T > > is used to identify a location on an xy plane.
-//
-// ==========================================================================
+// =============================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
@@ -21,7 +14,18 @@
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
+//
+// @title xy
+//
+// @define xy
+// @insert xy
+// The xy< T > ADT class template is a pair of two T values named x and y.
+// It is used for distances in an xy plane, like on a window or terminal.
+//
+// The xy< torsor< T > > is used to identify a location on an xy plane.
+//
+// =============================================================================
 
 
 // ==========================================================================

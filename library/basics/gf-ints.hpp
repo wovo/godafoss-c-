@@ -19,7 +19,7 @@
 // @title ints specified by number of bits
 //
 // @define godafoss::uint_bits
-// @insert
+// @insert text
 //
 // uint_bits< N >::fast is the smallest 'fast'
 // unsigned integer type that stores (at least) N bits.
@@ -32,8 +32,8 @@
 // Note that both can be larger than requested, so they should not be used
 // for modulo arithmetic (at least not without masking out excess bits).
 //
-// Use uint_bits< N >::fast for parameters,
-// use uint_bits< N >::least for array storage.
+// Use uint_bits< N >::fast for variables and parameters,
+// use uint_bits< N >::least for arrays.
 //
 // =============================================================================
 
@@ -48,7 +48,7 @@ template< uint64_t n > struct _uint_bits_least {
    typedef typename _uint_bits_least< n + 1 >::type type;
 };
 
-// @quote 1
+// @quote text 1
 template< uint64_t n > struct uint_bits {
 
    // nothing bigger available than uint_fast64_t
@@ -57,20 +57,19 @@ template< uint64_t n > struct uint_bits {
       "no unsigned integer type is large enough"
    );
 
-   // @quote 1
+   // @quote text 1 ...
    typedef typename
       _uint_bits_fast< n >::type
-   // @quote ...
-   // @quote 1
+   // @quote text 1
       fast;
-   // @quote 1
+
+   // @quote text 1 ...
    typedef typename
        _uint_bits_least< n >::type
-   // @quote ...
-   // @quote 1
+   // @quote text 1
       least;
 
-   // @quote 1
+   // @quote text 1
 };
 
 

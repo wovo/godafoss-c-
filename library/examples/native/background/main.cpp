@@ -13,6 +13,7 @@
 //
 // =============================================================================
 
+// @quote text
 #include "godafoss.hpp"
 namespace gf  = godafoss;
 
@@ -46,3 +47,4 @@ int main(){
    }
 
 };
+// @quote end
