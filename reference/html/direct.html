@@ -1,0 +1,37 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="direct"></a>
+<H2>direct</H2>
+
+
+
+<HR>
+
+<P>
+The direct<> decorator accepts an <A HREF=item.html#item>item</A> and decorates it by
+inserting the appropriate refresh or flush
+before or after each read, write, or direction change operation,
+and replacing the refresh and flush operations by empty functions.
+<P>
+The effect is that such a decorated <A HREF=item.html#item>item</A> can be used without
+refresh or flush calls.
+<P>
+<A HREF="../../library/item/gf-item-direct.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_direct = requires {
+   item< T >;
+};
+</code></pre></A>
+<A HREF="../../library/item/gf-item-direct.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+   requires can_direct< T >
+struct direct< T > : ... ;
+</code></pre></A>
+<P>
+
+</body>

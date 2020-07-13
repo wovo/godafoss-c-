@@ -63,7 +63,7 @@ HEADERS           += adts/gf-fraction.hpp
 HEADERS           += adts/gf-subrange.hpp
 HEADERS           += adts/gf-xy.hpp
 HEADERS           += adts/gf-color.hpp
-HEADERS           += adts/gf-date-time.hpp
+HEADERS           += adts/gf-date-and-time.hpp
 
 HEADERS           += pins/gf-pin.hpp
 HEADERS           += pins/gf-pin-adapters.hpp
@@ -94,6 +94,7 @@ HEADERS           += graphics/gf-window-demos.hpp
 
 HEADERS           += protocols/gf-i2c.hpp
 HEADERS           += protocols/gf-spi.hpp
+HEADERS           += protocols/gf-mememory.hpp
 
 HEADERS           += chips/gf-servo.hpp
 HEADERS           += chips/gf-hd44780.hpp

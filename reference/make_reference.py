@@ -15,15 +15,19 @@
 #
 # ==============================================================================
 
-# s_inherit_read why s_ ?
+# make the files external references in the pdf?
+# italic for things defined on this page?
+# eeprom has multi-byte address!
+# add check and example for date_and_time
+# add license to html and rest
+# move concepts elsewehere? At least for operaror<<?
+# doc as a whole is CC BY-ND-SA (due to the images)
 # continue with xy<>
 # comments must be CC-BY-SA in the sources??
 # images must be CC-BY-SA or 'better'
 # need reandom demos for both BW and color (demo/due/oled now disabled)
 # arch seems to require the reset (sometimes)
 # global functions...
-# loop for multiple defines in one line
-# eeprom abstraction (single byte, full page)
 # separate directroy for peripheral boards?
 # all<> is now for pins, but can it be fore more types and preserve the type?
 # pin::all needs no_inline?
@@ -44,7 +48,6 @@
 # check gf-attributes: should be betweitemen the code??
 # pdf title page has header and footer
 # pictures! HD44780,
-# date-and-time has operator<<
 # this is a reference, so sort pages in rest/pdf alphabetically
 # US size pdf
 # run-once has excess spaces
@@ -152,33 +155,52 @@ class text_line:
       self.item = item
       self.defines = defines
 
+   def insert_references( self, s, replacement ):
+      for name, item in self.defines:
+         if item != self.item:
+            start = 0
+            p = s.find( name, start )
+            # print( name, start, p, s )
+            while p >= 0:
+               if (
+                  ((s + " ")[ p + len( name ) ] in " ({<:,.'s" )
+                  and ((" " + s )[ p ] in " " )
+               ):
+                  long_name = name[:]
+                  for extra in [ "<>", "()", "s" ]:
+                     if s[ p + len( long_name ) : ].startswith( extra ):
+                        long_name += extra
+                  s0 = s[ : p ] + replacement( item.title, name, long_name )
+                  start = len( s0 )
+                  s = s0 + s[ p + len( long_name ) : ]
+               else:
+                  start = p + 1
+               p = s.find( name, start )
+      return s
+
+
    def markdown( self ):
-      return self.s
+      s = self.s
+      s = self.insert_references( s, lambda title, name, long_name :
+         '%s_' %
+            ( name ) )
+      return s
 
    def rest( self ):
-      return self.s
+      s = self.s
+      s = self.insert_references( s, lambda title, name, long_name :
+         '%s_' %
+            ( name ) )
+      return s
 
    def html( self ):
       s = self.s
       if s == "": return "<P>"
       if s.strip().startswith( "-" ):
          s = s.replace( "-", "<LI>", 1 )
-      for name, item in self.defines:
-         p = s.find( name )
-         if (
-            ( p >= 0 )
-            and ( item != self.item )
-            and ((s + " ")[ p + len( name ) ] in " ({<:," )
-            and ((" " + s )[ p ] in " " )
-         ):
-            long_name = name[:]
-            for extra in [ "<>", "()" ]:
-               if s[ p + len( long_name ) : ].startswith( extra ):
-                  long_name += extra
-            s = (
-               s[ : p ] +
-               '<A HREF=%s.html#%s>%s</A>' % ( make_file_name( item.title ), name, long_name ) +
-               s[ p + len( long_name ) : ] )
+      s = self.insert_references( s, lambda title, name, long_name :
+         '<A HREF=%s.html#%s>%s</A>' %
+            ( make_file_name( title ), name, long_name ) )
       return s
 
 class text_bar:
@@ -274,7 +296,7 @@ class define:
        return "[>%s<]" % self.s
 
    def rest( self ):
-      return "[>%s<]" % self.s
+      return "\n.. _%s:\n" % self.s
 
    def html( self ):
       return '<a name="%s"></a>' % self.s
@@ -477,12 +499,20 @@ class documentation:
                processing = 0
                lines = []
          if processing:
-            lines.append( line )
+            if not line.strip().startswith( "---------" ):
+               lines.append( line )
+
+      self.items.sort( key = lambda item: item.title)
 
    def markdown( self ):
       pass
 
    def html( self, dir = "html" ):
+      try:
+         os.mkdir( "html" )
+      except:
+         pass
+
       for item in self.items:
          write_html( dir, make_file_name( item.title ), item.html() )
 

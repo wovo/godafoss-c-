@@ -1,0 +1,136 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="xy"></a>
+<H2>xy<></H2>
+
+
+
+<HR>
+
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">template<
+   typename xy_value_type = int64_t,
+   xy_value_type zero = 0 >
+struct xy final { ... };
+</code></pre></A>
+<P>
+The xy< xy_value_type > ADT class template is a pair of t
+wo xy_value_type values named x and y.
+It is used for distances in an xy plane, like on a window or terminal.
+For a location in an xy plane the torsor< xy< T > > is used.
+<P>
+The xy<> ADT supports
+<LI> constructors: default (initializes to zero),
+from x and y values, copy (from another xy<>)
+<LI> <A HREF=direct.html#direct>direct</A> acces to the x and y values
+<LI> an origin (zero) constant
+<LI> operators on two xy<>'s: - + == !=
+<LI> operators on an xy<> and a scalar: * /
+<P>
+
+
+<HR>
+
+<H3>attributes</H3>
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   using value_t = xy_value_type;
+   value_t x, y;
+</code></pre></A>
+The x and y values are freely acessible.
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   static constexpr auto origin = xy{};
+</code></pre></A>
+<P>
+The origin is the (0,0) value.
+<P>
+
+
+<HR>
+
+<H3>methods</H3>
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr xy():x{ zero }, y{ zero }{}
+</code></pre></A>
+<P>
+The default constructor intializes a and y to the zero value.
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr xy( value_t x, value_t y ): x{ x }, y{ y }{}
+</code></pre></A>
+<P>
+The two-value constructor initializes the x and y from the supplied values.
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename X >
+   constexpr xy( const xy< X > & rhs ): x( rhs.x ), y( rhs.y ) {}
+</code></pre></A>
+<P>
+An xy<> object can be constructed from an xy with the same or
+a different value type.
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+//      requires requires( V b ){ { x + b }; }   - GCC 10.0.1 ICE segfault
+      requires requires( xy_value_type x, V b ){ { x + b }; } ... }
+</code></pre></A>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+      requires requires( xy_value_type x, V b ){ { x - b }; }
+   constexpr auto operator-( const xy< V > rhs ) const { ... }
+</code></pre></A>
+<P>
+Two xy<> values can be added to or subtracted provided that
+their xy_value_types can be added or subtracted.
+The resulting xy<> gets the xy_value_type of that addition
+or subtraction.
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr xy operator*( const value_t rhs ) const { ... }
+   constexpr xy operator/( const value_t rhs ) const { ... }
+</code></pre></A>
+<P>
+An xy<> can be multiplied or divided by a value, provided
+an xy_value_can be constructed from it.
+The result is an xy<> value of the same xy<>_value_type.
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+      requires requires( xy_value_type lhs, V b ){
+         { lhs.x == b } -> std::same_as< bool >; }
+   constexpr bool operator==( const xy< V > & rhs ) const { ... }
+</code></pre></A>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+      requires requires( xy_value_type lhs, V b ){
+         { lhs.x == b } -> std::same_as< bool >; }
+   constexpr bool operator!=( const xy & rhs ) const { ... }
+</code></pre></A>
+<P>
+An xy<> can be compared to another xy<> for equality or inequality,
+provided that their xy_value_types can be compared.
+<P>
+
+
+<HR>
+
+<H3>non-member functions</H3>
+<P>
+<A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename stream, typename value >
+   requires requires( stream & s, char c, value v ){
+      { s << 'c' } -> std::same_as< stream & >;
+      { s << v   } -> std::same_as< stream & >;
+   }
+</code></pre></A>
+<P>
+
+</body>

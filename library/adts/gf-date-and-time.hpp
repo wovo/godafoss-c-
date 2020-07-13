@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// gf-date-time.hpp
+// gf-date-and-time.hpp
 //
 // =============================================================================
 //
@@ -21,19 +21,22 @@
 //
 // @title date and time
 // @define godafoss::date_and_time
-// @insert text
+//
+// @insert struct
 //
 // This is a datatype for representing a date-and-time,
 // intended for use with timekeeping chips or peripherals.
 //
 // @section attributes
 //
+// @insert attributes
+//
 // The atributes of data_and_time are:
 //    - seconds (0-59), minutes (0-59), hours (0-23)
 //    - day (1..28/29/30/31), month (1-12), year (0-99)
 //    - weekday (1..7)
 //
-// When the weekday is not known (some chips don't have it), it is set to 0.
+// Fields that are unknow (some chips don't have a weekday ) are set to 0.
 //
 // @section non-member functions
 //
@@ -43,8 +46,10 @@
 //
 // =============================================================================
 
-// @quote text 5
+// @quote struct 1 ... };
 struct date_and_time {
+
+   // @quote attributes 3
    uint8_t seconds, minutes, hours;
    uint8_t day, month, year;
    uint8_t weekday;

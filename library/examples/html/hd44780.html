@@ -1,0 +1,40 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>hd44780</H2>
+from <A HREF="../../chips/gf-hd44780.hpp">chips/gf-hd44780.hpp</A><P>
+
+<P>
+<a name="hd44780_rs_e_d_s_timing"></a>
+<P>
+<pre><code class="c++">template<
+   pin_out_compatible   rs,
+   pin_out_compatible   e,
+   port_out_compatible  port,
+   xy<>                 size,
+   typename             timing
+> using hd44780_rs_e_d_s_timing = ...
+</code></pre>
+<P>
+This template implements a
+terminal
+on an hd44780 character lcd.
+<P>
+The rs, e and port must connect to the corresponding pins of the lcd.
+The lcd is used in 4-bit mode, so the port must connect to the
+d0..d3 of the lcd, the d4..d7 can be left unconnected.
+Only writes to the lcd are used.
+The _r/w pin must be connected to ground.
+<P>
+The size of the lcd must be specified
+in characters in the x and y direction.
+Common sizes are 16x1, 16x2, 20x2 and 20x4.
+<P>
+The timing is used for the waits as required by the hd44780 datasheet.
+<P>
+
+</body>

@@ -1,0 +1,70 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>item adapters</H2>
+
+
+
+<HR>
+
+<P>
+These adapter adapts a <A HREF=item.html#item>item</A> to be (only) an <A HREF=input--output.html#input>input</A> <A HREF=item.html#item>item</A>,
+(only) an <A HREF=input--output.html#output>output</A> <A HREF=item.html#item>item</A>,
+or an <A HREF=input--output.html#input_output>input_output</A> <A HREF=item.html#item>item</A> (if such adaption is possible).
+<P>
+<a name="item_input"></a>
+
+
+<HR>
+
+<H3>item_input</H3>
+<P>
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_input =
+      input< T >
+   || input_output< T >;
+</code></pre></A>
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_input T >
+struct item_input ... ;
+</code></pre></A>
+<P>
+The item_input<> decorator decorates an <A HREF=item.html#item>item</A> to be an <A HREF=input--output.html#input>input</A> <A HREF=item.html#item>item</A>,
+which is possible if the <A HREF=item.html#item>item</A> satisfies the can_input concept.
+<P>
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_output =
+      output< T >
+   || input_output< T >;
+</code></pre></A>
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_output T >
+struct item_output ... ;
+</code></pre></A>
+<P>
+The item_output<> decorator decorates an <A HREF=item.html#item>item</A> to be an <A HREF=input--output.html#output>output</A> <A HREF=item.html#item>item</A>,
+which is possible if the <A HREF=item.html#item>item</A> satisfies the can_output concept.
+<P>
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_input_output =
+     input_output< T >;
+
+</code></pre></A>
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< input_output T >
+struct item_input_output ... ;
+</code></pre></A>
+<P>
+The item_input_output<> decorator decorates
+an <A HREF=item.html#item>item</A> to be an <A HREF=input--output.html#input_output>input_output</A> <A HREF=item.html#item>item</A>,
+which is possible if the <A HREF=item.html#item>item</A> satisfies the can_input_output concept.
+<P>
+
+</body>

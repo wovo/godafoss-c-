@@ -1,0 +1,179 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="input"></a>
+<a name="output"></a>
+<a name="input_output"></a>
+<a name="duplex"></a>
+<a name="simplex"></a>
+<H2>input, output</H2>
+
+
+
+<HR>
+
+<P>
+An <A HREF=item.html#item>item</A> can be an input (from which you can read) and/or an output
+(to which you can write).
+<P>
+An input or output <A HREF=item.html#item>item</A> can be <A HREF=buffered.html#buffered>buffered</A>.
+For an output, this means that the effect of write operations
+can be postponed until the next flush call.
+For an input, this means that a read operation reflects
+the situation immediately before that last refresh call, or later.
+For immediate effect on a <A HREF=buffered.html#buffered>buffered</A> <A HREF=item.html#item>item</A>, a read must be preceded
+by a refresh, and a write must be followed by a flush.
+<P>
+The <A HREF=direct.html#direct>direct<></A> decorator creates an <A HREF=item.html#item>item</A> for which the
+read() and write() operations have <A HREF=direct.html#direct>direct</A> effect.
+<P>
+An <A HREF=item.html#item>item</A> can be an input, an output, or both.
+When it is an input you can read from it,
+when it is an output you can write to it.
+(In theory an <A HREF=item.html#item>item</A> could be neither,
+but that would not be very useful.)
+<P>
+When an <A HREF=item.html#item>item</A> is both input and output it can be simplex
+(sometimes call half-duplex) or duplex.
+A duplex <A HREF=box--pipe.html#box>box</A> can, at any time, be both read and written.
+<P>
+
+
+<HR>
+
+<H3>input</H3>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept input = requires {
+   item< T >;
+   T::_input_marker;
+   { T::refresh() }  -> std::same_as< void >;
+   { T::read() }     -> std::same_as< typename T::value_type >;
+};
+</code></pre></A>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct input_root :
+   item_root< T >
+{
+   static const bool _input_marker = true;
+};
+</code></pre></A>
+<P>
+A input is an <A HREF=item.html#item>item</A> that provides a read function that returns
+a value of the value_type of the <A HREF=item.html#item>item</A>.
+<P>
+
+
+<HR>
+
+<H3>output</H3>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept output = requires (
+   typename T::value_type v
+){
+   item< T >;
+   T::_output_marker;
+   { T::write( v ) }  -> std::same_as< void >;
+</code></pre></A>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct output_root :
+   item_root< T >
+{
+   static const bool _output_marker = true;
+};
+</code></pre></A>
+<P>
+An output is an <A HREF=item.html#item>item</A> that provides a write function that accepts
+a value of the value_type of the <A HREF=item.html#item>item</A>.
+<P>
+
+
+<HR>
+
+<H3>input_output</H3>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept input_output = requires {
+   input< T >;
+   output< T >;
+};
+</code></pre></A>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct input_output_root :
+   input_root< T >,
+   output_root< T >
+{};
+</code></pre></A>
+<P>
+An input_output is an <A HREF=item.html#item>item</A> that is both an input and an output.
+<P>
+
+
+<HR>
+
+<H3>direction</H3>
+<P>
+A duplex <A HREF=item.html#item>item</A> is an input_output that can function both as
+an input and as an output at the same time.
+<P>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept duplex = requires {
+   input_output< T >;
+   T::_duplex_marker;
+};
+</code></pre></A>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct duplex_root :
+   input_output_root< T >
+{
+   static const bool _duplex_marker = true;
+};
+</code></pre></A>
+<P>
+A simplex <A HREF=item.html#item>item</A> is an input_output that has a current direction,
+which can be input or output.
+<P>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept simplex = requires {
+   input_output< T >;
+   T::_simplex_marker;
+   { T::direction_set_input() }   -> std::same_as< void >;
+   { T::direction_set_output() }  -> std::same_as< void >;
+   { T::direction_flush() }       -> std::same_as< void >;
+};
+</code></pre></A>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct simplex_root :
+   input_output_root< T >
+{
+   static const bool _simplex_marker = true;
+};
+</code></pre></A>
+<P>
+The direction of a simplex <A HREF=item.html#item>item</A> can be changed
+with a direction_set_input or direction_set_output call.
+For a successful read, the direction of a simplex <A HREF=box--pipe.html#box>box</A> must be input.
+For a successful write, the direction of a simplex <A HREF=box--pipe.html#box>box</A> must be output.
+Otherwise a write can have no effect at all, or have a delayed effect,
+and a read returns an unspecified value, and for a stream it can either
+consume the value or not.
+<P>
+The effect of calling a direction_set... function can be delayed
+up to the next direction_flush() call.
+Like for read() and write(), <A HREF=direct.html#direct>direct<></A> can be used
+to get an immediate effect.
+<P>
+
+</body>

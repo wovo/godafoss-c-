@@ -1,0 +1,53 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>hx711</H2>
+from <A HREF="../../chips/gf-hx711.hpp">chips/gf-hx711.hpp</A><P>
+
+<P>
+<a name="hx711"></a>
+<P>
+This template implements an interface to the
+hx711 24-Bit Analog-to-Digital Converter (ADC).
+This chip is intended to interface to a load cell (force sensor).
+<P>
+<pre><code class="c++">template<
+   pin_out_compatible  _sck,
+   pin_in_compatible   _dout,
+   typename            timing
+>
+struct hx711 {
+   enum class mode {
+      a_128  = 1,  // A inputs, gain 128
+      b_32   = 2,  // B inputs, gain 32
+      a_64   = 3   // A inputs, gain 64
+   };
+   static void init( mode m = mode::a_128 ){ ... }
+   static int32_t read(){ ... }
+   static void power_down(){ ... }
+   static void mode_set( mode m ){ ... }
+};
+</code></pre>
+<P>
+The chip interface consist of a master-to-slave clock pin (sck),
+and a slave-to-master data pin (dout).
+<P>
+The timing is used for the waits as required by the hx711 datasheet.
+<P>
+The mode offers a choice between the A differential inputs with
+a gain of 128 or 64, and the B inputs with a gain of 32.
+The A inputs are meant to be used with a load cell.
+The datasheet suggest that the B inputs could be used to monitior
+the battery voltage.
+The mode is set at the initialization (the defauylt is a_128),
+and can be changed by the mode_set() function.
+<P>
+The chip can be powered down. When a read is done the chip
+is first (automatically) powered up.
+<P>
+
+</body>

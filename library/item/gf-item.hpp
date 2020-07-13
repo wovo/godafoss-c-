@@ -150,8 +150,8 @@ struct item_root< bool > : cto_root {
 //
 // @section box
 //
-// An box is an item that has or contains (at any point in time) a single value.
-// An box has value semantics:
+// A box is an item that has or contains (at any point in time) a single value.
+// A box has value semantics:
 // when you read from a box twice in rapid succession,
 // you will get the same value.
 // Writing to an item overwrites its old value in the box.

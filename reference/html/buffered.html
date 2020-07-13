@@ -1,0 +1,33 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="buffered"></a>
+<H2>buffered</H2>
+
+
+
+<HR>
+
+<P>
+The buffered<> decorator buffers read, write or direction operations,
+necessitating appropriate refresh or flush calls.
+<P>
+<A HREF="../../library/item/gf-item-buffered.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_buffered = requires {
+   item< T >;
+};
+</code></pre></A>
+<A HREF="../../library/item/gf-item-buffered.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_buffered T >
+struct buffered
+:
+   _buffered_read< ... ;
+</code></pre></A>
+<P>
+
+</body>
