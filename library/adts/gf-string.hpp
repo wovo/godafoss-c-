@@ -4,10 +4,6 @@
 //
 // =============================================================================
 //
-// a fixed-maximum-size string
-//
-// =============================================================================
-//
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
@@ -17,6 +13,48 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// =============================================================================
+//
+// @title string
+// @define godafoss::string
+// @insert text
+//
+// This is a fixed-maximum-size string.
+// It offers an alternative to std::string and raw 0-terminated char arrays.
+// It doesn't use the heap, and doesn't cause Undefined Behaviour with
+// buffer overflows or out-of-bounds indexes.
+//
+// The functions that extend the string by appending characters do so
+// up to the maximum length of the string. Appending characters beyond
+// this maximum length has no effect: the excess characters are ignored.
+//
+// The functions that access a character at an index (a position within
+// the stored string) do so only when the index is valid. When the index
+// is invalid, an undefined character (or a reference to an undefined
+// character) is returned.
+//
+// @section attributes
+//
+// @insert size
+// The maxmimum_length is the maxiumum number of character that can be
+// stored by the string.
+//
+// @bar
+// @insert length
+// The member function length() returns number of characters
+// that are currently stored.
+//
+// @bar
+// @insert valid_index
+// The member function valid_index( n ) returns whether n is a valid index
+// into the curretly stored string of characters.
+//
+// @bar
+// @insert append
+// The append function, the operator+= and the operator<< all append a
+// single character to the string. If the string is already at its maximum
+// length the character is ignored.
 //
 // =============================================================================
 
@@ -84,11 +122,13 @@ public:
 //
 // =============================================================================
 
+// @quote text 2 ... }
 template< std::size_t _maximum_length >
-class string {
+struct string {
 
 public:
 
+   // @quote size 2
    using size_t = std::size_t;
    static constexpr size_t maximum_length = _maximum_length;
 
@@ -114,12 +154,12 @@ public:
    // special value for beyond-end or not-found
    static const size_t nsize = 0xFFFF;
 
-   // the number of characters that are currently stored
+   // @quote length 1 ... }
    constexpr size_t length() const {
       return current_length;
    }
 
-   // Return whether n is a valid index.
+   // @quote valid_index 1 ... }
    constexpr bool valid_index( const size_t n ) const {
       return( n < maximum_length );
    }
@@ -143,6 +183,7 @@ public:
    //
    //=========================================================================
 
+   // @quote append 1 ... }
    string & append( char c ){
       if( current_length < maximum_length ){
          content[ current_length++ ] = c;
@@ -150,10 +191,12 @@ public:
       return *this;
    }
 
+   // @quote append 1 ... }
    string & operator+=( char c ){
       return append( c );
    }
 
+   // @quote append 1 ... }
    string & operator<<( char c ){
       return append( c );
    }

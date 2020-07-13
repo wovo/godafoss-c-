@@ -16,9 +16,9 @@
 //
 // =============================================================================
 //
+// @define godafoss::uint_bits
 // @title ints specified by number of bits
 //
-// @define godafoss::uint_bits
 // @insert text
 //
 // uint_bits< N >::fast is the smallest 'fast'
@@ -34,6 +34,10 @@
 //
 // Use uint_bits< N >::fast for variables and parameters,
 // use uint_bits< N >::least for arrays.
+//
+// @section example
+//
+// bla bla
 //
 // =============================================================================
 

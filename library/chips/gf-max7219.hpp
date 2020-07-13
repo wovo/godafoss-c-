@@ -64,11 +64,9 @@ struct max7219 :
    static inline uint8_t buffer[ 8 * n_chips ];
 
    static void write_implementation(
-      root::location_t  _pos,
-      root::color_t     col
+      root::offset_t  pos,
+      root::color_t   col
    ){
-      auto pos = _pos - root::origin;
-
       const uint_fast8_t index = ( pos.x / 8 ) + pos.y * n_chips;
       const uint_fast8_t offset = 7 - ( pos.x % 8 );
 

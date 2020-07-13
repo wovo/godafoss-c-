@@ -1,0 +1,26 @@
+#############################################################################
+#
+# makefile.link
+#
+# common settings for native projects (windows or linux)
+#
+# (c) Wouter van Ooijen (www.voti.nl) 2017-2020
+#
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+#
+#############################################################################
+
+TARGET            ?= native
+
+GPP-LINUX       ?= g++-10
+GCC-WIN         ?= C:\ti-software\mingw64
+CPP_LANGUAGE    ?= -std=c++2a
+
+#GCC-WIN         ?= C:\mingw64-10-0-1
+
+# defer to the next-level makefile.link
+RELATIVE          ?= .
+RELATIVE          := $(RELATIVE)/../../..
+include           $(RELATIVE)/makefile.link

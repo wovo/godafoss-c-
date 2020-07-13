@@ -1,10 +1,6 @@
 // =============================================================================
 //
-// gf-box-invert.hpp
-//
-// =============================================================================
-//
-// The invert<> decorator inverts the value written to or read from a box.
+// gf-item-invert.hpp
 //
 // =============================================================================
 //
@@ -20,6 +16,17 @@
 //
 // =============================================================================
 
+// =============================================================================
+//
+// @define godafoss::invert
+// @title invert
+//
+// The invert<> decorator inverts the value written to or read from an item.
+//
+// @insert can_invert
+// @insert invert
+//
+// =============================================================================
 
 // =============================================================================
 //
@@ -67,22 +74,25 @@ struct _invert_write< T > : T {
 //
 // =============================================================================
 
-// invert is supported for a box that has an invert function
+// @quote can_invert 8
+// invert is supported for an item that has an invert function
 template< typename T >
-concept can_invert_box = requires (
+concept can_invert = requires (
    typename T::value_type v
 ) {
-   box< T >;
+   item< T >;
    { T::invert( v ) } -> std::same_as< typename T::value_type >;
 };
 
-template< can_invert_box T >
+template< can_invert T >
 struct invert_supported< T > {
    static constexpr bool supported = true;
 };
 
-// invert both the read and write operations (if available)
-template< can_invert_box T >
-struct invert< T > :
+// @quote invert 2 ... ;
+template< can_invert T >
+struct invert< T >
+// invert both the read and write operations (if present)
+:
    _invert_read<
    _invert_write< T >> {};

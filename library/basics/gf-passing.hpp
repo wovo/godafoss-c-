@@ -27,7 +27,7 @@
 // depending (among other things) on the size of the type compared
 // to a the size of a reference.
 //
-// @example native/passing/main.cpp text
+// @example native/passing/main.cpp example
 //
 // =============================================================================
 
@@ -36,15 +36,15 @@
 template< typename T >
 struct _by_const { using type = const T &; };
 
-#ifdef x86_64__
+#ifdef __x86_64__
 constexpr auto _max_by_value = 2;
 #endif
 
-#ifdef thumb__
+#ifdef __thumb__
 constexpr auto _max_by_value = 1;
 #endif
 
-#ifdef AVR_ARCH__
+#ifdef __AVR_ARCH__
 constexpr auto _max_by_value = 1;
 #endif
 
@@ -62,8 +62,8 @@ struct _by_const< T > { using type = const T; };
 
 // =============================================================================
 
-// @quote by_const 3
+// @quote by_const 3 ...
 // use by_const< T > when passing a T
-template< typename passed_type >
+template< typename T >
 using by_const =
-   _by_const< passed_type >::type;
+   _by_const< T >::type;

@@ -247,7 +247,6 @@ Is the call the run-to-completion from the waits possible (CRTP?)
 
 todo
 - check void return types (core & box)
-- native window using SFML
 - check xy iterator
 - pullup/down should survive pin adapters
 - pullup<> decorator

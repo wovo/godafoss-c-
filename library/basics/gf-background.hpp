@@ -16,9 +16,8 @@
 //
 // =============================================================================
 //
-// @title background processing
-//
 // @define godafoss::background
+// @title background processing
 //
 // The background class provides a hook for run-to-completion style
 // background processing.
@@ -46,6 +45,7 @@
 // background::run() can be called instead, which will serve
 // the background processing (it will never return).
 //
+// @section example
 // @example native/background/main.cpp text
 //
 // =============================================================================
@@ -114,7 +114,7 @@ public:
 
    // Call this function instead of terminating the application
    // to continue performing the background work.
-   static void GODAFOSS_NORETURN run(){
+   static void GODAFOSS_NO_RETURN run(){
       for(;;){
          do_background_work();
       }

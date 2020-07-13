@@ -1,11 +1,6 @@
 // =============================================================================
 //
-// gf-box-no-inline.hpp
-//
-// =============================================================================
-//
-// no_inline< T > provides functions that call
-// the corresponding functions in T without a forced inlining.
+// gf-item-no-inline.hpp
 //
 // =============================================================================
 //
@@ -21,6 +16,22 @@
 //
 // =============================================================================
 
+// =============================================================================
+//
+// @define godafoss::no_inline
+// @title no_inline
+//
+// The no_inline<> item decorator creates an item for which all functions
+// are not inline.
+//
+// This can be used as the outermost decorator around an item constructed
+// from a chain of inheritances, in which the chain of function calls
+// is all marked GODAFOSS_INLINE.
+//
+// @insert no_inline
+//
+// =============================================================================
+
 
 // =============================================================================
 //
@@ -29,10 +40,10 @@
 // =============================================================================
 
 template< typename T >
-struct _no_inline_box_init : T {};
+struct _no_inline_item_init : T {};
 
-template< box T >
-struct _no_inline_box_init< T > : T {
+template< item T >
+struct _no_inline_item_init< T > : T {
 
    static void init(){
       T::init();
@@ -48,10 +59,10 @@ struct _no_inline_box_init< T > : T {
 // =============================================================================
 
 template< typename T >
-struct _no_inline_box_write : T {};
+struct _no_inline_item_write : T {};
 
 template< output T >
-struct _no_inline_box_write< T > : T {
+struct _no_inline_item_write< T > : T {
 
    using _vt = typename T::value_type;
 
@@ -73,10 +84,10 @@ struct _no_inline_box_write< T > : T {
 // =============================================================================
 
 template< typename T >
-struct _no_inline_box_read : T {};
+struct _no_inline_item_read : T {};
 
 template< input T >
-struct _no_inline_box_read< T > : T {
+struct _no_inline_item_read< T > : T {
 
    using _vt = typename T::value_type;
 
@@ -98,10 +109,10 @@ struct _no_inline_box_read< T > : T {
 // =============================================================================
 
 template< typename T >
-struct _no_inline_box_direction : T {};
+struct _no_inline_item_direction : T {};
 
 template< simplex T >
-struct _no_inline_box_direction< T > : T {
+struct _no_inline_item_direction< T > : T {
 
    static void direction_set_output(){
       T::direction_set_output();
@@ -124,9 +135,10 @@ struct _no_inline_box_direction< T > : T {
 //
 // =============================================================================
 
-template< typename T >
+// @quote no_inline 2 ... ;
+template< item T >
 using no_inline =
-   _no_inline_box_init<
-   _no_inline_box_write<
-   _no_inline_box_read<
-   _no_inline_box_direction< T > > > >;
+   _no_inline_item_init<
+   _no_inline_item_write<
+   _no_inline_item_read<
+   _no_inline_item_direction< T > > > >;

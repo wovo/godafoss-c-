@@ -105,7 +105,7 @@ private:
 
 public:
 
-   // @quote text 1
+   // @quote text 1 ... }
    static void init( mode m = mode::a_128 ){
       current_mode = m;
       powered_down = true;
@@ -117,7 +117,7 @@ public:
       sck::write( 1 );
    }
 
-   // @quote text 1
+   // @quote text 1 ... }
    static int32_t read(){
 
       // be sure the chip is active
@@ -133,13 +133,13 @@ public:
       return read_value();
    }
 
-   // @quote text 1
+   // @quote text 1 ... }
    static void power_down(){
       sck::write( 1 );
       powered_down = true;
    }
 
-   // @quote text 1
+   // @quote text 1 ... }
    static void mode_set( mode m ){
       current_mode = m;
 

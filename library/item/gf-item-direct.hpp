@@ -1,11 +1,6 @@
 // =============================================================================
 //
-// gf-box-buffered.hpp
-//
-// =============================================================================
-//
-// The buffered<> decorator buffers read, write or direction operations,
-// necessitating appropriate refersh or flush calls.
+// gf-item-direct.hpp
 //
 // =============================================================================
 //
@@ -21,6 +16,24 @@
 //
 // =============================================================================
 
+// =============================================================================
+//
+// @define godafoss::direct
+// @title direct
+//
+// The direct<> decorator accepts an item and decorates it by
+// inserting the appropriate refresh or flush
+// before or after each read, write, or direction change operation,
+// and replacing the refresh and flush operations by empty functions.
+//
+// The effect is that such a decorated item can be used without
+// refresh or flush calls.
+//
+// @insert can_direct
+// @insert direct
+//
+// =============================================================================
+
 
 // =============================================================================
 //
@@ -29,23 +42,17 @@
 // =============================================================================
 
 template< typename T >
-struct _buffered_read : T {};
+struct _direct_read : T {};
 
 template< input T >
-struct _buffered_read< T > : T {
+struct _direct_read< T > : T {
 
    static auto read(){
-      return buffer;
-   }
-
-   static void refresh(){
       T::refresh();
-      buffer = T::read();
+      return T::read();
    }
 
-private:
-
-   static typename T::value_type  buffer;
+   static void refresh(){}
 
 };
 
@@ -57,30 +64,19 @@ private:
 // =============================================================================
 
 template< typename T >
-struct _buffered_write : T {};
+struct _direct_write : T {};
 
 template< output T >
-struct _buffered_write< T > : T {
+struct _direct_write< T > : T {
 
    using _vt = typename T::value_type;
 
    static void write( by_const< _vt > v ) {
-      buffer = v;
-      dirty = true;
+      T::write( v );
+      T::flush();
    }
 
-   static void flush() {
-      if( dirty ){
-         T::write( buffer );
-         T::flush();
-         dirty = false;
-      }
-   }
-
-private:
-
-   static bool   dirty;
-   static _vt    buffer;
+   static void flush(){}
 
 };
 
@@ -92,54 +88,47 @@ private:
 // =============================================================================
 
 template< typename T >
-struct _buffered_direction : T {};
+struct _direct_direction : T {};
 
 template< simplex T >
-struct _buffered_direction< T > : T {
+struct _direct_direction< T > : T {
 
    static void direction_set_input() {
-     direction_is_input =  true;
-	  dirty = true;
+      T::direction_set_input();
+      T::direction_flush();
    }
 
    static void direction_set_output() {
-      direction_is_input = false;
-      dirty = true;
+      T::direction_set_output();
+      T::direction_flush();
    }
 
-   static void direction_flush() {
-      if( dirty ){
-         if( direction_is_input ){
-            T::direction_set_input();
-         } else {
-            T::direction_set_output();
-         }
-         T::direction_flush();
-         dirty = false;
-      }
-   }
-
-private:
-
-   static bool dirty;
-   static bool direction_is_input;
+   static void direction_flush(){}
 
 };
 
 
 // =============================================================================
 //
-// the buffered<> decorator
+// opt in to the direct<> decorator and provide it
 //
 // =============================================================================
 
+// @quote can_direct 4
 template< typename T >
-concept can_buffered = requires {
-   box< T >;
+concept can_direct = requires {
+   item< T >;
 };
 
-template< can_buffered T >
-struct buffered :
-   _buffered_read<
-   _buffered_write<
-   _buffered_direction < T >>> {};
+template< can_direct T >
+struct direct_supported< T > {
+    static constexpr bool supported = true;
+};
+
+// @quote direct 3 ... ;
+template< typename T >
+   requires can_direct< T >
+struct direct< T > :
+   _direct_read<
+   _direct_write<
+   _direct_direction < T >>> {};

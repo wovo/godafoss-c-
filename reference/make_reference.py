@@ -1,10 +1,10 @@
 # ==============================================================================
 #
-# document.py
+# make_reference.py
 #
 # ==============================================================================
 #
-# godafoss documentation tool
+# godafoss library reference extraction & formatting
 #
 # Copyright
 #    Wouter van Ooijen (wouter@voti.nl) 2020
@@ -15,38 +15,47 @@
 #
 # ==============================================================================
 
+# s_inherit_read why s_ ?
+# continue with xy<>
+# comments must be CC-BY-SA in the sources??
+# images must be CC-BY-SA or 'better'
+# need reandom demos for both BW and color (demo/due/oled now disabled)
+# arch seems to require the reset (sometimes)
+# global functions...
+# loop for multiple defines in one line
+# eeprom abstraction (single byte, full page)
+# separate directroy for peripheral boards?
+# all<> is now for pins, but can it be fore more types and preserve the type?
+# pin::all needs no_inline?
+# waar komt non-bool invert vandaan?
+# buffered -> buffer, like direct?
+# add exmple to cto, item for CRTP enrichment
+# limit TOC to 1 level
+# date and time add << as external (??) support (??) check cpprtef
+# continue with string
 # highlighter can't handle 1'000
 # show first appearance of defined word
-# in header code generalization like struct bla { ... };
-# example select part of the file
-# example link to example file
 # set examples path
 # set html path
 # create markdown
-# create pdf -> fpdf
 # create rtf?
-# crosslinks
-# mark code in running text
-# ref to source code
-# a way to edit code while quoting, ... etc
 # multiple hpp files can contribute to the same page;
 #    in which order? with subheaders?
-# order of chapters??
-# check gf-attributes: should be between the code??
+# check gf-attributes: should be betweitemen the code??
 # pdf title page has header and footer
-# pictures!
+# pictures! HD44780,
+# date-and-time has operator<<
+# this is a reference, so sort pages in rest/pdf alphabetically
+# US size pdf
+# run-once has excess spaces
+# extra space after MACROs
 
 # arch:
 #    sudo python -m ensurepip --upgrade
-#    sudo python -m pip install fpdf
-# https://www.blog.pythonlibrary.org/2018/06/05/creating-pdfs-with-pyfpdf-and-python/
-
-# pypdf2 // no
-
-# sudo python -m pip install restview
-# restview godafoss.rest &
-# sudo python -m pip install rst2pdf
-# rst2pdf mydocument.txt -o mydocument.pdf
+#    sudo python -m pip install restview
+#    restview godafoss.rest &
+#    sudo python -m pip install rst2pdf
+#    rst2pdf mydocument.txt -o mydocument.pdf
 # https://docutils.sourceforge.io/docs/ref/rst/directives.html
 # http://rst2pdf.ralsina.me/handbook.html
 
@@ -66,10 +75,11 @@ def strip_leading_spaces( lines ):
    return result [ 1 : -1 ]
 
 def strip_leading_comment( s, remove = [ "//" ] ):
-   s = s.strip()
    for prefix in remove:
-      if s.startswith( prefix ):
-         s = s[ len( prefix ) : ].strip()
+      if s.strip().startswith( prefix ):
+         s = s.strip()[ len( prefix ) : ]
+         if s.startswith( " " ):
+            s = s[ 1 : ]
    return s
 
 def strip_end( s, remove ):
@@ -79,8 +89,8 @@ def strip_end( s, remove ):
    return s
 
 def after( s, prefix ):
-   if s.startswith( prefix ):
-      return s[ len( prefix ) : ].strip()
+   if s.strip().startswith( prefix ):
+      return s.strip()[ len( prefix ) : ].strip()
    return ""
 
 def get_after( target, s, prefix ):
@@ -123,6 +133,11 @@ def run_rst2pdf( in_name, out_name ):
    #rst2pdf.createpdf.createPdf( input = in_name, output = out_name )
    os.system( "rst2pdf %s -o %s " % ( in_name, out_name ) )
 
+def make_file_name( s ):
+   for c in " *,<>":
+      s = s.replace( c, "-" )
+   return s
+
 
 # ==============================================================================
 #
@@ -132,8 +147,10 @@ def run_rst2pdf( in_name, out_name ):
 
 class text_line:
 
-   def __init__( self, s ):
+   def __init__( self, s, item, defines ):
       self.s = s
+      self.item = item
+      self.defines = defines
 
    def markdown( self ):
       return self.s
@@ -142,8 +159,27 @@ class text_line:
       return self.s
 
    def html( self ):
-      if self.s == "": return "<P>"
-      return self.s
+      s = self.s
+      if s == "": return "<P>"
+      if s.strip().startswith( "-" ):
+         s = s.replace( "-", "<LI>", 1 )
+      for name, item in self.defines:
+         p = s.find( name )
+         if (
+            ( p >= 0 )
+            and ( item != self.item )
+            and ((s + " ")[ p + len( name ) ] in " ({<:," )
+            and ((" " + s )[ p ] in " " )
+         ):
+            long_name = name[:]
+            for extra in [ "<>", "()" ]:
+               if s[ p + len( long_name ) : ].startswith( extra ):
+                  long_name += extra
+            s = (
+               s[ : p ] +
+               '<A HREF=%s.html#%s>%s</A>' % ( make_file_name( item.title ), name, long_name ) +
+               s[ p + len( long_name ) : ] )
+      return s
 
 class text_bar:
 
@@ -187,16 +223,35 @@ class title:
       t = self.s.replace( "\n", "" )
       s = ""
       s += rest_page_break()
-      s += t + "\n" + len( t ) * "=" + "\n"
+      h = len( t ) * "*" + "\n"
+      s += h + t + "\n" +  h
       return s
 
    def html( self ):
       return "<H2>%s</H2>" % self.s
 
-class code:
+class section:
 
    def __init__( self, s ):
       self.s = s
+
+   def markdown( self ):
+      return self.s + "\n" + len( self.s ) * ""
+
+   def rest( self ): # wovo
+      t = self.s.replace( "\n", "" )
+      h = len( t ) * "*" + "\n"
+      s = "\n" + t + "\n" +  h
+      return s
+
+   def html( self ):
+      return "<H3>%s</H3>" % self.s
+
+class code:
+
+   def __init__( self, s, url ):
+      self.s = s
+      self.url = url
 
    def markdown( self ):
       return self.s
@@ -205,7 +260,10 @@ class code:
       return ":: \n\n" + indent( self.s, "  " )
 
    def html( self ):
-      return '<pre><code class="c++">%s</code></pre>' % self.s
+      return (
+         '<A HREF="%s" style="text-decoration:none">\n' +
+         '<pre><code class="c++">%s</code></pre></A>' ) % (
+         self.url, self.s )
 
 class define:
 
@@ -230,12 +288,10 @@ class colofon:
       return "from: " + self.item.file_name
 
    def rest( self ):
-      return "from: " + self.item.file_name
+      return "implemented in: %s\n" % self.item.file_name.replace( "../", "" )
 
    def html( self ):
-      return 'from <A HREF="%s">%s</A><P>\n' % (
-         "../" + self.item.file_name,
-         self.item.file_name.replace( "../", "" ) )
+      return ""
 
 
 
@@ -247,7 +303,7 @@ class colofon:
 
 class item:
 
-   def __init__( self, file_name, line_number, lines, refs ):
+   def __init__( self, file_name, line_number, lines, refs, global_defines ):
       self.file_name = file_name
       self.line_number = line_number
       self.lines = lines
@@ -256,23 +312,29 @@ class item:
       self.names = []
       self.content = []
       self.defines = []
+      self.global_defines = global_defines
       line_number = self.line_number - 1
 
       for line in self.lines:
          line_number += 1
 
-         if line.startswith( "@title" ):
-            self.content.append( title( after( line, "@title" )))
+         if line.strip().startswith( "@title " ):
+            self.content.append( title( after( line, "@title " )))
             self.content.append( colofon( self ))
-            self.title = after( line, "@title" )
+            self.title = after( line, "@title " )
+            self.content.append( text_bar())
 
-         elif line.startswith( "@example" ):
-            rest = after( line, "@example" ).split()
-            print( rest )
+         elif line.strip().startswith( "@section " ):
+            self.content.append( text_bar())
+            self.content.append( section( after( line, "@section " )))
+
+         elif line.strip().startswith( "@example " ):
+            rest = after( line, "@example " ).split()
             if len( rest ) != 2:
                error( file_name, line_number, "example format error" )
             else:
-               t = read_file( "../examples/" + rest[ 0 ] )
+               example_file_name = "examples/" + rest[ 0 ]
+               t = read_file( example_file_name )
                s = ""
                use = 0
                for line in t.split( "\n" ):
@@ -285,28 +347,29 @@ class item:
                if( s == "" ):
                   error( file_name, line_number,
                      "example fragment '%s' not found" % rest[ 1 ] )
-               self.content.append( code( s ) )
+               self.content.append( code( s, "../" + example_file_name ))
 
-         elif line.startswith( "@define" ):
-            t = after( line, "@define" ).replace( "godafoss::", "" )
-            self.defines.append( t )
+         elif line.strip().startswith( "@define " ):
+            t = after( line, "@define " ).replace( "godafoss::", "" )
+            self.global_defines.append( [ t, self ] )
             self.content.append( define( t ))
 
-         elif line.startswith( "@insert" ):
-            t = after( line, "@insert" ).strip()
+         elif line.strip().startswith( "@insert " ):
+            t = after( line, "@insert " ).strip()
             if not t in refs:
                error( file_name, line_number, "uknown insert '%s'" % t )
-            self.content.append( code( refs.get( t, "<>" )))
+            self.content.append( code(
+               refs.get( t, "<missing>" ), "../" + file_name))
 
-         elif line.startswith( "@ref" ):
-            t = after( line, "@ref" )
-            self.content.append( text_ref( t ))
+         #elif line.strip().startswith( "@ref" ):
+         #   t = after( line, "@ref" )
+         #   self.content.append( text_ref( t ))
 
-         elif line.startswith( "@bar" ):
+         elif line.strip().startswith( "@bar" ):
             self.content.append( text_bar())
 
-         elif not line.startswith( "@" ):
-            self.content.append( text_line( line ))
+         elif not line.strip().startswith( "@" ):
+            self.content.append( text_line( line, self, global_defines ))
 
          else:
             error( file_name, line_number, "unknown @ '%s'" % line )
@@ -354,6 +417,7 @@ class documentation:
 
    def __init__( self, file_list ):
       self.items = []
+      self.global_defines = []
       for file in file_list:
          self.read_file( file )
 
@@ -371,14 +435,13 @@ class documentation:
             quote += original_line
             if count == 0:
                s = strip_end( quote, " " )
-               if s.endswith( "=\n" ): s = s[ : -1 ] + " ...\n"
-               if s.endswith( "){\n" ): s = s[ : -1 ] + " ... }\n"
-               if s.endswith( "\\\n" ): s = s[ : -2 ] + " ... \n"
+               if s.endswith( "\\\n" ): s = s[ : -2 ] + "\n"
                s = s[ : -1 ] + extra + "\n"
                refs[ name ] = refs.get( name, "" ) + s
 
-         elif line.startswith( "@quote" ):
-            split = after( line, "@quote" ).split( " " )
+         elif line.strip().startswith( "@quote " ):
+            line_after = after( line, "@quote " )
+            split = line_after.split( " " )
             if len( split ) < 2:
                error( file_name, line_number,
                   "@quote not followed by at least two elements" )
@@ -392,7 +455,7 @@ class documentation:
                quote = ""
                extra = ""
                if len( split ) > 2:
-                  extra = " " + split[ 2 ]
+                  extra = line_after.replace( split[ 0 ] + " ", "" ).replace( split[ 1 ], " " )[ 1 : ]
 
             #if a.strip() in [ "...", None ]:
             #   refs[ "" ] = refs.get( "", "" )[ : - 1 ]  + " " + a.strip() + " "
@@ -404,13 +467,13 @@ class documentation:
       for line in open( file_name ).readlines():
          line_number += 1
          line = strip_leading_comment( line )
-         if line.startswith( "@quote" ):
+         if line.strip().startswith( "@quote" ):
             pass
-         elif line.startswith( "@" ):
+         elif line.strip().startswith( "@" ):
             processing = 1
-         if line.startswith( "=========" ):
+         if line.strip().startswith( "=========" ):
             if processing:
-               self.items.append( item( file_name, line_number, lines, refs ) )
+               self.items.append( item( file_name, line_number, lines, refs, self.global_defines ) )
                processing = 0
                lines = []
          if processing:
@@ -421,31 +484,39 @@ class documentation:
 
    def html( self, dir = "html" ):
       for item in self.items:
-         write_html( dir, item.title, item.html() )
+         write_html( dir, make_file_name( item.title ), item.html() )
 
-      s = "<H2>Pages</H2>\n"
+      s = ""
+      s += '<IMG SRC="../images/godafoss-waterfalls.jpg" alt="Godafoss waterfalls" width="400" >\n'
+
+      s += "<H2>Pages</H2>\n"
       for item in self.items:
          s += "<LI><A HREF='%s'>%s</A>\n" % \
-            ( item.title + ".html", item.title )
+            ( make_file_name( item.title ) + ".html", item.title )
 
       map = {}
-      for item in self.items:
-         for define in item.defines:
-            map[ define ] = item
+      for name, item in self.global_defines:
+            map[ name ] = item
 
       s += "<H2>Index</H2>\n"
       for d in sortedkeys( map ):
          s += "<LI><A HREF='%s#%s'>%s</A>\n" % \
-            ( map[ d ].title + ".html", d, d )
+            ( make_file_name( map[ d ].title ) + ".html", d, d )
 
       write_html( dir, "index", s )
 
    def rest( self, file_name = "godafoss.rest" ):
       s = ""
       s += rest_page_break( "coverPage" )
-      s += "==================\n"
+
+      s += "\n"
+      s += ".. image:: images/godafoss-waterfalls.jpg\n";
+      s += "   :width: 1800\n"
+      s += "   :alt: Godafoss waterfall\n\n"
+
+      #s += "==================\n"
       s += "Godafoss reference\n"
-      s += "==================\n"
+      #s += "==================\n"
       s += rest_page_break()
 
       s += ".. header:: Godafoss reference\n\n"
@@ -457,7 +528,7 @@ class documentation:
          s += item.rest()
 
       write_file( file_name, s )
-      run_rst2pdf( file_name, "gf.pdf" )
+      run_rst2pdf( file_name, "godafoss.pdf" )
 
 
 # ==============================================================================
@@ -466,15 +537,13 @@ class documentation:
 #
 # ==============================================================================
 
-list = [
-   "../basics/gf-passing.hpp",
-   "../basics/gf-random.hpp",
-   "../basics/gf-background.hpp",
-   "../basics/gf-ints.hpp",
-   "../basics/gf-attributes.hpp",
-   "../chips/gf-hd44780.hpp",
-   "../chips/gf-hx711.hpp",
-   ]
+list = []
+for dirpath, dirnames, filenames in os.walk( "../library" ):
+   #print( dirpath, dirnames, filenames )
+   for file in filenames:
+      if file.endswith ( ".hpp"       ):
+         list.append( dirpath + "/" + file )
+
 d = documentation( list )
 d.html()
 d.rest()

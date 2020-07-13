@@ -24,8 +24,8 @@
 
 template< typename T >
 concept is_stream_out_char = requires {
-   stream< T >;
-	output< T >;
+   pipe< T >;
+   output< T >;
    std::same_as< typename T::value_type, char >;
 };
 
@@ -129,11 +129,14 @@ struct _print_reverse {
 //
 // ==========================================================================
 
-uint_fast16_t __attribute__ ((pure)) GODAFOSS_WEAK _strlen( const char *s ){
-   uint_fast16_t n = 0;
-   while( *s++ ){ ++n; }
-   return n;
-}
+struct _strlen {
+
+   static uint_fast16_t __attribute__ ((pure)) strlen( const char *s ){
+      uint_fast16_t n = 0;
+      while( *s++ ){ ++n; }
+      return n;
+   }
+};
 
 template< is_stream_out_char T >
 struct formatter {
@@ -164,9 +167,9 @@ struct formatter {
 
    static void write( const char * s ){
       print_aligned(
-         _strlen( s ),
-	     [&](){
-		    for( const char *p = s; *p != '\0'; p++ ){
+         _strlen::strlen( s ),
+         [&](){
+         for( const char *p = s; *p != '\0'; p++ ){
                write( *p );
             }
          }

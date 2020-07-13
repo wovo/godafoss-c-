@@ -176,15 +176,13 @@ public:
 
 // =============================================================================
 //
+// @define godafoss::hd44780_rs_e_d_s_timing
 // @title hd44780
 //
-// @define godafoss::hd44780_rs_e_d_s_timing
+// The hd44780 template implements a charcater terminal
+// on an hd44780 character lcd.
 //
 // @insert text
-//
-// This template implements a
-// @ref terminal
-// on an hd44780 character lcd.
 //
 // The rs, e and port must connect to the corresponding pins of the lcd.
 // The lcd is used in 4-bit mode, so the port must connect to the
@@ -198,9 +196,13 @@ public:
 //
 // The timing is used for the waits as required by the hd44780 datasheet.
 //
+// @section example
+//
+// bla blas
+//
 // =============================================================================
 
-// @quote text 7
+// @quote text 7 { ... };
 template<
    pin_out_compatible   rs,
    pin_out_compatible   e,

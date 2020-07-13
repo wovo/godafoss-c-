@@ -33,13 +33,13 @@
 // quote ''pin_in_out'' );
 template< typename T >
 concept pin_in_out = requires {
-   item< bool >;
+   box< bool >;
    simplex< bool >;
    T::_pin_in_out_marker;
 };
 
 struct pin_in_out_root :
-   item_root< bool >,
+   box_root< bool >,
    simplex_root< bool >
 {
    static constexpr bool _pin_in_out_marker = true;
@@ -55,13 +55,13 @@ struct pin_in_out_root :
 // quote ''pin_out'' );
 template< typename T >
 concept pin_out = requires {
-   item< bool >;
+   box< bool >;
    output< bool >;
    T::_pin_out_marker;
 };
 
 struct pin_out_root :
-   item_root< bool >,
+   box_root< bool >,
    output_root< bool >
 {
    static constexpr bool _pin_out_marker = true;
@@ -77,13 +77,13 @@ struct pin_out_root :
 // quote ''pin_in'' );
 template< typename T >
 concept pin_in = requires {
-   item< bool >;
+   box< bool >;
    input< bool >;
    T::_pin_in_marker;
 };
 
 struct pin_in_root :
-   item_root< bool >,
+   box_root< bool >,
    input_root< bool >
 {
    static constexpr bool _pin_in_marker = true;
@@ -99,13 +99,13 @@ struct pin_in_root :
 // quote ''pin_oc'' );
 template< typename T >
 concept pin_oc = requires {
-   item< bool >;
+   box< bool >;
    duplex< bool >;
    T::_pin_oc_marker;
 };
 
 struct pin_oc_root :
-   item_root< bool >,
+   box_root< bool >,
    duplex_root< bool >
 {
    static constexpr bool _pin_oc_marker = true;

@@ -16,46 +16,73 @@
 //
 // =============================================================================
 //
-// @title xy
+// @define godafoss::xy
+// @title xy<>
 //
-// @define xy
-// @insert xy
+// @insert struct
+//
 // The xy< T > ADT class template is a pair of two T values named x and y.
 // It is used for distances in an xy plane, like on a window or terminal.
-//
 // The xy< torsor< T > > is used to identify a location on an xy plane.
+//
+// The ADT supports
+// - addition
+//
+// @section methods
+//
+// @insert default-constructor
+//
+// The default constructor intializes a and y to the zero value.
+//
+// @insert constructor
+//
+// The two-value constructor initializes the x and y from the supplied values.
+//
+// @insert copy-constructor
+//
+// An xy object can be constructed from an xy with the same or
+// a different value type.
 //
 // =============================================================================
 
 
-// ==========================================================================
+// =============================================================================
 //
 // xy<> ADT
 //
-// ==========================================================================
+// =============================================================================
 
-template< typename T = int_fast64_t, T zero = 0 >
-   requires requires( T & x, T & v ){
-      // default constructor
-      // copy constructor
-      { v * v };
-      { v / v };
-      { v == v };
-      { x = v };
-   }
-class xy final {
+template< typename T >
+concept xy_value_type = requires(
+   T v,
+   T & x
+){
+   // default constructor
+   // copy constructor
+   { v * v };
+   { v / v };
+   { v == v };
+   { x = v };
+};
+
+// @quote struct 4
+template<
+   typename xy_value_type = int64_t,
+   xy_value_type zero = 0 >
+struct xy final {
 public:
 
-   using value_t = T;
-
+   // @quote struct 2 ... };
+   using value_t = xy_value_type;
    value_t x, y;
 
-   constexpr xy( value_t x, value_t y ): x{ x }, y{ y }{}
-
-   // constexpr xy( value_t x ): x{ x }, y{ x }{}
-
+   // @quote default-constructor 1
    constexpr xy():x{ zero }, y{ zero }{}
 
+   // @quote constructor 1
+   constexpr xy( value_t x, value_t y ): x{ x }, y{ y }{}
+
+   // @quote copy-constructor 2
    template< typename X >
    constexpr xy( const xy< X > & rhs ): x( rhs.x ), y( rhs.y ) {}
 
@@ -63,7 +90,7 @@ public:
 
    template< typename V >
 //      requires requires( V b ){ { x + b }; }   - GCC 10.0.1 ICE segfault
-      requires requires( T x, V b ){ { x + b }; }
+      requires requires( xy_value_type x, V b ){ { x + b }; }
    constexpr auto operator+( const xy< V > rhs ) const {
       return xy< decltype( x + rhs.x ) > {
           static_cast< value_t >( x + rhs.x ),
@@ -72,7 +99,7 @@ public:
    }
 
    template< typename V >
-      requires requires( T x, V b ){ { x - b }; }
+      requires requires( xy_value_type x, V b ){ { x - b }; }
    constexpr auto operator-( const xy< V > rhs ) const {
       return xy< decltype( x + rhs.x ) > {
           static_cast< value_t >( x - rhs.x ),
@@ -114,11 +141,11 @@ stream & operator<<( stream & lhs, xy< value > rhs ){
 }
 
 
-// ==========================================================================
+// =============================================================================
 //
 // iterator
 //
-// ==========================================================================
+// =============================================================================
 
 template< typename T >
 class xy_iterator_t {
@@ -159,11 +186,11 @@ public:
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // ranges
 //
-// ==========================================================================
+// =============================================================================
 
 template< typename T, T v >
    requires requires( T & x ){
@@ -200,11 +227,11 @@ a r -> a
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // random
 //
-// ==========================================================================
+// =============================================================================
 
 template< typename limits_t >
 limits_t random_xy( limits_t limits ){

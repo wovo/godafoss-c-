@@ -46,13 +46,13 @@ HEADERS           += basics/gf-passing.hpp
 HEADERS           += basics/gf-random.hpp
 HEADERS           += basics/gf-background.hpp
 
-HEADERS           += box/gf-box.hpp
-HEADERS           += box/gf-box-inherit.hpp
-HEADERS           += box/gf-box-no-inline.hpp
-HEADERS           += box/gf-box-invert.hpp
-HEADERS           += box/gf-box-direct.hpp
-HEADERS           += box/gf-box-buffered.hpp
-HEADERS           += box/gf-box-adapters.hpp
+HEADERS           += item/gf-item.hpp
+HEADERS           += item/gf-item-inherit.hpp
+HEADERS           += item/gf-item-no-inline.hpp
+HEADERS           += item/gf-item-invert.hpp
+HEADERS           += item/gf-item-direct.hpp
+HEADERS           += item/gf-item-buffered.hpp
+HEADERS           += item/gf-item-adapters.hpp
 
 HEADERS           += ostream/gf-ostream.hpp
 HEADERS           += ostream/gf-uart.hpp

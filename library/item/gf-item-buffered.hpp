@@ -1,11 +1,6 @@
 // =============================================================================
 //
-// gf-box-direct.hpp
-//
-// =============================================================================
-//
-// The direct<> decorator inserts the appropriate refresh or flush
-// before or after each read, write, or direction change operation.
+// gf-item-buffered.hpp
 //
 // =============================================================================
 //
@@ -21,6 +16,19 @@
 //
 // =============================================================================
 
+// =============================================================================
+//
+// @define godafoss::buffered
+// @title buffered
+//
+// The buffered<> decorator buffers read, write or direction operations,
+// necessitating appropriate refresh or flush calls.
+//
+// @insert can_buffered
+// @insert buffered
+//
+// =============================================================================
+
 
 // =============================================================================
 //
@@ -29,15 +37,23 @@
 // =============================================================================
 
 template< typename T >
-struct _direct_read : T {};
+struct _buffered_read : T {};
 
 template< input T >
-struct _direct_read< T > : T {
+struct _buffered_read< T > : T {
 
    static auto read(){
-      T::refresh();
-      return T::read();
+      return buffer;
    }
+
+   static void refresh(){
+      T::refresh();
+      buffer = T::read();
+   }
+
+private:
+
+   static typename T::value_type  buffer;
 
 };
 
@@ -49,17 +65,30 @@ struct _direct_read< T > : T {
 // =============================================================================
 
 template< typename T >
-struct _direct_write : T {};
+struct _buffered_write : T {};
 
 template< output T >
-struct _direct_write< T > : T {
+struct _buffered_write< T > : T {
 
    using _vt = typename T::value_type;
 
    static void write( by_const< _vt > v ) {
-      T::write( v );
-      T::flush();
+      buffer = v;
+      dirty = true;
    }
+
+   static void flush() {
+      if( dirty ){
+         T::write( buffer );
+         T::flush();
+         dirty = false;
+      }
+   }
+
+private:
+
+   static bool   dirty;
+   static _vt    buffer;
 
 };
 
@@ -71,43 +100,57 @@ struct _direct_write< T > : T {
 // =============================================================================
 
 template< typename T >
-struct _direct_direction : T {};
+struct _buffered_direction : T {};
 
 template< simplex T >
-struct _direct_direction< T > : T {
+struct _buffered_direction< T > : T {
 
    static void direction_set_input() {
-      T::direction_set_input();
-      T::direction_flush();
+     direction_is_input =  true;
+	  dirty = true;
    }
 
    static void direction_set_output() {
-      T::direction_set_output();
-      T::direction_flush();
+      direction_is_input = false;
+      dirty = true;
    }
+
+   static void direction_flush() {
+      if( dirty ){
+         if( direction_is_input ){
+            T::direction_set_input();
+         } else {
+            T::direction_set_output();
+         }
+         T::direction_flush();
+         dirty = false;
+      }
+   }
+
+private:
+
+   static bool dirty;
+   static bool direction_is_input;
 
 };
 
 
 // =============================================================================
 //
-// opt in to the direct<> decorator and provide it
+// the buffered<> decorator
 //
 // =============================================================================
 
+// @quote can_buffered 4
 template< typename T >
-concept can_box_direct = requires {
+concept can_buffered = requires {
    item< T >;
 };
 
-template< can_box_direct T >
-struct direct_supported< T > {
-    static constexpr bool supported = true;
-};
-
-template< typename T >
-   requires can_box_direct< T >
-struct direct< T > :
-   _direct_read<
-   _direct_write<
-   _direct_direction < T >>> {};
+// @quote buffered 4 ... ;
+template< can_buffered T >
+struct buffered
+:
+   _buffered_read<
+   _buffered_write<
+   _buffered_direction < T >>> {};

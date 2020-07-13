@@ -13,21 +13,26 @@
 //
 // =============================================================================
 
-// @quote text
+// @quote example
 #include "array"
 #include "godafoss.hpp"
 namespace gf  = godafoss;
 
-template< typename T >
-void function( gf::by_const< T > p ){ (void) p; }
+void GODAFOSS_NO_INLINE f1(
+   gf::by_const< char > p
+){ (void) p; }
+
+void GODAFOSS_NO_INLINE f2(
+   gf::by_const< std::array< int, 100 > > p
+){ (void) p; }
 
 int main(){
 
    // should probably be passed by value (copy)
-   function( 'x' );
+   f1( 'x' );
 
    // should be probably be passed by reference
-   function( std::array< int, 100 >{ 0 } );
+   f2( std::array< int, 100 >{ 0 } );
 
 };
 // @quote end

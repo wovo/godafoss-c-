@@ -31,7 +31,7 @@ struct _pin_out_from_pins<> :
    pin_out_dummy
 {};
 
-// workhorse
+// the workhorse
 template< typename head, typename... tail >
 struct _pin_out_from_pins< head, tail... > {
 

@@ -1,0 +1,26 @@
+#############################################################################
+#
+# makefile.due common settings for Arduino Due projects
+#
+# (c) Wouter van Ooijen (www.voti.nl) 2017
+#
+# This file is in the public domain.
+#
+#############################################################################
+
+# settings for Arduino Due projects
+TARGET            := arduino_due
+
+ifeq ($(OS),Windows_NT)
+   SERIAL_PORT       ?= COM3
+else
+   SERIAL_PORT_DUE   ?= /dev/ttyACM0
+   SERIAL_PORT_UNO      := /dev/ttyUSB0
+endif
+
+CONSOLE_BAUDRATE  := 115200
+
+# defer to the Makefile.link
+RELATIVE          ?= .
+RELATIVE          := $(RELATIVE)/../../..
+include           $(RELATIVE)/makefile.link

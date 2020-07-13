@@ -4,11 +4,11 @@
 //
 // ==========================================================================
 //
-// This file is part the https://www.github.com/godafoss 
+// This file is part the https://www.github.com/godafoss
 // free C++ library for close-to-the-hardware programming.
 //
 // Copyright Wouter van Ooijen 2019
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -24,22 +24,22 @@
 
 template< typename T, int n >
 concept port = requires {
-   item< typename uint_bits< n >::fast >;	
+   box< typename uint_bits< n >::fast >;
    T::port_marker;
 };
 
 template< int n >
-struct port_root : 
-   item_root< typename uint_bits< n >::fast >
+struct port_root :
+   box_root< typename uint_bits< n >::fast >
 {
    static const bool port_marker  = true;
    static const int  n_pins       = n;
-   
-   using _vt = typename item_root< typename uint_bits< n >::fast >::value_type;
-   
+
+   using _vt = typename box_root< typename uint_bits< n >::fast >::value_type;
+
    GODAFOSS_INLINE static _vt invert( _vt v ){
-      return ~v;	   
-   }	   
+      return ~v;
+   }
 
 };
 
@@ -51,10 +51,10 @@ struct port_root :
 // ==========================================================================
 
 template< typename T >
-concept port_in_out = requires { 
+concept port_in_out = requires {
    port< T, T::n_pins >;
    simplex< typename T::value_type >;
-   T::port_in_out_marker;   
+   T::port_in_out_marker;
 };
 
 template< int n >

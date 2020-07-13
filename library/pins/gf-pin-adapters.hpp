@@ -73,9 +73,9 @@ struct pin_in_out_supported< T > {
 template< pin_in_out T >
 struct pin_in_out_from< T > :
    pin_out_root,
-   box_inherit_init< T >,
-   box_inherit_read< T >,
-   box_inherit_write< T >,
+   inherit_init< T >,
+   inherit_read< T >,
+   inherit_write< T >,
    pullup_filter< T >
 {};
 
@@ -96,8 +96,8 @@ struct pin_out_supported< T > {
 template< pin_out T >
 struct pin_out_from< T >  :
    pin_out_root,
-   box_inherit_init< T >,
-   box_inherit_write< T >
+   inherit_init< T >,
+   inherit_write< T >
 {};
 
 template< pin_in_out T >
@@ -108,7 +108,7 @@ struct pin_out_supported< T > {
 template< pin_in_out T >
 struct pin_out_from< T > :
    pin_out_root,
-   box_inherit_write< T >
+   inherit_write< T >
 {
 
    static void GODAFOSS_INLINE init(){
@@ -135,7 +135,7 @@ struct pin_in_supported< T > {
 template< pin_in_out T >
 struct pin_in_from< T > :
    pin_in_root,
-   box_inherit_read< T >,
+   inherit_read< T >,
    pullup_filter< T >
 {
 
@@ -154,8 +154,8 @@ struct pin_in_supported< T > {
 template< pin_in T >
 struct pin_in_from< T > :
    pin_in_root,
-   box_inherit_init< T >,
-   box_inherit_read< T >,
+   inherit_init< T >,
+   inherit_read< T >,
    pullup_filter< T >
 {};
 
@@ -167,7 +167,7 @@ struct pin_in_supported< T > {
 template< pin_oc T >
 struct pin_in_from< T > :
    pin_in_root,
-   box_inherit_read< T >,
+   inherit_read< T >,
    pullup_filter< T >
 {
 
@@ -195,9 +195,9 @@ struct pin_oc_supported< T > {
 template< pin_oc T >
 struct pin_oc_from< T > :
    pin_oc_root,
-   box_inherit_init< T >,
-   box_inherit_write< T >,
-   box_inherit_read< T >,
+   inherit_init< T >,
+   inherit_write< T >,
+   inherit_read< T >,
    pullup_filter< T >
 {};
 
@@ -209,9 +209,9 @@ struct pin_oc_supported< T > {
 template< pin_in_out T >
 struct pin_oc_from< T > :
    pin_oc_root,
-   box_inherit_init< T >,
-   box_inherit_write< T >,
-   box_inherit_read< T >,
+   inherit_init< T >,
+   inherit_write< T >,
+   inherit_read< T >,
    pullup_filter< T >
 {
 

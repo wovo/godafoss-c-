@@ -16,10 +16,9 @@
 //
 // =============================================================================
 //
+// @define GODAFOSS_INLINE
 // @title function and class attributes
 //
-// @bar
-// @define GODAFOSS_INLINE
 // @insert GODAFOSS_INLINE
 // GODAFOSS_INLINE forces a function to be inline.
 // It is used when the function body is very simple, for instance when
@@ -69,30 +68,30 @@
 // =============================================================================
 
 
-// @quote GODAFOSS_INLINE 1
+// @quote GODAFOSS_INLINE 1 ...
 #define GODAFOSS_INLINE \
-   attribute__((always_inline))
+   __attribute__((always_inline))
 
-// @quote GODAFOSS_NO_INLINE 1
+// @quote GODAFOSS_NO_INLINE 1 ...
 #define GODAFOSS_NO_INLINE \
-   attribute__((noinline))
+   __attribute__((noinline))
 
-// @quote GODAFOSS_NO_RETURN 1
+// @quote GODAFOSS_NO_RETURN 1 ...
 #define GODAFOSS_NO_RETURN \
    [[noreturn]] GODAFOSS_INLINE
 
-// @quote GODAFOSS_IN_RAM 1
+// @quote GODAFOSS_IN_RAM 1 ...
 #define GODAFOSS_IN_RAM \
    __attribute__( ( noinline, long_call, section(".data") ) )
 
-// @quote GODAFOSS_WEAK 1
+// @quote GODAFOSS_WEAK 1 ...
 #define _GODAFOSS_WEAK \
    __attribute__((weak))
 
 
 // =============================================================================
 
-// @quote GODAFOSS_RUN_ONCE 1
+// @quote GODAFOSS_RUN_ONCE 1 ...
 #define GODAFOSS_RUN_ONCE              \
 {                                      \
    static bool done = false;           \
@@ -105,13 +104,13 @@
 
 // =============================================================================
 
-// @quote not_constructible 1
+// @quote not_constructible 1 ... };
 struct not_constructible {
 private:
    not_constructible();
 };
 
-// @quote not_copyable 1
+// @quote not_copyable 1 ... };
 struct not_copyable {
 private:
    not_copyable( const not_copyable & );
