@@ -46,7 +46,7 @@ concept pin_in = requires {
 <P>
 A pin_in is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin read-only
 interface to the world outside the target chip.
-A typical use of a pin_in is to read a switch or pushbutton.
+A typical use of a pin_in is to <A HREF=input--output.html#read>read</A> a switch or pushbutton.
 <P>
 <A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_in_root :
@@ -153,7 +153,7 @@ the pin high.
 Open-collector pins are used in various protocols like i2c and one-wire,
 where open-collector pins of more than one chip are connected
 to the same wire.
-Any chip can pull the write low. When no chip does so, a common
+Any chip can pull the <A HREF=input--output.html#write>write</A> low. When no chip does so, a common
 pull-up resistor pulls the line low.
 This arrangement prevents electrical problems which would be caused
 when one chip drives the line low, and another drives it high.

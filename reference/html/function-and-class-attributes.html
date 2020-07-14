@@ -14,7 +14,7 @@
 
 <P>
 <A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
-<pre><code class="c++">#define GODAFOSS_INLINE  ...
+<pre><code class="c++">#define GODAFOSS_INLINE ...
 </code></pre></A>
 GODAFOSS_INLINE forces a function to be inline.
 It is used when the function body is very simple, for instance when
@@ -27,7 +27,7 @@ This serves (only) to reduce code size and execution time.
 
 <a name="GODAFOSS_NO_INLINE"></a>
 <A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
-<pre><code class="c++">#define GODAFOSS_NO_INLINE  ...
+<pre><code class="c++">#define GODAFOSS_NO_INLINE ...
 </code></pre></A>
 GODAFOSS_NO_INLINE forces a function to be not inline.
 This is used to preserve low-level properties of a function,
@@ -40,7 +40,7 @@ This can be important to get predictable timing.
 
 <a name="GODAFOSS_NO_RETURN"></a>
 <A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
-<pre><code class="c++">#define GODAFOSS_NO_RETURN  ...
+<pre><code class="c++">#define GODAFOSS_NO_RETURN ...
 </code></pre></A>
 GODAFOSS_NORETURN indicates that a function will not return.
 It is used for functions that contain a never-ending loop.
@@ -52,7 +52,7 @@ This can reduce code size.
 
 <a name="GODAFOSS_IN_RAM"></a>
 <A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
-<pre><code class="c++">#define GODAFOSS_IN_RAM  ...
+<pre><code class="c++">#define GODAFOSS_IN_RAM ...
 </code></pre></A>
 GODAFOSS_IN_RAM places the function body in RAM (instead of FLASH).
 On some targets, this is necesarry to get predicatable timing,
@@ -64,7 +64,7 @@ or faster execution.
 
 <a name="GODAFOSS_RUN_ONCE"></a>
 <A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
-<pre><code class="c++">#define GODAFOSS_RUN_ONCE               ...
+<pre><code class="c++">#define GODAFOSS_RUN_ONCE ...
 </code></pre></A>
 GODAFOSS_RUN_ONCE causes the remainder of the function (the part after
 the macro) to be executed only once.

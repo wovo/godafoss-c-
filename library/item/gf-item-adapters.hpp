@@ -23,7 +23,12 @@
 //
 // These adapter adapts a item to be (only) an input item,
 // (only) an output item,
-// or an input_output item (if such adaption is possible).
+// or (only) an input_output item
+// (in each case, if such adaption is possible).
+//
+// These adapters serve, of course, to adapt a given item to the
+// adapted role, but also to ensure that the code that uses the adapted
+// item, doesn't use any features beyond the ones of the adapted role.
 //
 // @define godafoss::item_input
 // @section item_input
@@ -32,20 +37,24 @@
 // @insert item_input
 //
 // The item_input<> decorator decorates an item to be an input item,
-// which is possible if the item satisfies the can_input concept.
+// which is possible if the item satisfies the can_input concept,
+// which requires the item to be either an input or an input_output.
 //
 // @insert can_output
 // @insert item_output
 //
 // The item_output<> decorator decorates an item to be an output item,
-// which is possible if the item satisfies the can_output concept.
+// which is possible if the item satisfies the can_output concept,
+// which requires the item to be either an input or an input_output.
 //
 // @insert can_input_output
 // @insert item_input_output
 //
 // The item_input_output<> decorator decorates
 // an item to be an input_output item,
-// which is possible if the item satisfies the can_input_output concept.
+// which is possible if the item satisfies the can_input_output concept,
+// which requires the item to an input_output.
+//
 //
 // =============================================================================
 
@@ -68,7 +77,7 @@ concept can_output =
       output< T >
    || input_output< T >;
 
-// @quote can_input_output 4
+// @quote can_input_output 3
 template< typename T >
 concept can_input_output =
      input_output< T >;
@@ -141,7 +150,7 @@ struct item_output< T > :
 // =============================================================================
 
 // @quote item_input_output 2 ... ;
-template< input_output T >
+template< can_input_output T >
 struct item_input_output
 :
    inherit_init< T >,

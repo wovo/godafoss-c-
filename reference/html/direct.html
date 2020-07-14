@@ -14,12 +14,13 @@
 
 <P>
 The direct<> decorator accepts an <A HREF=item.html#item>item</A> and decorates it by
-inserting the appropriate refresh or flush
-before or after each read, write, or direction change operation,
-and replacing the refresh and flush operations by empty functions.
+inserting the appropriate <A HREF=input--output.html#refresh>refresh</A> or <A HREF=input--output.html#flush>flush</A>
+before or after each
+read, write, or direction change operation,
+and replacing the <A HREF=input--output.html#refresh>refresh()</A> and <A HREF=input--output.html#flush>flush()</A> by empty functions.
 <P>
 The effect is that such a decorated <A HREF=item.html#item>item</A> can be used without
-refresh or flush calls.
+<A HREF=input--output.html#refresh>refresh()</A> or <A HREF=input--output.html#flush>flush()</A> calls.
 <P>
 <A HREF="../../library/item/gf-item-direct.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >

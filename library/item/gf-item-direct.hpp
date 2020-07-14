@@ -23,11 +23,12 @@
 //
 // The direct<> decorator accepts an item and decorates it by
 // inserting the appropriate refresh or flush
-// before or after each read, write, or direction change operation,
-// and replacing the refresh and flush operations by empty functions.
+// before or after each
+// @noref read, write, or direction change operation,
+// and replacing the refresh() and flush() by empty functions.
 //
 // The effect is that such a decorated item can be used without
-// refresh or flush calls.
+// refresh() or flush() calls.
 //
 // @insert can_direct
 // @insert direct

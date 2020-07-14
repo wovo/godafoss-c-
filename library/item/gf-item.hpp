@@ -104,6 +104,7 @@ struct cto_root {
 //
 // An item is a cto that holds one or more data elements of a specific type.
 //
+// @define godafoss::item::value_type
 // @insert item_root
 //
 // All items inherit (in most cases indirectly) from the struct item_root.
@@ -229,7 +230,8 @@ struct pipe_root :
 // by a refresh, and a write must be followed by a flush.
 //
 // The direct<> decorator creates an item for which the
-// read() and write() operations have direct effect.
+// read() and write() operations have
+// @noref direct effect.
 //
 // An item can be an input, an output, or both.
 // When it is an input you can read from it,
@@ -241,6 +243,8 @@ struct pipe_root :
 // (sometimes call half-duplex) or duplex.
 // A duplex box can, at any time, be both read and written.
 //
+// @define godafoss::item::refresh
+// @define godafoss::item::read
 // @section input
 // @insert input_concept
 // @insert input_root
@@ -248,6 +252,8 @@ struct pipe_root :
 // A input is an item that provides a read function that returns
 // a value of the value_type of the item.
 //
+// @define godafoss::item::write
+// @define godafoss::item::flush
 // @section output
 // @insert output_concept
 // @insert output_root
@@ -272,6 +278,9 @@ struct pipe_root :
 // A simplex item is an input_output that has a current direction,
 // which can be input or output.
 //
+// @define godafoss::item::direction_set_input
+// @define godafoss::item::direction_set_output
+// @define godafoss::item::direction_flush
 // @insert simplex_concept
 // @insert simplex_root
 //

@@ -13,7 +13,7 @@
 
 <P>
 Adapters for selectively inheriting only the init,
-read, write, or direction functions of a <A HREF=item.html#item>item</A>.
+<A HREF=input--output.html#read>read</A>, <A HREF=input--output.html#write>write</A>, or direction functions of a <A HREF=item.html#item>item</A>.
 This is used or instance in the <A HREF=item-adapters.html#item_input>item_input<></A> adapter, to
 'pass' only the <A HREF=input--output.html#input>input</A> functionality.
 <P>
@@ -42,7 +42,7 @@ the decorated <A HREF=item.html#item>item</A>.
 struct inherit_read = ... ;
 </code></pre></A>
 <P>
-The inherit_read decorator inherits only the refresh() and read()
+The inherit_read decorator inherits only the <A HREF=input--output.html#refresh>refresh()</A> and <A HREF=input--output.html#read>read()</A>
 functions of the decorated <A HREF=item.html#item>item</A>.
 <P>
 <a name="inherit_write"></a>
@@ -56,7 +56,7 @@ functions of the decorated <A HREF=item.html#item>item</A>.
 struct inherit_write = ... ;
 </code></pre></A>
 <P>
-The inherit_read decorator inherits only the write() and flush()
+The inherit_read decorator inherits only the <A HREF=input--output.html#write>write()</A> and <A HREF=input--output.html#flush>flush()</A>
 functions of the decorated <A HREF=item.html#item>item</A>.
 <P>
 <a name="inherit_direction"></a>
@@ -71,8 +71,8 @@ struct inherit_direction = ... ;
 </code></pre></A>
 <P>
 The inherit_read decorator inherits only the
-direction_set_input(), direction_set_output() and
-direction_flush()
+<A HREF=input--output.html#direction_set_input>direction_set_input()</A>, <A HREF=input--output.html#direction_set_output>direction_set_output()</A> and
+<A HREF=input--output.html#direction_flush>direction_flush()</A>
 functions of the decorated <A HREF=item.html#item>item</A>.
 <P>
 

@@ -29,7 +29,8 @@ For immediate effect on a <A HREF=buffered.html#buffered>buffered</A> <A HREF=it
 by a refresh, and a write must be followed by a flush.
 <P>
 The <A HREF=direct.html#direct>direct<></A> decorator creates an <A HREF=item.html#item>item</A> for which the
-read() and write() operations have <A HREF=direct.html#direct>direct</A> effect.
+read() and write() operations have
+direct effect.
 <P>
 An <A HREF=item.html#item>item</A> can be an input, an output, or both.
 When it is an input you can read from it,
@@ -41,6 +42,8 @@ When an <A HREF=item.html#item>item</A> is both input and output it can be simpl
 (sometimes call half-duplex) or duplex.
 A duplex <A HREF=box--pipe.html#box>box</A> can, at any time, be both read and written.
 <P>
+<a name="refresh"></a>
+<a name="read"></a>
 
 
 <HR>
@@ -65,8 +68,10 @@ struct input_root :
 </code></pre></A>
 <P>
 A input is an <A HREF=item.html#item>item</A> that provides a read function that returns
-a value of the value_type of the <A HREF=item.html#item>item</A>.
+a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.html#item>item</A>.
 <P>
+<a name="write"></a>
+<a name="flush"></a>
 
 
 <HR>
@@ -91,7 +96,7 @@ struct output_root :
 </code></pre></A>
 <P>
 An output is an <A HREF=item.html#item>item</A> that provides a write function that accepts
-a value of the value_type of the <A HREF=item.html#item>item</A>.
+a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.html#item>item</A>.
 <P>
 
 
@@ -143,6 +148,9 @@ struct duplex_root :
 A simplex <A HREF=item.html#item>item</A> is an input_output that has a current direction,
 which can be input or output.
 <P>
+<a name="direction_set_input"></a>
+<a name="direction_set_output"></a>
+<a name="direction_flush"></a>
 <A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept simplex = requires {

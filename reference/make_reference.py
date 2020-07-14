@@ -15,6 +15,10 @@
 #
 # ==============================================================================
 
+# example pin_in, pin_out, pin_oc (one-wire)
+# markdown add anchors, refs, links to code, (link under examples!)
+# markdown add pages, index
+# is_ prefix for concepts??
 # make the files external references in the pdf?
 # italic for things defined on this page?
 # eeprom has multi-byte address!
@@ -38,24 +42,24 @@
 # date and time add << as external (??) support (??) check cpprtef
 # continue with string
 # highlighter can't handle 1'000
-# show first appearance of defined word
+# show first appearance of defined word?
 # set examples path
 # set html path
-# create markdown
 # create rtf?
 # multiple hpp files can contribute to the same page;
 #    in which order? with subheaders?
 # check gf-attributes: should be betweitemen the code??
 # pdf title page has header and footer
 # pictures! HD44780,
-# this is a reference, so sort pages in rest/pdf alphabetically
 # US size pdf
-# run-once has excess spaces
-# extra space after MACROs
+# @image
 
 # arch:
 #    sudo python -m ensurepip --upgrade
 #    sudo python -m pip install restview
+#    restview godafoss.rest &
+#    sudo python -m pip install grip
+#    grip godafoss.md -b &
 #    restview godafoss.rest &
 #    sudo python -m pip install rst2pdf
 #    rst2pdf mydocument.txt -o mydocument.pdf
@@ -127,13 +131,13 @@ def rest_page_break( s = "oneColumn" ):
    return "\n\n.. raw:: pdf\n\n    PageBreak %s\n\n" % s
 
 def run_rst2pdf( in_name, out_name ):
-   #try:
-   #   import rst2pdf
-   #except:
-   #   print( "install rst2pdf:\n   # sudo python -m pip install rst2pdf " )
-   #   return
-   #print( rstpdf.
-   #rst2pdf.createpdf.createPdf( input = in_name, output = out_name )
+   try:
+      import rst2pdf
+   except:
+      print( "install rst2pdf:\n   # sudo python -m pip install rst2pdf " )
+      return
+
+   # https://rst2pdf.org/static/manual.html
    os.system( "rst2pdf %s -o %s " % ( in_name, out_name ) )
 
 def make_file_name( s ):
@@ -150,12 +154,15 @@ def make_file_name( s ):
 
 class text_line:
 
-   def __init__( self, s, item, defines ):
+   def __init__( self, s, item, defines, replace_refs ):
       self.s = s
       self.item = item
       self.defines = defines
+      self.replace_refs = replace_refs
 
    def insert_references( self, s, replacement ):
+      if not self.replace_refs:
+         return s
       for name, item in self.defines:
          if item != self.item:
             start = 0
@@ -212,7 +219,7 @@ class text_bar:
       return "\n\n---------------------------------\n"
 
    def rest( self ):
-     return "\n\n---------------------------------\n"
+     return "\n\n----------------------------------\n"
 
    def html( self ):
       return "\n\n<HR>\n"
@@ -239,7 +246,11 @@ class title:
       self.s = s
 
    def markdown( self ):
-      return self.s + "\n" + len( self.s ) * ""
+      s = "\n"
+      s += 30 * "-" + "\n"
+      s += 30 * "-" + "\n"
+      s += "\n## %s\n" % self.s
+      return s
 
    def rest( self ):
       t = self.s.replace( "\n", "" )
@@ -258,9 +269,9 @@ class section:
       self.s = s
 
    def markdown( self ):
-      return self.s + "\n" + len( self.s ) * ""
+      return "\n### %s\n" % self.s
 
-   def rest( self ): # wovo
+   def rest( self ):
       t = self.s.replace( "\n", "" )
       h = len( t ) * "*" + "\n"
       s = "\n" + t + "\n" +  h
@@ -276,7 +287,7 @@ class code:
       self.url = url
 
    def markdown( self ):
-      return self.s
+      return "```c++\n%s```" % self.s
 
    def rest( self ):
       return ":: \n\n" + indent( self.s, "  " )
@@ -372,7 +383,7 @@ class item:
                self.content.append( code( s, "../" + example_file_name ))
 
          elif line.strip().startswith( "@define " ):
-            t = after( line, "@define " ).replace( "godafoss::", "" )
+            t = after( line, "@define " ).replace( "godafoss::", "" ).replace( "item::", "" )
             self.global_defines.append( [ t, self ] )
             self.content.append( define( t ))
 
@@ -383,15 +394,14 @@ class item:
             self.content.append( code(
                refs.get( t, "<missing>" ), "../" + file_name))
 
-         #elif line.strip().startswith( "@ref" ):
-         #   t = after( line, "@ref" )
-         #   self.content.append( text_ref( t ))
-
          elif line.strip().startswith( "@bar" ):
             self.content.append( text_bar())
 
+         elif line.strip().startswith( "@noref " ):
+            self.content.append( text_line( after( line, "@noref " ), self, global_defines, False ))
+
          elif not line.strip().startswith( "@" ):
-            self.content.append( text_line( line, self, global_defines ))
+            self.content.append( text_line( line, self, global_defines, True ))
 
          else:
             error( file_name, line_number, "unknown @ '%s'" % line )
@@ -457,7 +467,7 @@ class documentation:
             quote += original_line
             if count == 0:
                s = strip_end( quote, " " )
-               if s.endswith( "\\\n" ): s = s[ : -2 ] + "\n"
+               if s.endswith( "\\\n" ): s = strip_end( s[ : -2 ], " " ) + "\n"
                s = s[ : -1 ] + extra + "\n"
                refs[ name ] = refs.get( name, "" ) + s
 
@@ -504,8 +514,36 @@ class documentation:
 
       self.items.sort( key = lambda item: item.title)
 
-   def markdown( self ):
-      pass
+   def markdown( self, file_name = "godafoss.md"  ):
+      s = ""
+
+      s += '![Godafoss waterfalls](../images/godafoss-waterfalls.jpg "the Godafoss waterfalls")\n'
+      s += "# Godafoss reference\n"
+
+      for item in self.items:
+         s += item.markdown()
+
+      write_file( file_name, s )
+      return
+
+      s = ""
+      s += '<IMG SRC="../images/godafoss-waterfalls.jpg" alt="Godafoss waterfalls" width="400" >\n'
+
+      s += "<H2>Pages</H2>\n"
+      for item in self.items:
+         s += "<LI><A HREF='%s'>%s</A>\n" % \
+            ( make_file_name( item.title ) + ".html", item.title )
+
+      map = {}
+      for name, item in self.global_defines:
+            map[ name ] = item
+
+      s += "<H2>Index</H2>\n"
+      for d in sortedkeys( map ):
+         s += "<LI><A HREF='%s#%s'>%s</A>\n" % \
+            ( make_file_name( map[ d ].title ) + ".html", d, d )
+
+      write_html( dir, "index", s )
 
    def html( self, dir = "html" ):
       try:
@@ -576,4 +614,5 @@ for dirpath, dirnames, filenames in os.walk( "../library" ):
 
 d = documentation( list )
 d.html()
+d.markdown()
 d.rest()

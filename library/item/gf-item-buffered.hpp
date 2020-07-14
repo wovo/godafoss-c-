@@ -22,7 +22,7 @@
 // @title buffered
 //
 // The buffered<> decorator buffers read, write or direction operations,
-// necessitating appropriate refresh or flush calls.
+// necessitating appropriate refresh() or flush() calls.
 //
 // @insert can_buffered
 // @insert buffered
@@ -147,7 +147,7 @@ concept can_buffered = requires {
    item< T >;
 };
 
-// @quote buffered 4 ... ;
+// @quote buffered 2 ... ;
 template< can_buffered T >
 struct buffered
 :

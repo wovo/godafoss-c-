@@ -27,7 +27,7 @@ a pipe behaves like a sequence of values.
 <P>
 A box is an <A HREF=item.html#item>item</A> that has or contains (at any point in time) a single value.
 A box has value semantics:
-when you read from a box twice in rapid succession,
+when you <A HREF=input--output.html#read>read</A> from a box twice in rapid succession,
 you will get the same value.
 Writing to an <A HREF=item.html#item>item</A> overwrites its old value in the box.
 <P>
@@ -54,11 +54,11 @@ struct box_root :
 <H3>pipe</H3>
 <P>
 A pipe is an <A HREF=item.html#item>item</A> that holds a sequence of values.
-A write to a pipe adds a new value the sequence.
-Hence all writes to a stream matter, including
-repeated writes of the same value.
+A <A HREF=input--output.html#write>write</A> to a pipe adds a new value the sequence.
+Hence all <A HREF=input--output.html#write>writes</A> to a stream matter, including
+repeated <A HREF=input--output.html#write>writes</A> of the same value.
 Reading from a pipe is destructive: it consumes the value that was
-read from the sequence.
+<A HREF=input--output.html#read>read</A> from the sequence.
 Writing to a pipe adds a value to the sequnce.
 <P>
 <A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">

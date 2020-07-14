@@ -20,8 +20,8 @@ A summary of terms:
    <LI> item: holds some data elements(s))
    <LI> <A HREF=box--pipe.html#box>box</A>: item that always holds one element of the data
    <LI> <A HREF=box--pipe.html#pipe>pipe</A>: item that holds a sequence of data elements
-   <LI> <A HREF=input--output.html#input>input</A>: item that supports read()
-   <LI> <A HREF=input--output.html#output>output</A>: item that supports write()
+   <LI> <A HREF=input--output.html#input>input</A>: item that supports <A HREF=input--output.html#read>read()</A>
+   <LI> <A HREF=input--output.html#output>output</A>: item that supports <A HREF=input--output.html#write>write()</A>
    <LI> <A HREF=input--output.html#input_output>input_output</A>: both <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A>
    <LI> <A HREF=input--output.html#duplex>duplex</A>: both <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A> at the same time
    <LI> <A HREF=input--output.html#simplex>simplex</A>: both <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A>, but not at the same time
@@ -36,6 +36,7 @@ concept item = requires {
 <P>
 An item is a <A HREF=cto.html#cto>cto</A> that holds one or more data elements of a specific type.
 <P>
+<a name="value_type"></a>
 <A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 struct item_root : cto_root {

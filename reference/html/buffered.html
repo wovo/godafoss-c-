@@ -13,8 +13,8 @@
 <HR>
 
 <P>
-The buffered<> decorator buffers read, write or direction operations,
-necessitating appropriate refresh or flush calls.
+The buffered<> decorator buffers <A HREF=input--output.html#read>read</A>, <A HREF=input--output.html#write>write</A> or direction operations,
+necessitating appropriate <A HREF=input--output.html#refresh>refresh()</A> or <A HREF=input--output.html#flush>flush()</A> calls.
 <P>
 <A HREF="../../library/item/gf-item-buffered.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
@@ -24,9 +24,7 @@ concept can_buffered = requires {
 </code></pre></A>
 <A HREF="../../library/item/gf-item-buffered.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_buffered T >
-struct buffered
-:
-   _buffered_read< ... ;
+struct buffered ... ;
 </code></pre></A>
 <P>
 
