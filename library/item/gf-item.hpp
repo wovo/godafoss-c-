@@ -249,7 +249,7 @@ struct pipe_root :
 // @insert input_concept
 // @insert input_root
 //
-// A input is an item that provides a read function that returns
+// A input is an item that provides a read() function that returns
 // a value of the value_type of the item.
 //
 // @define godafoss::item::write
@@ -258,7 +258,7 @@ struct pipe_root :
 // @insert output_concept
 // @insert output_root
 //
-// An output is an item that provides a write function that accepts
+// An output is an item that provides a write() function that accepts
 // a value of the value_type of the item.
 //
 // @section input_output

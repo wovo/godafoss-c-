@@ -1,13 +1,13 @@
 ![Godafoss waterfalls](../images/godafoss-waterfalls.jpg "the Godafoss waterfalls")
 # Godafoss reference
-[>background<]
+<a name="background"></a>
 
 ------------------------------
 ------------------------------
 
 ## background processing
 
-from: ../library/basics/gf-background.hpp
+from [basics/gf-background.hpp](../library/basics/gf-background.hpp)
 
 
 ---------------------------------
@@ -89,21 +89,21 @@ int main(){
 };
 ```
 
-[>box<]
-[>pipe<]
+<a name="box"></a>
+<a name="pipe"></a>
 
 ------------------------------
 ------------------------------
 
 ## box, pipe
 
-from: ../library/item/gf-item.hpp
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
 
 
-A box and a pipe are two kinds of item_.
+A box and a pipe are two kinds of **[item](#item)**.
 The difference is their semantics: a box behaves like a variable
 that holds a single value,
 a pipe behaves like a sequence of values.
@@ -116,11 +116,11 @@ a pipe behaves like a sequence of values.
 ### box
 
 
-A box is an item_ that has or contains (at any point in time) a single value.
+A box is an **[item](#item)** that has or contains (at any point in time) a single value.
 A box has value semantics:
-when you read_ from a box twice in rapid succession,
+when you **[read](#read)** from a box twice in rapid succession,
 you will get the same value.
-Writing to an item_ overwrites its old value in the box.
+Writing to an **[item](#item)** overwrites its old value in the box.
 
 ```c++
 template< typename T >
@@ -146,12 +146,12 @@ struct box_root :
 ### pipe
 
 
-A pipe is an item_ that holds a sequence of values.
-A write_ to a pipe adds a new value the sequence.
-Hence all write_ to a stream matter, including
-repeated write_ of the same value.
+A pipe is an **[item](#item)** that holds a sequence of values.
+A **[write](#write)** to a pipe adds a new value the sequence.
+Hence all **[write](#write)** to a stream matter, including
+repeated **[write](#write)** of the same value.
 Reading from a pipe is destructive: it consumes the value that was
-read_ from the sequence.
+**[read](#read)** from the sequence.
 Writing to a pipe adds a value to the sequnce.
 
 ```c++
@@ -170,21 +170,21 @@ struct pipe_root :
 };
 ```
 
-[>buffered<]
+<a name="buffered"></a>
 
 ------------------------------
 ------------------------------
 
 ## buffered
 
-from: ../library/item/gf-item-buffered.hpp
+from [item/gf-item-buffered.hpp](../library/item/gf-item-buffered.hpp)
 
 
 ---------------------------------
 
 
-The buffered<> decorator buffers read_, write_ or direction operations,
-necessitating appropriate refresh_ or flush_ calls.
+The buffered<> decorator buffers **[read](#read)**, **[write](#write)** or direction operations,
+necessitating appropriate **[refresh](#refresh)** or **[flush](#flush)** calls.
 
 ```c++
 template< typename T >
@@ -197,14 +197,14 @@ template< can_buffered T >
 struct buffered ... ;
 ```
 
-[>cto<]
+<a name="cto"></a>
 
 ------------------------------
 ------------------------------
 
 ## cto
 
-from: ../library/item/gf-item.hpp
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
@@ -271,12 +271,12 @@ all cto's inherit (in most cases indirectly) from this struct.
 
 ## date and time
 
-from: ../library/adts/gf-date-and-time.hpp
+from [adts/gf-date-and-time.hpp](../library/adts/gf-date-and-time.hpp)
 
 
 ---------------------------------
 
-[>date_and_time<]
+<a name="date_and_time"></a>
 
 ```c++
 struct date_and_time { ... };
@@ -320,27 +320,27 @@ stream & operator<<( stream & lhs, by_const< date_and_time > dt ){ ... }
 
 The operator<< prints a data_and_time in the format YY-MM-DD HH:MM.SS dW.
 
-[>direct<]
+<a name="direct"></a>
 
 ------------------------------
 ------------------------------
 
 ## direct
 
-from: ../library/item/gf-item-direct.hpp
+from [item/gf-item-direct.hpp](../library/item/gf-item-direct.hpp)
 
 
 ---------------------------------
 
 
-The direct<> decorator accepts an item_ and decorates it by
-inserting the appropriate refresh_ or flush_
+The direct<> decorator accepts an **[item](#item)** and decorates it by
+inserting the appropriate **[refresh](#refresh)** or **[flush](#flush)**
 before or after each
 read, write, or direction change operation,
-and replacing the refresh_ and flush_ by empty functions.
+and replacing the **[refresh](#refresh)** and **[flush](#flush)** by empty functions.
 
-The effect is that such a decorated item_ can be used without
-refresh_ or flush_ calls.
+The effect is that such a decorated **[item](#item)** can be used without
+**[refresh](#refresh)** or **[flush](#flush)** calls.
 
 ```c++
 template< typename T >
@@ -354,14 +354,43 @@ template< typename T >
 struct direct< T > : ... ;
 ```
 
-[>GODAFOSS_INLINE<]
+
+
+---------------------------------
+
+
+### example
+
+```c++
+#include "godafoss.hpp"
+namespace gf      = godafoss;
+using target      = gf::target<>;
+using pin         = gf::pin_out_from< target::d13 >;
+using direct_pin  = gf::direct< pin >;
+
+int main(){
+
+   pin::init();
+
+   // write, followed by an explicit flush
+   pin::write( 1 );
+   pin::flush();
+
+   // write to a direct<> pin implies an implicit flush(),
+   // so no explicit fluish() is needed
+   direct_pin::write( 1 );
+
+};
+```
+
+<a name="GODAFOSS_INLINE"></a>
 
 ------------------------------
 ------------------------------
 
 ## function and class attributes
 
-from: ../library/basics/gf-attributes.hpp
+from [basics/gf-attributes.hpp](../library/basics/gf-attributes.hpp)
 
 
 ---------------------------------
@@ -379,7 +408,7 @@ This serves (only) to reduce code size and execution time.
 
 ---------------------------------
 
-[>GODAFOSS_NO_INLINE<]
+<a name="GODAFOSS_NO_INLINE"></a>
 ```c++
 #define GODAFOSS_NO_INLINE ...
 ```
@@ -392,7 +421,7 @@ This can be important to get predictable timing.
 
 ---------------------------------
 
-[>GODAFOSS_NO_RETURN<]
+<a name="GODAFOSS_NO_RETURN"></a>
 ```c++
 #define GODAFOSS_NO_RETURN ...
 ```
@@ -404,7 +433,7 @@ This can reduce code size.
 
 ---------------------------------
 
-[>GODAFOSS_IN_RAM<]
+<a name="GODAFOSS_IN_RAM"></a>
 ```c++
 #define GODAFOSS_IN_RAM ...
 ```
@@ -416,7 +445,7 @@ or faster execution.
 
 ---------------------------------
 
-[>GODAFOSS_RUN_ONCE<]
+<a name="GODAFOSS_RUN_ONCE"></a>
 ```c++
 #define GODAFOSS_RUN_ONCE ...
 ```
@@ -427,7 +456,7 @@ the macro) to be executed only once.
 
 ---------------------------------
 
-[>not_constructible<]
+<a name="not_constructible"></a>
 ```c++
 struct not_constructible { ... };
 ```
@@ -438,21 +467,21 @@ of that class.
 
 ---------------------------------
 
-[>not_copyable<]
+<a name="not_copyable"></a>
 ```c++
 struct not_copyable { ... };
 ```
 Inheriting from not_copyable makes it impossible to copy an object
 of that class.
 
-[>hd44780_rs_e_d_s_timing<]
+<a name="hd44780_rs_e_d_s_timing"></a>
 
 ------------------------------
 ------------------------------
 
 ## hd44780
 
-from: ../library/chips/gf-hd44780.hpp
+from [chips/gf-hd44780.hpp](../library/chips/gf-hd44780.hpp)
 
 
 ---------------------------------
@@ -474,7 +503,7 @@ template<
 The rs, e and port must connect to the corresponding pins of the lcd.
 The lcd is used in 4-bit mode, so the port must connect to the
 d0..d3 of the lcd, the d4..d7 can be left unconnected.
-Only write_ to the lcd are used.
+Only **[write](#write)** to the lcd are used.
 The _r/w pin must be connected to ground.
 
 The size of the lcd must be specified
@@ -499,13 +528,13 @@ bla blas
 
 ## hx711
 
-from: ../library/chips/gf-hx711.hpp
+from [chips/gf-hx711.hpp](../library/chips/gf-hx711.hpp)
 
 
 ---------------------------------
 
 
-[>hx711<]
+<a name="hx711"></a>
 
 This template implements an interface to the
 hx711 24-Bit Analog-to-Digital Converter (ADC).
@@ -535,15 +564,15 @@ and a slave-to-master data pin (dout).
 
 The timing is used for the waits as required by the hx711 datasheet.
 
-The mode offers a choice between the A differential input_ with
-a gain of 128 or 64, and the B input_ with a gain of 32.
-The A input_ are meant to be used with a load cell.
-The datasheet suggest that the B input_ could be used to monitior
+The mode offers a choice between the A differential **[input](#input)** with
+a gain of 128 or 64, and the B **[input](#input)** with a gain of 32.
+The A **[input](#input)** are meant to be used with a load cell.
+The datasheet suggest that the B **[input](#input)** could be used to monitior
 the battery voltage.
 The mode is set at the initialization (the defauylt is a_128),
 and can be changed by the mode_set() function.
 
-The chip can be powered down. When a read_ is done the chip
+The chip can be powered down. When a **[read](#read)** is done the chip
 is first (automatically) powered up.
 
 
@@ -552,18 +581,18 @@ is first (automatically) powered up.
 
 ## inherit_*
 
-from: ../library/item/gf-item-inherit.hpp
+from [item/gf-item-inherit.hpp](../library/item/gf-item-inherit.hpp)
 
 
 ---------------------------------
 
 
 Adapters for selectively inheriting only the init,
-read_, write_, or direction functions of a item_.
-This is used or instance in the item_input_ adapter, to
-'pass' only the input_ functionality.
+**[read](#read)**, **[write](#write)**, or direction functions of a **[item](#item)**.
+This is used or instance in the **[item_input](#item_input)** adapter, to
+'pass' only the **[input](#input)** functionality.
 
-[>inherit_init<]
+<a name="inherit_init"></a>
 
 
 ---------------------------------
@@ -577,9 +606,9 @@ struct inherit_init = ... ;
 ```
 
 The inherit_init decorator inherits only the init() function of
-the decorated item_.
+the decorated **[item](#item)**.
 
-[>inherit_read<]
+<a name="inherit_read"></a>
 
 
 ---------------------------------
@@ -592,10 +621,10 @@ template< typename T >
 struct inherit_read = ... ;
 ```
 
-The inherit_read decorator inherits only the refresh_ and read_
-functions of the decorated item_.
+The inherit_read decorator inherits only the **[refresh](#refresh)** and **[read](#read)**
+functions of the decorated **[item](#item)**.
 
-[>inherit_write<]
+<a name="inherit_write"></a>
 
 
 ---------------------------------
@@ -608,10 +637,10 @@ template< typename T >
 struct inherit_write = ... ;
 ```
 
-The inherit_read decorator inherits only the write_ and flush_
-functions of the decorated item_.
+The inherit_read decorator inherits only the **[write](#write)** and **[flush](#flush)**
+functions of the decorated **[item](#item)**.
 
-[>inherit_direction<]
+<a name="inherit_direction"></a>
 
 
 ---------------------------------
@@ -625,54 +654,54 @@ struct inherit_direction = ... ;
 ```
 
 The inherit_read decorator inherits only the
-direction_set_input_, direction_set_output_ and
-direction_flush_
-functions of the decorated item_.
+**[direction_set_input](#direction_set_input)**, **[direction_set_output](#direction_set_output)** and
+**[direction_flush](#direction_flush)**
+functions of the decorated **[item](#item)**.
 
-[>input<]
-[>output<]
-[>input_output<]
-[>duplex<]
-[>simplex<]
+<a name="input"></a>
+<a name="output"></a>
+<a name="input_output"></a>
+<a name="duplex"></a>
+<a name="simplex"></a>
 
 ------------------------------
 ------------------------------
 
 ## input, output
 
-from: ../library/item/gf-item.hpp
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
 
 
-An item_ can be an input (from which you can read) and/or an output
+An **[item](#item)** can be an input (from which you can read) and/or an output
 (to which you can write).
 
-An input or output item_ can be buffered_.
+An input or output **[item](#item)** can be **[buffered](#buffered)**.
 For an output, this means that the effect of write operations
 can be postponed until the next flush call.
 For an input, this means that a read operation reflects
 the situation immediately before that last refresh call, or later.
-For immediate effect on a buffered_ item_, a read must be preceded
+For immediate effect on a **[buffered](#buffered)** **[item](#item)**, a read must be preceded
 by a refresh, and a write must be followed by a flush.
 
-The direct_ decorator creates an item_ for which the
+The **[direct](#direct)** decorator creates an **[item](#item)** for which the
 read() and write() operations have
 direct effect.
 
-An item_ can be an input, an output, or both.
+An **[item](#item)** can be an input, an output, or both.
 When it is an input you can read from it,
 when it is an output you can write to it.
-(In theory an item_ could be neither,
+(In theory an **[item](#item)** could be neither,
 but that would not be very useful.)
 
-When an item_ is both input and output it can be simplex
+When an **[item](#item)** is both input and output it can be simplex
 (sometimes call half-duplex) or duplex.
-A duplex box_ can, at any time, be both read and written.
+A duplex **[box](#box)** can, at any time, be both read and written.
 
-[>refresh<]
-[>read<]
+<a name="refresh"></a>
+<a name="read"></a>
 
 
 ---------------------------------
@@ -698,11 +727,11 @@ struct input_root :
 };
 ```
 
-A input is an item_ that provides a read function that returns
-a value of the value_type_ of the item_.
+A input is an **[item](#item)** that provides a read() function that returns
+a value of the **[value_type](#value_type)** of the **[item](#item)**.
 
-[>write<]
-[>flush<]
+<a name="write"></a>
+<a name="flush"></a>
 
 
 ---------------------------------
@@ -728,8 +757,8 @@ struct output_root :
 };
 ```
 
-An output is an item_ that provides a write function that accepts
-a value of the value_type_ of the item_.
+An output is an **[item](#item)** that provides a write() function that accepts
+a value of the **[value_type](#value_type)** of the **[item](#item)**.
 
 
 
@@ -753,7 +782,7 @@ struct input_output_root :
 {};
 ```
 
-An input_output is an item_ that is both an input and an output.
+An input_output is an **[item](#item)** that is both an input and an output.
 
 
 
@@ -763,7 +792,7 @@ An input_output is an item_ that is both an input and an output.
 ### direction
 
 
-A duplex item_ is an input_output that can function both as
+A duplex **[item](#item)** is an input_output that can function both as
 an input and as an output at the same time.
 
 ```c++
@@ -782,12 +811,12 @@ struct duplex_root :
 };
 ```
 
-A simplex item_ is an input_output that has a current direction,
+A simplex **[item](#item)** is an input_output that has a current direction,
 which can be input or output.
 
-[>direction_set_input<]
-[>direction_set_output<]
-[>direction_flush<]
+<a name="direction_set_input"></a>
+<a name="direction_set_output"></a>
+<a name="direction_flush"></a>
 ```c++
 template< typename T >
 concept simplex = requires {
@@ -807,27 +836,27 @@ struct simplex_root :
 };
 ```
 
-The direction of a simplex item_ can be changed
+The direction of a simplex **[item](#item)** can be changed
 with a direction_set_input or direction_set_output call.
-For a successful read, the direction of a simplex box_ must be input.
-For a successful write, the direction of a simplex box_ must be output.
+For a successful read, the direction of a simplex **[box](#box)** must be input.
+For a successful write, the direction of a simplex **[box](#box)** must be output.
 Otherwise a write can have no effect at all, or have a delayed effect,
 and a read returns an unspecified value, and for a stream it can either
 consume the value or not.
 
 The effect of calling a direction_set... function can be delayed
 up to the next direction_flush() call.
-Like for read() and write(), direct_ can be used
+Like for read() and write(), **[direct](#direct)** can be used
 to get an immediate effect.
 
-[>uint_bits<]
+<a name="uint_bits"></a>
 
 ------------------------------
 ------------------------------
 
 ## ints specified by number of bits
 
-from: ../library/basics/gf-ints.hpp
+from [basics/gf-ints.hpp](../library/basics/gf-ints.hpp)
 
 
 ---------------------------------
@@ -866,20 +895,20 @@ use uint_bits< N >::least for arrays.
 
 bla bla
 
-[>invert<]
+<a name="invert"></a>
 
 ------------------------------
 ------------------------------
 
 ## invert
 
-from: ../library/item/gf-item-invert.hpp
+from [item/gf-item-invert.hpp](../library/item/gf-item-invert.hpp)
 
 
 ---------------------------------
 
 
-The invert<> decorator inverts the value written to or read_ from an item_.
+The invert<> decorator inverts the value written to or **[read](#read)** from an **[item](#item)**.
 
 ```c++
 // invert is supported for an item that has an invert function
@@ -896,31 +925,31 @@ template< can_invert T >
 struct invert< T > ... ;
 ```
 
-[>item<]
+<a name="item"></a>
 
 ------------------------------
 ------------------------------
 
 ## item
 
-from: ../library/item/gf-item.hpp
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
 
 
-An item is the basic cto_ from which most other cto_'s are derived.
+An item is the basic **[cto](#cto)** from which most other **[cto](#cto)**'s are derived.
 
 A summary of terms:
-   - cto_: a compile-time (static) object
+   - **[cto](#cto)**: a compile-time (static) object
    - item: holds some data elements(s))
-   - box_: item that always holds one element of the data
-   - pipe_: item that holds a sequence of data elements
-   - input_: item that supports read_
-   - output_: item that supports write_
-   - input_output_: both input_ and output_
-   - duplex_: both input_ and output_ at the same time
-   - simplex_: both input_ and output_, but not at the same time
+   - **[box](#box)**: item that always holds one element of the data
+   - **[pipe](#pipe)**: item that holds a sequence of data elements
+   - **[input](#input)**: item that supports **[read](#read)**
+   - **[output](#output)**: item that supports **[write](#write)**
+   - **[input_output](#input_output)**: both **[input](#input)** and **[output](#output)**
+   - **[duplex](#duplex)**: both **[input](#input)** and **[output](#output)** at the same time
+   - **[simplex](#simplex)**: both **[input](#input)** and **[output](#output)**, but not at the same time
 
 ```c++
 template< typename T >
@@ -930,9 +959,9 @@ concept item = requires {
 };
 ```
 
-An item is a cto_ that holds one or more data elements of a specific type.
+An item is a **[cto](#cto)** that holds one or more data elements of a specific type.
 
-[>value_type<]
+<a name="value_type"></a>
 ```c++
 template< typename T >
 struct item_root : cto_root {
@@ -949,22 +978,23 @@ All items inherit (in most cases indirectly) from the struct item_root.
 
 ## item adapters
 
-from: ../library/item/gf-item-adapters.hpp
+from [item/gf-item-adapters.hpp](../library/item/gf-item-adapters.hpp)
 
 
 ---------------------------------
 
 
-These adapter adapts a item_ to be (only) an input_ item_,
-(only) an output_ item_,
-or (only) an input_output_ item_
+These adapter adapts a **[item](#item)** to be (only) an **[input](#input)** **[item](#item)**,
+(only) an **[output](#output)** **[item](#item)**,
+or (only) an **[input_output](#input_output)** **[item](#item)**
 (in each case, if such adaption is possible).
 
-These adapters serve, of course, to adapt a given item_ to the
+These adapters serve, of course, to adapt a given **[item](#item)** to the
 adapted role, but also to ensure that the code that uses the adapted
-item_, doesn't use any features beyond the ones of the adapted role.
+**[item](#item)**, doesn't use any features beyond the ones of the adapted role.
 
-[>item_input<]
+
+<a name="item_input"></a>
 
 
 ---------------------------------
@@ -984,9 +1014,19 @@ template< can_input T >
 struct item_input ... ;
 ```
 
-The item_input<> decorator decorates an item_ to be an input_ item_,
-which is possible if the item_ satisfies the can_input concept,
-which requires the item_ to be either an input_ or an input_output_.
+The item_input<> decorator decorates an **[item](#item)** to be an **[input](#input)** **[item](#item)**,
+which is possible if the **[item](#item)** satisfies the can_input concept,
+which requires the **[item](#item)** to be either an **[input](#input)** or an **[input_output](#input_output)**.
+
+
+<a name="item_output"></a>
+
+
+---------------------------------
+
+
+### item_output
+
 
 ```c++
 template< typename T >
@@ -999,9 +1039,19 @@ template< can_output T >
 struct item_output ... ;
 ```
 
-The item_output<> decorator decorates an item_ to be an output_ item_,
-which is possible if the item_ satisfies the can_output concept,
-which requires the item_ to be either an input_ or an input_output_.
+The item_output<> decorator decorates an **[item](#item)** to be an **[output](#output)** **[item](#item)**,
+which is possible if the **[item](#item)** satisfies the can_output concept,
+which requires the **[item](#item)** to be either an **[input](#input)** or an **[input_output](#input_output)**.
+
+
+<a name="item_input_output"></a>
+
+
+---------------------------------
+
+
+### item_input_output
+
 
 ```c++
 template< typename T >
@@ -1014,30 +1064,29 @@ struct item_input_output ... ;
 ```
 
 The item_input_output<> decorator decorates
-an item_ to be an input_output_ item_,
-which is possible if the item_ satisfies the can_input_output concept,
-which requires the item_ to an input_output_.
+an **[item](#item)** to be an **[input_output](#input_output)** **[item](#item)**,
+which is possible if the **[item](#item)** satisfies the can_input_output concept,
+which requires the **[item](#item)** to an **[input_output](#input_output)**.
 
-
-[>no_inline<]
+<a name="no_inline"></a>
 
 ------------------------------
 ------------------------------
 
 ## no_inline
 
-from: ../library/item/gf-item-no-inline.hpp
+from [item/gf-item-no-inline.hpp](../library/item/gf-item-no-inline.hpp)
 
 
 ---------------------------------
 
 
-The no_inline<> item_ decorator creates an item_ for which all functions
+The no_inline<> **[item](#item)** decorator creates an **[item](#item)** for which all functions
 are not inline.
 
-This can be used as the outermost decorator around an item_ constructed
+This can be used as the outermost decorator around an **[item](#item)** constructed
 from a chain of inheritances, in which the chain of function calls
-is all marked GODAFOSS_INLINE_.
+is all marked **[GODAFOSS_INLINE](#GODAFOSS_INLINE)**.
 
 ```c++
 template< item T >
@@ -1050,7 +1099,7 @@ using no_inline = ... ;
 
 ## passing a readonly parameter
 
-from: ../library/basics/gf-passing.hpp
+from [basics/gf-passing.hpp](../library/basics/gf-passing.hpp)
 
 
 ---------------------------------
@@ -1061,7 +1110,7 @@ from: ../library/basics/gf-passing.hpp
 template< typename T >
 using by_const = ...
 ```
-[>by_const<]
+<a name="by_const"></a>
 
 The by_const< type > template is the preferred way to pass a
 const value of the type passed_type.
@@ -1099,13 +1148,13 @@ int main(){
 
 ## pins
 
-from: ../library/pins/gf-pin.hpp
+from [pins/gf-pin.hpp](../library/pins/gf-pin.hpp)
 
 
 ---------------------------------
 
 
-A pin is a box_< bool > cto_ that is used to asbstract a
+A pin is a **[box](#box)**< bool > **[cto](#cto)** that is used to asbstract a
 GPIO (general-purpose input-output interface) pin on a
 micro-controller (or peripheral chip),
 or the more limited input-only, output-only,
@@ -1118,11 +1167,11 @@ When a pin represents a functionality, for instance 'enable',
 true (or 1) means that the function is enabled, and
 false (or 0) means that the function is not enabled (disabled).
 
-When the phyiscal pin is active-low, an invert_ decrorator
+When the phyiscal pin is active-low, an **[invert](#invert)** decrorator
 is used to create the internal active-high representation of the pin.
 
 
-[>pin_in<]
+<a name="pin_in"></a>
 
 
 ---------------------------------
@@ -1139,9 +1188,9 @@ concept pin_in = requires {
 };
 ```
 
-A pin_in is a box_< bool > cto_ that abstracts a single-pin read-only
+A pin_in is a **[box](#box)**< bool > **[cto](#cto)** that abstracts a single-pin read-only
 interface to the world outside the target chip.
-A typical use of a pin_in is to read_ a switch or pushbutton.
+A typical use of a pin_in is to **[read](#read)** a switch or pushbutton.
 
 ```c++
 struct pin_in_root :
@@ -1152,10 +1201,10 @@ struct pin_in_root :
 };
 ```
 
-All pin_in cto_'s inherit from pin_in_root.
+All pin_in **[cto](#cto)**'s inherit from pin_in_root.
 
 
-[>pin_out<]
+<a name="pin_out"></a>
 
 
 ---------------------------------
@@ -1172,7 +1221,7 @@ concept pin_out = requires {
 };
 ```
 
-A pin_in is a box_< bool > cto_ that abstracts a single-pin write-only
+A pin_in is a **[box](#box)**< bool > **[cto](#cto)** that abstracts a single-pin write-only
 interface to the world outside the target chip.
 A typical use of a pin_in is to drive an LED.
 
@@ -1185,10 +1234,10 @@ struct pin_out_root :
 };
 ```
 
-All pin_out cto_'s inherit from pin_out_root.
+All pin_out **[cto](#cto)**'s inherit from pin_out_root.
 
 
-[>pin_in_out<]
+<a name="pin_in_out"></a>
 
 
 ---------------------------------
@@ -1205,13 +1254,13 @@ concept pin_in_out = requires {
 };
 ```
 
-A pin_in_out is a box_< bool > cto_ that abstracts a single-pin simplex_
+A pin_in_out is a **[box](#box)**< bool > **[cto](#cto)** that abstracts a single-pin **[simplex](#simplex)**
 read-write interface to the world outside the target chip.
 A pin_in_out is the most versatile of the pin types,
 because it can be used in any of the roles.
 In most cases a pin_in_out is used as either pin, a a pin_out,
 or a pin_oc, but some communication protocols
-require a pin to be switched between input_ and output_.
+require a pin to be switched between **[input](#input)** and **[output](#output)**.
 
 ```c++
 struct pin_in_out_root :
@@ -1222,11 +1271,11 @@ struct pin_in_out_root :
 };
 ```
 
-All pin_in cto_'s inherit from pin_in_out_root.
+All pin_in **[cto](#cto)**'s inherit from pin_in_out_root.
 
 
 
-[>pin_oc<]
+<a name="pin_oc"></a>
 
 
 ---------------------------------
@@ -1243,18 +1292,18 @@ concept pin_oc = requires {
 };
 ```
 
-A pin_oc is a box_< bool > cto_ that abstracts a single-pin duplex_
+A pin_oc is a **[box](#box)**< bool > **[cto](#cto)** that abstracts a single-pin **[duplex](#duplex)**
 read-write interface to the world outside the target chip.
 The term oc means open-collector, refrerring to the
 (now somewhat outdated) way this type of pin can be implemented:
-the output_ stage has a transistor that can pull the pin low,
-but unlike a normal output_ pin it has no transistor to pull
+the **[output](#output)** stage has a transistor that can pull the pin low,
+but unlike a normal **[output](#output)** pin it has no transistor to pull
 the pin high.
 
 Open-collector pins are used in various protocols like i2c and one-wire,
 where open-collector pins of more than one chip are connected
 to the same wire.
-Any chip can pull the write_ low. When no chip does so, a common
+Any chip can pull the **[write](#write)** low. When no chip does so, a common
 pull-up resistor pulls the line low.
 This arrangement prevents electrical problems which would be caused
 when one chip drives the line low, and another drives it high.
@@ -1268,7 +1317,7 @@ struct pin_oc_root :
 };
 ```
 
-All pin_in cto_'s inherit from pin_oc_root.
+All pin_in **[cto](#cto)**'s inherit from pin_oc_root.
 
 
 
@@ -1277,7 +1326,7 @@ All pin_in cto_'s inherit from pin_oc_root.
 
 ## random
 
-from: ../library/basics/gf-random.hpp
+from [basics/gf-random.hpp](../library/basics/gf-random.hpp)
 
 
 ---------------------------------
@@ -1295,7 +1344,7 @@ using bits 8..23 rather than 16..30.
 
 ---------------------------------
 
-[>random16<]
+<a name="random16"></a>
 ```c++
 uint16_t random16(){ ... }
 ```
@@ -1305,7 +1354,7 @@ The random16() function returns a 16-bit non-negative pseudo-random number.
 
 ---------------------------------
 
-[>random32<]
+<a name="random32"></a>
 ```c++
 uint32_t random32(){ ... }
 ```
@@ -1315,7 +1364,7 @@ The random32() function returns a 32-bit non-negative pseudo-random number.
 
 ---------------------------------
 
-[>random_in_range<]
+<a name="random_in_range"></a>
 ```c++
 template< typename int_type >
 int_type random_in_range(
@@ -1336,7 +1385,7 @@ effect will be small.
 
 ---------------------------------
 
-[>random_seed<]
+<a name="random_seed"></a>
 ```c++
 void random_seed( by_const< uint32_t > x ){ ... }
 ```
@@ -1351,12 +1400,12 @@ a truely random source) to start a truely random random sequence.
 
 ## string
 
-from: ../library/adts/gf-string.hpp
+from [adts/gf-string.hpp](../library/adts/gf-string.hpp)
 
 
 ---------------------------------
 
-[>string<]
+<a name="string"></a>
 ```c++
 template< std::size_t _maximum_length >
 struct string { ... }
@@ -1424,14 +1473,14 @@ The append function, the operator+= and the operator<< all append a
 single character to the string. If the string is already at its maximum
 length the character is ignored.
 
-[>xy<]
+<a name="xy"></a>
 
 ------------------------------
 ------------------------------
 
 ## xy<>
 
-from: ../library/adts/gf-xy.hpp
+from [adts/gf-xy.hpp](../library/adts/gf-xy.hpp)
 
 
 ---------------------------------
@@ -1452,7 +1501,7 @@ For a location in an xy plane the torsor< xy< T > > is used.
 The xy<> ADT supports
 - constructors: default (initializes to zero),
 from x and y values, copy (from another xy<>)
-- direct_ acces to the x and y values
+- **[direct](#direct)** acces to the x and y values
 - an origin (zero) constant
 - operators on two xy<>'s: - + == !=
 - operators on an xy<> and a scalar: * /
