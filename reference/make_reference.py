@@ -32,7 +32,7 @@
 # images must be CC-BY-SA or 'better'
 # need reandom demos for both BW and color (demo/due/oled now disabled)
 # arch seems to require the reset (sometimes)
-# global functions...
+# global functions... like random and color, re-instate 'two'
 # separate directroy for peripheral boards?
 # all<> is now for pins, but can it be fore more types and preserve the type?
 # pin::all needs no_inline?
@@ -54,6 +54,9 @@
 # pictures! HD44780,
 # US size pdf
 # @image
+# markdown link to library files doesn't work
+# markding link to item_type doesn't work
+# make examples from library files possible (eg. NO_INLINE)
 
 # arch:
 #    sudo python -m ensurepip --upgrade
@@ -190,8 +193,8 @@ class text_line:
    def markdown( self ):
       s = self.s
       s = self.insert_references( s, lambda title, name, long_name :
-         '%s_' %
-            ( name ) )
+         '**[%s](#%s)**' %
+            ( name, name ) )
       return s
 
    def rest( self ):
@@ -305,7 +308,7 @@ class define:
       self.s = s
 
    def markdown( self ):
-       return "[>%s<]" % self.s
+       return '<a name="%s"></a>' % self.s
 
    def rest( self ):
       return "\n.. _%s:\n" % self.s
@@ -317,16 +320,19 @@ class colofon:
 
    def __init__( self, item ):
       self.item = item
+      self.file_path = self.item.file_name
+      self.file_name = self.item.file_name.replace( "../library/", "" )
 
    def markdown( self ):
-      return "from: " + self.item.file_name
+      return "from [%s](%s)" % \
+         ( self.file_name, self.file_path )
 
    def rest( self ):
-      return "implemented in: %s\n" % self.item.file_name.replace( "../", "" )
+      return "from %s\n" % self.file_name
 
    def html( self ):
-      return ""
-
+      return 'from <A HREF="%s">%s</A>' % \
+         ( self.file_path, self.file_name )
 
 
 # ==============================================================================

@@ -160,6 +160,7 @@ namespace godafoss {
 #include "adts/gf-date-and-time.hpp"
 
 #include "pins/gf-pin.hpp"
+#include "pins/gf-pin-pullup-pulldown.hpp"
 #include "pins/gf-pin-adapters.hpp"
 #include "pins/gf-pin-dummies.hpp"
 #include "pins/gf-pin-all.hpp"

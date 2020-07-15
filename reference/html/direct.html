@@ -7,7 +7,7 @@
 <body>
 <a name="direct"></a>
 <H2>direct</H2>
-
+from <A HREF="../library/item/gf-item-direct.hpp">item/gf-item-direct.hpp</A>
 
 
 <HR>
@@ -32,6 +32,33 @@ concept can_direct = requires {
 <pre><code class="c++">template< typename T >
    requires can_direct< T >
 struct direct< T > : ... ;
+</code></pre></A>
+<P>
+
+
+<HR>
+
+<H3>example</H3>
+<A HREF="../examples/arduino-due/direct/main.cpp" style="text-decoration:none">
+<pre><code class="c++">#include "godafoss.hpp"
+namespace gf      = godafoss;
+using target      = gf::target<>;
+using pin         = gf::pin_out_from< target::d13 >;
+using direct_pin  = gf::direct< pin >;
+
+int main(){
+
+   pin::init();
+
+   // write, followed by an explicit flush
+   pin::write( 1 );
+   pin::flush();
+
+   // write to a direct<> pin implies an implicit flush(),
+   // so no explicit fluish() is needed
+   direct_pin::write( 1 );
+
+};
 </code></pre></A>
 <P>
 

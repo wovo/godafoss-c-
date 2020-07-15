@@ -21,7 +21,7 @@
 //
 // @title item adapters
 //
-// These adapter adapts a item to be (only) an input item,
+// These adapters adapt an item to be (only) an input item,
 // (only) an output item,
 // or (only) an input_output item
 // (in each case, if such adaption is possible).
@@ -29,6 +29,8 @@
 // These adapters serve, of course, to adapt a given item to the
 // adapted role, but also to ensure that the code that uses the adapted
 // item, doesn't use any features beyond the ones of the adapted role.
+//
+// -----------------------------------------------------------------------------
 //
 // @define godafoss::item_input
 // @section item_input
@@ -40,12 +42,22 @@
 // which is possible if the item satisfies the can_input concept,
 // which requires the item to be either an input or an input_output.
 //
+// -----------------------------------------------------------------------------
+//
+// @define godafoss::item_output
+// @section item_output
+//
 // @insert can_output
 // @insert item_output
 //
 // The item_output<> decorator decorates an item to be an output item,
 // which is possible if the item satisfies the can_output concept,
 // which requires the item to be either an input or an input_output.
+//
+// -----------------------------------------------------------------------------
+//
+// @define godafoss::item_input_output
+// @section item_input_output
 //
 // @insert can_input_output
 // @insert item_input_output
@@ -54,7 +66,6 @@
 // an item to be an input_output item,
 // which is possible if the item satisfies the can_input_output concept,
 // which requires the item to an input_output.
-//
 //
 // =============================================================================
 

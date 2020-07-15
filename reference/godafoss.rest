@@ -37,7 +37,7 @@ Godafoss reference
 background processing
 *********************
 
-implemented in: library/basics/gf-background.hpp
+from basics/gf-background.hpp
 
 
 
@@ -141,7 +141,7 @@ example
 box, pipe
 *********
 
-implemented in: library/item/gf-item.hpp
+from item/gf-item.hpp
 
 
 
@@ -238,7 +238,7 @@ Writing to a pipe adds a value to the sequnce.
 buffered
 ********
 
-implemented in: library/item/gf-item-buffered.hpp
+from item/gf-item-buffered.hpp
 
 
 
@@ -276,7 +276,7 @@ necessitating appropriate refresh_ or flush_ calls.
 cto
 ***
 
-implemented in: library/item/gf-item.hpp
+from item/gf-item.hpp
 
 
 
@@ -352,7 +352,7 @@ all cto's inherit (in most cases indirectly) from this struct.
 date and time
 *************
 
-implemented in: library/adts/gf-date-and-time.hpp
+from adts/gf-date-and-time.hpp
 
 
 
@@ -425,7 +425,7 @@ The operator<< prints a data_and_time in the format YY-MM-DD HH:MM.SS dW.
 direct
 ******
 
-implemented in: library/item/gf-item-direct.hpp
+from item/gf-item-direct.hpp
 
 
 
@@ -458,6 +458,38 @@ refresh_ or flush_ calls.
 
 
 
+
+----------------------------------
+
+
+example
+*******
+
+:: 
+
+  #include "godafoss.hpp"
+  namespace gf      = godafoss;
+  using target      = gf::target<>;
+  using pin         = gf::pin_out_from< target::d13 >;
+  using direct_pin  = gf::direct< pin >;
+  
+  int main(){
+  
+     pin::init();
+  
+     // write, followed by an explicit flush
+     pin::write( 1 );
+     pin::flush();
+  
+     // write to a direct<> pin implies an implicit flush(),
+     // so no explicit fluish() is needed
+     direct_pin::write( 1 );
+  
+  };
+  
+
+
+
 .. _GODAFOSS_INLINE:
 
 
@@ -470,7 +502,7 @@ refresh_ or flush_ calls.
 function and class attributes
 *****************************
 
-implemented in: library/basics/gf-attributes.hpp
+from basics/gf-attributes.hpp
 
 
 
@@ -594,7 +626,7 @@ of that class.
 hd44780
 *******
 
-implemented in: library/chips/gf-hd44780.hpp
+from chips/gf-hd44780.hpp
 
 
 
@@ -649,7 +681,7 @@ bla blas
 hx711
 *****
 
-implemented in: library/chips/gf-hx711.hpp
+from chips/gf-hx711.hpp
 
 
 
@@ -711,7 +743,7 @@ is first (automatically) powered up.
 inherit_*
 *********
 
-implemented in: library/item/gf-item-inherit.hpp
+from item/gf-item-inherit.hpp
 
 
 
@@ -834,7 +866,7 @@ functions of the decorated item_.
 input, output
 *************
 
-implemented in: library/item/gf-item.hpp
+from item/gf-item.hpp
 
 
 
@@ -902,7 +934,7 @@ input
   
 
 
-A input is an item_ that provides a read function that returns
+A input is an item_ that provides a read() function that returns
 a value of the value_type_ of the item_.
 
 
@@ -941,7 +973,7 @@ output
   
 
 
-An output is an item_ that provides a write function that accepts
+An output is an item_ that provides a write() function that accepts
 a value of the value_type_ of the item_.
 
 
@@ -1066,7 +1098,7 @@ to get an immediate effect.
 ints specified by number of bits
 ********************************
 
-implemented in: library/basics/gf-ints.hpp
+from basics/gf-ints.hpp
 
 
 
@@ -1122,7 +1154,7 @@ bla bla
 invert
 ******
 
-implemented in: library/item/gf-item-invert.hpp
+from item/gf-item-invert.hpp
 
 
 
@@ -1163,7 +1195,7 @@ The invert<> decorator inverts the value written to or read_ from an item_.
 item
 ****
 
-implemented in: library/item/gf-item.hpp
+from item/gf-item.hpp
 
 
 
@@ -1220,7 +1252,7 @@ All items inherit (in most cases indirectly) from the struct item_root.
 item adapters
 *************
 
-implemented in: library/item/gf-item-adapters.hpp
+from item/gf-item-adapters.hpp
 
 
 
@@ -1235,6 +1267,7 @@ or (only) an input_output_ item_
 These adapters serve, of course, to adapt a given item_ to the
 adapted role, but also to ensure that the code that uses the adapted
 item_, doesn't use any features beyond the ones of the adapted role.
+
 
 
 .. _item_input:
@@ -1267,6 +1300,19 @@ The item_input<> decorator decorates an item_ to be an input_ item_,
 which is possible if the item_ satisfies the can_input concept,
 which requires the item_ to be either an input_ or an input_output_.
 
+
+
+.. _item_output:
+
+
+
+----------------------------------
+
+
+item_output
+***********
+
+
 :: 
 
   template< typename T >
@@ -1285,6 +1331,19 @@ which requires the item_ to be either an input_ or an input_output_.
 The item_output<> decorator decorates an item_ to be an output_ item_,
 which is possible if the item_ satisfies the can_output concept,
 which requires the item_ to be either an input_ or an input_output_.
+
+
+
+.. _item_input_output:
+
+
+
+----------------------------------
+
+
+item_input_output
+*****************
+
 
 :: 
 
@@ -1306,7 +1365,6 @@ which is possible if the item_ satisfies the can_input_output concept,
 which requires the item_ to an input_output_.
 
 
-
 .. _no_inline:
 
 
@@ -1319,7 +1377,7 @@ which requires the item_ to an input_output_.
 no_inline
 *********
 
-implemented in: library/item/gf-item-no-inline.hpp
+from item/gf-item-no-inline.hpp
 
 
 
@@ -1350,7 +1408,7 @@ is all marked GODAFOSS_INLINE_.
 passing a readonly parameter
 ****************************
 
-implemented in: library/basics/gf-passing.hpp
+from basics/gf-passing.hpp
 
 
 
@@ -1410,7 +1468,7 @@ to a the size of a reference.
 pins
 ****
 
-implemented in: library/pins/gf-pin.hpp
+from pins/gf-pin.hpp
 
 
 
@@ -1621,7 +1679,7 @@ All pin_in cto_'s inherit from pin_oc_root.
 random
 ******
 
-implemented in: library/basics/gf-random.hpp
+from basics/gf-random.hpp
 
 
 
@@ -1716,7 +1774,7 @@ a truely random source) to start a truely random random sequence.
 string
 ******
 
-implemented in: library/adts/gf-string.hpp
+from adts/gf-string.hpp
 
 
 
@@ -1816,7 +1874,7 @@ length the character is ignored.
 xy<>
 ****
 
-implemented in: library/adts/gf-xy.hpp
+from adts/gf-xy.hpp
 
 
 

@@ -66,6 +66,7 @@ HEADERS           += adts/gf-color.hpp
 HEADERS           += adts/gf-date-and-time.hpp
 
 HEADERS           += pins/gf-pin.hpp
+HEADERS           += pins/gf-pin-pullup-pulldown.hpp
 HEADERS           += pins/gf-pin-adapters.hpp
 HEADERS           += pins/gf-pin-dummies.hpp
 HEADERS           += pins/gf-pin-all.hpp
