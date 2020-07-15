@@ -94,7 +94,7 @@ HEADERS           += graphics/gf-window-demos.hpp
 
 HEADERS           += protocols/gf-i2c.hpp
 HEADERS           += protocols/gf-spi.hpp
-HEADERS           += protocols/gf-mememory.hpp
+HEADERS           += protocols/gf-memory.hpp
 
 HEADERS           += chips/gf-servo.hpp
 HEADERS           += chips/gf-hd44780.hpp

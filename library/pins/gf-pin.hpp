@@ -121,20 +121,21 @@
 //
 // =============================================================================
 
-// @quote pin_in_concept 6
+// @quote pin_in_concept 7
 template< typename T >
 concept pin_in = requires {
-   box< bool >;
-   input< bool >;
-   T::_pin_in_marker;
-};
+      T::_pin_in_marker;
+      { typename T::value_type() }  -> std::same_as< bool >;
+   }
+   && box< T >
+   && input< T >;
 
 // @quote pin_in_root 6
 struct pin_in_root :
    box_root< bool >,
    input_root< bool >
 {
-   static constexpr bool pin_in_marker = true;
+   static constexpr bool _pin_in_marker = true;
 };
 
 
@@ -144,13 +145,14 @@ struct pin_in_root :
 //
 // =============================================================================
 
-// @quote pin_out_concept 6
+// @quote pin_out_concept 7
 template< typename T >
 concept pin_out = requires {
-   box< bool >;
-   output< bool >;
-   T::_pin_out_marker;
-};
+      T::_pin_out_marker;
+      { typename T::value_type() }  -> std::same_as< bool >;
+   }
+   && box< T >
+   && output< T >;
 
 // @quote pin_out_root 6
 struct pin_out_root :
@@ -167,13 +169,14 @@ struct pin_out_root :
 //
 // =============================================================================
 
-// @quote pin_in_out_concept 6
+// @quote pin_in_out_concept 7
 template< typename T >
 concept pin_in_out = requires {
-   box< bool >;
-   simplex< bool >;
-   T::_pin_in_out_marker;
-};
+      T::_pin_in_out_marker;
+      { typename T::value_type() }  -> std::same_as< bool >;
+   }
+   && box< T >
+   && simplex< T >;
 
 // @quote pin_in_out_root 6
 struct pin_in_out_root :
@@ -193,10 +196,11 @@ struct pin_in_out_root :
 // @quote pin_oc_concept 6
 template< typename T >
 concept pin_oc = requires {
-   box< bool >;
-   duplex< bool >;
-   T::_pin_oc_marker;
-};
+      T::_pin_oc_marker;
+      { typename T::value_type() }  -> std::same_as< bool >;
+   }
+   && box< T >
+   && duplex< T >;
 
 // @quote pin_oc_root 6
 struct pin_oc_root :

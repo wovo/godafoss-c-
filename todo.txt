@@ -285,7 +285,7 @@ todo
 development board 2.0
 blue pill
 switches
-4x4 keypad
+4x4 keypad / 5x4?
 LCD / oled
 beeper
 2 x AA battery
@@ -310,5 +310,7 @@ download https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-a
 from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads
 unpack it to a build directory
 there: git clone git://gcc.gnu.org/git/gcc.git
+
+github.com/MikeLankamp/fpm
 
 

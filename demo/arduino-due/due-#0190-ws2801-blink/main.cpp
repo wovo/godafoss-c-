@@ -16,8 +16,8 @@ namespace gf = godafoss;
 using target = gf::target<>;
 using timing = target::timing;
 using bus = gf::spi_bus_bb_sclk_mosi<
-   target::d2,
-   target::d3,
+   target::d12,
+   target::d13,
    timing >;
 using chip = gf::ws2801< bus, timing, 9 >;
 //using chip = gf::recolor< _chip, gf::color, []( const gf::color & c ){ return - c; } >;

@@ -15,6 +15,7 @@
 #
 # ==============================================================================
 
+# SPI dummy doesn't work, make tests, check WS2812 & MAX7219
 # example pin_in, pin_out, pin_oc (one-wire)
 # markdown add anchors, refs, links to code, (link under examples!)
 # markdown add pages, index
