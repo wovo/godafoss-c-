@@ -13,8 +13,6 @@ __codelite.workspace
 *.lss
 *.lst
 *.exe
-*.pdf
-*.html
 _run.bat
 _cc_flags
 _cpp_flags

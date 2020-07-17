@@ -1,0 +1,25 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>parameter passing</H2>
+from <A HREF="../../basics/gf-passing.hpp">basics/gf-passing.hpp</A><P>
+
+<P>
+<pre><code class="c++">// use by_const< T > when passing a T
+template< typename passed_type >
+using by_const = ...
+</code></pre>
+<a name="by_const"></a>
+<P>
+The by_const< type > template is the preferred way to pass a
+const value of the type passed_type.
+This will be either a plain (by copy) const, or a const reference,
+depending (among other things) on the size of the type compared
+to a the size of a reference.
+<P>
+
+</body>

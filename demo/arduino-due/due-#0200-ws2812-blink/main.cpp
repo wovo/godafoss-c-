@@ -15,7 +15,7 @@
 namespace gf = godafoss;
 using target = gf::target<>;
 using timing = target::timing;
-using chip = gf::ws2812< target::d2, timing, 16 >;
+using chip = gf::ws2812< target::d11, timing, 62 >;
 //using chip = gf::recolor< _chip, gf::color, []( const gf::color & c ){ return - c; } >;
 
 //using port = gf::port_from_window< gf::invert< gf::monochrome< chip, gf::black, gf::red > > >;

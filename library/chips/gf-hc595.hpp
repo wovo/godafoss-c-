@@ -26,7 +26,7 @@
 
 template<
    typename            bus,
-   pin_out_compatible  _cs,
+   can_pin_out  _cs,
    uint32_t            n_chips = 1
 >
 struct hc595 :
@@ -35,7 +35,7 @@ struct hc595 :
    using chip = hc595< bus, _cs >;
    using root = port_out_root< 8 * n_chips >;
 
-   using cs = direct< pin_out_from< _cs >>;
+   using cs = direct< pin_out< _cs >>;
 
    static inline root::value_type buffer;
    static inline bool dirty;

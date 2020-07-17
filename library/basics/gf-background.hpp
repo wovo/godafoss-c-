@@ -16,12 +16,13 @@
 //
 // =============================================================================
 //
+// @define godafoss::background
 // @title background processing
 //
-// @define godafoss::background
-//
-// The background class implements run-to-completion style
+// The background class provides a hook for run-to-completion style
 // background processing.
+//
+// @insert text
 //
 // A class that needs background processing must inherit from background
 // and implement the work function. This work function will be called
@@ -44,11 +45,13 @@
 // background::run() can be called instead, which will serve
 // the background processing (it will never return).
 //
-// @example native/background/main.cpp
+// -----------------------------------------------------------------------------
+// @section example
+// @example native/background/main.cpp text
 //
 // =============================================================================
 
-// @quote 1 background
+// @quote text 1
 struct background : public not_copyable {
 private:
 
@@ -79,8 +82,8 @@ public:
       }
    }
 
+   // @quote text 2
    // This function will be called to do background work for its object.
-   // @quote 1 background
    virtual void work() = 0;
 
    // This function is called by the wait functions to do background work.
@@ -112,11 +115,11 @@ public:
 
    // Call this function instead of terminating the application
    // to continue performing the background work.
-   static void GODAFOSS_NORETURN run(){
+   static void GODAFOSS_NO_RETURN run(){
       for(;;){
          do_background_work();
       }
    }
 
-// @quote 1 background
+// @quote text 1
 };

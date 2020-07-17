@@ -21,7 +21,9 @@ HEADERS           += gf-test-case-ints.hpp
 HEADERS           += gf-test-case-random.hpp
 HEADERS           += gf-test-case-passing.hpp
 
-HEADERS           += gf-test-case-box.hpp
+HEADERS           += gf-test-case-item.hpp
+
+HEADERS           += gf-test-case-pins.hpp
 
 # search the test cases directory
 SEARCH            += $(RELATIVE)/cases

@@ -20,16 +20,10 @@
 
 SUBDIRS := $(wildcard */.)
 
+.PHONY: build clean run $(SUBDIRS)
+
 build: $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@ build
-
 clean: $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@ clean
-
 run: $(SUBDIRS)
 $(SUBDIRS):
-	$(MAKE) -C $@ run
-
-.PHONY: build clean run $(SUBDIRS)
+	$(MAKE) -C $@ $(MAKECMDGOALS)

@@ -24,11 +24,11 @@
 
 template< typename T >
 concept is_uart = requires {
-   stream< T >;
-   duplex< T >;
-   std::same_as< typename T::value_type, char >;
-   T::is_uart;
-};
+      std::same_as< typename T::value_type, char >;
+      T::is_uart;
+   }
+   && is_pipe< T >
+   && is_duplex< T >;
 
 
 // ==========================================================================
@@ -49,7 +49,7 @@ concept is_hardware_uart = requires (
 
 template< typename T >
 struct be_uart :
-   stream_root< char >,
+   pipe_root< char >,
    duplex_root< char >
 {
 

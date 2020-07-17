@@ -31,7 +31,7 @@ struct _pin_out_from_pins<> :
    pin_out_dummy
 {};
 
-// workhorse
+// the workhorse
 template< typename head, typename... tail >
 struct _pin_out_from_pins< head, tail... > {
 
@@ -54,18 +54,14 @@ struct _pin_out_from_pins< head, tail... > {
 
 };
 
-// opt into all<>
-template< typename first, typename... tail >
-   requires pin_out_compatible< first >
-         && pin_out_compatible_list< tail... >
-struct all_supported< first, tail... > {
-   static constexpr bool supported = true;
-};
+template< typename... Ts >
+concept can_pin_out_from_list =
+   ( can_pin_out_from< Ts > && ... );
 
 // wrapper
 template< typename first, typename... tail >
-   requires pin_out_compatible< first >
-         && pin_out_compatible_list< tail... >
+   requires can_pin_out_from< first >
+         && can_pin_out_from_list< tail... >
 struct all< first, tail... > :
    pin_out_root,
    _pin_out_from_pins< first, tail... >

@@ -31,19 +31,23 @@ using uart    = target::uart<>;
 #include "gf-test-case-passing.hpp"
 #include "gf-test-case-random.hpp"
 
-#include "gf-test-case-box.hpp"
+#include "gf-test-case-item.hpp"
+
+#include "gf-test-case-pins.hpp"
 
 int main(){
    test::start();
 
+
    test_case_attributes();
    test_case_shared_names();
    test_case_ints();
-   test_case_passing();
+//   test_case_passing();
    test_case_random();
-   test_case_passing();
 
-   test_case_box();
+   test_case_item();
+
+   test_case_pins();
 
    test::end();
 }

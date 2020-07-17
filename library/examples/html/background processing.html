@@ -1,0 +1,80 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>background processing</H2>
+from <A HREF="../../basics/gf-background.hpp">basics/gf-background.hpp</A><P>
+
+<P>
+<a name="background"></a>
+<P>
+The background class provides a hook for run-to-completion style
+background processing.
+<P>
+<pre><code class="c++">struct background : public not_copyable {
+   // This function will be called to do background work for its object.
+   virtual void work() = 0;
+};
+</code></pre>
+<P>
+A class that needs background processing must inherit from background
+and implement the work function. This work function will be called
+when plain wait functions (the ones that allow background processing)
+are called.
+<P>
+When an application contains background work,
+all plain wait functions can take longer than the specified time,
+up to the run time of the longest runtime of the work() functions.
+<P>
+No background work will be done from wait calls made while
+a work() function is running.
+<P>
+For all background jobs: be careful to preserve the object,
+or your servicing will end.
+This is not UB: the background destructor
+removes itself from the list of background jobs.
+<P>
+When the application would terminate (exit from its main()),
+background::run() can be called instead, which will serve
+the background processing (it will never return).
+<P>
+<pre><code class="c++">#include "godafoss.hpp"
+namespace gf  = godafoss;
+
+struct background_work: gf::background {
+
+   auto last = gf::target::now_ms();
+
+   void work() override(){
+      now = gf::target::now_ms();
+      if( now > last + 1'000 ){
+         gf::cout << "Another second has passed\n";
+      }
+   }
+
+};
+
+int main(){
+
+   {
+      background_work annnoying;
+      for( int i = 0; i < 10; ++i ){
+         gf::wait_ms( 2'800 );
+         gf::cout << "[" << i << "] 2.8 seconds passed\n"
+      }
+      // annnoying is destructed here, so it will finally shut up
+   }
+
+   for( int i = 0; i < 10; ++i ){
+      gf::wait_ms( 2'100 );
+      gf::cout << "[" << i << "] 2.1 seconds passed\n"
+   }
+
+};
+</code></pre>
+<P>
+
+</body>

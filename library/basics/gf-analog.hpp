@@ -4,11 +4,11 @@
 //
 // ==========================================================================
 //
-// This file is part of godafoss, 
+// This file is part of godafoss,
 // a C++ library for close-to-the-hardware programming.
 //
 // Copyright Wouter van Ooijen 2018
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -26,15 +26,15 @@
 template< typename T >
 concept adc = requires {
    T::is_adc;
-   item< T >;
-   input< T >;
+   is_item< T >;
+   is_input< T >;
 //   constexpr T::value_type adc_min;
 //   constexpr T::value_type adc_max;
 };
 
 template< int n_bits >
 struct be_adc :
-   item_root< typename uint_bits< n_bits >::fast >,
+   // item_root< typename uint_bits< n_bits >::fast >,
    input_root< typename uint_bits< n_bits >::fast >
 {
    static const bool is_adc = true;
@@ -53,7 +53,7 @@ struct be_adc :
 // quote ''dac'' };
 /*
 template< typename T >
-concept dac = requires( 
+concept dac = requires(
    T::is_dac,
    item< T >,
    output< T >,

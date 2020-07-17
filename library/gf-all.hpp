@@ -140,13 +140,13 @@ namespace godafoss {
 #include "basics/gf-random.hpp"
 #include "basics/gf-background.hpp"
 
-#include "box/gf-box.hpp"
-#include "box/gf-box-inherit.hpp"
-#include "box/gf-box-no-inline.hpp"
-#include "box/gf-box-invert.hpp"
-#include "box/gf-box-direct.hpp"
-#include "box/gf-box-buffered.hpp"
-#include "box/gf-box-adapters.hpp"
+#include "item/gf-item.hpp"
+#include "item/gf-item-inherit.hpp"
+#include "item/gf-item-no-inline.hpp"
+#include "item/gf-item-invert.hpp"
+#include "item/gf-item-direct.hpp"
+#include "item/gf-item-buffered.hpp"
+#include "item/gf-item-adapters.hpp"
 
 #include "ostream/gf-ostream.hpp"
 #include "ostream/gf-uart.hpp"
@@ -157,21 +157,25 @@ namespace godafoss {
 #include "adts/gf-subrange.hpp"
 #include "adts/gf-xy.hpp"
 #include "adts/gf-color.hpp"
-#include "adts/gf-date-time.hpp"
+#include "adts/gf-date-and-time.hpp"
 
 #include "pins/gf-pin.hpp"
+#include "pins/gf-pin-pullup-pulldown.hpp"
 #include "pins/gf-pin-adapters.hpp"
 #include "pins/gf-pin-dummies.hpp"
 #include "pins/gf-pin-all.hpp"
-#include "pins/gf-pin-demos.hpp"
-
 #include "basics/gf-analog.hpp"
 
 #include "ports/gf-port.hpp"
 #include "ports/gf-port-adapters.hpp"
 #include "ports/gf-port-dummies.hpp"
 #include "ports/gf-port-from-pins.hpp"
+
+#include "modifiers/gf-modifiers-pins.hpp"
+
+#include "pins/gf-pin-demos.hpp"
 #include "ports/gf-port-demos.hpp"
+
 
 #include "timing/gf-timing-wait.hpp"
 #include "timing/gf-timing-clock.hpp"
@@ -188,6 +192,7 @@ namespace godafoss {
 
 #include "protocols/gf-spi.hpp"
 #include "protocols/gf-i2c.hpp"
+#include "protocols/gf-memory.hpp"
 
 #include "chips/gf-servo.hpp"
 #include "chips/gf-hd44780.hpp"

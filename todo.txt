@@ -1,3 +1,4 @@
+ ws2812 werkt maar tot 32 LEDs => een poort kan maar 32 zijn? zou 64 moeten zijn...
  init() with value -> all boxes must CRTP
  init_as_input for input-output boxes??
  struct everywhere
@@ -247,7 +248,6 @@ Is the call the run-to-completion from the waits possible (CRTP?)
 
 todo
 - check void return types (core & box)
-- native window using SFML
 - check xy iterator
 - pullup/down should survive pin adapters
 - pullup<> decorator
@@ -286,7 +286,7 @@ todo
 development board 2.0
 blue pill
 switches
-4x4 keypad
+4x4 keypad / 5x4?
 LCD / oled
 beeper
 2 x AA battery
@@ -311,5 +311,7 @@ download https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-a
 from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads
 unpack it to a build directory
 there: git clone git://gcc.gnu.org/git/gcc.git
+
+github.com/MikeLankamp/fpm
 
 

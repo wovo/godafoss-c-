@@ -4,10 +4,6 @@
 //
 // =============================================================================
 //
-//
-//
-// =============================================================================
-//
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
 //
@@ -20,103 +16,70 @@
 //
 // =============================================================================
 
-
 // =============================================================================
 //
-// concepts
+// @title pin adapters
+//
+// These adapters adapt a pin to be (only) an input pin,
+// (only) an output pin,
+// or (only) an input_output pin, or (obly) an open collector pin.
+// (in each case, if such adaption is possible).
+//
+// These adapters serve, of course, to adapt a given pin to the
+// adapted role, but also to ensure that the code that uses the adapted
+// pin, doesn't use any features beyond the ones of the adapted role.
+//
+// -----------------------------------------------------------------------------
+//
+// @define godafoss::pin_in
+// @section pin_input
+//
+// @insert can_pin_in
+// @insert pin_in
+//
+// The pin_input<> decorator decorates an pin to be an input pin,
+// which is possible if the pin satisfies the can_input concept,
+// which requires the pin to be either a pin_in or a pin_in_out.
+//
+// -----------------------------------------------------------------------------
+//
+// @define godafoss::pin_out
+// @section pin_out
+//
+// @insert can_pin_out
+// @insert pin_out
+//
+// The pin_ou<> decorator decorates an pin to be an output pin,
+// which is possible if the pin satisfies the can_output concept,
+// which requires the pin to be either a pin_in or a pin_in_out.
+//
+// -----------------------------------------------------------------------------
+//
+// @define godafoss::pin_in_out
+// @section pin_in_out
+//
+// @insert can_in_out
+// @insert pin_in_out
+//
+// The pin_in_out<> decorator decorates
+// an pin to be an input_output pin,
+// which is possible if the pin satisfies the can_input_output concept,
+// which requires the pin to a pin_in_out.
+//
+// -----------------------------------------------------------------------------
+//
+// @define godafoss::pin_oc
+// @section pin_oc
+//
+// @insert can_pin_oc
+// @insert pin_oc
+//
+// The pin_oc<> decorator decorates
+// an pin to be an open collector pin,
+// which is possible if the pin satisfies the can_input_output concept,
+// which requires the pin to a pin_in_out or a pin_oc.
 //
 // =============================================================================
-
-
-
-// =============================================================================
-//
-// pull-ups
-//
-// =============================================================================
-
-template< typename T >
-concept pullup_capable = requires {
-   T::pullup_enable();
-   T::pullup_disable();
-};
-
-template< typename T >
-struct pullup_filter {};
-
-template< pullup_capable T >
-struct pullup_filter< T > {
-
-   static void GODAFOSS_INLINE pullup_enable(){
-      T::pullup_enable();
-   }
-
-   static void GODAFOSS_INLINE pullup_disable(){
-      T::pullup_disable();
-   }
-};
-
-
-// =============================================================================
-//
-// in_out
-//
-// =============================================================================
-
-GODAFOSS_SUPPORTED( pin_in_out, pin_in_out_from )
-
-template< pin_in_out T >
-struct pin_in_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_in_out T >
-struct pin_in_out_from< T > :
-   pin_out_root,
-   box_inherit_init< T >,
-   box_inherit_read< T >,
-   box_inherit_write< T >,
-   pullup_filter< T >
-{};
-
-
-// =============================================================================
-//
-// out
-//
-// =============================================================================
-
-GODAFOSS_SUPPORTED( pin_out, pin_out_from )
-
-template< pin_out T >
-struct pin_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_out T >
-struct pin_out_from< T >  :
-   pin_out_root,
-   box_inherit_init< T >,
-   box_inherit_write< T >
-{};
-
-template< pin_in_out T >
-struct pin_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_in_out T >
-struct pin_out_from< T > :
-   pin_out_root,
-   box_inherit_write< T >
-{
-
-   static void GODAFOSS_INLINE init(){
-      T::init();
-      direct< T >::direction_set_output();
-   }
-
-};
 
 
 // =============================================================================
@@ -125,18 +88,19 @@ struct pin_out_from< T > :
 //
 // =============================================================================
 
-GODAFOSS_SUPPORTED( pin_in, pin_in_from )
-
-template< pin_in_out T >
-struct pin_in_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_in_out T >
-struct pin_in_from< T > :
+template< is_pin_in T >
+struct pin_in_from_is_pin_in :
    pin_in_root,
-   box_inherit_read< T >,
-   pullup_filter< T >
+   inherit_init< T >,
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
+{};
+
+template< is_pin_in_out T >
+struct pin_in_from_is_pin_in_out :
+   pin_in_root,
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
 {
 
    static void GODAFOSS_INLINE init(){
@@ -146,29 +110,11 @@ struct pin_in_from< T > :
 
 };
 
-template< pin_in T >
-struct pin_in_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_in T >
-struct pin_in_from< T > :
+template< is_pin_oc T >
+struct pin_in_from_is_pin_oc :
    pin_in_root,
-   box_inherit_init< T >,
-   box_inherit_read< T >,
-   pullup_filter< T >
-{};
-
-template< pin_oc T >
-struct pin_in_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_oc T >
-struct pin_in_from< T > :
-   pin_in_root,
-   box_inherit_read< T >,
-   pullup_filter< T >
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
 {
 
    static void GODAFOSS_INLINE init(){
@@ -178,6 +124,94 @@ struct pin_in_from< T > :
 
 };
 
+// =============================================================================
+
+template< typename T >
+concept can_pin_in_from =
+      is_pin_in< T >
+   || is_pin_in_out< T >
+   || is_pin_oc< T >;
+
+template< can_pin_in_from T >
+struct pin_in_from {};
+
+template< is_pin_in T  >
+struct pin_in_from< T > : pin_in_from_is_pin_in< T > {};
+
+template< is_pin_in_out T  >
+struct pin_in_from< T > : pin_in_from_is_pin_in_out< T > {};
+
+template< is_pin_oc T  >
+struct pin_in_from< T > : pin_in_from_is_pin_oc< T > {};
+
+
+// =============================================================================
+//
+// out
+//
+// =============================================================================
+
+template< is_pin_out T >
+struct pin_out_from_is_pin_out :
+   pin_out_root,
+   inherit_init< T >,
+   inherit_write< T >
+{};
+
+template< is_pin_in_out T >
+struct pin_out_from_is_pin_in_out :
+   pin_out_root,
+   inherit_write< T >
+{
+
+   static void GODAFOSS_INLINE init(){
+      T::init();
+      direct< T >::direction_set_output();
+   }
+
+};
+
+// =============================================================================
+
+template< typename T >
+concept can_pin_out_from =
+      is_pin_out< T >
+   || is_pin_in_out< T >;
+
+template< can_pin_out_from T >
+struct pin_out_from {};
+
+template< is_pin_out T  >
+struct pin_out_from< T > : pin_out_from_is_pin_out< T > {};
+
+template< is_pin_in_out T  >
+struct pin_out_from< T > : pin_out_from_is_pin_in_out< T > {};
+
+
+// =============================================================================
+//
+// in_out
+//
+// =============================================================================
+
+template< is_pin_in_out T >
+struct pin_in_out_from_is_pin_in_out :
+   pin_out_root,
+   inherit_init< T >,
+   inherit_read< T >,
+   inherit_write< T >,
+   pullup_pulldown_filter< T >
+{};
+
+// =============================================================================
+
+template< typename T >
+concept can_pin_in_out_from =
+      is_pin_in_out< T >;
+
+template< is_pin_in_out T  >
+struct pin_in_out_from : pin_in_out_from_is_pin_in_out< T > {};
+
 
 // =============================================================================
 //
@@ -185,34 +219,22 @@ struct pin_in_from< T > :
 //
 // =============================================================================
 
-GODAFOSS_SUPPORTED( pin_oc, pin_oc_from )
-
-template< pin_oc T >
-struct pin_oc_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< pin_oc T >
-struct pin_oc_from< T > :
+template< is_pin_oc T >
+struct pin_oc_from_is_pin_oc :
    pin_oc_root,
-   box_inherit_init< T >,
-   box_inherit_write< T >,
-   box_inherit_read< T >,
-   pullup_filter< T >
+   inherit_init< T >,
+   inherit_write< T >,
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
 {};
 
-template< pin_in_out T >
-struct pin_oc_supported< T > {
-   static constexpr bool supported = true;
-};
-
-template< pin_in_out T >
-struct pin_oc_from< T > :
+template< is_pin_in_out T >
+struct pin_oc_from_is_pin_in_out :
    pin_oc_root,
-   box_inherit_init< T >,
-   box_inherit_write< T >,
-   box_inherit_read< T >,
-   pullup_filter< T >
+   inherit_init< T >,
+   inherit_write< T >,
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
 {
 
    static void GODAFOSS_INLINE init(){
@@ -235,3 +257,19 @@ struct pin_oc_from< T > :
    }
 
 };
+
+// =============================================================================
+
+template< typename T >
+concept can_pin_oc_from =
+      is_pin_in_out< T >
+   || is_pin_oc< T >;
+
+template< can_pin_oc_from T >
+struct pin_oc_from {};
+
+template< is_pin_in_out T  >
+struct pin_oc_from< T > : pin_out_from_is_pin_out< T > {};
+
+template< is_pin_oc T  >
+struct pin_oc_from< T > : pin_oc_from_is_pin_oc< T > {};

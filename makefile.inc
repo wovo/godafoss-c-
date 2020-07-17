@@ -46,13 +46,13 @@ HEADERS           += basics/gf-passing.hpp
 HEADERS           += basics/gf-random.hpp
 HEADERS           += basics/gf-background.hpp
 
-HEADERS           += box/gf-box.hpp
-HEADERS           += box/gf-box-inherit.hpp
-HEADERS           += box/gf-box-no-inline.hpp
-HEADERS           += box/gf-box-invert.hpp
-HEADERS           += box/gf-box-direct.hpp
-HEADERS           += box/gf-box-buffered.hpp
-HEADERS           += box/gf-box-adapters.hpp
+HEADERS           += item/gf-item.hpp
+HEADERS           += item/gf-item-inherit.hpp
+HEADERS           += item/gf-item-no-inline.hpp
+HEADERS           += item/gf-item-invert.hpp
+HEADERS           += item/gf-item-direct.hpp
+HEADERS           += item/gf-item-buffered.hpp
+HEADERS           += item/gf-item-adapters.hpp
 
 HEADERS           += ostream/gf-ostream.hpp
 HEADERS           += ostream/gf-uart.hpp
@@ -63,9 +63,10 @@ HEADERS           += adts/gf-fraction.hpp
 HEADERS           += adts/gf-subrange.hpp
 HEADERS           += adts/gf-xy.hpp
 HEADERS           += adts/gf-color.hpp
-HEADERS           += adts/gf-date-time.hpp
+HEADERS           += adts/gf-date-and-time.hpp
 
 HEADERS           += pins/gf-pin.hpp
+HEADERS           += pins/gf-pin-pullup-pulldown.hpp
 HEADERS           += pins/gf-pin-adapters.hpp
 HEADERS           += pins/gf-pin-dummies.hpp
 HEADERS           += pins/gf-pin-all.hpp
@@ -78,6 +79,8 @@ HEADERS           += ports/gf-port-adapters.hpp
 HEADERS           += ports/gf-port-dummies.hpp
 HEADERS           += ports/gf-port-from-pins.hpp
 HEADERS           += ports/gf-port-demos.hpp
+
+HEADERS           += modifiers/gf-modifiers-pins.hpp
 
 HEADERS           += timing/gf-timing-wait.hpp
 HEADERS           += timing/gf-timing-clock.hpp
@@ -94,6 +97,7 @@ HEADERS           += graphics/gf-window-demos.hpp
 
 HEADERS           += protocols/gf-i2c.hpp
 HEADERS           += protocols/gf-spi.hpp
+HEADERS           += protocols/gf-memory.hpp
 
 HEADERS           += chips/gf-servo.hpp
 HEADERS           += chips/gf-hd44780.hpp

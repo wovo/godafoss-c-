@@ -16,9 +16,9 @@
 // =============================================================================
 
 
-template< pin_out_compatible _p, typename d >
-GODAFOSS_NORETURN void blink(){
-   using p = direct< pin_out_from< _p >>;
+template< can_pin_out _p, typename d >
+GODAFOSS_NO_RETURN void blink(){
+   using p = direct< pin_out< _p >>;
    p::init();
    d::init();
    for(;;){

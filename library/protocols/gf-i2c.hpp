@@ -103,10 +103,10 @@ struct i2c_profile_400kHz {
 // =============================================================================
 
 template<
-   pin_oc_compatible  scl_arg,
-   pin_oc_compatible  sda_arg,
-   typename           timing,
-   typename           _profile = i2c_profile_100kHz
+   can_pin_oc  scl_arg,
+   can_pin_oc  sda_arg,
+   typename    timing,
+   typename    _profile = i2c_profile_100kHz
 >
 struct i2c_bus_bb_scl_sda {
    using profile  = _profile;
@@ -114,8 +114,8 @@ struct i2c_bus_bb_scl_sda {
    using bus = i2c_bus_bb_scl_sda<
       scl_arg, sda_arg, timing, _profile >;
 
-   using scl      = direct< pin_oc_from< scl_arg > >;
-   using sda      = direct< pin_oc_from< sda_arg > >;
+   using scl      = direct< pin_oc< scl_arg > >;
+   using sda      = direct< pin_oc< sda_arg > >;
 
    static void write_bit( bool x ){
       scl::write( 0 );

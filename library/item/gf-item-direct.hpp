@@ -1,11 +1,6 @@
 // =============================================================================
 //
-// gf-box-direct.hpp
-//
-// =============================================================================
-//
-// The direct<> decorator inserts the appropriate refresh or flush
-// before or after each read, write, or direction change operation.
+// gf-item-direct.hpp
 //
 // =============================================================================
 //
@@ -21,6 +16,29 @@
 //
 // =============================================================================
 
+// =============================================================================
+//
+// @define godafoss::direct
+// @title direct
+//
+// The direct<> decorator accepts an item and decorates it by
+// inserting the appropriate refresh or flush
+// before or after each
+// @noref read, write, or direction change operation,
+// and replacing the refresh() and flush() by empty functions.
+//
+// The effect is that such a decorated item can be used without
+// refresh() or flush() calls.
+//
+// @insert can_direct
+// @insert direct
+//
+// -----------------------------------------------------------------------------
+// @section example
+// @example arduino-due/direct/main.cpp text
+//
+// =============================================================================
+
 
 // =============================================================================
 //
@@ -31,13 +49,15 @@
 template< typename T >
 struct _direct_read : T {};
 
-template< input T >
+template< is_input T >
 struct _direct_read< T > : T {
 
    static auto read(){
       T::refresh();
       return T::read();
    }
+
+   static void refresh(){}
 
 };
 
@@ -51,7 +71,7 @@ struct _direct_read< T > : T {
 template< typename T >
 struct _direct_write : T {};
 
-template< output T >
+template< is_output T >
 struct _direct_write< T > : T {
 
    using _vt = typename T::value_type;
@@ -60,6 +80,8 @@ struct _direct_write< T > : T {
       T::write( v );
       T::flush();
    }
+
+   static void flush(){}
 
 };
 
@@ -73,7 +95,7 @@ struct _direct_write< T > : T {
 template< typename T >
 struct _direct_direction : T {};
 
-template< simplex T >
+template< is_simplex T >
 struct _direct_direction< T > : T {
 
    static void direction_set_input() {
@@ -86,6 +108,8 @@ struct _direct_direction< T > : T {
       T::direction_flush();
    }
 
+   static void direction_flush(){}
+
 };
 
 
@@ -95,18 +119,19 @@ struct _direct_direction< T > : T {
 //
 // =============================================================================
 
+// @quote can_direct 3
 template< typename T >
-concept can_box_direct = requires {
-   item< T >;
-};
+concept can_direct =
+   is_item< T >;
 
-template< can_box_direct T >
+template< can_direct T >
 struct direct_supported< T > {
     static constexpr bool supported = true;
 };
 
+// @quote direct 3 ... ;
 template< typename T >
-   requires can_box_direct< T >
+   requires can_direct< T >
 struct direct< T > :
    _direct_read<
    _direct_write<

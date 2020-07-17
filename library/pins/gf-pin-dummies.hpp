@@ -30,34 +30,36 @@ struct pin_in_out_dummy :
 
    static void GODAFOSS_INLINE init(){}
 
-   static void GODAFOSS_INLINE write( by_const< bool > v ){
-      (void) v;
-   }
+   static void GODAFOSS_INLINE refresh(){}
 
    static bool GODAFOSS_INLINE read(){
       return 0;
    }
 
-   static void GODAFOSS_INLINE flush(){
+   static void GODAFOSS_INLINE write( by_const< bool > v ){
+      (void) v;
    }
 
-   static void GODAFOSS_INLINE refresh(){
-   }
+   static void GODAFOSS_INLINE flush(){}
 
-   static void GODAFOSS_INLINE direction_set_input(){
-   }
+   static void GODAFOSS_INLINE direction_set_input(){}
 
-   static void GODAFOSS_INLINE direction_set_output(){
-   }
+   static void GODAFOSS_INLINE direction_set_output(){}
+
+   static void GODAFOSS_INLINE direction_flush(){}
+
 };
 
 
 // =============================================================================
 
-using pin_out_dummy = pin_out_from< pin_in_out_dummy >;
+using pin_in_dummy =
+   pin_in_from_is_pin_in_out< pin_in_out_dummy >;
 
-using pin_in_dummy  = pin_in_from< pin_in_out_dummy >;
+using pin_out_dummy =
+   pin_out_from_is_pin_in_out< pin_in_out_dummy >;
 
-using pin_oc_dummy  = pin_oc_from< pin_in_out_dummy >;
+using pin_oc_dummy =
+   pin_oc_from_is_pin_in_out< pin_in_out_dummy >;
 
 

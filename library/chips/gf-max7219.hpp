@@ -9,7 +9,7 @@ template< size_t n > concept range_1_8 =
 
 template<
    typename            bus,
-   pin_out_compatible  _cs,
+   can_pin_out  _cs,
    int                 n_chips = 1
 >
 struct max7219 :
@@ -28,7 +28,7 @@ struct max7219 :
       { 8 * n_chips, 8 }
    >;
 
-   using cs = direct< invert< pin_out_from< _cs >>>;
+   using cs = direct< invert< pin_out< _cs >>>;
    using transfer = typename bus:: template transfer< cs >;
 
    static constexpr uint8_t cmd_mode        = 0x09;
@@ -64,11 +64,9 @@ struct max7219 :
    static inline uint8_t buffer[ 8 * n_chips ];
 
    static void write_implementation(
-      root::location_t  _pos,
-      root::color_t     col
+      root::offset_t  pos,
+      root::color_t   col
    ){
-      auto pos = _pos - root::origin;
-
       const uint_fast8_t index = ( pos.x / 8 ) + pos.y * n_chips;
       const uint_fast8_t offset = 7 - ( pos.x % 8 );
 

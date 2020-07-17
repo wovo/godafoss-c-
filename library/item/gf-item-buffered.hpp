@@ -1,11 +1,6 @@
 // =============================================================================
 //
-// gf-box-buffered.hpp
-//
-// =============================================================================
-//
-// The buffered<> decorator buffers read, write or direction operations,
-// necessitating appropriate refersh or flush calls.
+// gf-item-buffered.hpp
 //
 // =============================================================================
 //
@@ -21,6 +16,19 @@
 //
 // =============================================================================
 
+// =============================================================================
+//
+// @define godafoss::buffered
+// @title buffered
+//
+// The buffered<> decorator buffers read, write or direction operations,
+// necessitating appropriate refresh() or flush() calls.
+//
+// @insert can_buffered
+// @insert buffered
+//
+// =============================================================================
+
 
 // =============================================================================
 //
@@ -31,7 +39,7 @@
 template< typename T >
 struct _buffered_read : T {};
 
-template< input T >
+template< is_input T >
 struct _buffered_read< T > : T {
 
    static auto read(){
@@ -59,7 +67,7 @@ private:
 template< typename T >
 struct _buffered_write : T {};
 
-template< output T >
+template< is_output T >
 struct _buffered_write< T > : T {
 
    using _vt = typename T::value_type;
@@ -94,7 +102,7 @@ private:
 template< typename T >
 struct _buffered_direction : T {};
 
-template< simplex T >
+template< is_simplex T >
 struct _buffered_direction< T > : T {
 
    static void direction_set_input() {
@@ -133,13 +141,15 @@ private:
 //
 // =============================================================================
 
+// @quote can_buffered 3
 template< typename T >
-concept can_buffered = requires {
-   box< T >;
-};
+concept can_buffered =
+   is_item< T >;
 
+// @quote buffered 2 ... ;
 template< can_buffered T >
-struct buffered :
+struct buffered
+:
    _buffered_read<
    _buffered_write<
    _buffered_direction < T >>> {};
