@@ -18,68 +18,48 @@
 
 // =============================================================================
 //
-// @title pin adapters
+// @title specific pin adapters
 //
-// These adapters adapt a pin to be (only) an input pin,
-// (only) an output pin,
-// or (only) an input_output pin, or (obly) an open collector pin.
-// (in each case, if such adaption is possible).
+// These adapters create a pin cto from a specific (same or other) pin cto.
 //
-// These adapters serve, of course, to adapt a given pin to the
-// adapted role, but also to ensure that the code that uses the adapted
-// pin, doesn't use any features beyond the ones of the adapted role.
+// The created pin has only the properties required for that pin:
+// other properties of the source pin are not available via the created pin.
+// The exception is pullup and pulldown features: those are 
+// available via the created pins.
 //
-// -----------------------------------------------------------------------------
+// These adapters can only be used when the source pin is know.
+// For general use, the pin adapters that accept any (possible) source
+// pin are more covenient.
+// 
+// @define pin_in_from_pin_in
+// @insert pin_in_from_pin_in
 //
-// @define godafoss::pin_in
-// @section pin_input
+// @define pin_in_from_pin_in_out
+// @insert pin_in_from_pin_in_out
 //
-// @insert can_pin_in
-// @insert pin_in
+// @define pin_in_from_pin_oc
+// @insert pin_in_from_pin_oc
 //
-// The pin_input<> decorator decorates an pin to be an input pin,
-// which is possible if the pin satisfies the can_input concept,
-// which requires the pin to be either a pin_in or a pin_in_out.
+// @define pin_out_from_pin_out
+// @insert pin_out_from_pin_out
 //
-// -----------------------------------------------------------------------------
+// @define pin_out_from_pin_in_out
+// @insert pin_out_from_pin_in_out
 //
-// @define godafoss::pin_out
-// @section pin_out
+// @define pin_out_from_pin_oc
+// @insert pin_out_from_pin_oc
 //
-// @insert can_pin_out
-// @insert pin_out
+// @define pin_in_out_from_pin_in_out
+// @insert pin_in_out_from_pin_in_out
 //
-// The pin_ou<> decorator decorates an pin to be an output pin,
-// which is possible if the pin satisfies the can_output concept,
-// which requires the pin to be either a pin_in or a pin_in_out.
+// @define pin_in_out_from_pin_oc
+// @insert pin_in_out_from_pin_oc
 //
-// -----------------------------------------------------------------------------
-//
-// @define godafoss::pin_in_out
-// @section pin_in_out
-//
-// @insert can_in_out
-// @insert pin_in_out
-//
-// The pin_in_out<> decorator decorates
-// an pin to be an input_output pin,
-// which is possible if the pin satisfies the can_input_output concept,
-// which requires the pin to a pin_in_out.
-//
-// -----------------------------------------------------------------------------
-//
-// @define godafoss::pin_oc
-// @section pin_oc
-//
-// @insert can_pin_oc
-// @insert pin_oc
-//
-// The pin_oc<> decorator decorates
-// an pin to be an open collector pin,
-// which is possible if the pin satisfies the can_input_output concept,
-// which requires the pin to a pin_in_out or a pin_oc.
+// @define pin_oc_from_pin_oc
+// @insert pin_oc_from_pin_oc
 //
 // =============================================================================
+
 
 
 // =============================================================================
@@ -88,16 +68,18 @@
 //
 // =============================================================================
 
+// @quote pin_in_from_pin_in 2 ... {};
 template< is_pin_in T >
-struct pin_in_from_is_pin_in :
+struct pin_in_from_pin_in :
    pin_in_root,
    inherit_init< T >,
    inherit_read< T >,
    pullup_pulldown_filter< T >
 {};
 
+// @quote pin_in_from_pin_in_out 2 ... {};
 template< is_pin_in_out T >
-struct pin_in_from_is_pin_in_out :
+struct pin_in_from_pin_in_out :
    pin_in_root,
    inherit_read< T >,
    pullup_pulldown_filter< T >
@@ -110,8 +92,9 @@ struct pin_in_from_is_pin_in_out :
 
 };
 
+// @quote pin_in_from_pin_oc 2 ... {};
 template< is_pin_oc T >
-struct pin_in_from_is_pin_oc :
+struct pin_in_from_pin_oc :
    pin_in_root,
    inherit_read< T >,
    pullup_pulldown_filter< T >
@@ -136,13 +119,13 @@ template< can_pin_in_from T >
 struct pin_in_from {};
 
 template< is_pin_in T  >
-struct pin_in_from< T > : pin_in_from_is_pin_in< T > {};
+struct pin_in_from< T > : pin_in_from_pin_in< T > {};
 
 template< is_pin_in_out T  >
-struct pin_in_from< T > : pin_in_from_is_pin_in_out< T > {};
+struct pin_in_from< T > : pin_in_from_pin_in_out< T > {};
 
 template< is_pin_oc T  >
-struct pin_in_from< T > : pin_in_from_is_pin_oc< T > {};
+struct pin_in_from< T > : pin_in_from_pin_oc< T > {};
 
 
 // =============================================================================
@@ -151,15 +134,17 @@ struct pin_in_from< T > : pin_in_from_is_pin_oc< T > {};
 //
 // =============================================================================
 
+// @quote pin_out_from_pin_out 2 ... {};
 template< is_pin_out T >
-struct pin_out_from_is_pin_out :
+struct pin_out_from_pin_out :
    pin_out_root,
    inherit_init< T >,
    inherit_write< T >
 {};
 
+// @quote pin_out_from_pin_in_out 2 ... {};
 template< is_pin_in_out T >
-struct pin_out_from_is_pin_in_out :
+struct pin_out_from_pin_in_out :
    pin_out_root,
    inherit_write< T >
 {
@@ -171,21 +156,33 @@ struct pin_out_from_is_pin_in_out :
 
 };
 
+// @quote pin_out_from_pin_oc 2 ... {};
+template< is_pin_oc T >
+struct pin_out_from_pin_oc :
+   pin_out_root,
+   inherit_init< T >,
+   inherit_write< T >
+{};
+
 // =============================================================================
 
 template< typename T >
 concept can_pin_out_from =
       is_pin_out< T >
-   || is_pin_in_out< T >;
+   || is_pin_in_out< T >
+   || is_pin_oc< T >;
 
 template< can_pin_out_from T >
 struct pin_out_from {};
 
 template< is_pin_out T  >
-struct pin_out_from< T > : pin_out_from_is_pin_out< T > {};
+struct pin_out_from< T > : pin_out_from_pin_out< T > {};
 
 template< is_pin_in_out T  >
-struct pin_out_from< T > : pin_out_from_is_pin_in_out< T > {};
+struct pin_out_from< T > : pin_out_from_pin_in_out< T > {};
+
+template< is_pin_oc T  >
+struct pin_out_from< T > : pin_out_from_pin_oc< T > {};
 
 
 // =============================================================================
@@ -194,8 +191,9 @@ struct pin_out_from< T > : pin_out_from_is_pin_in_out< T > {};
 //
 // =============================================================================
 
+// @quote pin_in_out_from_pin_in_out 2 ... {};
 template< is_pin_in_out T >
-struct pin_in_out_from_is_pin_in_out :
+struct pin_in_out_from_pin_in_out :
    pin_out_root,
    inherit_init< T >,
    inherit_read< T >,
@@ -203,14 +201,44 @@ struct pin_in_out_from_is_pin_in_out :
    pullup_pulldown_filter< T >
 {};
 
+// @quote pin_in_out_from_pin_oc 2 ... {};
+template< is_pin_oc T >
+struct pin_in_out_from_pin_oc :
+   pin_in_out_root,
+   inherit_init< T >,
+   inherit_write< T >,
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
+{
+
+   static GODAFOSS_INLINE void direction_set_input(){
+      // make the pin high, which is effectively input
+      T::write( 1 );
+   }
+
+   static GODAFOSS_INLINE void direction_set_output(){}
+
+   static GODAFOSS_INLINE void direction_set_flush(){
+      T::flush();
+   }
+
+};
+
 // =============================================================================
 
 template< typename T >
 concept can_pin_in_out_from =
-      is_pin_in_out< T >;
+      is_pin_in_out< T >
+   || is_pin_oc< T >;
+      
+template< can_pin_in_out_from T >
+struct pin_in_out_from {};      
 
-template< is_pin_in_out T  >
-struct pin_in_out_from : pin_in_out_from_is_pin_in_out< T > {};
+template< is_pin_in_out T >
+struct pin_in_out_from< T > : pin_in_out_from_pin_in_out< T > {};
+
+template< is_pin_oc T >
+struct pin_in_out_from< T > : pin_in_out_from_pin_oc< T > {};
 
 
 // =============================================================================
@@ -219,17 +247,9 @@ struct pin_in_out_from : pin_in_out_from_is_pin_in_out< T > {};
 //
 // =============================================================================
 
-template< is_pin_oc T >
-struct pin_oc_from_is_pin_oc :
-   pin_oc_root,
-   inherit_init< T >,
-   inherit_write< T >,
-   inherit_read< T >,
-   pullup_pulldown_filter< T >
-{};
-
+// @quote pin_oc_from_pin_in_out 2 ... {};
 template< is_pin_in_out T >
-struct pin_oc_from_is_pin_in_out :
+struct pin_oc_from_pin_in_out :
    pin_oc_root,
    inherit_init< T >,
    inherit_write< T >,
@@ -258,6 +278,16 @@ struct pin_oc_from_is_pin_in_out :
 
 };
 
+// @quote pin_oc_from_pin_oc 2 ... {};
+template< is_pin_oc T >
+struct pin_oc_from_pin_oc :
+   pin_oc_root,
+   inherit_init< T >,
+   inherit_write< T >,
+   inherit_read< T >,
+   pullup_pulldown_filter< T >
+{};
+
 // =============================================================================
 
 template< typename T >
@@ -269,7 +299,7 @@ template< can_pin_oc_from T >
 struct pin_oc_from {};
 
 template< is_pin_in_out T  >
-struct pin_oc_from< T > : pin_out_from_is_pin_out< T > {};
+struct pin_oc_from< T > : pin_out_from_pin_out< T > {};
 
 template< is_pin_oc T  >
-struct pin_oc_from< T > : pin_oc_from_is_pin_oc< T > {};
+struct pin_oc_from< T > : pin_oc_from_pin_oc< T > {};

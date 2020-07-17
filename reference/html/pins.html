@@ -6,7 +6,7 @@
 
 <body>
 <H2>pins</H2>
-from <A HREF="../library/pins/gf-pin.hpp">pins/gf-pin.hpp</A>
+from <A HREF="../library\pins/gf-pin.hpp">../library\pins/gf-pin.hpp</A>
 
 
 <HR>
@@ -35,29 +35,30 @@ is used to create the internal active-high representation of the pin.
 <HR>
 
 <H3>pin_in</H3>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept pin_in = requires {
-   box< bool >;
-   input< bool >;
-   T::_pin_in_marker;
-};
+concept is_pin_in = requires {
+      T::_pin_in_marker;
+   }
+   && is_box< T, bool >
+   && is_input< T >;
+
 </code></pre></A>
 <P>
-A pin_in is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin read-only
+A <A HREF=pin-adapters.html#pin_in>pin_in</A> is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin read-only
 interface to the world outside the target chip.
-A typical use of a pin_in is to <A HREF=input--output.html#read>read</A> a switch or pushbutton.
+A typical use of a <A HREF=pin-adapters.html#pin_in>pin_in</A> is to <A HREF=input--output.html#read>read</A> a switch or pushbutton.
 <P>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_in_root :
    box_root< bool >,
    input_root< bool >
 {
-   static constexpr bool pin_in_marker = true;
+   static constexpr bool _pin_in_marker = true;
 };
 </code></pre></A>
 <P>
-All pin_in <A HREF=cto.html#cto>cto</A>'s inherit from pin_in_root.
+All <A HREF=pin-adapters.html#pin_in>pin_in</A> <A HREF=cto.html#cto>cto</A>'s inherit from pin_in_root.
 <P>
 <P>
 <a name="pin_out"></a>
@@ -66,20 +67,20 @@ All pin_in <A HREF=cto.html#cto>cto</A>'s inherit from pin_in_root.
 <HR>
 
 <H3>pin_out</H3>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept pin_out = requires {
-   box< bool >;
-   output< bool >;
-   T::_pin_out_marker;
-};
+concept is_pin_out = requires {
+      T::_pin_out_marker;
+   }
+   && is_box< T, bool >
+   && is_output< T >;
 </code></pre></A>
 <P>
-A pin_in is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin write-only
+A <A HREF=pin-adapters.html#pin_in>pin_in</A> is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin write-only
 interface to the world outside the target chip.
-A typical use of a pin_in is to drive an LED.
+A typical use of a <A HREF=pin-adapters.html#pin_in>pin_in</A> is to drive an LED.
 <P>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_out_root :
    box_root< bool >,
    output_root< bool >
@@ -88,7 +89,7 @@ A typical use of a pin_in is to drive an LED.
 };
 </code></pre></A>
 <P>
-All pin_out <A HREF=cto.html#cto>cto</A>'s inherit from pin_out_root.
+All <A HREF=pin-adapters.html#pin_out>pin_out</A> <A HREF=cto.html#cto>cto</A>'s inherit from pin_out_root.
 <P>
 <P>
 <a name="pin_in_out"></a>
@@ -97,24 +98,25 @@ All pin_out <A HREF=cto.html#cto>cto</A>'s inherit from pin_out_root.
 <HR>
 
 <H3>pin_in_out</H3>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept pin_in_out = requires {
-   box< bool >;
-   simplex< bool >;
-   T::_pin_in_out_marker;
-};
+concept is_pin_in_out =
+ requires {
+      T::_pin_in_out_marker;
+   }
+   && is_box< T, bool >
+   && is_simplex< T >;
 </code></pre></A>
 <P>
-A pin_in_out is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin <A HREF=input--output.html#simplex>simplex</A>
+A <A HREF=pin-adapters.html#pin_in_out>pin_in_out</A> is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin <A HREF=input--output.html#simplex>simplex</A>
 read-write interface to the world outside the target chip.
-A pin_in_out is the most versatile of the pin types,
+A <A HREF=pin-adapters.html#pin_in_out>pin_in_out</A> is the most versatile of the pin types,
 because it can be used in any of the roles.
-In most cases a pin_in_out is used as either pin, a a pin_out,
-or a pin_oc, but some communication protocols
+In most cases a <A HREF=pin-adapters.html#pin_in_out>pin_in_out</A> is used as either pin, a a <A HREF=pin-adapters.html#pin_out>pin_out</A>,
+or a <A HREF=pin-adapters.html#pin_oc>pin_oc</A>, but some communication protocols
 require a pin to be switched between <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A>.
 <P>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_in_out_root :
    box_root< bool >,
    simplex_root< bool >
@@ -123,7 +125,7 @@ require a pin to be switched between <A HREF=input--output.html#input>input</A> 
 };
 </code></pre></A>
 <P>
-All pin_in <A HREF=cto.html#cto>cto</A>'s inherit from pin_in_out_root.
+All <A HREF=pin-adapters.html#pin_in>pin_in</A> <A HREF=cto.html#cto>cto</A>'s inherit from pin_in_out_root.
 <P>
 <P>
 <P>
@@ -133,16 +135,16 @@ All pin_in <A HREF=cto.html#cto>cto</A>'s inherit from pin_in_out_root.
 <HR>
 
 <H3>pin_oc</H3>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept pin_oc = requires {
-   box< bool >;
-   duplex< bool >;
-   T::_pin_oc_marker;
-};
+concept is_pin_oc = requires {
+      T::_pin_oc_marker;
+   }
+   && is_box< T, bool >
+   && is_duplex< T >;
 </code></pre></A>
 <P>
-A pin_oc is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin <A HREF=input--output.html#duplex>duplex</A>
+A <A HREF=pin-adapters.html#pin_oc>pin_oc</A> is a <A HREF=box--pipe.html#box>box</A>< bool > <A HREF=cto.html#cto>cto</A> that abstracts a single-pin <A HREF=input--output.html#duplex>duplex</A>
 read-write interface to the world outside the target chip.
 The term oc means open-collector, refrerring to the
 (now somewhat outdated) way this type of pin can be implemented:
@@ -158,7 +160,7 @@ pull-up resistor pulls the line low.
 This arrangement prevents electrical problems which would be caused
 when one chip drives the line low, and another drives it high.
 <P>
-<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_oc_root :
    box_root< bool >,
    duplex_root< bool >
@@ -167,7 +169,7 @@ when one chip drives the line low, and another drives it high.
 };
 </code></pre></A>
 <P>
-All pin_in <A HREF=cto.html#cto>cto</A>'s inherit from pin_oc_root.
+All <A HREF=pin-adapters.html#pin_in>pin_in</A> <A HREF=cto.html#cto>cto</A>'s inherit from pin_oc_root.
 <P>
 <P>
 

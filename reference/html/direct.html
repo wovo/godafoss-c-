@@ -7,7 +7,7 @@
 <body>
 <a name="direct"></a>
 <H2>direct</H2>
-from <A HREF="../library/item/gf-item-direct.hpp">item/gf-item-direct.hpp</A>
+from <A HREF="../library\item/gf-item-direct.hpp">../library\item/gf-item-direct.hpp</A>
 
 
 <HR>
@@ -22,13 +22,12 @@ and replacing the <A HREF=input--output.html#refresh>refresh()</A> and <A HREF=i
 The effect is that such a decorated <A HREF=item.html#item>item</A> can be used without
 <A HREF=input--output.html#refresh>refresh()</A> or <A HREF=input--output.html#flush>flush()</A> calls.
 <P>
-<A HREF="../../library/item/gf-item-direct.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item-direct.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept can_direct = requires {
-   item< T >;
-};
+concept can_direct =
+   is_item< T >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item-direct.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item-direct.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
    requires can_direct< T >
 struct direct< T > : ... ;

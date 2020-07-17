@@ -5,9 +5,10 @@
 </head>
 
 <body>
+<a name="is_cto"></a>
 <a name="cto"></a>
 <H2>cto</H2>
-from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
+from <A HREF="../library\item/gf-item.hpp">../library\item/gf-item.hpp</A>
 
 
 <HR>
@@ -39,7 +40,7 @@ such cto's are derived (with _root appended to the name of the cto).
 <P>
 The concept checks both for a specific marker, which serves
 no other purpose than to identify the specific cto, and for the
-features that the cto isw obliged to offer.
+features that the cto is obliged to offer.
 The concept is used to constrain templates that want to accept
 only a cto that implements a specific set of features.
 <P>
@@ -48,9 +49,9 @@ For more complex cto's the CRTP pattern is used so the root can
 provide both base properties and enrichment based on the provided
 implementation.
 <P>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept cto = requires {
+concept is_cto = requires {
    T::_cto_marker;
    { T::init() } -> std::same_as< void >;
 };
@@ -58,7 +59,7 @@ concept cto = requires {
 <P>
 A cto has a static init() function that can be called without arguments.
 <P>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">struct cto_root {
    static const bool _cto_marker = true;
 };

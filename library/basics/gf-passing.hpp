@@ -40,6 +40,10 @@ struct _by_const { using type = const T &; };
 constexpr auto _max_by_value = 2;
 #endif
 
+#ifdef __i386__
+constexpr auto _max_by_value = 1;
+#endif
+
 #ifdef __thumb__
 constexpr auto _max_by_value = 1;
 #endif

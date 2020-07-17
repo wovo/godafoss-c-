@@ -57,7 +57,7 @@
 // provide both base properties and enrichment based on the provided
 // implementation.
 //
-// @insert cto_concept
+// @insert is_cto
 //
 // A cto has a static init() function that can be called without arguments.
 //
@@ -69,7 +69,7 @@
 //
 // =============================================================================
 
-// @quote cto_concept 5
+// @quote is_cto 5
 template< typename T >
 concept is_cto = requires {
    T::_cto_marker;
@@ -100,7 +100,7 @@ struct cto_root {
 //    - duplex: both input and output at the same time
 //    - simplex: both input and output, but not at the same time
 //
-// @insert item_concept
+// @insert is_item
 //
 // An item is a cto that holds one (or, in case of a pipe, more)
 // data elements of a specific type.
@@ -113,7 +113,7 @@ struct cto_root {
 // =============================================================================
 
 
-// @quote item_concept 6
+// @quote is_item 6
 template< typename T, typename VT = T::value_type >
 concept is_item = requires {
       T::_item_marker;
@@ -303,7 +303,7 @@ struct pipe_root :
 //
 // =============================================================================
 
-// @quote input_concept 7
+// @quote is_input 7
 template< typename T, typename VT = T::value_type >
 concept is_input = requires {
       T::_input_marker;
@@ -323,7 +323,7 @@ struct input_root :
 
 // =============================================================================
 
-// @quote output_concept 7
+// @quote is_output 7
 template< typename T, typename VT = T::value_type >
 concept is_output = requires (
    typename T::value_type v
@@ -345,7 +345,7 @@ struct output_root :
 
 // =============================================================================
 
-// @quote input_output_concept 11
+// @quote is_input_output 11
 template< typename T, typename VT = T::value_type >
 concept is_input_output = requires (
       typename T::value_type v
@@ -370,7 +370,7 @@ struct input_output_root :
 
 // =============================================================================
 
-// @quote duplex_concept 5
+// @quote is_duplex 5
 template< typename T, typename VT = T::value_type >
 concept is_duplex = requires {
       T::_duplex_marker;
@@ -388,7 +388,7 @@ struct duplex_root :
 
 // =============================================================================
 
-// @quote simplex_concept 8
+// @quote is_simplex 8
 template< typename T, typename VT = T::value_type >
 concept is_simplex = requires {
       T::_simplex_marker;

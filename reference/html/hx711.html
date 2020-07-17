@@ -6,7 +6,7 @@
 
 <body>
 <H2>hx711</H2>
-from <A HREF="../library/chips/gf-hx711.hpp">chips/gf-hx711.hpp</A>
+from <A HREF="../library\chips/gf-hx711.hpp">../library\chips/gf-hx711.hpp</A>
 
 
 <HR>
@@ -18,10 +18,10 @@ This template implements an interface to the
 hx711 24-Bit Analog-to-Digital Converter (ADC).
 This chip is intended to interface to a load cell (force sensor).
 <P>
-<A HREF="../../library/chips/gf-hx711.hpp" style="text-decoration:none">
+<A HREF="../../library\chips/gf-hx711.hpp" style="text-decoration:none">
 <pre><code class="c++">template<
-   pin_out_compatible  _sck,
-   pin_in_compatible   _dout,
+   can_pin_out  _sck,
+   can_pin_in   _dout,
    typename            timing
 >
 struct hx711 {

@@ -54,12 +54,12 @@ struct pin_in_out_dummy :
 // =============================================================================
 
 using pin_in_dummy =
-   pin_in_from_is_pin_in_out< pin_in_out_dummy >;
+   pin_in_from_pin_in_out< pin_in_out_dummy >;
 
 using pin_out_dummy =
-   pin_out_from_is_pin_in_out< pin_in_out_dummy >;
+   pin_out_from_pin_in_out< pin_in_out_dummy >;
 
 using pin_oc_dummy =
-   pin_oc_from_is_pin_in_out< pin_in_out_dummy >;
+   pin_oc_from_pin_in_out< pin_in_out_dummy >;
 
 

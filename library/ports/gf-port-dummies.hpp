@@ -49,13 +49,13 @@ struct port_in_out_dummy :
 // ==========================================================================
 
 template< int n >
-using port_out_dummy = port_out_from< port_in_out_dummy< n > >;
+using port_out_dummy = port_out_from_port_in_out< port_in_out_dummy< n > >;
 
 
 // ==========================================================================
 
 template< int n >
-using port_in_dummy  = port_in_from< port_in_out_dummy< n > >;
+using port_in_dummy  = port_in_from_port_in_out< port_in_out_dummy< n > >;
 
 
 // ==========================================================================
@@ -84,4 +84,3 @@ struct port_oc_dummy :
       return 0;
    }
 };
-

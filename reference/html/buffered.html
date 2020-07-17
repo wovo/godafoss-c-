@@ -7,7 +7,7 @@
 <body>
 <a name="buffered"></a>
 <H2>buffered</H2>
-from <A HREF="../library/item/gf-item-buffered.hpp">item/gf-item-buffered.hpp</A>
+from <A HREF="../library\item/gf-item-buffered.hpp">../library\item/gf-item-buffered.hpp</A>
 
 
 <HR>
@@ -16,13 +16,12 @@ from <A HREF="../library/item/gf-item-buffered.hpp">item/gf-item-buffered.hpp</A
 The buffered<> decorator buffers <A HREF=input--output.html#read>read</A>, <A HREF=input--output.html#write>write</A> or direction operations,
 necessitating appropriate <A HREF=input--output.html#refresh>refresh()</A> or <A HREF=input--output.html#flush>flush()</A> calls.
 <P>
-<A HREF="../../library/item/gf-item-buffered.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item-buffered.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
-concept can_buffered = requires {
-   item< T >;
-};
+concept can_buffered =
+   is_item< T >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item-buffered.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item-buffered.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_buffered T >
 struct buffered ... ;
 </code></pre></A>

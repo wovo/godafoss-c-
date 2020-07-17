@@ -15,12 +15,14 @@
 #
 # ==============================================================================
 
+# text bij de adapters loopt nog niet helemaal
+# voorbeelden bij de adapters!
 # SPI dummy doesn't work, make tests, check WS2812 & MAX7219
 # example pin_in, pin_out, pin_oc (one-wire)
 # markdown add anchors, refs, links to code, (link under examples!)
 # markdown add pages, index
-# is_ prefix for concepts??
-# make the files external references in the pdf?
+# leg is_ can_ uit
+# make the source files external references in the pdf?
 # italic for things defined on this page?
 # eeprom has multi-byte address!
 # add check and example for date_and_time
@@ -394,7 +396,7 @@ class item:
             self.global_defines.append( [ t, self ] )
             self.content.append( define( t ))
             if t.startswith( "is_" ):
-               t = s[ 3 : ]
+               t = t[ 3 : ]
                self.global_defines.append( [ t, self ] )
                self.content.append( define( t ))
 

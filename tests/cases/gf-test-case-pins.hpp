@@ -28,11 +28,12 @@
 // =============================================================================
 
 struct my_pin_in : gf::pin_in_root {
+   static void init();
    static void refresh();
    static bool read();
 };
 
-template< gf::pin_in >
+template< gf::is_pin_in T >
 struct needs_pin_in {};
 
 
@@ -44,11 +45,12 @@ struct needs_pin_in {};
 
 
 struct my_pin_out : gf::pin_out_root {
+   static void init();
    static void write( bool );
    static void flush();
 };
 
-template< gf::pin_out >
+template< gf::is_pin_out T >
 struct needs_pin_out {};
 
 
@@ -59,6 +61,7 @@ struct needs_pin_out {};
 // =============================================================================
 
 struct my_pin_in_out : gf::pin_in_out_root {
+   static void init();
    static void direction_set_input();
    static void direction_set_output();
    static void direction_flush();
@@ -68,7 +71,7 @@ struct my_pin_in_out : gf::pin_in_out_root {
    static bool read();
 };
 
-template< gf::pin_in_out >
+template< gf::is_pin_in_out T >
 struct needs_pin_in_out {};
 
 
@@ -79,13 +82,14 @@ struct needs_pin_in_out {};
 // =============================================================================
 
 struct my_pin_oc : gf::pin_oc_root {
+   static void init();
    static void write( bool );
    static void flush();
    static void refresh();
    static bool read();
 };
 
-template< gf::pin_oc >
+template< gf::is_pin_oc T >
 struct needs_pin_oc {};
 
 
@@ -99,30 +103,30 @@ struct needs_pin_oc {};
 void test_case_pins(){
    (void) needs_pin_in< my_pin_in >();
 
-   EQUAL( gf::pin_in< my_pin_in >,      true  );
-   EQUAL( gf::pin_out< my_pin_in >,     false );
-   EQUAL( gf::pin_in_out< my_pin_in >,  false );
-   EQUAL( gf::pin_oc< my_pin_in >,      false );
+   EQUAL( gf::is_pin_in< my_pin_in >,      true  );
+   EQUAL( gf::is_pin_out< my_pin_in >,     false );
+   EQUAL( gf::is_pin_in_out< my_pin_in >,  false );
+   EQUAL( gf::is_pin_oc< my_pin_in >,      false );
 
    (void) needs_pin_out< my_pin_out >();
 
-   EQUAL( gf::pin_in< my_pin_out >,      false );
-   EQUAL( gf::pin_out< my_pin_out >,     true  );
-   EQUAL( gf::pin_in_out< my_pin_out >,  false );
-   EQUAL( gf::pin_oc< my_pin_out >,      false );
+   EQUAL( gf::is_pin_in< my_pin_out >,      false );
+   EQUAL( gf::is_pin_out< my_pin_out >,     true  );
+   EQUAL( gf::is_pin_in_out< my_pin_out >,  false );
+   EQUAL( gf::is_pin_oc< my_pin_out >,      false );
 
    (void) needs_pin_in_out< my_pin_in_out >();
 
-   EQUAL( gf::pin_in< my_pin_in_out >,      false );
-   EQUAL( gf::pin_out< my_pin_in_out >,     false  );
-   EQUAL( gf::pin_in_out< my_pin_in_out >,  true );
-   EQUAL( gf::pin_oc< my_pin_in_out >,      false );
+   EQUAL( gf::is_pin_in< my_pin_in_out >,      false );
+   EQUAL( gf::is_pin_out< my_pin_in_out >,     false  );
+   EQUAL( gf::is_pin_in_out< my_pin_in_out >,  true );
+   EQUAL( gf::is_pin_oc< my_pin_in_out >,      false );
 
    (void) needs_pin_oc< my_pin_oc >();
 
-   EQUAL( gf::pin_in< my_pin_oc >,      false );
-   EQUAL( gf::pin_out< my_pin_oc >,     false );
-   EQUAL( gf::pin_in_out< my_pin_oc >,  false );
-   EQUAL( gf::pin_oc< my_pin_oc >,      true );
+   EQUAL( gf::is_pin_in< my_pin_oc >,      false );
+   EQUAL( gf::is_pin_out< my_pin_oc >,     false );
+   EQUAL( gf::is_pin_in_out< my_pin_oc >,  false );
+   EQUAL( gf::is_pin_oc< my_pin_oc >,      true );
 
 }

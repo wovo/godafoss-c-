@@ -16,7 +16,7 @@
 // ==========================================================================
 
 template<
-   port_oc_compatible  _port,
+   can_port_oc  _port,
    can_pin_oc   _cs1,
    can_pin_oc   _cs2,
    can_pin_oc   _cd,
@@ -41,7 +41,7 @@ private:
 
    // cs1, cs2, e are (internally) active high
    //(the electrical pins are active low)
-   using port    = port_oc_from< _port >;
+   using port    = port_oc< _port >;
    using cs1     = pin_oc< invert< _cs1 > >;
    using cs2     = pin_oc< invert< _cs2 > >;
    using cd      = pin_oc< _cd >;

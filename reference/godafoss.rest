@@ -37,7 +37,7 @@ Godafoss reference
 background processing
 *********************
 
-from basics/gf-background.hpp
+from ../library\basics/gf-background.hpp
 
 
 
@@ -126,7 +126,13 @@ example
 
 
 
+.. _is_box:
+
+
 .. _box:
+
+
+.. _is_pipe:
 
 
 .. _pipe:
@@ -141,7 +147,7 @@ example
 box, pipe
 *********
 
-from item/gf-item.hpp
+from ../library\item/gf-item.hpp
 
 
 
@@ -155,11 +161,31 @@ a pipe behaves like a sequence of values.
 
 
 
+
 ----------------------------------
 
 
 box
 ***
+
+:: 
+
+  template< typename T, typename VT = T::value_type >
+  concept is_box = requires {
+        T::_box_marker;
+     }
+     && is_item< T, VT >;
+  
+
+:: 
+
+  template< typename VT >
+  struct box_root :
+     item_root< VT >
+  {
+     static const bool _box_marker = true;
+  };
+  
 
 
 A box is an item_ that has or contains (at any point in time) a single value.
@@ -167,25 +193,6 @@ A box has value semantics:
 when you read_ from a box twice in rapid succession,
 you will get the same value.
 Writing to an item_ overwrites its old value in the box.
-
-:: 
-
-  template< typename T >
-  concept box = requires {
-     item< T >;
-     T::_box_marker;
-  };
-  
-
-:: 
-
-  template< typename T >
-  struct box_root :
-     item_root< T >
-  {
-     static const bool _box_marker = true;
-  };
-  
 
 
 
@@ -196,6 +203,25 @@ Writing to an item_ overwrites its old value in the box.
 pipe
 ****
 
+:: 
+
+  template< typename T, typename VT = T::value_type >
+  concept is_pipe = requires {
+        T::_pipe_marker;
+     }
+     && is_item< T, VT >;
+  
+
+:: 
+
+  template< typename VT >
+  struct pipe_root :
+     item_root< VT >
+  {
+     static const bool _pipe_marker = true;
+  };
+  
+
 
 A pipe is an item_ that holds a sequence of values.
 A write_ to a pipe adds a new value the sequence.
@@ -204,26 +230,6 @@ repeated write_ of the same value.
 Reading from a pipe is destructive: it consumes the value that was
 read_ from the sequence.
 Writing to a pipe adds a value to the sequnce.
-
-:: 
-
-  template< typename T >
-  concept pipe = requires {
-     item< T >;
-     T::_pipe_marker;
-  };
-  
-
-:: 
-
-  template< typename T >
-  struct pipe_root :
-     item_root< T >
-  {
-     static const bool _pipe_marker = true;
-  };
-  
-
 
 
 .. _buffered:
@@ -238,7 +244,7 @@ Writing to a pipe adds a value to the sequnce.
 buffered
 ********
 
-from item/gf-item-buffered.hpp
+from ../library\item/gf-item-buffered.hpp
 
 
 
@@ -251,9 +257,8 @@ necessitating appropriate refresh_ or flush_ calls.
 :: 
 
   template< typename T >
-  concept can_buffered = requires {
-     item< T >;
-  };
+  concept can_buffered =
+     is_item< T >;
   
 
 :: 
@@ -262,6 +267,9 @@ necessitating appropriate refresh_ or flush_ calls.
   struct buffered ... ;
   
 
+
+
+.. _is_cto:
 
 
 .. _cto:
@@ -276,7 +284,7 @@ necessitating appropriate refresh_ or flush_ calls.
 cto
 ***
 
-from item/gf-item.hpp
+from ../library\item/gf-item.hpp
 
 
 
@@ -309,7 +317,7 @@ such cto's are derived (with _root appended to the name of the cto).
 
 The concept checks both for a specific marker, which serves
 no other purpose than to identify the specific cto, and for the
-features that the cto isw obliged to offer.
+features that the cto is obliged to offer.
 The concept is used to constrain templates that want to accept
 only a cto that implements a specific set of features.
 
@@ -321,7 +329,7 @@ implementation.
 :: 
 
   template< typename T >
-  concept cto = requires {
+  concept is_cto = requires {
      T::_cto_marker;
      { T::init() } -> std::same_as< void >;
   };
@@ -352,7 +360,7 @@ all cto's inherit (in most cases indirectly) from this struct.
 date and time
 *************
 
-from adts/gf-date-and-time.hpp
+from ../library\adts/gf-date-and-time.hpp
 
 
 
@@ -425,7 +433,7 @@ The operator<< prints a data_and_time in the format YY-MM-DD HH:MM.SS dW.
 direct
 ******
 
-from item/gf-item-direct.hpp
+from ../library\item/gf-item-direct.hpp
 
 
 
@@ -444,9 +452,8 @@ refresh_ or flush_ calls.
 :: 
 
   template< typename T >
-  concept can_direct = requires {
-     item< T >;
-  };
+  concept can_direct =
+     is_item< T >;
   
 
 :: 
@@ -502,7 +509,7 @@ example
 function and class attributes
 *****************************
 
-from basics/gf-attributes.hpp
+from ../library\basics/gf-attributes.hpp
 
 
 
@@ -626,7 +633,7 @@ of that class.
 hd44780
 *******
 
-from chips/gf-hd44780.hpp
+from ../library\chips/gf-hd44780.hpp
 
 
 
@@ -639,11 +646,11 @@ on an hd44780 character lcd.
 :: 
 
   template<
-     pin_out_compatible   rs,
-     pin_out_compatible   e,
-     port_out_compatible  port,
-     xy<>                 size,
-     typename             timing
+     can_pin_out   rs,
+     can_pin_out   e,
+     can_port_out  port,
+     xy<>          size,
+     typename      timing
   > using hd44780_rs_e_d_s_timing = { ... };
   
 
@@ -681,7 +688,7 @@ bla blas
 hx711
 *****
 
-from chips/gf-hx711.hpp
+from ../library\chips/gf-hx711.hpp
 
 
 
@@ -699,8 +706,8 @@ This chip is intended to interface to a load cell (force sensor).
 :: 
 
   template<
-     pin_out_compatible  _sck,
-     pin_in_compatible   _dout,
+     can_pin_out  _sck,
+     can_pin_in   _dout,
      typename            timing
   >
   struct hx711 {
@@ -743,7 +750,7 @@ is first (automatically) powered up.
 inherit_*
 *********
 
-from item/gf-item-inherit.hpp
+from ../library\item/gf-item-inherit.hpp
 
 
 
@@ -842,16 +849,31 @@ direction_flush_
 functions of the decorated item_.
 
 
+.. _is_input:
+
+
 .. _input:
+
+
+.. _is_output:
 
 
 .. _output:
 
 
+.. _is_input_output:
+
+
 .. _input_output:
 
 
+.. _is_duplex:
+
+
 .. _duplex:
+
+
+.. _is_simplex:
 
 
 .. _simplex:
@@ -866,7 +888,7 @@ functions of the decorated item_.
 input, output
 *************
 
-from item/gf-item.hpp
+from ../library\item/gf-item.hpp
 
 
 
@@ -914,20 +936,20 @@ input
 
 :: 
 
-  template< typename T >
-  concept input = requires {
-     item< T >;
-     T::_input_marker;
-     { T::refresh() }  -> std::same_as< void >;
-     { T::read() }     -> std::same_as< typename T::value_type >;
-  };
+  template< typename T, typename VT = T::value_type >
+  concept is_input = requires {
+        T::_input_marker;
+        { T::refresh() }  -> std::same_as< void >;
+        { T::read() }     -> std::same_as< typename T::value_type >;
+     }
+     && is_item< T, VT >;
   
 
 :: 
 
-  template< typename T >
+  template< typename VT >
   struct input_root :
-     item_root< T >
+     item_root< VT >
   {
      static const bool _input_marker = true;
   };
@@ -953,20 +975,20 @@ output
 
 :: 
 
-  template< typename T >
-  concept output = requires (
+  template< typename T, typename VT = T::value_type >
+  concept is_output = requires (
      typename T::value_type v
-  ){
-     item< T >;
-     T::_output_marker;
-     { T::write( v ) }  -> std::same_as< void >;
+     ){
+        T::_output_marker;
+        { T::write( v ) }  -> std::same_as< void >;
+        { T::flush()    }  -> std::same_as< void >;
   
 
 :: 
 
-  template< typename T >
+  template< typename VT >
   struct output_root :
-     item_root< T >
+     item_root< VT >
   {
      static const bool _output_marker = true;
   };
@@ -986,20 +1008,29 @@ input_output
 
 :: 
 
-  template< typename T >
-  concept input_output = requires {
-     input< T >;
-     output< T >;
-  };
+  template< typename T, typename VT = T::value_type >
+  concept is_input_output = requires (
+        typename T::value_type v
+     ){
+        T::_input_output_marker;
+        { T::refresh() }   -> std::same_as< void >;
+        { T::read() }      -> std::same_as< typename T::value_type >;
+        { T::write( v ) }  -> std::same_as< void >;
+        { T::flush()    }  -> std::same_as< void >;
+     }
+     && is_item< T, VT >;
   
 
 :: 
 
-  template< typename T >
+  template< typename VT >
   struct input_output_root :
-     input_root< T >,
-     output_root< T >
-  {};
+     input_root< VT >,
+     output_root< VT >
+  {
+     static const bool _input_output_marker = true;
+  };
+  
   
 
 
@@ -1019,18 +1050,18 @@ an input and as an output at the same time.
 
 :: 
 
-  template< typename T >
-  concept duplex = requires {
-     input_output< T >;
-     T::_duplex_marker;
-  };
+  template< typename T, typename VT = T::value_type >
+  concept is_duplex = requires {
+        T::_duplex_marker;
+     }
+     && is_input_output< T, VT >;
   
 
 :: 
 
-  template< typename T >
+  template< typename VT >
   struct duplex_root :
-     input_output_root< T >
+     input_output_root< VT >
   {
      static const bool _duplex_marker = true;
   };
@@ -1051,21 +1082,21 @@ which can be input or output.
 
 :: 
 
-  template< typename T >
-  concept simplex = requires {
-     input_output< T >;
-     T::_simplex_marker;
-     { T::direction_set_input() }   -> std::same_as< void >;
-     { T::direction_set_output() }  -> std::same_as< void >;
-     { T::direction_flush() }       -> std::same_as< void >;
-  };
+  template< typename T, typename VT = T::value_type >
+  concept is_simplex = requires {
+        T::_simplex_marker;
+        { T::direction_set_input() }   -> std::same_as< void >;
+        { T::direction_set_output() }  -> std::same_as< void >;
+        { T::direction_flush() }       -> std::same_as< void >;
+     }
+     && is_input_output< T, VT >;
   
 
 :: 
 
-  template< typename T >
+  template< typename VT >
   struct simplex_root :
-     input_output_root< T >
+     input_output_root< VT >
   {
      static const bool _simplex_marker = true;
   };
@@ -1098,7 +1129,7 @@ to get an immediate effect.
 ints specified by number of bits
 ********************************
 
-from basics/gf-ints.hpp
+from ../library\basics/gf-ints.hpp
 
 
 
@@ -1154,7 +1185,7 @@ bla bla
 invert
 ******
 
-from item/gf-item-invert.hpp
+from ../library\item/gf-item-invert.hpp
 
 
 
@@ -1168,11 +1199,10 @@ The invert<> decorator inverts the value written to or read_ from an item_.
   // invert is supported for an item that has an invert function
   template< typename T >
   concept can_invert = requires (
-     typename T::value_type v
-  ) {
-     item< T >;
-     { T::invert( v ) } -> std::same_as< typename T::value_type >;
-  };
+        typename T::value_type v
+     ){
+        { T::invert( v ) } -> std::same_as< typename T::value_type >;
+     }
   
 
 :: 
@@ -1181,6 +1211,9 @@ The invert<> decorator inverts the value written to or read_ from an item_.
   struct invert< T > ... ;
   
 
+
+
+.. _is_item:
 
 
 .. _item:
@@ -1195,7 +1228,7 @@ The invert<> decorator inverts the value written to or read_ from an item_.
 item
 ****
 
-from item/gf-item.hpp
+from ../library\item/gf-item.hpp
 
 
 
@@ -1217,25 +1250,27 @@ A summary of terms:
 
 :: 
 
-  template< typename T >
-  concept item = requires {
-     cto< T >;
-     T::_item_marker;
-  };
+  template< typename T, typename VT = T::value_type >
+  concept is_item = requires {
+        T::_item_marker;
+        { typename T::value_type() } -> std::same_as< VT >;
+     }
+     && is_cto< T >;
   
 
 
-An item is a cto_ that holds one or more data elements of a specific type.
+An item is a cto_ that holds one (or, in case of a pipe_, more)
+data elements of a specific type.
 
 
 .. _value_type:
 
 :: 
 
-  template< typename T >
+  template< typename VT >
   struct item_root : cto_root {
      static const bool _item_marker = true;
-     using value_type = T;
+     using value_type = VT;
   };
   
 
@@ -1252,14 +1287,14 @@ All items inherit (in most cases indirectly) from the struct item_root.
 item adapters
 *************
 
-from item/gf-item-adapters.hpp
+from ../library\item/gf-item-adapters.hpp
 
 
 
 ----------------------------------
 
 
-These adapter adapts a item_ to be (only) an input_ item_,
+These adapters adapt an item_ to be (only) an input_ item_,
 (only) an output_ item_,
 or (only) an input_output_ item_
 (in each case, if such adaption is possible).
@@ -1285,8 +1320,8 @@ item_input
 
   template< typename T >
   concept can_input =
-        input< T >
-     || input_output< T >;
+     is_input< T >
+     || is_input_output< T >;
   
 
 :: 
@@ -1317,8 +1352,8 @@ item_output
 
   template< typename T >
   concept can_output =
-        output< T >
-     || input_output< T >;
+     is_output< T >
+     || is_input_output< T >;
   
 
 :: 
@@ -1349,7 +1384,7 @@ item_input_output
 
   template< typename T >
   concept can_input_output =
-       input_output< T >;
+     is_input_output< T >;
   
 
 :: 
@@ -1377,7 +1412,7 @@ which requires the item_ to an input_output_.
 no_inline
 *********
 
-from item/gf-item-no-inline.hpp
+from ../library\item/gf-item-no-inline.hpp
 
 
 
@@ -1393,7 +1428,7 @@ is all marked GODAFOSS_INLINE_.
 
 :: 
 
-  template< item T >
+  template< is_item T >
   using no_inline = ... ;
   
 
@@ -1408,7 +1443,7 @@ is all marked GODAFOSS_INLINE_.
 passing a readonly parameter
 ****************************
 
-from basics/gf-passing.hpp
+from ../library\basics/gf-passing.hpp
 
 
 
@@ -1464,11 +1499,176 @@ to a the size of a reference.
 
     PageBreak oneColumn
 
+************
+pin adapters
+************
+
+from ../library\modifiers/gf-modifiers-pins.hpp
+
+
+
+----------------------------------
+
+
+These adapters adapt a pin to be (only) an input_ pin,
+(only) an output_ pin,
+(only) an input_output_ pin, or (obly) an open collector pin.
+(in each case, if such adaptation is possible).
+
+
+
+These adapters serve, of course, to adapt a given pin to the
+adapted role, but also to ensure that the code that uses the adapted
+pin doesn't use any features beyond the ones of the adapted role.
+
+
+
+.. _pin_in:
+
+
+
+----------------------------------
+
+
+pin_in
+******
+
+
+:: 
+
+  template< typename T >
+  concept can_pin_in =
+        is_pin_in< T >
+     || is_pin_in_out< T >
+     || is_pin_oc< T >;
+  
+
+:: 
+
+  template< can_pin_in T > = ...;
+  
+
+
+The pin_in_ decorator decorates a pin to be an input_ pin,
+which is possible if the pin satisfies the can_input concept,
+which requires the pin to be either a pin_in_ or a pin_in_out_.
+
+
+
+.. _pin_out:
+
+
+
+----------------------------------
+
+
+pin_out
+*******
+
+
+:: 
+
+  template< typename T >
+  concept can_pin_out =
+        is_pin_out< T >
+     || is_pin_in_out< T >
+     || is_pin_oc< T >;
+  
+
+:: 
+
+  template< can_pin_out T > = ...;
+  
+
+
+The pin_out_ decorator decorates a pin to be an output_ pin,
+which is possible if the pin satisfies the can_output concept,
+which requires the pin to be either a pin_in_, a pin_in_out_,
+or a pin_oc_.
+
+Note that when a pin_oc_ is adapted to be used as pin_out_,
+a pull-up resistor is required in order for the pin to
+reach a high level.
+
+
+
+.. _pin_in_out:
+
+
+
+----------------------------------
+
+
+pin_in_out
+**********
+
+
+:: 
+
+  template< typename T >
+  concept can_pin_in_out =
+        is_pin_in_out< T >
+     || is_pin_oc< T >;
+  
+
+:: 
+
+  template< can_pin_in_out T  > = ...;
+  
+
+
+The pin_in_out_ decorator decorates
+a pin to be an input_output_ pin,
+which is possible if the pin satisfies the can_input_output concept,
+which requires the pin to a pin_in_out_, or a pin_oc_.
+
+Note that when a pin_oc_ is adapted to be used as pin_in_out_,
+a pull-up resistor is required in order for the pin to
+reach a high level.
+
+
+
+.. _pin_oc:
+
+
+
+----------------------------------
+
+
+pin_oc
+******
+
+
+:: 
+
+  template< typename T >
+  concept can_pin_oc =
+        is_pin_in_out< T >
+     || is_pin_oc< T >;
+  
+
+:: 
+
+  template< can_pin_oc T > = ...;
+  
+
+
+The pin_oc_ decorator decorates
+a pin to be an open collector pin,
+which is possible if the pin satisfies the can_input_output concept,
+which requires the pin to a pin_in_out_ or a pin_oc_.
+
+
+
+.. raw:: pdf
+
+    PageBreak oneColumn
+
 ****
 pins
 ****
 
-from pins/gf-pin.hpp
+from ../library\pins/gf-pin.hpp
 
 
 
@@ -1506,17 +1706,18 @@ pin_in
 :: 
 
   template< typename T >
-  concept pin_in = requires {
-     box< bool >;
-     input< bool >;
-     T::_pin_in_marker;
-  };
+  concept is_pin_in = requires {
+        T::_pin_in_marker;
+     }
+     && is_box< T, bool >
+     && is_input< T >;
+  
   
 
 
-A pin_in is a box_< bool > cto_ that abstracts a single-pin read-only
+A pin_in_ is a box_< bool > cto_ that abstracts a single-pin read-only
 interface to the world outside the target chip.
-A typical use of a pin_in is to read_ a switch or pushbutton.
+A typical use of a pin_in_ is to read_ a switch or pushbutton.
 
 :: 
 
@@ -1524,12 +1725,12 @@ A typical use of a pin_in is to read_ a switch or pushbutton.
      box_root< bool >,
      input_root< bool >
   {
-     static constexpr bool pin_in_marker = true;
+     static constexpr bool _pin_in_marker = true;
   };
   
 
 
-All pin_in cto_'s inherit from pin_in_root.
+All pin_in_ cto_'s inherit from pin_in_root.
 
 
 
@@ -1546,17 +1747,17 @@ pin_out
 :: 
 
   template< typename T >
-  concept pin_out = requires {
-     box< bool >;
-     output< bool >;
-     T::_pin_out_marker;
-  };
+  concept is_pin_out = requires {
+        T::_pin_out_marker;
+     }
+     && is_box< T, bool >
+     && is_output< T >;
   
 
 
-A pin_in is a box_< bool > cto_ that abstracts a single-pin write-only
+A pin_in_ is a box_< bool > cto_ that abstracts a single-pin write-only
 interface to the world outside the target chip.
-A typical use of a pin_in is to drive an LED.
+A typical use of a pin_in_ is to drive an LED.
 
 :: 
 
@@ -1569,7 +1770,7 @@ A typical use of a pin_in is to drive an LED.
   
 
 
-All pin_out cto_'s inherit from pin_out_root.
+All pin_out_ cto_'s inherit from pin_out_root.
 
 
 
@@ -1586,20 +1787,21 @@ pin_in_out
 :: 
 
   template< typename T >
-  concept pin_in_out = requires {
-     box< bool >;
-     simplex< bool >;
-     T::_pin_in_out_marker;
-  };
+  concept is_pin_in_out =
+   requires {
+        T::_pin_in_out_marker;
+     }
+     && is_box< T, bool >
+     && is_simplex< T >;
   
 
 
-A pin_in_out is a box_< bool > cto_ that abstracts a single-pin simplex_
+A pin_in_out_ is a box_< bool > cto_ that abstracts a single-pin simplex_
 read-write interface to the world outside the target chip.
-A pin_in_out is the most versatile of the pin types,
+A pin_in_out_ is the most versatile of the pin types,
 because it can be used in any of the roles.
-In most cases a pin_in_out is used as either pin, a a pin_out,
-or a pin_oc, but some communication protocols
+In most cases a pin_in_out_ is used as either pin, a a pin_out_,
+or a pin_oc_, but some communication protocols
 require a pin to be switched between input_ and output_.
 
 :: 
@@ -1613,7 +1815,7 @@ require a pin to be switched between input_ and output_.
   
 
 
-All pin_in cto_'s inherit from pin_in_out_root.
+All pin_in_ cto_'s inherit from pin_in_out_root.
 
 
 
@@ -1631,15 +1833,15 @@ pin_oc
 :: 
 
   template< typename T >
-  concept pin_oc = requires {
-     box< bool >;
-     duplex< bool >;
-     T::_pin_oc_marker;
-  };
+  concept is_pin_oc = requires {
+        T::_pin_oc_marker;
+     }
+     && is_box< T, bool >
+     && is_duplex< T >;
   
 
 
-A pin_oc is a box_< bool > cto_ that abstracts a single-pin duplex_
+A pin_oc_ is a box_< bool > cto_ that abstracts a single-pin duplex_
 read-write interface to the world outside the target chip.
 The term oc means open-collector, refrerring to the
 (now somewhat outdated) way this type of pin can be implemented:
@@ -1666,8 +1868,179 @@ when one chip drives the line low, and another drives it high.
   
 
 
-All pin_in cto_'s inherit from pin_oc_root.
+All pin_in_ cto_'s inherit from pin_oc_root.
 
+
+
+
+.. raw:: pdf
+
+    PageBreak oneColumn
+
+*************
+port adapters
+*************
+
+from ../library\modifiers/gf-modifiers-ports.hpp
+
+
+
+----------------------------------
+
+
+These adapters adapt a port to be (only) an input_ port,
+(only) an output_ port,
+(only) an input_output_ port, or (only) an open collector port.
+(in each case, if such adaptation is possible).
+
+The created pin has only the properties required for that pin:
+other properties of the source pin are not available via the created pin.
+The exception is pullup and pulldown features: those are
+available via the created pins.
+
+These adapters serve, of course, to adapt a given port to the
+adapted role, but also to ensure that the code that uses the adapted
+port doesn't use any features beyond the ones of the adapted role.
+
+
+
+.. _port_in:
+
+
+
+----------------------------------
+
+
+port_in
+*******
+
+
+:: 
+
+  template< typename T >
+  concept can_port_in =
+        is_port_in< T >
+     || is_port_in_out< T >
+     || is_port_oc< T >;
+  
+
+:: 
+
+  template< can_port_in T > = ...;
+  
+
+
+The port_in<> adapter creates an input_ port from a source port,
+which is possible if the source port satisfies the can_port_in concept,
+which requires it to be either a port_in, a port_in_out,
+or a port_oc.
+
+
+
+.. _port_out:
+
+
+
+----------------------------------
+
+
+port_out
+********
+
+
+:: 
+
+  template< typename T >
+  concept can_port_out =
+        is_port_out< T >
+     || is_port_in_out< T >
+     || is_port_oc< T >;
+  
+
+:: 
+
+  template< can_port_out T > = ...;
+  
+
+
+The port_out<> adapter creates an output_ port from a source port,
+which is possible if the source port satisfies the can_port_out concept,
+which requires it to be either a port_in, a port_in_out,
+or a port_oc.
+
+Note that when a port_oc is adapted to be used as port_out,
+pull-up resistors are required in order for the pins to
+reach a high level.
+
+
+
+.. _port_in_out:
+
+
+
+----------------------------------
+
+
+port_in_out
+***********
+
+
+:: 
+
+  template< typename T >
+  concept can_port_in_out =
+        is_port_in_out< T >
+     || is_port_oc< T >;
+  
+
+:: 
+
+  template< can_port_in_out T  > = ...;
+  
+
+
+The port_in_out<> adapter creates an input_output_ port from a source port,
+which is possible if the source port satisfies the can_port_in_out concept,
+which requires it to a port_in_out, or a port_oc.
+
+Note that when a port_oc is adapted to be used as port_in_out,
+pull-up resistors are required in order for the pins to
+reach a high level.
+
+
+
+.. _port_oc:
+
+
+
+----------------------------------
+
+
+port_oc
+*******
+
+
+:: 
+
+  template< typename T >
+  concept can_port_oc =
+     is_port_oc< T >;
+  
+
+:: 
+
+  template< is_port_oc T  > = ...;
+  
+
+
+The port_oc<> adapter creates an open collector port from a source port,
+which is possible if the source port satisfies the can_port_oc concept,
+which requires it to a port_oc.
+
+It is not possible to create a port_oc from an input-output port,
+because that would require control over the direction of the individual
+pins. An input-output provides (only) control over the direection of
+all pins at once.
 
 
 
@@ -1679,7 +2052,7 @@ All pin_in cto_'s inherit from pin_oc_root.
 random
 ******
 
-from basics/gf-random.hpp
+from ../library\basics/gf-random.hpp
 
 
 
@@ -1770,11 +2143,245 @@ a truely random source) to start a truely random random sequence.
 
     PageBreak oneColumn
 
+*********************
+specific pin adapters
+*********************
+
+from ../library\pins/gf-pin-adapters.hpp
+
+
+
+----------------------------------
+
+
+These adapters create a pin cto_ from a specific (same or other) pin cto_.
+
+The created pin has only the properties required for that pin:
+other properties of the source pin are not available via the created pin.
+The exception is pullup and pulldown features: those are
+available via the created pins.
+
+These adapters can only be used when the source pin is know.
+For general use, the pin adapters that accept any (possible) source
+pin are more covenient.
+
+
+.. _pin_in_from_pin_in:
+
+:: 
+
+  template< is_pin_in T >
+  struct pin_in_from_pin_in : ... {};
+  
+
+
+
+.. _pin_in_from_pin_in_out:
+
+:: 
+
+  template< is_pin_in_out T >
+  struct pin_in_from_pin_in_out : ... {};
+  
+
+
+
+.. _pin_in_from_pin_oc:
+
+:: 
+
+  template< is_pin_oc T >
+  struct pin_in_from_pin_oc : ... {};
+  
+
+
+
+.. _pin_out_from_pin_out:
+
+:: 
+
+  template< is_pin_out T >
+  struct pin_out_from_pin_out : ... {};
+  
+
+
+
+.. _pin_out_from_pin_in_out:
+
+:: 
+
+  template< is_pin_in_out T >
+  struct pin_out_from_pin_in_out : ... {};
+  
+
+
+
+.. _pin_out_from_pin_oc:
+
+:: 
+
+  template< is_pin_oc T >
+  struct pin_out_from_pin_oc : ... {};
+  
+
+
+
+.. _pin_in_out_from_pin_in_out:
+
+:: 
+
+  template< is_pin_in_out T >
+  struct pin_in_out_from_pin_in_out : ... {};
+  
+
+
+
+.. _pin_in_out_from_pin_oc:
+
+:: 
+
+  template< is_pin_oc T >
+  struct pin_in_out_from_pin_oc : ... {};
+  
+
+
+
+.. _pin_oc_from_pin_oc:
+
+:: 
+
+  template< is_pin_oc T >
+  struct pin_oc_from_pin_oc : ... {};
+  
+
+
+
+
+.. raw:: pdf
+
+    PageBreak oneColumn
+
+**********************
+specific port adapters
+**********************
+
+from ../library\ports/gf-port-adapters.hpp
+
+
+
+----------------------------------
+
+
+These adapters create a port cto_ from a specific (same or other) port cto_.
+
+The created port has only the properties required for that port:
+other properties of the source port are not available via the created port.
+
+These adapters can only be used when the source port is know.
+For general use, the port adapters that accept any (possible) source
+port are more covenient.
+
+
+.. _port_in_from_port_in:
+
+:: 
+
+  template< is_port_in T >
+  struct port_in_from_port_in : ... {};
+  
+
+
+
+.. _port_in_from_port_in_out:
+
+:: 
+
+  template< is_port_in_out T >
+  struct port_in_from_port_in_out : ... {};
+  
+
+
+
+.. _port_in_from_port_oc:
+
+:: 
+
+  template< is_port_oc T >
+  struct port_in_from_port_oc : ... {};
+  
+
+
+
+.. _port_out_from_port_out:
+
+:: 
+
+  template< is_port_out T >
+  struct port_out_from_port_out : ... {};
+  
+
+
+
+.. _port_out_from_port_in_out:
+
+:: 
+
+  template< is_port_in_out T >
+  struct port_out_from_port_in_out : ... {};
+  
+
+
+
+.. _port_out_from_port_oc:
+
+:: 
+
+  template< is_port_oc T >
+  struct port_out_from_port_oc : ... {};
+  
+
+
+
+.. _port_in_out_from_port_in_out:
+
+:: 
+
+  template< is_port_in_out T >
+  struct port_in_out_from_port_in_out : ... {};
+  
+
+
+
+.. _port_in_out_from_port_oc:
+
+:: 
+
+  template< is_port_oc T >
+  struct port_in_out_from_port_oc : ... {};
+  
+
+
+
+.. _port_oc_from_port_oc:
+
+:: 
+
+  template< is_port_oc T >
+  struct port_oc_from_port_oc : ... {};
+  
+
+
+
+
+.. raw:: pdf
+
+    PageBreak oneColumn
+
 ******
 string
 ******
 
-from adts/gf-string.hpp
+from ../library\adts/gf-string.hpp
 
 
 
@@ -1874,7 +2481,7 @@ length the character is ignored.
 xy<>
 ****
 
-from adts/gf-xy.hpp
+from ../library\adts/gf-xy.hpp
 
 
 
@@ -1997,8 +2604,8 @@ The result is an xy<> value of the same xy<>_value_type.
 :: 
 
      template< typename V >
-        requires requires( xy_value_type lhs, V b ){
-           { lhs.x == b } -> std::same_as< bool >; }
+        requires requires( xy_value_type a, V b ){
+           { a == b } -> std::same_as< bool >; }
      constexpr bool operator==( const xy< V > & rhs ) const { ... }
   
 
@@ -2006,7 +2613,7 @@ The result is an xy<> value of the same xy<>_value_type.
 
      template< typename V >
         requires requires( xy_value_type lhs, V b ){
-           { lhs.x == b } -> std::same_as< bool >; }
+           { x == b } -> std::same_as< bool >; }
      constexpr bool operator!=( const xy & rhs ) const { ... }
   
 

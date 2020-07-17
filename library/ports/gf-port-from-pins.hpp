@@ -119,16 +119,16 @@ struct _port_out_from_pins< n, pin, tail... > :
       _port_out_from_pins< n, tail... > > >
 {};
 
-template< can_pin_out_from T, can_pin_out_from... Ts  >
-struct port_out_supported< T, Ts... > {
-   static constexpr bool supported = true;;
-};
+//template< can_pin_out_from T, can_pin_out_from... Ts  >
+//struct port_out_supported< T, Ts... > {
+//   static constexpr bool supported = true;;
+//};
 
 // determine the number of arguments,
 // break the forced inlining,
 // and defer to the recursive template
 template< can_pin_out_from T, can_pin_out_from... Ts >
-struct port_out_from< T, Ts... > :
+struct port_out_from_pins :
    no_inline<
       _port_out_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};
@@ -160,16 +160,16 @@ struct _port_in_from_pins< n, pin, tail... > :
       _port_in_from_pins< n, tail... > > >
 {};
 
-template< can_pin_in_from T, can_pin_in_from... Ts  >
-struct port_in_supported< T, Ts... > {
-   static constexpr bool supported = true;;
-};
+//template< can_pin_in_from T, can_pin_in_from... Ts  >
+//struct port_in_supported< T, Ts... > {
+//   static constexpr bool supported = true;;
+//};
 
 // determine the number of arguments,
 // break the forced inlining,
 // and defer to the recursive template
 template< can_pin_in_from T, can_pin_in_from... Ts >
-struct port_in_from< T, Ts... > :
+struct port_in_from_pins :
    no_inline<
       _port_in_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};
@@ -203,15 +203,15 @@ struct _port_in_out_from_pins< n, pin, tail... > :
       _port_in_out_from_pins< n, tail... > > > > >
 {};
 
-template< can_pin_in_out_from T, can_pin_in_out_from... Ts  >
-struct port_in_out_supported< T, Ts... > {
-   static constexpr bool supported = true;;
-};
+//template< can_pin_in_out_from T, can_pin_in_out_from... Ts  >
+//struct port_in_out_supported< T, Ts... > {
+//   static constexpr bool supported = true;;
+//};
 
 // determine the number of arguments, break the forced inlining,
 // and defer to the recursive template
 template< can_pin_in_out_from T, can_pin_in_out_from... Ts >
-struct port_in_out_from< T, Ts... > :
+struct port_in_out_from_pins :
    no_inline<
       _port_in_out_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};
@@ -244,15 +244,15 @@ struct _port_oc_from_pins< n, pin, tail... > :
       _port_oc_from_pins< n, tail... > > > >
 {};
 
-template< can_pin_oc_from T, can_pin_oc_from... Ts  >
-struct port_oc_supported< T, Ts... > {
-   static constexpr bool supported = true;;
-};
+//template< can_pin_oc_from T, can_pin_oc_from... Ts  >
+//struct port_oc_supported< T, Ts... > {
+//   static constexpr bool supported = true;;
+//};
 
 // determine the number of arguments, break the forced inlining,
 // and defer to the recursive template
 template< can_pin_oc_from T, can_pin_oc_from... Ts >
-struct port_oc_from< T, Ts... > :
+struct port_oc_from_pins :
    no_inline<
       _port_oc_from_pins< 1 + sizeof...( Ts ), T, Ts... > >
 {};

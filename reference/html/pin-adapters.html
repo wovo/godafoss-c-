@@ -1,0 +1,128 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>pin adapters</H2>
+from <A HREF="../library\modifiers/gf-modifiers-pins.hpp">../library\modifiers/gf-modifiers-pins.hpp</A>
+
+
+<HR>
+
+<P>
+These adapters adapt a pin to be (only) an <A HREF=input--output.html#input>input</A> pin,
+(only) an <A HREF=input--output.html#output>output</A> pin,
+(only) an <A HREF=input--output.html#input_output>input_output</A> pin, or (obly) an open collector pin.
+(in each case, if such adaptation is possible).
+<P>
+<P>
+<P>
+These adapters serve, of course, to adapt a given pin to the
+adapted role, but also to ensure that the code that uses the adapted
+pin doesn't use any features beyond the ones of the adapted role.
+<P>
+<P>
+<a name="pin_in"></a>
+
+
+<HR>
+
+<H3>pin_in</H3>
+<P>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_pin_in =
+      is_pin_in< T >
+   || is_pin_in_out< T >
+   || is_pin_oc< T >;
+</code></pre></A>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_pin_in T > = ...;
+</code></pre></A>
+<P>
+The <A HREF=pins.html#pin_in>pin_in<></A> decorator decorates a pin to be an <A HREF=input--output.html#input>input</A> pin,
+which is possible if the pin satisfies the can_input concept,
+which requires the pin to be either a <A HREF=pins.html#pin_in>pin_in</A> or a <A HREF=pins.html#pin_in_out>pin_in_out</A>.
+<P>
+<P>
+<a name="pin_out"></a>
+
+
+<HR>
+
+<H3>pin_out</H3>
+<P>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_pin_out =
+      is_pin_out< T >
+   || is_pin_in_out< T >
+   || is_pin_oc< T >;
+</code></pre></A>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_pin_out T > = ...;
+</code></pre></A>
+<P>
+The <A HREF=pins.html#pin_out>pin_out<></A> decorator decorates a pin to be an <A HREF=input--output.html#output>output</A> pin,
+which is possible if the pin satisfies the can_output concept,
+which requires the pin to be either a <A HREF=pins.html#pin_in>pin_in</A>, a <A HREF=pins.html#pin_in_out>pin_in_out</A>,
+or a <A HREF=pins.html#pin_oc>pin_oc</A>.
+<P>
+Note that when a <A HREF=pins.html#pin_oc>pin_oc</A> is adapted to be used as <A HREF=pins.html#pin_out>pin_out</A>,
+a pull-up resistor is required in order for the pin to
+reach a high level.
+<P>
+<P>
+<a name="pin_in_out"></a>
+
+
+<HR>
+
+<H3>pin_in_out</H3>
+<P>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_pin_in_out =
+      is_pin_in_out< T >
+   || is_pin_oc< T >;
+</code></pre></A>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_pin_in_out T  > = ...;
+</code></pre></A>
+<P>
+The <A HREF=pins.html#pin_in_out>pin_in_out<></A> decorator decorates
+a pin to be an <A HREF=input--output.html#input_output>input_output</A> pin,
+which is possible if the pin satisfies the can_input_output concept,
+which requires the pin to a <A HREF=pins.html#pin_in_out>pin_in_out</A>, or a <A HREF=pins.html#pin_oc>pin_oc</A>.
+<P>
+Note that when a <A HREF=pins.html#pin_oc>pin_oc</A> is adapted to be used as <A HREF=pins.html#pin_in_out>pin_in_out</A>,
+a pull-up resistor is required in order for the pin to
+reach a high level.
+<P>
+<P>
+<a name="pin_oc"></a>
+
+
+<HR>
+
+<H3>pin_oc</H3>
+<P>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_pin_oc =
+      is_pin_in_out< T >
+   || is_pin_oc< T >;
+</code></pre></A>
+<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_pin_oc T > = ...;
+</code></pre></A>
+<P>
+The <A HREF=pins.html#pin_oc>pin_oc<></A> decorator decorates
+a pin to be an open collector pin,
+which is possible if the pin satisfies the can_input_output concept,
+which requires the pin to a <A HREF=pins.html#pin_in_out>pin_in_out</A> or a <A HREF=pins.html#pin_oc>pin_oc</A>.
+<P>
+
+</body>

@@ -1,0 +1,79 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>specific port adapters</H2>
+from <A HREF="../library\ports/gf-port-adapters.hpp">../library\ports/gf-port-adapters.hpp</A>
+
+
+<HR>
+
+<P>
+These adapters create a port <A HREF=cto.html#cto>cto</A> from a specific (same or other) port <A HREF=cto.html#cto>cto</A>.
+<P>
+The created port has only the properties required for that port:
+other properties of the source port are not available via the created port.
+<P>
+These adapters can only be used when the source port is know.
+For general use, the port adapters that accept any (possible) source
+port are more covenient.
+<P>
+<a name="port_in_from_port_in"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_in T >
+struct port_in_from_port_in : ... {};
+</code></pre></A>
+<P>
+<a name="port_in_from_port_in_out"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_in_out T >
+struct port_in_from_port_in_out : ... {};
+</code></pre></A>
+<P>
+<a name="port_in_from_port_oc"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_oc T >
+struct port_in_from_port_oc : ... {};
+</code></pre></A>
+<P>
+<a name="port_out_from_port_out"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_out T >
+struct port_out_from_port_out : ... {};
+</code></pre></A>
+<P>
+<a name="port_out_from_port_in_out"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_in_out T >
+struct port_out_from_port_in_out : ... {};
+</code></pre></A>
+<P>
+<a name="port_out_from_port_oc"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_oc T >
+struct port_out_from_port_oc : ... {};
+</code></pre></A>
+<P>
+<a name="port_in_out_from_port_in_out"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_in_out T >
+struct port_in_out_from_port_in_out : ... {};
+</code></pre></A>
+<P>
+<a name="port_in_out_from_port_oc"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_oc T >
+struct port_in_out_from_port_oc : ... {};
+</code></pre></A>
+<P>
+<a name="port_oc_from_port_oc"></a>
+<A HREF="../../library\ports/gf-port-adapters.hpp" style="text-decoration:none">
+<pre><code class="c++">template< is_port_oc T >
+struct port_oc_from_port_oc : ... {};
+</code></pre></A>
+<P>
+
+</body>

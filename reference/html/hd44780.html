@@ -7,7 +7,7 @@
 <body>
 <a name="hd44780_rs_e_d_s_timing"></a>
 <H2>hd44780</H2>
-from <A HREF="../library/chips/gf-hd44780.hpp">chips/gf-hd44780.hpp</A>
+from <A HREF="../library\chips/gf-hd44780.hpp">../library\chips/gf-hd44780.hpp</A>
 
 
 <HR>
@@ -16,13 +16,13 @@ from <A HREF="../library/chips/gf-hd44780.hpp">chips/gf-hd44780.hpp</A>
 The hd44780 template implements a charcater terminal
 on an hd44780 character lcd.
 <P>
-<A HREF="../../library/chips/gf-hd44780.hpp" style="text-decoration:none">
+<A HREF="../../library\chips/gf-hd44780.hpp" style="text-decoration:none">
 <pre><code class="c++">template<
-   pin_out_compatible   rs,
-   pin_out_compatible   e,
-   port_out_compatible  port,
-   xy<>                 size,
-   typename             timing
+   can_pin_out   rs,
+   can_pin_out   e,
+   can_port_out  port,
+   xy<>          size,
+   typename      timing
 > using hd44780_rs_e_d_s_timing = { ... };
 </code></pre></A>
 <P>

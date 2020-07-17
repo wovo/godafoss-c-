@@ -7,7 +7,7 @@
 <body>
 <a name="invert"></a>
 <H2>invert</H2>
-from <A HREF="../library/item/gf-item-invert.hpp">item/gf-item-invert.hpp</A>
+from <A HREF="../library\item/gf-item-invert.hpp">../library\item/gf-item-invert.hpp</A>
 
 
 <HR>
@@ -15,17 +15,16 @@ from <A HREF="../library/item/gf-item-invert.hpp">item/gf-item-invert.hpp</A>
 <P>
 The invert<> decorator inverts the value written to or <A HREF=input--output.html#read>read</A> from an <A HREF=item.html#item>item</A>.
 <P>
-<A HREF="../../library/item/gf-item-invert.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item-invert.hpp" style="text-decoration:none">
 <pre><code class="c++">// invert is supported for an item that has an invert function
 template< typename T >
 concept can_invert = requires (
-   typename T::value_type v
-) {
-   item< T >;
-   { T::invert( v ) } -> std::same_as< typename T::value_type >;
-};
+      typename T::value_type v
+   ){
+      { T::invert( v ) } -> std::same_as< typename T::value_type >;
+   }
 </code></pre></A>
-<A HREF="../../library/item/gf-item-invert.hpp" style="text-decoration:none">
+<A HREF="../../library\item/gf-item-invert.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_invert T >
 struct invert< T > ... ;
 </code></pre></A>

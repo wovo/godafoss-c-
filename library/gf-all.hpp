@@ -172,6 +172,7 @@ namespace godafoss {
 #include "ports/gf-port-from-pins.hpp"
 
 #include "modifiers/gf-modifiers-pins.hpp"
+#include "modifiers/gf-modifiers-ports.hpp"
 
 #include "pins/gf-pin-demos.hpp"
 #include "ports/gf-port-demos.hpp"

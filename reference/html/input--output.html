@@ -5,13 +5,18 @@
 </head>
 
 <body>
+<a name="is_input"></a>
 <a name="input"></a>
+<a name="is_output"></a>
 <a name="output"></a>
+<a name="is_input_output"></a>
 <a name="input_output"></a>
+<a name="is_duplex"></a>
 <a name="duplex"></a>
+<a name="is_simplex"></a>
 <a name="simplex"></a>
 <H2>input, output</H2>
-from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
+from <A HREF="../library\item/gf-item.hpp">../library\item/gf-item.hpp</A>
 
 
 <HR>
@@ -49,19 +54,19 @@ A duplex <A HREF=box--pipe.html#box>box</A> can, at any time, be both read and w
 <HR>
 
 <H3>input</H3>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
-concept input = requires {
-   item< T >;
-   T::_input_marker;
-   { T::refresh() }  -> std::same_as< void >;
-   { T::read() }     -> std::same_as< typename T::value_type >;
-};
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T, typename VT = T::value_type >
+concept is_input = requires {
+      T::_input_marker;
+      { T::refresh() }  -> std::same_as< void >;
+      { T::read() }     -> std::same_as< typename T::value_type >;
+   }
+   && is_item< T, VT >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename VT >
 struct input_root :
-   item_root< T >
+   item_root< VT >
 {
    static const bool _input_marker = true;
 };
@@ -77,19 +82,19 @@ a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.h
 <HR>
 
 <H3>output</H3>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
-concept output = requires (
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T, typename VT = T::value_type >
+concept is_output = requires (
    typename T::value_type v
-){
-   item< T >;
-   T::_output_marker;
-   { T::write( v ) }  -> std::same_as< void >;
+   ){
+      T::_output_marker;
+      { T::write( v ) }  -> std::same_as< void >;
+      { T::flush()    }  -> std::same_as< void >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename VT >
 struct output_root :
-   item_root< T >
+   item_root< VT >
 {
    static const bool _output_marker = true;
 };
@@ -103,19 +108,28 @@ a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.h
 <HR>
 
 <H3>input_output</H3>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
-concept input_output = requires {
-   input< T >;
-   output< T >;
-};
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T, typename VT = T::value_type >
+concept is_input_output = requires (
+      typename T::value_type v
+   ){
+      T::_input_output_marker;
+      { T::refresh() }   -> std::same_as< void >;
+      { T::read() }      -> std::same_as< typename T::value_type >;
+      { T::write( v ) }  -> std::same_as< void >;
+      { T::flush()    }  -> std::same_as< void >;
+   }
+   && is_item< T, VT >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename VT >
 struct input_output_root :
-   input_root< T >,
-   output_root< T >
-{};
+   input_root< VT >,
+   output_root< VT >
+{
+   static const bool _input_output_marker = true;
+};
+
 </code></pre></A>
 <P>
 An input_output is an <A HREF=item.html#item>item</A> that is both an input and an output.
@@ -129,17 +143,17 @@ An input_output is an <A HREF=item.html#item>item</A> that is both an input and 
 A duplex <A HREF=item.html#item>item</A> is an input_output that can function both as
 an input and as an output at the same time.
 <P>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
-concept duplex = requires {
-   input_output< T >;
-   T::_duplex_marker;
-};
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T, typename VT = T::value_type >
+concept is_duplex = requires {
+      T::_duplex_marker;
+   }
+   && is_input_output< T, VT >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename VT >
 struct duplex_root :
-   input_output_root< T >
+   input_output_root< VT >
 {
    static const bool _duplex_marker = true;
 };
@@ -151,20 +165,20 @@ which can be input or output.
 <a name="direction_set_input"></a>
 <a name="direction_set_output"></a>
 <a name="direction_flush"></a>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
-concept simplex = requires {
-   input_output< T >;
-   T::_simplex_marker;
-   { T::direction_set_input() }   -> std::same_as< void >;
-   { T::direction_set_output() }  -> std::same_as< void >;
-   { T::direction_flush() }       -> std::same_as< void >;
-};
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T, typename VT = T::value_type >
+concept is_simplex = requires {
+      T::_simplex_marker;
+      { T::direction_set_input() }   -> std::same_as< void >;
+      { T::direction_set_output() }  -> std::same_as< void >;
+      { T::direction_flush() }       -> std::same_as< void >;
+   }
+   && is_input_output< T, VT >;
 </code></pre></A>
-<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
-<pre><code class="c++">template< typename T >
+<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename VT >
 struct simplex_root :
-   input_output_root< T >
+   input_output_root< VT >
 {
    static const bool _simplex_marker = true;
 };

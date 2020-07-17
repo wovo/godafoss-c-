@@ -6,13 +6,13 @@
 
 <body>
 <H2>string</H2>
-from <A HREF="../library/adts/gf-string.hpp">adts/gf-string.hpp</A>
+from <A HREF="../library\adts/gf-string.hpp">../library\adts/gf-string.hpp</A>
 
 
 <HR>
 
 <a name="string"></a>
-<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<A HREF="../../library\adts/gf-string.hpp" style="text-decoration:none">
 <pre><code class="c++">template< std::size_t _maximum_length >
 struct string { ... }
 </code></pre></A>
@@ -37,7 +37,7 @@ character) is returned.
 
 <H3>attributes</H3>
 <P>
-<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<A HREF="../../library\adts/gf-string.hpp" style="text-decoration:none">
 <pre><code class="c++">   using size_t = std::size_t;
    static constexpr size_t maximum_length = _maximum_length;
 </code></pre></A>
@@ -48,7 +48,7 @@ stored by the string.
 
 <HR>
 
-<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<A HREF="../../library\adts/gf-string.hpp" style="text-decoration:none">
 <pre><code class="c++">   constexpr size_t length() const { ... }
 </code></pre></A>
 The member function length() returns number of characters
@@ -58,7 +58,7 @@ that are currently stored.
 
 <HR>
 
-<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<A HREF="../../library\adts/gf-string.hpp" style="text-decoration:none">
 <pre><code class="c++">   constexpr bool valid_index( const size_t n ) const { ... }
 </code></pre></A>
 The member function valid_index( n ) returns whether n is a valid index
@@ -68,7 +68,7 @@ into the curretly stored string of characters.
 
 <HR>
 
-<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<A HREF="../../library\adts/gf-string.hpp" style="text-decoration:none">
 <pre><code class="c++">   string & append( char c ){ ... }
    string & operator+=( char c ){ ... }
    string & operator<<( char c ){ ... }

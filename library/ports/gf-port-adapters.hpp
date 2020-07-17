@@ -1,36 +1,159 @@
-// ==========================================================================
+// =============================================================================
 //
 // gf-port-adapters.hpp
 //
-// ==========================================================================
+// =============================================================================
 //
-// This file is part the https://www.github.com/godafoss
-// free C++ library for close-to-the-hardware programming.
+// This file is part of godafoss (https://github.com/wovo/godafoss),
+// a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright
+//    Wouter van Ooijen 2019-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
 
-
-// ==========================================================================
+// =============================================================================
 //
-// adapters
+// @title specific port adapters
 //
-// ==========================================================================
+// These adapters create a port cto from a specific (same or other) port cto.
+//
+// The created port has only the properties required for that port:
+// other properties of the source port are not available via the created port.
+//
+// These adapters can only be used when the source port is know.
+// For general use, the port adapters that accept any (possible) source
+// port are more covenient.
+// 
+// @define port_in_from_port_in
+// @insert port_in_from_port_in
+//
+// @define port_in_from_port_in_out
+// @insert port_in_from_port_in_out
+//
+// @define port_in_from_port_oc
+// @insert port_in_from_port_oc
+//
+// @define port_out_from_port_out
+// @insert port_out_from_port_out
+//
+// @define port_out_from_port_in_out
+// @insert port_out_from_port_in_out
+//
+// @define port_out_from_port_oc
+// @insert port_out_from_port_oc
+//
+// @define port_in_out_from_port_in_out
+// @insert port_in_out_from_port_in_out
+//
+// @define port_in_out_from_port_oc
+// @insert port_in_out_from_port_oc
+//
+// @define port_oc_from_port_oc
+// @insert port_oc_from_port_oc
+//
+// =============================================================================
 
-GODAFOSS_SUPPORTED( port_in_out, port_in_out_from )
 
+// =============================================================================
+//
+// port_in
+//
+// =============================================================================
+
+// @quote port_in_from_port_in 2 ... {};
+template< is_port_in T >
+struct port_in_from_port_in :
+   port_in_root< T::n_pins >,
+   inherit_init< T >,
+   inherit_read< T >
+{};
+
+// @quote port_in_from_port_in_out 2 ... {};
 template< is_port_in_out T >
-struct port_in_out_supported< T > {
-   static constexpr bool supported = true;;
+struct port_in_from_port_in_out :
+   port_in_root< T::n_pins >,
+   inherit_init< T >,
+   inherit_read< T >
+{
+
+   static GODAFOSS_INLINE void init(){
+      T::init();
+      T::direction_set_input();
+      T::direction_flush();
+   }
+
 };
 
+// @quote port_in_from_port_oc 2 ... {};
+template< is_port_oc T >
+struct port_in_from_port_oc :
+   port_in_root< T::n_pins >,
+   inherit_init< T >,
+   inherit_read< T >
+{
+
+   static GODAFOSS_INLINE void init(){
+      T::init();
+      T::write( 0 );
+      T::flush();
+   }
+
+};
+
+
+// =============================================================================
+//
+// port_out
+//
+// =============================================================================
+
+// @quote port_out_from_port_out 2 ... {};
+template< is_port_out T >
+struct port_out_from_port_out :
+   port_out_root< T::n_pins >,
+   inherit_init< T >,
+   inherit_write< T >
+{};
+
+// @quote port_out_from_port_in_out 2 ... {};
 template< is_port_in_out T >
-struct port_in_out_from< T > :
+struct port_out_from_port_in_out :
+   port_out_root< T::n_pins >,
+   inherit_init< T >,
+   inherit_write< T >
+{
+
+   static GODAFOSS_INLINE void init(){
+      T::init();
+      T::direction_set_output();
+      T::direction_flush();
+   }
+
+};
+
+// @quote port_out_from_port_oc 2 ... {};
+template< is_port_oc T >
+struct port_out_from_port_oc :
+   port_out_root< T::n_pins >,
+   inherit_init< T >,
+   inherit_write< T >
+{};
+
+
+// =============================================================================
+//
+// port_in_out
+//
+// =============================================================================
+
+// @quote port_in_out_from_port_in_out 2 ... {};
+template< is_port_in_out T >
+struct port_in_out_from_port_in_out :
    port_in_out_root< T::n_pins >,
    inherit_init< T >,
    inherit_direction< T >,
@@ -38,13 +161,9 @@ struct port_in_out_from< T > :
    inherit_read< T >
 {};
 
+// @quote port_in_out_from_port_oc 2 ... {};
 template< is_port_oc T >
-struct port_in_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_oc T >
-struct port_in_out_from< T > :
+struct port_in_out_from_port_oc :
    port_in_out_root< T::n_pins >,
    inherit_init< T >,
    inherit_write< T >,
@@ -64,123 +183,16 @@ struct port_in_out_from< T > :
 
 };
 
-// ==========================================================================
 
-GODAFOSS_SUPPORTED( port_out, port_out_from )
+// =============================================================================
+//
+// port_oc
+//
+// =============================================================================
 
-template< is_port_in_out T >
-struct port_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_in_out T >
-struct port_out_from< T > :
-   port_out_root< T::n_pins >,
-   inherit_init< T >,
-   inherit_write< T >
-{
-
-   static GODAFOSS_INLINE void init(){
-      T::init();
-      T::direction_set_output();
-      T::direction_flush();
-   }
-
-};
-
-template< is_port_out T >
-struct port_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_out T >
-struct port_out_from< T > :
-   port_out_root< T::n_pins >,
-   inherit_init< T >,
-   inherit_write< T >
-{};
-
+// @quote port_oc_from_port_oc 2 ... {};
 template< is_port_oc T >
-struct port_out_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_oc T >
-struct port_out_from< T > :
-   port_out_root< T::n_pins >,
-   inherit_init< T >,
-   inherit_write< T >
-{};
-
-// ==========================================================================
-
-
-GODAFOSS_SUPPORTED( port_in, port_in_from )
-
-template< is_port_in_out T >
-struct port_in_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_in_out T >
-struct port_in_from< T > :
-   port_in_root< T::n_pins >,
-   inherit_init< T >,
-   inherit_read< T >
-{
-
-   static GODAFOSS_INLINE void init(){
-      T::init();
-      T::direction_set_input();
-      T::direction_flush();
-   }
-
-};
-
-template< is_port_in T >
-struct port_in_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_in T >
-struct port_in_from< T > :
-   port_in_root< T::n_pins >,
-   inherit_init< T >,
-   inherit_read< T >
-{};
-
-template< is_port_oc T >
-struct port_in_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_oc T >
-struct port_in_from< T > :
-   port_in_root< T::n_pins >,
-   inherit_init< T >,
-   inherit_read< T >
-{
-
-   static GODAFOSS_INLINE void init(){
-      T::init();
-      T::write( 0 );
-      T::flush();
-   }
-
-};
-
-// ==========================================================================
-
-
-GODAFOSS_SUPPORTED( port_oc, port_oc_from )
-
-template< is_port_oc T >
-struct port_oc_supported< T > {
-   static constexpr bool supported = true;;
-};
-
-template< is_port_oc T >
-struct port_oc_from< T > :
+struct port_oc_from_port_oc :
    port_oc_root< T::n_pins >,
    inherit_init< T >,
    inherit_write< T >,

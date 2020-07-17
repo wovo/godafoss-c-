@@ -32,9 +32,10 @@ include            $(GODAFOSS)/makefile.inc
 CPP_LANGUAGE    := -std=c++2a -fconcepts-diagnostics-depth=3
 
 # add SFML
-SFML ?= $(RELATIVE)/../SFML-2.5.1-10
+SFML ?= $(RELATIVE)/../SFML-2.5.1-32
 ifeq ($(TARGET),native)
    ifeq ($(OS),Windows_NT)
+      GCC-WIN           := C:\ti-software\mingw32
       SEARCH            += $(SFML)/include
       LINKER_FLAGS      += -L$(SFML)/lib
       LINKER_FLAGS      += -lsfml-graphics-s -lsfml-window-s -lsfml-system-s

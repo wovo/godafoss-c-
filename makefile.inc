@@ -81,6 +81,7 @@ HEADERS           += ports/gf-port-from-pins.hpp
 HEADERS           += ports/gf-port-demos.hpp
 
 HEADERS           += modifiers/gf-modifiers-pins.hpp
+HEADERS           += modifiers/gf-modifiers-ports.hpp
 
 HEADERS           += timing/gf-timing-wait.hpp
 HEADERS           += timing/gf-timing-clock.hpp
