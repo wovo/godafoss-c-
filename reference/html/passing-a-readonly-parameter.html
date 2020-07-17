@@ -1,0 +1,53 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>passing a readonly parameter</H2>
+from <A HREF="../library/basics/gf-passing.hpp">basics/gf-passing.hpp</A>
+
+
+<HR>
+
+<P>
+<A HREF="../../library/basics/gf-passing.hpp" style="text-decoration:none">
+<pre><code class="c++">// use by_const< T > when passing a T
+template< typename T >
+using by_const = ...
+</code></pre></A>
+<a name="by_const"></a>
+<P>
+The by_const< type > template is the preferred way to pass a
+const value of the type passed_type.
+This will be either a plain (by copy) const, or a const reference,
+depending (among other things) on the size of the type compared
+to a the size of a reference.
+<P>
+<A HREF="../examples/native/passing/main.cpp" style="text-decoration:none">
+<pre><code class="c++">#include "array"
+#include "godafoss.hpp"
+namespace gf  = godafoss;
+
+void GODAFOSS_NO_INLINE f1(
+   gf::by_const< char > p
+){ (void) p; }
+
+void GODAFOSS_NO_INLINE f2(
+   gf::by_const< std::array< int, 100 > > p
+){ (void) p; }
+
+int main(){
+
+   // should probably be passed by value (copy)
+   f1( 'x' );
+
+   // should be probably be passed by reference
+   f2( std::array< int, 100 >{ 0 } );
+
+};
+</code></pre></A>
+<P>
+
+</body>

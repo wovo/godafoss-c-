@@ -1,0 +1,55 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>date and time</H2>
+from <A HREF="../library/adts/gf-date-and-time.hpp">adts/gf-date-and-time.hpp</A>
+
+
+<HR>
+
+<a name="date_and_time"></a>
+<P>
+<A HREF="../../library/adts/gf-date-and-time.hpp" style="text-decoration:none">
+<pre><code class="c++">struct date_and_time { ... };
+</code></pre></A>
+<P>
+This is a datatype for representing a date-and-time,
+intended for use with timekeeping chips or peripherals.
+<P>
+
+
+<HR>
+
+<H3>attributes</H3>
+<P>
+<A HREF="../../library/adts/gf-date-and-time.hpp" style="text-decoration:none">
+<pre><code class="c++">   uint8_t seconds, minutes, hours;
+   uint8_t day, month, year;
+   uint8_t weekday;
+</code></pre></A>
+<P>
+The atributes of data_and_time are:
+   <LI> seconds (0-59), minutes (0-59), hours (0-23)
+   <LI> day (1..28/29/30/31), month (1-12), year (0-99)
+   <LI> weekday (1..7)
+<P>
+Fields that are unknow (some chips don't have a weekday ) are set to 0.
+<P>
+
+
+<HR>
+
+<H3>non-member functions</H3>
+<P>
+<A HREF="../../library/adts/gf-date-and-time.hpp" style="text-decoration:none">
+<pre><code class="c++">stream & operator<<( stream & lhs, by_const< date_and_time > dt ){ ... }
+</code></pre></A>
+<P>
+The operator<< prints a data_and_time in the format YY-MM-DD HH:MM.SS dW.
+<P>
+
+</body>

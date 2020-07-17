@@ -1,0 +1,72 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="cto"></a>
+<H2>cto</H2>
+from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
+
+
+<HR>
+
+<P>
+A cto is a Compile Time Object: it has the role of an object,
+but it is 'created' at compile time.
+It is implemented as a struct
+that has only static functions and static attributes.
+<P>
+A cto always exists: it is just 'waiting' to be used.
+The features of a cto that are not used will be elimiated by the linker,
+Hence the mere presence of a cto in the source doen not increase
+the size of the executable image.
+<P>
+A cto, being a type, is never instantiated.
+Instead, each cto provides an init() function.
+Before any of its functions or attributes are used at run-time,
+a cto must be initialized by calling its init() function.
+Failing to do so can cause unpredictable results.
+<P>
+As a cto has only static functions and attributes
+it can be used directly, or the cto can be passed as
+a template parameter.
+<P>
+For cto, and for each more specific cto, a concept exists
+(with the name of the cto), and a root struct from which all
+such cto's are derived (with _root appended to the name of the cto).
+<P>
+The concept checks both for a specific marker, which serves
+no other purpose than to identify the specific cto, and for the
+features that the cto isw obliged to offer.
+The concept is used to constrain templates that want to accept
+only a cto that implements a specific set of features.
+<P>
+The root can be a plain struct, but it is often a template.
+For more complex cto's the CRTP pattern is used so the root can
+provide both base properties and enrichment based on the provided
+implementation.
+<P>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept cto = requires {
+   T::_cto_marker;
+   { T::init() } -> std::same_as< void >;
+};
+</code></pre></A>
+<P>
+A cto has a static init() function that can be called without arguments.
+<P>
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
+<pre><code class="c++">struct cto_root {
+   static const bool _cto_marker = true;
+};
+</code></pre></A>
+<P>
+The struct cto_root is the root type of all cto's:
+all cto's inherit (in most cases indirectly) from this struct.
+<P>
+<P>
+
+</body>

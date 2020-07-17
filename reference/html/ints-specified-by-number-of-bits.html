@@ -1,0 +1,48 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="uint_bits"></a>
+<H2>ints specified by number of bits</H2>
+from <A HREF="../library/basics/gf-ints.hpp">basics/gf-ints.hpp</A>
+
+
+<HR>
+
+<P>
+<A HREF="../../library/basics/gf-ints.hpp" style="text-decoration:none">
+<pre><code class="c++">template< uint64_t n > struct uint_bits {
+   typedef typename ...
+      fast;
+   typedef typename ...
+      least;
+};
+</code></pre></A>
+<P>
+uint_bits< N >::fast is the smallest 'fast'
+unsigned integer type that stores (at least) N bits.
+<P>
+uint_bits< N >::least is the smallest (but not necesarrily fast)
+unsigned integer type that stores (at least) N bits.
+<P>
+As both are unsigned they should be used for bit patterns, not for amounts.
+<P>
+Note that both can be larger than requested, so they should not be used
+for modulo arithmetic (at least not without masking out excess bits).
+<P>
+Use uint_bits< N >::fast for variables and parameters,
+use uint_bits< N >::least for arrays.
+<P>
+
+
+<HR>
+
+<H3>example</H3>
+<P>
+bla bla
+<P>
+
+</body>

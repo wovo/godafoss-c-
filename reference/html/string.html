@@ -1,0 +1,81 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>string</H2>
+from <A HREF="../library/adts/gf-string.hpp">adts/gf-string.hpp</A>
+
+
+<HR>
+
+<a name="string"></a>
+<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<pre><code class="c++">template< std::size_t _maximum_length >
+struct string { ... }
+</code></pre></A>
+<P>
+This is a fixed-maximum-size string.
+It offers an alternative to std::string and raw 0-terminated char arrays.
+It doesn't use the heap, and doesn't cause Undefined Behaviour with
+buffer overflows or out-of-bounds indexes.
+<P>
+The functions that extend the string by appending characters do so
+up to the maximum length of the string. Appending characters beyond
+this maximum length has no effect: the excess characters are ignored.
+<P>
+The functions that access a character at an index (a position within
+the stored string) do so only when the index is valid. When the index
+is invalid, an undefined character (or a reference to an undefined
+character) is returned.
+<P>
+
+
+<HR>
+
+<H3>attributes</H3>
+<P>
+<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<pre><code class="c++">   using size_t = std::size_t;
+   static constexpr size_t maximum_length = _maximum_length;
+</code></pre></A>
+The maxmimum_length is the maxiumum number of character that can be
+stored by the string.
+<P>
+
+
+<HR>
+
+<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr size_t length() const { ... }
+</code></pre></A>
+The member function length() returns number of characters
+that are currently stored.
+<P>
+
+
+<HR>
+
+<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr bool valid_index( const size_t n ) const { ... }
+</code></pre></A>
+The member function valid_index( n ) returns whether n is a valid index
+into the curretly stored string of characters.
+<P>
+
+
+<HR>
+
+<A HREF="../../library/adts/gf-string.hpp" style="text-decoration:none">
+<pre><code class="c++">   string & append( char c ){ ... }
+   string & operator+=( char c ){ ... }
+   string & operator<<( char c ){ ... }
+</code></pre></A>
+The append function, the operator+= and the operator<< all append a
+single character to the string. If the string is already at its maximum
+length the character is ignored.
+<P>
+
+</body>

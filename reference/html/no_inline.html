@@ -1,0 +1,29 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="no_inline"></a>
+<H2>no_inline</H2>
+from <A HREF="../library/item/gf-item-no-inline.hpp">item/gf-item-no-inline.hpp</A>
+
+
+<HR>
+
+<P>
+The no_inline<> <A HREF=item.html#item>item</A> decorator creates an <A HREF=item.html#item>item</A> for which all functions
+are not inline.
+<P>
+This can be used as the outermost decorator around an <A HREF=item.html#item>item</A> constructed
+from a chain of inheritances, in which the chain of function calls
+is all marked <A HREF=function-and-class-attributes.html#GODAFOSS_INLINE>GODAFOSS_INLINE</A>.
+<P>
+<A HREF="../../library/item/gf-item-no-inline.hpp" style="text-decoration:none">
+<pre><code class="c++">template< item T >
+using no_inline = ... ;
+</code></pre></A>
+<P>
+
+</body>

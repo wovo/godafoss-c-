@@ -1,0 +1,79 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>inherit_*</H2>
+from <A HREF="../library/item/gf-item-inherit.hpp">item/gf-item-inherit.hpp</A>
+
+
+<HR>
+
+<P>
+Adapters for selectively inheriting only the init,
+<A HREF=input--output.html#read>read</A>, <A HREF=input--output.html#write>write</A>, or direction functions of a <A HREF=item.html#item>item</A>.
+This is used or instance in the <A HREF=item-adapters.html#item_input>item_input<></A> adapter, to
+'pass' only the <A HREF=input--output.html#input>input</A> functionality.
+<P>
+<a name="inherit_init"></a>
+
+
+<HR>
+
+<H3>inherit_init</H3>
+<A HREF="../../library/item/gf-item-inherit.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct inherit_init = ... ;
+</code></pre></A>
+<P>
+The inherit_init decorator inherits only the init() function of
+the decorated <A HREF=item.html#item>item</A>.
+<P>
+<a name="inherit_read"></a>
+
+
+<HR>
+
+<H3>inherit_read</H3>
+<A HREF="../../library/item/gf-item-inherit.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct inherit_read = ... ;
+</code></pre></A>
+<P>
+The inherit_read decorator inherits only the <A HREF=input--output.html#refresh>refresh()</A> and <A HREF=input--output.html#read>read()</A>
+functions of the decorated <A HREF=item.html#item>item</A>.
+<P>
+<a name="inherit_write"></a>
+
+
+<HR>
+
+<H3>inherit_write</H3>
+<A HREF="../../library/item/gf-item-inherit.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct inherit_write = ... ;
+</code></pre></A>
+<P>
+The inherit_read decorator inherits only the <A HREF=input--output.html#write>write()</A> and <A HREF=input--output.html#flush>flush()</A>
+functions of the decorated <A HREF=item.html#item>item</A>.
+<P>
+<a name="inherit_direction"></a>
+
+
+<HR>
+
+<H3>inherit_direction</H3>
+<A HREF="../../library/item/gf-item-inherit.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+struct inherit_direction = ... ;
+</code></pre></A>
+<P>
+The inherit_read decorator inherits only the
+<A HREF=input--output.html#direction_set_input>direction_set_input()</A>, <A HREF=input--output.html#direction_set_output>direction_set_output()</A> and
+<A HREF=input--output.html#direction_flush>direction_flush()</A>
+functions of the decorated <A HREF=item.html#item>item</A>.
+<P>
+
+</body>

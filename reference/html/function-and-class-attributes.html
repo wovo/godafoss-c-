@@ -1,0 +1,95 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="GODAFOSS_INLINE"></a>
+<H2>function and class attributes</H2>
+from <A HREF="../library/basics/gf-attributes.hpp">basics/gf-attributes.hpp</A>
+
+
+<HR>
+
+<P>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">#define GODAFOSS_INLINE ...
+</code></pre></A>
+GODAFOSS_INLINE forces a function to be inline.
+It is used when the function body is very simple, for instance when
+it calls only one deeper function.
+This serves (only) to reduce code size and execution time.
+<P>
+
+
+<HR>
+
+<a name="GODAFOSS_NO_INLINE"></a>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">#define GODAFOSS_NO_INLINE ...
+</code></pre></A>
+GODAFOSS_NO_INLINE forces a function to be not inline.
+This is used to preserve low-level properties of a function,
+like the number of cylces taken by the function preable and postamble.
+This can be important to get predictable timing.
+<P>
+
+
+<HR>
+
+<a name="GODAFOSS_NO_RETURN"></a>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">#define GODAFOSS_NO_RETURN ...
+</code></pre></A>
+GODAFOSS_NORETURN indicates that a function will not return.
+It is used for functions that contain a never-ending loop.
+This can reduce code size.
+<P>
+
+
+<HR>
+
+<a name="GODAFOSS_IN_RAM"></a>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">#define GODAFOSS_IN_RAM ...
+</code></pre></A>
+GODAFOSS_IN_RAM places the function body in RAM (instead of FLASH).
+On some targets, this is necesarry to get predicatable timing,
+or faster execution.
+<P>
+
+
+<HR>
+
+<a name="GODAFOSS_RUN_ONCE"></a>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">#define GODAFOSS_RUN_ONCE ...
+</code></pre></A>
+GODAFOSS_RUN_ONCE causes the remainder of the function (the part after
+the macro) to be executed only once.
+<P>
+
+
+<HR>
+
+<a name="not_constructible"></a>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">struct not_constructible { ... };
+</code></pre></A>
+Inheriting from not_constructible makes it impossible to create objects
+of that class.
+<P>
+
+
+<HR>
+
+<a name="not_copyable"></a>
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
+<pre><code class="c++">struct not_copyable { ... };
+</code></pre></A>
+Inheriting from not_copyable makes it impossible to copy an object
+of that class.
+<P>
+
+</body>
