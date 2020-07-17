@@ -393,6 +393,10 @@ class item:
             t = after( line, "@define " ).replace( "godafoss::", "" ).replace( "item::", "" )
             self.global_defines.append( [ t, self ] )
             self.content.append( define( t ))
+            if t.startswith( "is_" ):
+               t = s[ 3 : ]
+               self.global_defines.append( [ t, self ] )
+               self.content.append( define( t ))
 
          elif line.strip().startswith( "@insert " ):
             t = after( line, "@insert " ).strip()

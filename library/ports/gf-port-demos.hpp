@@ -31,7 +31,7 @@ GODAFOSS_NO_RETURN void walk(){
 
 template< port_out_compatible _port, typename interval >
 GODAFOSS_NO_RETURN void kitt(){
-   using port = direct< port_out_from< _port >>;
+   using port = direct< port_out_from< _port > >;
    port::init();
    interval::init();
    for(;;){

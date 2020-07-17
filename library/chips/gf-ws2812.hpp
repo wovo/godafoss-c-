@@ -6,7 +6,7 @@
 
 
 template<
-   pin_out_compatible  _data,
+   can_pin_out  _data,
    typename            timing,
    unsigned int        n_chips = 1 >
 struct ws2812 :
@@ -25,7 +25,7 @@ struct ws2812 :
       { n_chips, 1 }
    >;
 
-   using data = direct< pin_out_from< _data >>;
+   using data = direct< pin_out< _data >>;
 
    static inline std::array< color, n_chips > pixels;
 

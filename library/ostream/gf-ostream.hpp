@@ -24,10 +24,10 @@
 
 template< typename T >
 concept is_stream_out_char = requires {
-   pipe< T >;
-   output< T >;
-   std::same_as< typename T::value_type, char >;
-};
+      std::same_as< typename T::value_type, char >;
+   }
+   && is_pipe< T >
+   && is_output< T >;
 
 
 // ==========================================================================

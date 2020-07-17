@@ -28,16 +28,16 @@
 // ==========================================================================
 
 template<
-   pin_out_compatible     _ce,
-   pin_out_compatible     _sclk,
-   pin_in_out_compatible  _io
+   can_pin_out     _ce,
+   can_pin_out     _sclk,
+   can_pin_in_out  _io
 >
 class ds1302 {
 private:
 
-   using ce    = direct< pin_out_from< _ce >>;
-   using sclk  = direct< pin_out_from< _sclk >>;
-   using io    = direct< pin_in_out_from< _io >>;
+   using ce    = direct< pin_out< _ce >>;
+   using sclk  = direct< pin_out< _sclk >>;
+   using io    = direct< pin_in_out< _io >>;
 
 public:
 

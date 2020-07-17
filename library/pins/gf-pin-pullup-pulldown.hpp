@@ -81,7 +81,7 @@ struct pulldown_filter< T > {
 // =============================================================================
 
 template< typename T >
-struct pullup_pulldown_filter< T > :
+struct pullup_pulldown_filter :
    pullup_filter< T >,
    pulldown_filter< T >
 {};

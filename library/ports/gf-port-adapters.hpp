@@ -24,12 +24,12 @@
 
 GODAFOSS_SUPPORTED( port_in_out, port_in_out_from )
 
-template< port_in_out T >
+template< is_port_in_out T >
 struct port_in_out_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_in_out T >
+template< is_port_in_out T >
 struct port_in_out_from< T > :
    port_in_out_root< T::n_pins >,
    inherit_init< T >,
@@ -38,13 +38,13 @@ struct port_in_out_from< T > :
    inherit_read< T >
 {};
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_in_out_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_oc T >
-struct pin_in_out_from< T > :
+template< is_port_oc T >
+struct port_in_out_from< T > :
    port_in_out_root< T::n_pins >,
    inherit_init< T >,
    inherit_write< T >,
@@ -68,12 +68,12 @@ struct pin_in_out_from< T > :
 
 GODAFOSS_SUPPORTED( port_out, port_out_from )
 
-template< port_in_out T >
+template< is_port_in_out T >
 struct port_out_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_in_out T >
+template< is_port_in_out T >
 struct port_out_from< T > :
    port_out_root< T::n_pins >,
    inherit_init< T >,
@@ -82,29 +82,30 @@ struct port_out_from< T > :
 
    static GODAFOSS_INLINE void init(){
       T::init();
-      direct< T >::direction_set_output();
+      T::direction_set_output();
+      T::direction_flush();
    }
 
 };
 
-template< port_out T >
+template< is_port_out T >
 struct port_out_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_out T >
+template< is_port_out T >
 struct port_out_from< T > :
    port_out_root< T::n_pins >,
    inherit_init< T >,
    inherit_write< T >
 {};
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_out_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_out_from< T > :
    port_out_root< T::n_pins >,
    inherit_init< T >,
@@ -116,12 +117,12 @@ struct port_out_from< T > :
 
 GODAFOSS_SUPPORTED( port_in, port_in_from )
 
-template< port_in_out T >
+template< is_port_in_out T >
 struct port_in_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_in_out T >
+template< is_port_in_out T >
 struct port_in_from< T > :
    port_in_root< T::n_pins >,
    inherit_init< T >,
@@ -130,29 +131,30 @@ struct port_in_from< T > :
 
    static GODAFOSS_INLINE void init(){
       T::init();
-      direct< T >::direction_set_input();
+      T::direction_set_input();
+      T::direction_flush();
    }
 
 };
 
-template< port_in T >
+template< is_port_in T >
 struct port_in_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_in T >
+template< is_port_in T >
 struct port_in_from< T > :
    port_in_root< T::n_pins >,
    inherit_init< T >,
    inherit_read< T >
 {};
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_in_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_in_from< T > :
    port_in_root< T::n_pins >,
    inherit_init< T >,
@@ -161,7 +163,8 @@ struct port_in_from< T > :
 
    static GODAFOSS_INLINE void init(){
       T::init();
-      direct< invert< T >>::write( 0 );
+      T::write( 0 );
+      T::flush();
    }
 
 };
@@ -171,12 +174,12 @@ struct port_in_from< T > :
 
 GODAFOSS_SUPPORTED( port_oc, port_oc_from )
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_oc_supported< T > {
    static constexpr bool supported = true;;
 };
 
-template< port_oc T >
+template< is_port_oc T >
 struct port_oc_from< T > :
    port_oc_root< T::n_pins >,
    inherit_init< T >,

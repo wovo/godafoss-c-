@@ -167,8 +167,8 @@ public:
 
    // @quote equal 4 ... }
    template< typename V >
-      requires requires( xy_value_type lhs, V b ){
-         { lhs.x == b } -> std::same_as< bool >; }
+      requires requires( xy_value_type a, V b ){
+         { a == b } -> std::same_as< bool >; }
    constexpr bool operator==( const xy< V > & rhs ) const {
       return ( x == rhs.x ) && ( y == rhs.y );
    }
@@ -176,7 +176,7 @@ public:
    // @quote unequal 4 ... }
    template< typename V >
       requires requires( xy_value_type lhs, V b ){
-         { lhs.x == b } -> std::same_as< bool >; }
+         { x == b } -> std::same_as< bool >; }
    constexpr bool operator!=( const xy & rhs ) const {
       return ! ( *this == rhs );
    }

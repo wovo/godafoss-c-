@@ -27,6 +27,15 @@
 //
 // =============================================================================
 
+struct empty {
+   using value_type = bool;
+};
+
+struct empty_init {
+   using value_type = bool;
+   static void init();
+};
+
 struct only_init {
    static void init();
 };
@@ -35,11 +44,12 @@ template< typename T >
 struct item_item : gf::item_root< T >, only_init {};
 
 void test_case_item_item(){
-   EQUAL( false,  gf::item< bool > );
-   EQUAL( false,  gf::item< int > );
-   EQUAL( false,  gf::item< only_init > );
-   EQUAL( true,   gf::item< item_item< bool > > );
-   EQUAL( true,   gf::item< item_item< int > > );
+   //EQUAL( false,  gf::is_item< bool > );
+   //EQUAL( false,  gf::is_item< int > );
+   EQUAL( false,  gf::is_item< empty > );
+   EQUAL( false,  gf::is_item< empty_init > );
+   EQUAL( true,   gf::is_item< item_item< bool > > );
+   EQUAL( true,   gf::is_item< item_item< int > > );
 }
 
 
@@ -56,27 +66,27 @@ template< typename T >
 struct item_pipe : gf::pipe_root< T >, only_init {};
 
 void test_case_item_box(){
-   EQUAL( false,  gf::box< bool > );
-   EQUAL( false,  gf::box< int > );
-   EQUAL( false,  gf::box< only_init > );
-   EQUAL( false,  gf::box< item_item< bool > > );
-   EQUAL( false,  gf::box< item_item< int > > );
-   EQUAL( true,   gf::box< item_box< bool > > );
-   EQUAL( true,   gf::box< item_box< int > > );
-   EQUAL( false,  gf::box< item_pipe< bool > > );
-   EQUAL( false,  gf::box< item_pipe< int > > );
+   //EQUAL( false,  gf::is_box< bool > );
+   //EQUAL( false,  gf::is_box< int > );
+   EQUAL( false,  gf::is_box< empty_init > );
+   EQUAL( false,  gf::is_box< item_item< bool > > );
+   EQUAL( false,  gf::is_box< item_item< int > > );
+   EQUAL( true,   gf::is_box< item_box< bool > > );
+   EQUAL( true,   gf::is_box< item_box< int > > );
+   EQUAL( false,  gf::is_box< item_pipe< bool > > );
+   EQUAL( false,  gf::is_box< item_pipe< int > > );
 }
 
 void test_case_item_pipe(){
-   EQUAL( false,  gf::pipe< bool > );
-   EQUAL( false,  gf::pipe< int > );
-   EQUAL( false,  gf::pipe< only_init > );
-   EQUAL( false,  gf::pipe< item_item< bool > > );
-   EQUAL( false,  gf::pipe< item_item< int > > );
-   EQUAL( false,  gf::pipe< item_box< bool > > );
-   EQUAL( false,  gf::pipe< item_box< int > > );
-   EQUAL( true,   gf::pipe< item_pipe< bool > > );
-   EQUAL( true,   gf::pipe< item_pipe< int > > );
+   //EQUAL( false,  gf::is_pipe< bool > );
+   //EQUAL( false,  gf::is_pipe< int > );
+   EQUAL( false,  gf::is_pipe< empty_init > );
+   EQUAL( false,  gf::is_pipe< item_item< bool > > );
+   EQUAL( false,  gf::is_pipe< item_item< int > > );
+   EQUAL( false,  gf::is_pipe< item_box< bool > > );
+   EQUAL( false,  gf::is_pipe< item_box< int > > );
+   EQUAL( true,   gf::is_pipe< item_pipe< bool > > );
+   EQUAL( true,   gf::is_pipe< item_pipe< int > > );
 }
 
 
@@ -102,15 +112,15 @@ struct only_init_read {
 };
 
 void test_case_item_input(){
-   EQUAL( false,  gf::input< bool > );
-   EQUAL( false,  gf::input< int > );
-   EQUAL( false,  gf::input< only_init > );
-   EQUAL( false,  gf::input< item_item< bool > > );
-   EQUAL( false,  gf::input< item_item< int > > );
-   EQUAL( false,  gf::input< item_box< bool > > );
-   EQUAL( false,  gf::input< item_box< int > > );
-   EQUAL( false,  gf::input< item_pipe< bool > > );
-   EQUAL( false,  gf::input< item_pipe< int > > );
+   //EQUAL( false,  gf::is_input< bool > );
+   //EQUAL( false,  gf::is_input< int > );
+   EQUAL( false,  gf::is_input< empty_init > );
+   EQUAL( false,  gf::is_input< item_item< bool > > );
+   EQUAL( false,  gf::is_input< item_item< int > > );
+   EQUAL( false,  gf::is_input< item_box< bool > > );
+   EQUAL( false,  gf::is_input< item_box< int > > );
+   EQUAL( false,  gf::is_input< item_pipe< bool > > );
+   EQUAL( false,  gf::is_input< item_pipe< int > > );
 }
 
 

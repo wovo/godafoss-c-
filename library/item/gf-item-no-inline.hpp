@@ -42,7 +42,7 @@
 template< typename T >
 struct _no_inline_item_init : T {};
 
-template< item T >
+template< is_item T >
 struct _no_inline_item_init< T > : T {
 
    static void init(){
@@ -61,7 +61,7 @@ struct _no_inline_item_init< T > : T {
 template< typename T >
 struct _no_inline_item_write : T {};
 
-template< output T >
+template< is_output T >
 struct _no_inline_item_write< T > : T {
 
    using _vt = typename T::value_type;
@@ -86,7 +86,7 @@ struct _no_inline_item_write< T > : T {
 template< typename T >
 struct _no_inline_item_read : T {};
 
-template< input T >
+template< is_input T >
 struct _no_inline_item_read< T > : T {
 
    using _vt = typename T::value_type;
@@ -111,7 +111,7 @@ struct _no_inline_item_read< T > : T {
 template< typename T >
 struct _no_inline_item_direction : T {};
 
-template< simplex T >
+template< is_simplex T >
 struct _no_inline_item_direction< T > : T {
 
    static void direction_set_output(){
@@ -136,7 +136,7 @@ struct _no_inline_item_direction< T > : T {
 // =============================================================================
 
 // @quote no_inline 2 ... ;
-template< item T >
+template< is_item T >
 using no_inline =
    _no_inline_item_init<
    _no_inline_item_write<

@@ -46,8 +46,8 @@
 
 // @quote text 6
 template<
-   pin_out_compatible  _sck,
-   pin_in_compatible   _dout,
+   can_pin_out  _sck,
+   can_pin_in   _dout,
    typename            timing
 >
 struct hx711 {
@@ -62,8 +62,8 @@ public:
 
 private:
 
-   using sck   = direct< pin_out_from< _sck >>;
-   using dout  = direct< pin_out_from< _dout >>;
+   using sck   = direct< pin_out< _sck >>;
+   using dout  = direct< pin_out< _dout >>;
 
    static inline mode current_mode;
    static inline bool powered_down;

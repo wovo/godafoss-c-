@@ -164,15 +164,18 @@ namespace godafoss {
 #include "pins/gf-pin-adapters.hpp"
 #include "pins/gf-pin-dummies.hpp"
 #include "pins/gf-pin-all.hpp"
-#include "pins/gf-pin-demos.hpp"
-
 #include "basics/gf-analog.hpp"
 
 #include "ports/gf-port.hpp"
 #include "ports/gf-port-adapters.hpp"
 #include "ports/gf-port-dummies.hpp"
 #include "ports/gf-port-from-pins.hpp"
+
+#include "modifiers/gf-modifiers-pins.hpp"
+
+#include "pins/gf-pin-demos.hpp"
 #include "ports/gf-port-demos.hpp"
+
 
 #include "timing/gf-timing-wait.hpp"
 #include "timing/gf-timing-clock.hpp"

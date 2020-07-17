@@ -24,11 +24,11 @@
 
 template< typename T >
 concept is_uart = requires {
-   pipe< T >;
-   duplex< T >;
-   std::same_as< typename T::value_type, char >;
-   T::is_uart;
-};
+      std::same_as< typename T::value_type, char >;
+      T::is_uart;
+   }
+   && is_pipe< T >
+   && is_duplex< T >;
 
 
 // ==========================================================================

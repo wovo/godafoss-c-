@@ -49,7 +49,7 @@
 template< typename T >
 struct _direct_read : T {};
 
-template< input T >
+template< is_input T >
 struct _direct_read< T > : T {
 
    static auto read(){
@@ -71,7 +71,7 @@ struct _direct_read< T > : T {
 template< typename T >
 struct _direct_write : T {};
 
-template< output T >
+template< is_output T >
 struct _direct_write< T > : T {
 
    using _vt = typename T::value_type;
@@ -95,7 +95,7 @@ struct _direct_write< T > : T {
 template< typename T >
 struct _direct_direction : T {};
 
-template< simplex T >
+template< is_simplex T >
 struct _direct_direction< T > : T {
 
    static void direction_set_input() {
@@ -119,11 +119,10 @@ struct _direct_direction< T > : T {
 //
 // =============================================================================
 
-// @quote can_direct 4
+// @quote can_direct 3
 template< typename T >
-concept can_direct = requires {
-   item< T >;
-};
+concept can_direct =
+   is_item< T >;
 
 template< can_direct T >
 struct direct_supported< T > {

@@ -39,7 +39,7 @@
 template< typename T >
 struct _buffered_read : T {};
 
-template< input T >
+template< is_input T >
 struct _buffered_read< T > : T {
 
    static auto read(){
@@ -67,7 +67,7 @@ private:
 template< typename T >
 struct _buffered_write : T {};
 
-template< output T >
+template< is_output T >
 struct _buffered_write< T > : T {
 
    using _vt = typename T::value_type;
@@ -102,7 +102,7 @@ private:
 template< typename T >
 struct _buffered_direction : T {};
 
-template< simplex T >
+template< is_simplex T >
 struct _buffered_direction< T > : T {
 
    static void direction_set_input() {
@@ -141,11 +141,10 @@ private:
 //
 // =============================================================================
 
-// @quote can_buffered 4
+// @quote can_buffered 3
 template< typename T >
-concept can_buffered = requires {
-   item< T >;
-};
+concept can_buffered =
+   is_item< T >;
 
 // @quote buffered 2 ... ;
 template< can_buffered T >

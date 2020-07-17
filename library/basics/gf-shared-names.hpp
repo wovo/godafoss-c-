@@ -36,7 +36,7 @@
 // Instantiating the macro GODAFOSS_SUPPORTED( NAME_1, NAME_2 ) creates:
 //
 // a concept NAME_compatible< T > that is satisfied only when
-//    a NAME_subpported< T > or < T, Ts > specialization exists that
+//    a NAME_supported< T > or < T, Ts > specialization exists that
 //    has a static constexpr bool = true;
 //
 // a concept NAME_compatible_list< T... > that is satisfied when

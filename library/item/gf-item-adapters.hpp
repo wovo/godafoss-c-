@@ -72,46 +72,28 @@
 
 // =============================================================================
 //
-// concepts
+// adapt to be an input item
 //
 // =============================================================================
 
 // @quote can_input 4
 template< typename T >
 concept can_input =
-      input< T >
-   || input_output< T >;
-
-// @quote can_output 4
-template< typename T >
-concept can_output =
-      output< T >
-   || input_output< T >;
-
-// @quote can_input_output 3
-template< typename T >
-concept can_input_output =
-     input_output< T >;
-
-
-// =============================================================================
-//
-// adapt to be an input item
-//
-// =============================================================================
+   is_input< T >
+   || is_input_output< T >;
 
 // @quote item_input 2 ... ;
 template< can_input T >
 struct item_input
 {};
 
-template< input T >
+template< is_input T >
 struct item_input< T > :
    inherit_init< T >,
    inherit_read< T >
 {};
 
-template< input_output T >
+template< is_input_output T >
 struct item_input< T > :
    inherit_read< T >
 {
@@ -130,18 +112,24 @@ struct item_input< T > :
 //
 // =============================================================================
 
+// @quote can_output 4
+template< typename T >
+concept can_output =
+   is_output< T >
+   || is_input_output< T >;
+
 // @quote item_output 2 ... ;
 template< can_output T >
 struct item_output
 {};
 
-template< output T >
+template< is_output T >
 struct item_output< T > :
    inherit_init< T >,
    inherit_write< T >
 {};
 
-template< input_output T >
+template< is_input_output T >
 struct item_output< T > :
    inherit_write< T >
 {
@@ -159,6 +147,11 @@ struct item_output< T > :
 // adapt to be an input_output item
 //
 // =============================================================================
+
+// @quote can_input_output 3
+template< typename T >
+concept can_input_output =
+   is_input_output< T >;
 
 // @quote item_input_output 2 ... ;
 template< can_input_output T >

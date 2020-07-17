@@ -9,7 +9,7 @@ template< size_t n > concept range_1_8 =
 
 template<
    typename            bus,
-   pin_out_compatible  _cs,
+   can_pin_out  _cs,
    int                 n_chips = 1
 >
 struct max7219 :
@@ -28,7 +28,7 @@ struct max7219 :
       { 8 * n_chips, 8 }
    >;
 
-   using cs = direct< invert< pin_out_from< _cs >>>;
+   using cs = direct< invert< pin_out< _cs >>>;
    using transfer = typename bus:: template transfer< cs >;
 
    static constexpr uint8_t cmd_mode        = 0x09;

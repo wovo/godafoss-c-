@@ -1,3 +1,4 @@
+ ws2812 werkt maar tot 32 LEDs => een poort kan maar 32 zijn? zou 64 moeten zijn...
  init() with value -> all boxes must CRTP
  init_as_input for input-output boxes??
  struct everywhere

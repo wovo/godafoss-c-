@@ -26,8 +26,8 @@
 template< typename T >
 concept adc = requires {
    T::is_adc;
-   item< T >;
-   input< T >;
+   is_item< T >;
+   is_input< T >;
 //   constexpr T::value_type adc_min;
 //   constexpr T::value_type adc_max;
 };

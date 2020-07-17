@@ -69,7 +69,7 @@ template< typename T >
 struct inherit_init
 {};
 
-template< item T >
+template< is_item T >
 struct inherit_init< T > {
 
    static void GODAFOSS_INLINE init(){
@@ -90,7 +90,7 @@ template< typename T >
 struct inherit_read
 {};
 
-template< input T >
+template< is_input T >
 struct inherit_read< T > {
 
    using _value_type = typename T::value_type;
@@ -117,7 +117,7 @@ template< typename T >
 struct inherit_write
 {};
 
-template< output T >
+template< is_output T >
 struct inherit_write< T > {
 
    using _value_type = typename T::value_type;
@@ -144,7 +144,7 @@ template< typename T >
 struct inherit_direction
 {};
 
-template< simplex T >
+template< is_simplex T >
 struct inherit_direction< T > {
 
    static void GODAFOSS_INLINE direction_set_input(){

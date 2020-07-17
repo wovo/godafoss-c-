@@ -19,7 +19,7 @@
 
 // =============================================================================
 //
-// @define godafoss::cto
+// @define godafoss::is_cto
 // @title cto
 //
 // A cto is a Compile Time Object: it has the role of an object,
@@ -48,7 +48,7 @@
 //
 // The concept checks both for a specific marker, which serves
 // no other purpose than to identify the specific cto, and for the
-// features that the cto isw obliged to offer.
+// features that the cto is obliged to offer.
 // The concept is used to constrain templates that want to accept
 // only a cto that implements a specific set of features.
 //
@@ -71,7 +71,7 @@
 
 // @quote cto_concept 5
 template< typename T >
-concept cto = requires {
+concept is_cto = requires {
    T::_cto_marker;
    { T::init() } -> std::same_as< void >;
 };
@@ -84,7 +84,7 @@ struct cto_root {
 
 // =============================================================================
 //
-// @define godafoss::item
+// @define godafoss::is_item
 // @title item
 //
 // An item is the basic cto from which most other cto's are derived.
@@ -102,7 +102,8 @@ struct cto_root {
 //
 // @insert item_concept
 //
-// An item is a cto that holds one or more data elements of a specific type.
+// An item is a cto that holds one (or, in case of a pipe, more)
+// data elements of a specific type.
 //
 // @define godafoss::item::value_type
 // @insert item_root
@@ -112,18 +113,19 @@ struct cto_root {
 // =============================================================================
 
 
-// @quote item_concept 5
-template< typename T >
-concept item = requires {
-   cto< T >;
-   T::_item_marker;
-};
+// @quote item_concept 6
+template< typename T, typename VT = T::value_type >
+concept is_item = requires {
+      T::_item_marker;
+      { typename T::value_type() } -> std::same_as< VT >;
+   }
+   && is_cto< T >;
 
 // @quote item_root 5
-template< typename T >
+template< typename VT >
 struct item_root : cto_root {
    static const bool _item_marker = true;
-   using value_type = T;
+   using value_type = VT;
 };
 
 // item< bool > has a different invert than other items
@@ -140,8 +142,8 @@ struct item_root< bool > : cto_root {
 
 // =============================================================================
 //
-// @define godafoss::box
-// @define godafoss::pipe
+// @define godafoss::is_box
+// @define godafoss::is_pipe
 // @title box, pipe
 //
 // A box and a pipe are two kinds of items.
@@ -149,7 +151,11 @@ struct item_root< bool > : cto_root {
 // that holds a single value,
 // a pipe behaves like a sequence of values.
 //
+// -----------------------------------------------------------------------------
+//
 // @section box
+// @insert is_box
+// @insert box_root
 //
 // A box is an item that has or contains (at any point in time) a single value.
 // A box has value semantics:
@@ -157,10 +163,11 @@ struct item_root< bool > : cto_root {
 // you will get the same value.
 // Writing to an item overwrites its old value in the box.
 //
-// @insert box_concept
-// @insert box_root
+// -----------------------------------------------------------------------------
 //
 // @section pipe
+// @insert is_pipe
+// @insert pipe_root
 //
 // A pipe is an item that holds a sequence of values.
 // A write to a pipe adds a new value the sequence.
@@ -170,22 +177,19 @@ struct item_root< bool > : cto_root {
 // read from the sequence.
 // Writing to a pipe adds a value to the sequnce.
 //
-// @insert pipe_concept
-// @insert pipe_root
-//
 // =============================================================================
 
-// @quote box_concept 5
-template< typename T >
-concept box = requires {
-   item< T >;
-   T::_box_marker;
-};
+// @quote is_box 5
+template< typename T, typename VT = T::value_type >
+concept is_box = requires {
+      T::_box_marker;
+   }
+   && is_item< T, VT >;
 
 // @quote box_root 6
-template< typename T >
+template< typename VT >
 struct box_root :
-   item_root< T >
+   item_root< VT >
 {
    static const bool _box_marker = true;
 };
@@ -193,17 +197,17 @@ struct box_root :
 
 // =============================================================================
 
-// @quote pipe_concept 5
-template< typename T >
-concept pipe = requires {
-   item< T >;
-   T::_pipe_marker;
-};
+// @quote is_pipe 5
+template< typename T, typename VT = T::value_type >
+concept is_pipe = requires {
+      T::_pipe_marker;
+   }
+   && is_item< T, VT >;
 
 // @quote pipe_root 6
-template< typename T >
+template< typename VT >
 struct pipe_root :
-   item_root< T >
+   item_root< VT >
 {
    static const bool _pipe_marker = true;
 };
@@ -211,11 +215,11 @@ struct pipe_root :
 
 // =============================================================================
 //
-// @define godafoss::input
-// @define godafoss::output
-// @define godafoss::input_output
-// @define godafoss::duplex
-// @define godafoss::simplex
+// @define godafoss::is_input
+// @define godafoss::is_output
+// @define godafoss::is_input_output
+// @define godafoss::is_duplex
+// @define godafoss::is_simplex
 // @title input, output
 //
 // An item can be an input (from which you can read) and/or an output
@@ -246,7 +250,7 @@ struct pipe_root :
 // @define godafoss::item::refresh
 // @define godafoss::item::read
 // @section input
-// @insert input_concept
+// @insert is_input
 // @insert input_root
 //
 // A input is an item that provides a read() function that returns
@@ -255,14 +259,14 @@ struct pipe_root :
 // @define godafoss::item::write
 // @define godafoss::item::flush
 // @section output
-// @insert output_concept
+// @insert is_output
 // @insert output_root
 //
 // An output is an item that provides a write() function that accepts
 // a value of the value_type of the item.
 //
 // @section input_output
-// @insert input_output_concept
+// @insert is_input_output
 // @insert input_output_root
 //
 // An input_output is an item that is both an input and an output.
@@ -272,7 +276,7 @@ struct pipe_root :
 // A duplex item is an input_output that can function both as
 // an input and as an output at the same time.
 //
-// @insert duplex_concept
+// @insert is_duplex
 // @insert duplex_root
 //
 // A simplex item is an input_output that has a current direction,
@@ -281,7 +285,7 @@ struct pipe_root :
 // @define godafoss::item::direction_set_input
 // @define godafoss::item::direction_set_output
 // @define godafoss::item::direction_flush
-// @insert simplex_concept
+// @insert is_simplex
 // @insert simplex_root
 //
 // The direction of a simplex item can be changed
@@ -300,18 +304,18 @@ struct pipe_root :
 // =============================================================================
 
 // @quote input_concept 7
-template< typename T >
-concept input = requires {
-   item< T >;
-   T::_input_marker;
-   { T::refresh() }  -> std::same_as< void >;
-   { T::read() }     -> std::same_as< typename T::value_type >;
-};
+template< typename T, typename VT = T::value_type >
+concept is_input = requires {
+      T::_input_marker;
+      { T::refresh() }  -> std::same_as< void >;
+      { T::read() }     -> std::same_as< typename T::value_type >;
+   }
+   && is_item< T, VT >;
 
 // @quote input_root 6
-template< typename T >
+template< typename VT >
 struct input_root :
-   item_root< T >
+   item_root< VT >
 {
    static const bool _input_marker = true;
 };
@@ -320,20 +324,20 @@ struct input_root :
 // =============================================================================
 
 // @quote output_concept 7
-template< typename T >
-concept output = requires (
+template< typename T, typename VT = T::value_type >
+concept is_output = requires (
    typename T::value_type v
-){
-   item< T >;
-   T::_output_marker;
-   { T::write( v ) }  -> std::same_as< void >;
-   { T::flush()    }  -> std::same_as< void >;
-};
+   ){
+      T::_output_marker;
+      { T::write( v ) }  -> std::same_as< void >;
+      { T::flush()    }  -> std::same_as< void >;
+   }
+   && is_item< T, VT >;
 
 // @quote output_root 6
-template< typename T >
+template< typename VT >
 struct output_root :
-   item_root< T >
+   item_root< VT >
 {
    static const bool _output_marker = true;
 };
@@ -341,34 +345,42 @@ struct output_root :
 
 // =============================================================================
 
-// @quote input_output_concept 5
-template< typename T >
-concept input_output = requires {
-   input< T >;
-   output< T >;
-};
+// @quote input_output_concept 11
+template< typename T, typename VT = T::value_type >
+concept is_input_output = requires (
+      typename T::value_type v
+   ){
+      T::_input_output_marker;
+      { T::refresh() }   -> std::same_as< void >;
+      { T::read() }      -> std::same_as< typename T::value_type >;
+      { T::write( v ) }  -> std::same_as< void >;
+      { T::flush()    }  -> std::same_as< void >;
+   }
+   && is_item< T, VT >;
 
-// @quote input_output_root 5
-template< typename T >
+// @quote input_output_root 8
+template< typename VT >
 struct input_output_root :
-   input_root< T >,
-   output_root< T >
-{};
+   input_root< VT >,
+   output_root< VT >
+{
+   static const bool _input_output_marker = true;
+};
 
 
 // =============================================================================
 
 // @quote duplex_concept 5
-template< typename T >
-concept duplex = requires {
-   input_output< T >;
-   T::_duplex_marker;
-};
+template< typename T, typename VT = T::value_type >
+concept is_duplex = requires {
+      T::_duplex_marker;
+   }
+   && is_input_output< T, VT >;
 
 // @quote duplex_root 6
-template< typename T >
+template< typename VT >
 struct duplex_root :
-   input_output_root< T >
+   input_output_root< VT >
 {
    static const bool _duplex_marker = true;
 };
@@ -377,19 +389,19 @@ struct duplex_root :
 // =============================================================================
 
 // @quote simplex_concept 8
-template< typename T >
-concept simplex = requires {
-   input_output< T >;
-   T::_simplex_marker;
-   { T::direction_set_input() }   -> std::same_as< void >;
-   { T::direction_set_output() }  -> std::same_as< void >;
-   { T::direction_flush() }       -> std::same_as< void >;
-};
+template< typename T, typename VT = T::value_type >
+concept is_simplex = requires {
+      T::_simplex_marker;
+      { T::direction_set_input() }   -> std::same_as< void >;
+      { T::direction_set_output() }  -> std::same_as< void >;
+      { T::direction_flush() }       -> std::same_as< void >;
+   }
+   && is_input_output< T, VT >;
 
 // @quote simplex_root 6
-template< typename T >
+template< typename VT >
 struct simplex_root :
-   input_output_root< T >
+   input_output_root< VT >
 {
    static const bool _simplex_marker = true;
 };

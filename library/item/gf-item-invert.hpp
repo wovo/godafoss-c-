@@ -37,7 +37,7 @@
 template< typename T >
 struct _invert_read : T {};
 
-template< input T >
+template< is_input T >
 struct _invert_read< T > : T {
 
    static auto read(){
@@ -56,7 +56,7 @@ struct _invert_read< T > : T {
 template< typename T >
 struct _invert_write : T {};
 
-template< output T >
+template< is_output T >
 struct _invert_write< T > : T {
 
    using _vt = typename T::value_type;
@@ -74,15 +74,15 @@ struct _invert_write< T > : T {
 //
 // =============================================================================
 
-// @quote can_invert 8
+// @quote can_invert 7
 // invert is supported for an item that has an invert function
 template< typename T >
 concept can_invert = requires (
-   typename T::value_type v
-) {
-   item< T >;
-   { T::invert( v ) } -> std::same_as< typename T::value_type >;
-};
+      typename T::value_type v
+   ){
+      { T::invert( v ) } -> std::same_as< typename T::value_type >;
+   }
+   && is_item< T >;
 
 template< can_invert T >
 struct invert_supported< T > {
