@@ -6,7 +6,7 @@
 
 <body>
 <H2>pins</H2>
-from <A HREF="../library\pins/gf-pin.hpp">../library\pins/gf-pin.hpp</A>
+from <A HREF="../library/pins/gf-pin.hpp">pins/gf-pin.hpp</A>
 
 
 <HR>
@@ -29,13 +29,14 @@ When the phyiscal pin is active-low, an <A HREF=invert.html#invert>invert<></A> 
 is used to create the internal active-high representation of the pin.
 <P>
 <P>
+<a name="is_pin_in"></a>
 <a name="pin_in"></a>
 
 
 <HR>
 
 <H3>pin_in</H3>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept is_pin_in = requires {
       T::_pin_in_marker;
@@ -49,7 +50,7 @@ A <A HREF=pin-adapters.html#pin_in>pin_in</A> is a <A HREF=box--pipe.html#box>bo
 interface to the world outside the target chip.
 A typical use of a <A HREF=pin-adapters.html#pin_in>pin_in</A> is to <A HREF=input--output.html#read>read</A> a switch or pushbutton.
 <P>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_in_root :
    box_root< bool >,
    input_root< bool >
@@ -67,7 +68,7 @@ All <A HREF=pin-adapters.html#pin_in>pin_in</A> <A HREF=cto.html#cto>cto</A>'s i
 <HR>
 
 <H3>pin_out</H3>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept is_pin_out = requires {
       T::_pin_out_marker;
@@ -80,7 +81,7 @@ A <A HREF=pin-adapters.html#pin_in>pin_in</A> is a <A HREF=box--pipe.html#box>bo
 interface to the world outside the target chip.
 A typical use of a <A HREF=pin-adapters.html#pin_in>pin_in</A> is to drive an LED.
 <P>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_out_root :
    box_root< bool >,
    output_root< bool >
@@ -92,13 +93,14 @@ A typical use of a <A HREF=pin-adapters.html#pin_in>pin_in</A> is to drive an LE
 All <A HREF=pin-adapters.html#pin_out>pin_out</A> <A HREF=cto.html#cto>cto</A>'s inherit from pin_out_root.
 <P>
 <P>
+<a name="is_pin_in_out"></a>
 <a name="pin_in_out"></a>
 
 
 <HR>
 
 <H3>pin_in_out</H3>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept is_pin_in_out =
  requires {
@@ -116,7 +118,7 @@ In most cases a <A HREF=pin-adapters.html#pin_in_out>pin_in_out</A> is used as e
 or a <A HREF=pin-adapters.html#pin_oc>pin_oc</A>, but some communication protocols
 require a pin to be switched between <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A>.
 <P>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_in_out_root :
    box_root< bool >,
    simplex_root< bool >
@@ -129,13 +131,14 @@ All <A HREF=pin-adapters.html#pin_in>pin_in</A> <A HREF=cto.html#cto>cto</A>'s i
 <P>
 <P>
 <P>
+<a name="is_pin_oc"></a>
 <a name="pin_oc"></a>
 
 
 <HR>
 
 <H3>pin_oc</H3>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept is_pin_oc = requires {
       T::_pin_oc_marker;
@@ -160,7 +163,7 @@ pull-up resistor pulls the line low.
 This arrangement prevents electrical problems which would be caused
 when one chip drives the line low, and another drives it high.
 <P>
-<A HREF="../../library\pins/gf-pin.hpp" style="text-decoration:none">
+<A HREF="../../library/pins/gf-pin.hpp" style="text-decoration:none">
 <pre><code class="c++">struct pin_oc_root :
    box_root< bool >,
    duplex_root< bool >

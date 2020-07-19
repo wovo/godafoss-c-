@@ -6,7 +6,7 @@
 
 <body>
 <H2>pin adapters</H2>
-from <A HREF="../library\modifiers/gf-modifiers-pins.hpp">../library\modifiers/gf-modifiers-pins.hpp</A>
+from <A HREF="../library/modifiers/gf-modifiers-pins.hpp">modifiers/gf-modifiers-pins.hpp</A>
 
 
 <HR>
@@ -31,14 +31,14 @@ pin doesn't use any features beyond the ones of the adapted role.
 
 <H3>pin_in</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_pin_in =
       is_pin_in< T >
    || is_pin_in_out< T >
    || is_pin_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_pin_in T > = ...;
 </code></pre></A>
 <P>
@@ -54,14 +54,14 @@ which requires the pin to be either a <A HREF=pins.html#pin_in>pin_in</A> or a <
 
 <H3>pin_out</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_pin_out =
       is_pin_out< T >
    || is_pin_in_out< T >
    || is_pin_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_pin_out T > = ...;
 </code></pre></A>
 <P>
@@ -82,13 +82,13 @@ reach a high level.
 
 <H3>pin_in_out</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_pin_in_out =
       is_pin_in_out< T >
    || is_pin_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_pin_in_out T  > = ...;
 </code></pre></A>
 <P>
@@ -109,13 +109,13 @@ reach a high level.
 
 <H3>pin_oc</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_pin_oc =
       is_pin_in_out< T >
    || is_pin_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-pins.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_pin_oc T > = ...;
 </code></pre></A>
 <P>

@@ -40,9 +40,9 @@
 //
 // -----------------------------------------------------------------------------
 //
-// @define pin_in
+// @define is_pin_in
 // @section pin_in
-// @insert pin_in_concept
+// @insert is_pin_in
 //
 // A pin_in is a box< bool > cto that abstracts a single-pin read-only
 // interface to the world outside the target chip.
@@ -56,7 +56,7 @@
 //
 // @define pin_out
 // @section pin_out
-// @insert pin_out_concept
+// @insert is_pin_out
 //
 // A pin_in is a box< bool > cto that abstracts a single-pin write-only
 // interface to the world outside the target chip.
@@ -68,9 +68,9 @@
 //
 // -----------------------------------------------------------------------------
 //
-// @define pin_in_out
+// @define is_pin_in_out
 // @section pin_in_out
-// @insert pin_in_out_concept
+// @insert is_pin_in_out
 //
 // A pin_in_out is a box< bool > cto that abstracts a single-pin simplex
 // read-write interface to the world outside the target chip.
@@ -87,9 +87,9 @@
 //
 // -----------------------------------------------------------------------------
 //
-// @define pin_oc
+// @define is_pin_oc
 // @section pin_oc
-// @insert pin_oc_concept
+// @insert is_pin_oc
 //
 // A pin_oc is a box< bool > cto that abstracts a single-pin duplex
 // read-write interface to the world outside the target chip.
@@ -121,7 +121,7 @@
 //
 // =============================================================================
 
-// @quote pin_in_concept 7
+// @quote is_pin_in 7
 template< typename T >
 concept is_pin_in = requires {
       T::_pin_in_marker;
@@ -144,7 +144,7 @@ struct pin_in_root :
 //
 // =============================================================================
 
-// @quote pin_out_concept 6
+// @quote is_pin_out 6
 template< typename T >
 concept is_pin_out = requires {
       T::_pin_out_marker;
@@ -167,7 +167,7 @@ struct pin_out_root :
 //
 // =============================================================================
 
-// @quote pin_in_out_concept 7
+// @quote is_pin_in_out 7
 template< typename T >
 concept is_pin_in_out =
  requires {
@@ -191,7 +191,7 @@ struct pin_in_out_root :
 //
 // =============================================================================
 
-// @quote pin_oc_concept 6
+// @quote is_pin_oc 6
 template< typename T >
 concept is_pin_oc = requires {
       T::_pin_oc_marker;

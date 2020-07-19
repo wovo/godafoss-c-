@@ -32,7 +32,8 @@ private:
       uint8_t & d_in
    ){
       d_in = 0;
-      for( uint_fast8_t i = 0; i < bits; ++i ){
+      //for( uint_fast8_t i = 0; i < bits; ++i ){
+      loop< bits >([&]{
          mosi::write( ( d_out & ( 0x01 << ( bits - 1 ) ) ) != 0 );
          wait_half_period();
          sclk::write( 1 );
@@ -41,7 +42,7 @@ private:
          d_in = d_in << 1;
          d_in |= ( miso::read() ? 0x01 : 0x00 );
          sclk::write( 0 );
-      }
+      });
    }
 
    static void write_and_read(

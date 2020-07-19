@@ -18,7 +18,7 @@
 //
 // @title string
 // @define godafoss::string
-// @insert text
+// @insert string
 //
 // This is a fixed-maximum-size string.
 // It offers an alternative to std::string and raw 0-terminated char arrays.
@@ -122,7 +122,7 @@ public:
 //
 // =============================================================================
 
-// @quote text 2 ... }
+// @quote string 2 ... }
 template< std::size_t _maximum_length >
 struct string {
 

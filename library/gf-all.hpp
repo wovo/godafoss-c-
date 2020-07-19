@@ -136,6 +136,7 @@ namespace godafoss {
 #include "basics/gf-attributes.hpp"
 #include "basics/gf-shared-names.hpp"
 #include "basics/gf-ints.hpp"
+#include "basics/gf-loop.hpp"
 #include "basics/gf-passing.hpp"
 #include "basics/gf-random.hpp"
 #include "basics/gf-background.hpp"

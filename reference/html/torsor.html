@@ -1,0 +1,72 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<H2>torsor</H2>
+from <A HREF="../library/adts/gf-torsor.hpp">adts/gf-torsor.hpp</A>
+
+
+<HR>
+
+<a name="torsor"></a>
+<A HREF="../../library/adts/gf-torsor.hpp" style="text-decoration:none">
+<pre><code class="c++">template<
+   typename    _data_type,
+   _data_type  _zero
+>
+class torsor final {
+public:
+
+   // the type this torsor stores
+   using data_type = _data_type;
+
+   // the base (zero) value of this torsor
+   static constexpr data_type zero = _zero;
+ ... \\n };
+</code></pre></A>
+<P>
+The torsor<> template expresses and enforces the difference between
+relative and absolute (anchored) values.
+Much like a compile-time unit system like boost::units,
+torsor<> uses the type system
+to eliminate erroneous operations at compile-time.
+It can also help to make various interfaces simpler and more elegant
+by making the difference between relative and absolute
+values explicit in the type system.
+<P>
+For a value type that denotes a ratio scale value (a value
+for which addition yields a value on the same scale), the
+torsor of that (base) type is the corresponding interval scale
+(anchored) type.
+<P>
+The canonical example of a base and its torsor is distance
+(in the vector sense), and its torsor, location.
+Distances can be added or subtracted, which yields a distance.
+Locations can't be meaningfully added, but adding a location
+and a distance is meaningfull and yields a distance.
+Two locations can be subtracted, yielding a distance.
+<P>
+Whether a scale is a torsor or not has nothing to do with its
+unit: in a unit system (like SI) a basic (ration)
+type and its torsor have the same unit.
+<P>
+The operations on the torsor are limited to:
+<LI> default- or copy-consructing a torsor
+<LI> assigning a torsor (ssigns the base value)
+<LI> adding or subtracting a base type value (yields a torsor value)
+<LI> subtracting two torsors (yields a base type value)
+<LI> comparing torsors (compares their base values)
+<LI> printing a torsor (prints @ followed by its base type value)
+<P>
+The base type T of a torsor must have a constructor that
+accepts a (single) 0 argument.
+<P>
+All operations have the __attribute__((always_inline)),
+hence there is no need to bother with choosing for copy
+or reference parameter passing: all passing disappears.
+<P>
+
+</body>

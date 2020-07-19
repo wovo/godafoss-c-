@@ -6,7 +6,7 @@
 
 <body>
 <H2>port adapters</H2>
-from <A HREF="../library\modifiers/gf-modifiers-ports.hpp">../library\modifiers/gf-modifiers-ports.hpp</A>
+from <A HREF="../library/modifiers/gf-modifiers-ports.hpp">modifiers/gf-modifiers-ports.hpp</A>
 
 
 <HR>
@@ -34,14 +34,14 @@ port doesn't use any features beyond the ones of the adapted role.
 
 <H3>port_in</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_port_in =
       is_port_in< T >
    || is_port_in_out< T >
    || is_port_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_port_in T > = ...;
 </code></pre></A>
 <P>
@@ -58,14 +58,14 @@ or a port_oc.
 
 <H3>port_out</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_port_out =
       is_port_out< T >
    || is_port_in_out< T >
    || is_port_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_port_out T > = ...;
 </code></pre></A>
 <P>
@@ -86,13 +86,13 @@ reach a high level.
 
 <H3>port_in_out</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_port_in_out =
       is_port_in_out< T >
    || is_port_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_port_in_out T  > = ...;
 </code></pre></A>
 <P>
@@ -112,12 +112,12 @@ reach a high level.
 
 <H3>port_oc</H3>
 <P>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_port_oc =
    is_port_oc< T >;
 </code></pre></A>
-<A HREF="../../library\modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
+<A HREF="../../library/modifiers/gf-modifiers-ports.hpp" style="text-decoration:none">
 <pre><code class="c++">template< is_port_oc T  > = ...;
 </code></pre></A>
 <P>

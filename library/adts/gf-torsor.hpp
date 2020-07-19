@@ -4,13 +4,51 @@
 //
 // =============================================================================
 //
-// torsor<> expresses and enforces the difference between
-// relative and absolute (anchored) values
+// This file is part of godafoss (https://github.com/wovo/godafoss),
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright
+//    Wouter van Ooijen 2018-2020
+//
+// Distributed under the Boost Software License, Version 1.0.
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// =============================================================================
+
+// =============================================================================
+//
+// @title torsor<>
+// @define godafoss::torsor
+// @insert torsor
+//
+// The torsor<> template expresses and enforces the difference between
+// relative and absolute (anchored) values.
+// Much like a compile-time unit system like boost::units,
+// torsor<> uses the type system
+// to eliminate erroneous operations at compile-time.
+// It also helps to make interfaces simpler and more elegant
+// by making the difference between relative and absolute
+// values explicit in the type system.
 //
 // For a value type that denotes a ratio scale value (a value
 // for which addition yields a value on the same scale), the
 // torsor of that (base) type is the corresponding interval scale
 // (anchored) type.
+//
+// The canonical example of a base and its torsor is
+// @italic distance
+// (in the vector sense), and its torsor,
+// @italic location.
+//
+// Distances can be added or subtracted, which yields a distance.
+// Locations can't be meaningfully added, but adding a location
+// and a distance is meaningfull and yields a distance.
+// Two locations can be subtracted, yielding a distance.
+//
+// Whether a scale is a torsor or not has nothing to do with its
+// unit: in a unit system (like SI) a basic (ration)
+// type and its torsor have the same unit.
 //
 // The operations on the torsor are limited to:
 // - default- or copy-consructing a torsor
@@ -28,22 +66,9 @@
 // or reference parameter passing: all passing disappears.
 //
 // =============================================================================
-//
-// This file is part of godafoss (https://github.com/wovo/godafoss),
-// a C++ library for close-to-the-hardware programming.
-//
-// Copyright
-//    Wouter van Ooijen 2018-2020
-//
-// Distributed under the Boost Software License, Version 1.0.
-// (See the accompanying LICENSE_1_0.txt in the root directory of this
-// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-// =============================================================================
 
 
 namespace torsor_concepts {
-
 
 // concept for the ( torsor - value ) operators
 template< typename V, typename W >
@@ -112,7 +137,7 @@ concept can_be_printed_to
 }; // namespace torsor_concepts
 
 
-
+// @quote torsor 13 ... \\n };
 template<
    typename    _data_type,
    _data_type  _zero
@@ -120,17 +145,17 @@ template<
 class torsor final {
 public:
 
-   // torsors can access each others private parts
-   template< typename other_type, other_type other_zero >
-   friend class torsor;
-
    // the type this torsor stores
    using data_type = _data_type;
 
-   // the root (zero) of this torsor
+   // the base (zero) value of this torsor
    static constexpr data_type zero = _zero;
 
 private:
+
+   // torsors can access each others private parts
+   template< typename other_type, other_type other_zero >
+   friend class torsor;
 
    // the stored base type value
    data_type stored_value = zero;
@@ -163,7 +188,7 @@ private:
 public:
 
    // Create a torsor with the zero (anchor) value.
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr torsor(){}
 
    // Create a torsor from another torsor,
@@ -172,7 +197,7 @@ public:
    requires requires( other_type v ){
       torsor( v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr torsor( const torsor< other_type, other_zero > & right ):
       stored_value( right.value() )
    {}
@@ -183,7 +208,7 @@ public:
    requires requires( torsor t, other_type v ){
       t.set( v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    torsor & operator=( const torsor< other_type, other_zero > & right ){
       this->set( right.value() );
       return *this;
@@ -203,7 +228,7 @@ public:
    requires requires( data_type v ) {
       this->set( + v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    {
       return
          torsor< decltype( + this->value() ), _zero >(
@@ -218,7 +243,7 @@ public:
    requires requires( torsor t, data_type v ) {
       t.set( t.value() + v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator+( const other_type & right ) const {
       return
          torsor< decltype( this->value() + right ), this->zero >(
@@ -233,7 +258,7 @@ public:
    requires requires( data_type v ) {
       set( value() + v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    torsor & operator+=( const other_type & right ){
       this->set( this->value() + right );
       return *this;
@@ -253,7 +278,7 @@ public:
    requires requires( data_type v ) {
       this->set( - v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    {
       return
          torsor< decltype( - this->value() ), _zero >(
@@ -268,7 +293,7 @@ public:
    requires requires( torsor< _data_type, _zero> t, other_type v ) {
       t.set( t.value() - v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator-( const other_type & right ) const {
       return
          torsor< decltype( this->value() - right ), this->zero >(
@@ -300,7 +325,7 @@ public:
    requires requires( data_type v ) {
       set( value() - v );
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    torsor & operator-=( const other_type & right ){
       this->set( this->value() - right );
       return *this;
@@ -323,7 +348,7 @@ public:
    ){
       left.value == right.value();
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator==(
       const torsor< other_type, other_zero > & right
    ) const {
@@ -342,7 +367,7 @@ public:
    ){
       left.value != right.value();
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator==(
       const torsor< other_type, other_zero > & right
    ) const {
@@ -368,7 +393,7 @@ public:
    ){
       left.value == right.value();
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator>(
       const torsor< other_type, other_zero > & right
    ) const {
@@ -387,7 +412,7 @@ public:
    ){
       left.value == right.value();
    }
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator>=(
       const torsor< other_type, other_zero > & right
    ) const {
@@ -408,7 +433,7 @@ public:
    // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_smaller< T, U >
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator<( const torsor< U, M > & right ) const {
       return value < right.value;
    }
@@ -420,7 +445,7 @@ public:
    // The result is te result of that comparison.
    template< typename U >
    requires torsor_concepts::can_be_compared_smaller_or_equal< T, U >
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr auto operator<=( const torsor< U, M > & right ) const {
       return value <= right.value;
    }
@@ -432,7 +457,7 @@ public:
    // ==========================================================================
 
    // stopgap because friend doesn't seem to work properly for operator+
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    constexpr explicit torsor( const T & value, int n ):
       value( value )
    {
@@ -447,7 +472,7 @@ public:
    // and with the value of that addition.
    template< typename U >
    requires torsor_concepts::can_be_added_with_value< U, T >
-   __attribute__(( always_inline ))
+   GODAFOSS_INLINE
    friend constexpr auto operator+( const U & left, const torsor & right ){
       return torsor< decltype( left + right.value ), M >(
         left + right.value, 42 );

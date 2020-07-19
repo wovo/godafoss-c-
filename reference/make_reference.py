@@ -15,6 +15,7 @@
 #
 # ==============================================================================
 
+# add external reference for torsor
 # text bij de adapters loopt nog niet helemaal
 # voorbeelden bij de adapters!
 # SPI dummy doesn't work, make tests, check WS2812 & MAX7219
@@ -216,6 +217,20 @@ class text_line:
             ( make_file_name( title ), name, long_name ) )
       return s
 
+class text_italic:
+
+   def __init__( self, s ):
+      self.s = s[ : ]
+
+   def markdown( self ):
+      return "*%s*" % self.s
+
+   def rest( self ):
+      return "*%s*" % self.s
+
+   def html( self ):
+      return "<I>%s</I>" % self.s
+
 class text_bar:
 
    def __init__( self ):
@@ -409,6 +424,9 @@ class item:
 
          elif line.strip().startswith( "@bar" ):
             self.content.append( text_bar())
+
+         elif line.strip().startswith( "@italic " ):
+            self.content.append( text_italic( after( line, "@italic " )))
 
          elif line.strip().startswith( "@noref " ):
             self.content.append( text_line( after( line, "@noref " ), self, global_defines, False ))

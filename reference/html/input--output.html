@@ -16,7 +16,7 @@
 <a name="is_simplex"></a>
 <a name="simplex"></a>
 <H2>input, output</H2>
-from <A HREF="../library\item/gf-item.hpp">../library\item/gf-item.hpp</A>
+from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
 
 
 <HR>
@@ -54,7 +54,7 @@ A duplex <A HREF=box--pipe.html#box>box</A> can, at any time, be both read and w
 <HR>
 
 <H3>input</H3>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_input = requires {
       T::_input_marker;
@@ -63,7 +63,7 @@ concept is_input = requires {
    }
    && is_item< T, VT >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct input_root :
    item_root< VT >
@@ -82,7 +82,7 @@ a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.h
 <HR>
 
 <H3>output</H3>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_output = requires (
    typename T::value_type v
@@ -91,7 +91,7 @@ concept is_output = requires (
       { T::write( v ) }  -> std::same_as< void >;
       { T::flush()    }  -> std::same_as< void >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct output_root :
    item_root< VT >
@@ -108,7 +108,7 @@ a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.h
 <HR>
 
 <H3>input_output</H3>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_input_output = requires (
       typename T::value_type v
@@ -121,7 +121,7 @@ concept is_input_output = requires (
    }
    && is_item< T, VT >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct input_output_root :
    input_root< VT >,
@@ -143,14 +143,14 @@ An input_output is an <A HREF=item.html#item>item</A> that is both an input and 
 A duplex <A HREF=item.html#item>item</A> is an input_output that can function both as
 an input and as an output at the same time.
 <P>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_duplex = requires {
       T::_duplex_marker;
    }
    && is_input_output< T, VT >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct duplex_root :
    input_output_root< VT >
@@ -165,7 +165,7 @@ which can be input or output.
 <a name="direction_set_input"></a>
 <a name="direction_set_output"></a>
 <a name="direction_flush"></a>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_simplex = requires {
       T::_simplex_marker;
@@ -175,7 +175,7 @@ concept is_simplex = requires {
    }
    && is_input_output< T, VT >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct simplex_root :
    input_output_root< VT >

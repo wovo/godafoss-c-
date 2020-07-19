@@ -7,13 +7,13 @@
 <body>
 <a name="GODAFOSS_INLINE"></a>
 <H2>function and class attributes</H2>
-from <A HREF="../library\basics/gf-attributes.hpp">../library\basics/gf-attributes.hpp</A>
+from <A HREF="../library/basics/gf-attributes.hpp">basics/gf-attributes.hpp</A>
 
 
 <HR>
 
 <P>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">#define GODAFOSS_INLINE ...
 </code></pre></A>
 GODAFOSS_INLINE forces a function to be inline.
@@ -26,7 +26,7 @@ This serves (only) to reduce code size and execution time.
 <HR>
 
 <a name="GODAFOSS_NO_INLINE"></a>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">#define GODAFOSS_NO_INLINE ...
 </code></pre></A>
 GODAFOSS_NO_INLINE forces a function to be not inline.
@@ -39,7 +39,7 @@ This can be important to get predictable timing.
 <HR>
 
 <a name="GODAFOSS_NO_RETURN"></a>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">#define GODAFOSS_NO_RETURN ...
 </code></pre></A>
 GODAFOSS_NORETURN indicates that a function will not return.
@@ -51,7 +51,7 @@ This can reduce code size.
 <HR>
 
 <a name="GODAFOSS_IN_RAM"></a>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">#define GODAFOSS_IN_RAM ...
 </code></pre></A>
 GODAFOSS_IN_RAM places the function body in RAM (instead of FLASH).
@@ -63,7 +63,7 @@ or faster execution.
 <HR>
 
 <a name="GODAFOSS_RUN_ONCE"></a>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">#define GODAFOSS_RUN_ONCE ...
 </code></pre></A>
 GODAFOSS_RUN_ONCE causes the remainder of the function (the part after
@@ -74,7 +74,7 @@ the macro) to be executed only once.
 <HR>
 
 <a name="not_constructible"></a>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">struct not_constructible { ... };
 </code></pre></A>
 Inheriting from not_constructible makes it impossible to create objects
@@ -85,7 +85,7 @@ of that class.
 <HR>
 
 <a name="not_copyable"></a>
-<A HREF="../../library\basics/gf-attributes.hpp" style="text-decoration:none">
+<A HREF="../../library/basics/gf-attributes.hpp" style="text-decoration:none">
 <pre><code class="c++">struct not_copyable { ... };
 </code></pre></A>
 Inheriting from not_copyable makes it impossible to copy an object

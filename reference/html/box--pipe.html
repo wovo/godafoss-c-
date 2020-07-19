@@ -10,7 +10,7 @@
 <a name="is_pipe"></a>
 <a name="pipe"></a>
 <H2>box, pipe</H2>
-from <A HREF="../library\item/gf-item.hpp">../library\item/gf-item.hpp</A>
+from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
 
 
 <HR>
@@ -27,14 +27,14 @@ a pipe behaves like a sequence of values.
 <HR>
 
 <H3>box</H3>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_box = requires {
       T::_box_marker;
    }
    && is_item< T, VT >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct box_root :
    item_root< VT >
@@ -55,14 +55,14 @@ Writing to an <A HREF=item.html#item>item</A> overwrites its old value in the bo
 <HR>
 
 <H3>pipe</H3>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_pipe = requires {
       T::_pipe_marker;
    }
    && is_item< T, VT >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct pipe_root :
    item_root< VT >

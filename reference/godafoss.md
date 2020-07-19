@@ -7,7 +7,7 @@
 
 ## background processing
 
-from [../library\basics/gf-background.hpp](../library\basics/gf-background.hpp)
+from [basics/gf-background.hpp](../library/basics/gf-background.hpp)
 
 
 ---------------------------------
@@ -99,7 +99,7 @@ int main(){
 
 ## box, pipe
 
-from [../library\item/gf-item.hpp](../library\item/gf-item.hpp)
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
@@ -179,7 +179,7 @@ Writing to a pipe adds a value to the sequnce.
 
 ## buffered
 
-from [../library\item/gf-item-buffered.hpp](../library\item/gf-item-buffered.hpp)
+from [item/gf-item-buffered.hpp](../library/item/gf-item-buffered.hpp)
 
 
 ---------------------------------
@@ -206,7 +206,7 @@ struct buffered ... ;
 
 ## cto
 
-from [../library\item/gf-item.hpp](../library\item/gf-item.hpp)
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
@@ -273,7 +273,7 @@ all cto's inherit (in most cases indirectly) from this struct.
 
 ## date and time
 
-from [../library\adts/gf-date-and-time.hpp](../library\adts/gf-date-and-time.hpp)
+from [adts/gf-date-and-time.hpp](../library/adts/gf-date-and-time.hpp)
 
 
 ---------------------------------
@@ -329,7 +329,7 @@ The operator<< prints a data_and_time in the format YY-MM-DD HH:MM.SS dW.
 
 ## direct
 
-from [../library\item/gf-item-direct.hpp](../library\item/gf-item-direct.hpp)
+from [item/gf-item-direct.hpp](../library/item/gf-item-direct.hpp)
 
 
 ---------------------------------
@@ -391,7 +391,7 @@ int main(){
 
 ## function and class attributes
 
-from [../library\basics/gf-attributes.hpp](../library\basics/gf-attributes.hpp)
+from [basics/gf-attributes.hpp](../library/basics/gf-attributes.hpp)
 
 
 ---------------------------------
@@ -482,7 +482,7 @@ of that class.
 
 ## hd44780
 
-from [../library\chips/gf-hd44780.hpp](../library\chips/gf-hd44780.hpp)
+from [chips/gf-hd44780.hpp](../library/chips/gf-hd44780.hpp)
 
 
 ---------------------------------
@@ -529,7 +529,7 @@ bla blas
 
 ## hx711
 
-from [../library\chips/gf-hx711.hpp](../library\chips/gf-hx711.hpp)
+from [chips/gf-hx711.hpp](../library/chips/gf-hx711.hpp)
 
 
 ---------------------------------
@@ -582,7 +582,7 @@ is first (automatically) powered up.
 
 ## inherit_*
 
-from [../library\item/gf-item-inherit.hpp](../library\item/gf-item-inherit.hpp)
+from [item/gf-item-inherit.hpp](../library/item/gf-item-inherit.hpp)
 
 
 ---------------------------------
@@ -675,7 +675,7 @@ functions of the decorated **[item](#item)**.
 
 ## input, output
 
-from [../library\item/gf-item.hpp](../library\item/gf-item.hpp)
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
@@ -871,7 +871,7 @@ to get an immediate effect.
 
 ## ints specified by number of bits
 
-from [../library\basics/gf-ints.hpp](../library\basics/gf-ints.hpp)
+from [basics/gf-ints.hpp](../library/basics/gf-ints.hpp)
 
 
 ---------------------------------
@@ -917,7 +917,7 @@ bla bla
 
 ## invert
 
-from [../library\item/gf-item-invert.hpp](../library\item/gf-item-invert.hpp)
+from [item/gf-item-invert.hpp](../library/item/gf-item-invert.hpp)
 
 
 ---------------------------------
@@ -947,7 +947,7 @@ struct invert< T > ... ;
 
 ## item
 
-from [../library\item/gf-item.hpp](../library\item/gf-item.hpp)
+from [item/gf-item.hpp](../library/item/gf-item.hpp)
 
 
 ---------------------------------
@@ -995,7 +995,7 @@ All items inherit (in most cases indirectly) from the struct item_root.
 
 ## item adapters
 
-from [../library\item/gf-item-adapters.hpp](../library\item/gf-item-adapters.hpp)
+from [item/gf-item-adapters.hpp](../library/item/gf-item-adapters.hpp)
 
 
 ---------------------------------
@@ -1092,7 +1092,7 @@ which requires the **[item](#item)** to an **[input_output](#input_output)**.
 
 ## no_inline
 
-from [../library\item/gf-item-no-inline.hpp](../library\item/gf-item-no-inline.hpp)
+from [item/gf-item-no-inline.hpp](../library/item/gf-item-no-inline.hpp)
 
 
 ---------------------------------
@@ -1116,7 +1116,7 @@ using no_inline = ... ;
 
 ## passing a readonly parameter
 
-from [../library\basics/gf-passing.hpp](../library\basics/gf-passing.hpp)
+from [basics/gf-passing.hpp](../library/basics/gf-passing.hpp)
 
 
 ---------------------------------
@@ -1165,7 +1165,7 @@ int main(){
 
 ## pin adapters
 
-from [../library\modifiers/gf-modifiers-pins.hpp](../library\modifiers/gf-modifiers-pins.hpp)
+from [modifiers/gf-modifiers-pins.hpp](../library/modifiers/gf-modifiers-pins.hpp)
 
 
 ---------------------------------
@@ -1297,7 +1297,7 @@ which requires the pin to a **[pin_in_out](#pin_in_out)** or a **[pin_oc](#pin_o
 
 ## pins
 
-from [../library\pins/gf-pin.hpp](../library\pins/gf-pin.hpp)
+from [pins/gf-pin.hpp](../library/pins/gf-pin.hpp)
 
 
 ---------------------------------
@@ -1320,6 +1320,7 @@ When the phyiscal pin is active-low, an **[invert](#invert)** decrorator
 is used to create the internal active-high representation of the pin.
 
 
+<a name="is_pin_in"></a>
 <a name="pin_in"></a>
 
 
@@ -1387,6 +1388,7 @@ struct pin_out_root :
 All **[pin_out](#pin_out)** **[cto](#cto)**'s inherit from pin_out_root.
 
 
+<a name="is_pin_in_out"></a>
 <a name="pin_in_out"></a>
 
 
@@ -1426,6 +1428,7 @@ All **[pin_in](#pin_in)** **[cto](#cto)**'s inherit from pin_in_out_root.
 
 
 
+<a name="is_pin_oc"></a>
 <a name="pin_oc"></a>
 
 
@@ -1477,7 +1480,7 @@ All **[pin_in](#pin_in)** **[cto](#cto)**'s inherit from pin_oc_root.
 
 ## port adapters
 
-from [../library\modifiers/gf-modifiers-ports.hpp](../library\modifiers/gf-modifiers-ports.hpp)
+from [modifiers/gf-modifiers-ports.hpp](../library/modifiers/gf-modifiers-ports.hpp)
 
 
 ---------------------------------
@@ -1615,7 +1618,7 @@ all pins at once.
 
 ## random
 
-from [../library\basics/gf-random.hpp](../library\basics/gf-random.hpp)
+from [basics/gf-random.hpp](../library/basics/gf-random.hpp)
 
 
 ---------------------------------
@@ -1689,7 +1692,7 @@ a truely random source) to start a truely random random sequence.
 
 ## specific pin adapters
 
-from [../library\pins/gf-pin-adapters.hpp](../library\pins/gf-pin-adapters.hpp)
+from [pins/gf-pin-adapters.hpp](../library/pins/gf-pin-adapters.hpp)
 
 
 ---------------------------------
@@ -1766,7 +1769,7 @@ struct pin_oc_from_pin_oc : ... {};
 
 ## specific port adapters
 
-from [../library\ports/gf-port-adapters.hpp](../library\ports/gf-port-adapters.hpp)
+from [ports/gf-port-adapters.hpp](../library/ports/gf-port-adapters.hpp)
 
 
 ---------------------------------
@@ -1841,7 +1844,7 @@ struct port_oc_from_port_oc : ... {};
 
 ## string
 
-from [../library\adts/gf-string.hpp](../library\adts/gf-string.hpp)
+from [adts/gf-string.hpp](../library/adts/gf-string.hpp)
 
 
 ---------------------------------
@@ -1914,6 +1917,77 @@ The append function, the operator+= and the operator<< all append a
 single character to the string. If the string is already at its maximum
 length the character is ignored.
 
+
+------------------------------
+------------------------------
+
+## torsor<>
+
+from [adts/gf-torsor.hpp](../library/adts/gf-torsor.hpp)
+
+
+---------------------------------
+
+<a name="torsor"></a>
+```c++
+template<
+   typename    _data_type,
+   _data_type  _zero
+>
+class torsor final {
+public:
+
+   // the type this torsor stores
+   using data_type = _data_type;
+
+   // the base (zero) value of this torsor
+   static constexpr data_type zero = _zero;
+ ... \\n };
+```
+
+The torsor<> template expresses and enforces the difference between
+relative and absolute (anchored) values.
+Much like a compile-time unit system like boost::units,
+torsor<> uses the type system
+to eliminate erroneous operations at compile-time.
+It also helps to make interfaces simpler and more elegant
+by making the difference between relative and absolute
+values explicit in the type system.
+
+For a value type that denotes a ratio scale value (a value
+for which addition yields a value on the same scale), the
+torsor of that (base) type is the corresponding interval scale
+(anchored) type.
+
+The canonical example of a base and its torsor is
+*distance*
+(in the vector sense), and its torsor,
+*location.*
+
+Distances can be added or subtracted, which yields a distance.
+Locations can't be meaningfully added, but adding a location
+and a distance is meaningfull and yields a distance.
+Two locations can be subtracted, yielding a distance.
+
+Whether a scale is a torsor or not has nothing to do with its
+unit: in a unit system (like SI) a basic (ration)
+type and its torsor have the same unit.
+
+The operations on the torsor are limited to:
+- default- or copy-consructing a torsor
+- assigning a torsor (ssigns the base value)
+- adding or subtracting a base type value (yields a torsor value)
+- subtracting two torsors (yields a base type value)
+- comparing torsors (compares their base values)
+- printing a torsor (prints @ followed by its base type value)
+
+The base type T of a torsor must have a constructor that
+accepts a (single) 0 argument.
+
+All operations have the __attribute__((always_inline)),
+hence there is no need to bother with choosing for copy
+or reference parameter passing: all passing disappears.
+
 <a name="xy"></a>
 
 ------------------------------
@@ -1921,7 +1995,7 @@ length the character is ignored.
 
 ## xy<>
 
-from [../library\adts/gf-xy.hpp](../library\adts/gf-xy.hpp)
+from [adts/gf-xy.hpp](../library/adts/gf-xy.hpp)
 
 
 ---------------------------------
@@ -1937,7 +2011,7 @@ struct xy final { ... };
 The xy< xy_value_type > ADT class template is a pair of t
 wo xy_value_type values named x and y.
 It is used for distances in an xy plane, like on a window or terminal.
-For a location in an xy plane the torsor< xy< T > > is used.
+For a location in an xy plane the **[torsor](#torsor)**< xy< T > > is used.
 
 The xy<> ADT supports
 - constructors: default (initializes to zero),

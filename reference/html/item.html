@@ -8,7 +8,7 @@
 <a name="is_item"></a>
 <a name="item"></a>
 <H2>item</H2>
-from <A HREF="../library\item/gf-item.hpp">../library\item/gf-item.hpp</A>
+from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
 
 
 <HR>
@@ -27,7 +27,7 @@ A summary of terms:
    <LI> <A HREF=input--output.html#duplex>duplex</A>: both <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A> at the same time
    <LI> <A HREF=input--output.html#simplex>simplex</A>: both <A HREF=input--output.html#input>input</A> and <A HREF=input--output.html#output>output</A>, but not at the same time
 <P>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_item = requires {
       T::_item_marker;
@@ -40,7 +40,7 @@ An item is a <A HREF=cto.html#cto>cto</A> that holds one (or, in case of a <A HR
 data elements of a specific type.
 <P>
 <a name="value_type"></a>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename VT >
 struct item_root : cto_root {
    static const bool _item_marker = true;

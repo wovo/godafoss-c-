@@ -22,8 +22,9 @@ GODAFOSS_NO_RETURN void walk(){
    port::init();
    interval::init();
    for(;;){
+      const typename port::value_type one = 0x01;
       for( uint_fast8_t  i = 0; i < port::n_pins; ++i ){
-         port::write( (typename port::value_type) ( 0x01 << i ) );
+         port::write( one << i );
          interval::wait();
       }
    }
@@ -35,12 +36,13 @@ GODAFOSS_NO_RETURN void kitt(){
    port::init();
    interval::init();
    for(;;){
+      const typename port::value_type one = 0x01;
       for( uint_fast8_t  i = 0; i < port::n_pins; ++i ){
-         port::write( (typename port::value_type) ( 0x01 << i ) );
+         port::write( one << i );
          interval::wait();
       }
       for( uint_fast8_t  i = port::n_pins - 2; i > 0; --i ){
-         port::write( (typename port::value_type) ( 0x01 << i ) );
+         port::write( one << i );
          interval::wait();
       }
    }

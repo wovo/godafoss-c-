@@ -6,7 +6,7 @@
 
 <body>
 <H2>item adapters</H2>
-from <A HREF="../library\item/gf-item-adapters.hpp">../library\item/gf-item-adapters.hpp</A>
+from <A HREF="../library/item/gf-item-adapters.hpp">item/gf-item-adapters.hpp</A>
 
 
 <HR>
@@ -29,13 +29,13 @@ adapted role, but also to ensure that the code that uses the adapted
 
 <H3>item_input</H3>
 <P>
-<A HREF="../../library\item/gf-item-adapters.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_input =
    is_input< T >
    || is_input_output< T >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item-adapters.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_input T >
 struct item_input ... ;
 </code></pre></A>
@@ -52,13 +52,13 @@ which requires the <A HREF=item.html#item>item</A> to be either an <A HREF=input
 
 <H3>item_output</H3>
 <P>
-<A HREF="../../library\item/gf-item-adapters.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_output =
    is_output< T >
    || is_input_output< T >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item-adapters.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_output T >
 struct item_output ... ;
 </code></pre></A>
@@ -75,12 +75,12 @@ which requires the <A HREF=item.html#item>item</A> to be either an <A HREF=input
 
 <H3>item_input_output</H3>
 <P>
-<A HREF="../../library\item/gf-item-adapters.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept can_input_output =
    is_input_output< T >;
 </code></pre></A>
-<A HREF="../../library\item/gf-item-adapters.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item-adapters.hpp" style="text-decoration:none">
 <pre><code class="c++">template< can_input_output T >
 struct item_input_output ... ;
 </code></pre></A>

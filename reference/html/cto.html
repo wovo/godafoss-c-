@@ -8,7 +8,7 @@
 <a name="is_cto"></a>
 <a name="cto"></a>
 <H2>cto</H2>
-from <A HREF="../library\item/gf-item.hpp">../library\item/gf-item.hpp</A>
+from <A HREF="../library/item/gf-item.hpp">item/gf-item.hpp</A>
 
 
 <HR>
@@ -49,7 +49,7 @@ For more complex cto's the CRTP pattern is used so the root can
 provide both base properties and enrichment based on the provided
 implementation.
 <P>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T >
 concept is_cto = requires {
    T::_cto_marker;
@@ -59,7 +59,7 @@ concept is_cto = requires {
 <P>
 A cto has a static init() function that can be called without arguments.
 <P>
-<A HREF="../../library\item/gf-item.hpp" style="text-decoration:none">
+<A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">struct cto_root {
    static const bool _cto_marker = true;
 };

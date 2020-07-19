@@ -42,6 +42,7 @@ HEADERS           += gf-all.hpp
 HEADERS           += basics/gf-attributes.hpp
 HEADERS           += basics/gf-shared-names.hpp
 HEADERS           += basics/gf-ints.hpp
+HEADERS           += basics/gf-loop.hpp
 HEADERS           += basics/gf-passing.hpp
 HEADERS           += basics/gf-random.hpp
 HEADERS           += basics/gf-background.hpp
