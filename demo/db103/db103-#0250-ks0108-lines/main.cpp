@@ -5,7 +5,7 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using uart    = target::uart<>;
 
-using data = gf::port_oc_from< 
+using data = gf::port_oc_from_pins<
    target::scl,
    target::sda,
    target::p0_6,
@@ -20,7 +20,7 @@ using cd   = target::p1_8;
 using e    = target::p1_9;
 using lcd  = gf::ks0108_data_cs1_cs2_cd_e_timing<
    data, cs1, cs2, cd, e, timing >;
-   
+
 int main( void ){
    //gf::demo::random_lines2< lcd, timing::ms< 200 > > ();
       gf::ostream< gf::formatter< uart > > cout;
@@ -33,4 +33,4 @@ int main( void ){
 	   timing::ms< 200 >::wait();
 	   cout << ++n << "\n";
    }
-}  
+}

@@ -62,7 +62,7 @@ concept can_pin_out_from_list =
 template< typename first, typename... tail >
    requires can_pin_out_from< first >
          && can_pin_out_from_list< tail... >
-struct all< first, tail... > :
+struct all_pins:
    pin_out_root,
    _pin_out_from_pins< first, tail... >
 {};

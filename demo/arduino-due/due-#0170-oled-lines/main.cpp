@@ -22,6 +22,6 @@ using i2c_bus = gf::i2c_bus_bb_scl_sda<
 using oled = gf::oled< i2c_bus >;
 
 int main( void ){
-//   gf::demo::random_lines< oled, timing::ms< 200 > > ();
+   gf::demo::random_lines2< oled, timing::ms< 200 > > ();
 }
 

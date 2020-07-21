@@ -258,7 +258,7 @@ struct NAME {                                               \
                                                             \
 template< typename ostream >                                \
 ostream & operator<<( ostream & lhs, const NAME & rhs ){    \
-   ostream::base_type::format.FIELD = rhs.v;	            \
+   ostream::base_type::format.FIELD = rhs.v;	               \
    return lhs;                                              \
 }
 
@@ -310,7 +310,8 @@ struct ostream {
    }
 
    template< typename V >
-   auto & write( V v ){
+      requires requires( V v ){ T::write( v ); }
+   auto & GODAFOSS_INLINE write( const V & v ){
       T::write( v );
       return *this;
    }
@@ -321,6 +322,9 @@ struct ostream {
 
 //template< is_ostream ostream, typename T >
 template< typename ostream, typename T >
+   requires requires( ostream S, T v ){
+      { S.write( v ) };
+   }
 auto & operator<<( ostream & stream, T v ){
    return stream.write( v );
 }

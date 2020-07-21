@@ -34,6 +34,9 @@
 #SEARCH += /usr/arm-none-eabi/include/c++/10.1.0
 #SEARCH += /usr/arm-none-eabi/include/c++/10.1.0/arm-none-eabi
 
+# used by some tests
+SEARCH            += $(GODAFOSS)/../Catch2/include
+
 SEARCH            += $(GODAFOSS)/library
 
 HEADERS           += godafoss.hpp
@@ -84,6 +87,7 @@ HEADERS           += ports/gf-port-demos.hpp
 HEADERS           += modifiers/gf-modifiers-pins.hpp
 HEADERS           += modifiers/gf-modifiers-ports.hpp
 
+HEADERS           += timing/gf-timing-duration.hpp
 HEADERS           += timing/gf-timing-wait.hpp
 HEADERS           += timing/gf-timing-clock.hpp
 HEADERS           += timing/gf-slow-down.hpp

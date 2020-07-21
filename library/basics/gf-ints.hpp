@@ -42,6 +42,111 @@
 // =============================================================================
 
 
+// =============================================================================
+//
+// very limited larger unsigned integers
+//
+// The provided functionality is exactly enough for ports,
+// but probably not for anything else.
+//
+// =============================================================================
+
+template< typename T, int N >
+struct big_uint {
+private:
+
+   T data[ N ];
+
+public:
+
+   constexpr big_uint(){}
+
+   constexpr big_uint( const big_uint & rhs ){
+      *this = rhs;
+   }
+
+   constexpr big_uint( uint_fast64_t rhs ){
+      for( int i = 0; i < N; ++i ){
+         data[ i ] = rhs & std::numeric_limits< T >::max();
+         rhs = rhs >> ( 4 * sizeof( T ));
+         rhs = rhs >> ( 4 * sizeof( T ));
+      }
+   }
+
+   constexpr big_uint & operator=( const big_uint & rhs ){
+      for( int i = 0; i < N; ++i ){
+         data[ i ] = rhs.data[ i ];
+      }
+      return *this;
+   }
+
+   constexpr bool operator==( const big_uint & rhs ) const {
+      for( int i = 0; i < N; ++i ){
+         if( data[ i ] != rhs.data[ i ] ){
+            return false;
+         }
+      }
+      return true;
+   }
+
+   constexpr big_uint operator&( const big_uint & rhs ) const {
+      big_uint result;
+      for( int i = 0; i < N; ++i ){
+         result.data[ i ] = data[ i ] & rhs.data[ i ];
+      }
+      return result;
+   }
+
+   constexpr big_uint operator|( const big_uint & rhs ) const {
+      big_uint result;
+      for( int i = 0; i < N; ++i ){
+         result.data[ i ] = data[ i ] | rhs.data[ i ];
+      }
+      return result;
+   }
+
+   constexpr big_uint operator<<( int n ) const {
+      big_uint result( *this );
+      for( int shifts = 0; shifts < n; ++shifts ){
+         T last = 0;
+         for( int i = 0; i < N; ++i ){
+            T shifted = result.data[ i ] << 1;
+            constexpr T mask = ((T) 0x01 ) << ( 8 * sizeof( T ) - 1 );
+            if( ( last & mask ) != 0 ){
+               shifted |= 0x01;
+            }
+            last = result.data[ i ];
+            result.data[ i ] = shifted;
+         }
+      }
+      return result;
+   }
+
+   constexpr big_uint operator>>( int n ) const {
+      big_uint result( *this );
+      for( int shifts = 0; shifts < n; ++shifts ){
+         T last = 0;
+         for( int i = N - 1; i >= 0; --i ){
+            T shifted = result.data[ i ] << 1;
+            constexpr T mask = ((T) 0x01 ) << ( 8 * sizeof( T ) - 1 );
+            if( ( last & 0x01 ) != 0 ){
+               shifted |= mask;
+            }
+            last = result.data[ i ];
+            result.data[ i ] = shifted;
+         }
+      }
+      return result;
+   }
+
+};
+
+
+// =============================================================================
+//
+//
+// =============================================================================
+
 // if no exact match, get something bigger
 template< uint64_t n > struct _uint_bits_fast {
    typedef typename _uint_bits_fast< n + 1 >::type type;
@@ -57,7 +162,7 @@ template< uint64_t n > struct uint_bits {
 
    // nothing bigger available than uint_fast64_t
    static_assert(
-      n <= 8 * sizeof( uint_fast64_t ),
+      n <= 4 * 8 * sizeof( uint_fast64_t ),
       "no unsigned integer type is large enough"
    );
 
@@ -77,6 +182,10 @@ template< uint64_t n > struct uint_bits {
 };
 
 
+// =============================================================================
+//
+// _uint_bits_fast<>
+//
 // =============================================================================
 
 template<> struct _uint_bits_fast< 8 * sizeof( uint_fast8_t ) > {
@@ -101,7 +210,21 @@ template<> struct _uint_bits_fast< 8 * sizeof( uint_fast64_t ) > {
 };
 #endif
 
+template<> struct _uint_bits_fast< 2 * 8 * sizeof( uint_fast64_t ) > {
+   typedef big_uint< uint_fast64_t, 2 >  type;
+};
+
+template<> struct _uint_bits_fast< 4 * 8 * sizeof( uint_fast64_t ) > {
+   typedef big_uint< uint_fast64_t, 4 >  type;
+};
+
+
 // =============================================================================
+//
+// _uint_bits_least<>
+//
+// =============================================================================
+
 
 template<> struct _uint_bits_least< 8 * sizeof( uint_least8_t ) > {
    typedef uint_least8_t type;
@@ -124,3 +247,13 @@ template<> struct _uint_bits_least< 8 * sizeof( uint_least64_t ) > {
    typedef uint_least64_t type;
 };
 #endif
+
+template<> struct _uint_bits_least< 2 * 8 * sizeof( uint_fast64_t ) > {
+   typedef big_uint< uint_fast64_t, 2 >  type;
+};
+
+template<> struct _uint_bits_least< 4 * 8 * sizeof( uint_fast64_t ) > {
+   typedef big_uint< uint_fast64_t, 4 >  type;
+};
+
+

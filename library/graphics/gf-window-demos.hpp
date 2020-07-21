@@ -1,6 +1,22 @@
 
 namespace demo {
 
+template< typename w, typename tt, uint64_t size, xy<> speed = { 1, 1 } >
+void bouncing_square(){
+   w::init();
+   auto location = typename w::offset_t( 0, 0 );
+   auto delta  = typename w::offset_t( speed );
+   for(;;){
+      location += delta;
+      if( ( location.x <= 0 ) || ( location.x + size + 1 >= w::size.x ) ){ delta.x *= -1; }
+      if( ( location.y <= 0 ) || ( location.y + size + 1 >= w::size.y ) ){ delta.y *= -1; }
+      w::clear( white );
+      rectangle< w >( w::origin + location, typename w::offset_t( size, size ), black, black ).write();
+      w::flush();
+      tt::wait();
+   }
+}
+
 template< typename w, typename tt >
 void random_lines(){
    w::init();

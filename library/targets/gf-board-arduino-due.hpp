@@ -4,25 +4,27 @@
 //
 // HAL for the arduino due board target
 //
+// https://forum.arduino.cc/index.php?topic=256771.60
+//
 // ==========================================================================
 
 #include "targets/gf-chip-sam3x8e.hpp"
 
 namespace godafoss {
-   
+
 template< uint64_t clock >
 struct target_arduino_due :
-   chip_sam3x8e< clock >    
-{       
-    
+   chip_sam3x8e< clock >
+{
+
 using chip = chip_sam3x8e< clock >;
 
 #define make_pin_in_out( NAME, PORT, PIN)      \
    using NAME  = typename chip:: template      \
       _pin_in_out< chip::_port::PORT, PIN >;   \
-   
+
 #define make_pin_adc( NAME, CHANNEL ) \
-   using NAME  = typename chip:: template pin_adc< CHANNEL >;   
+   using NAME  = typename chip:: template pin_adc< CHANNEL >;
 
    make_pin_in_out(   d0,  a,  8 );
    make_pin_in_out(   d1,  a,  9 );
@@ -35,7 +37,7 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(   d8,  c, 22 );
    make_pin_in_out(   d9,  c, 21 );
    make_pin_in_out(  d10,  c, 29 );
-   
+
    make_pin_in_out(  d11,  d,  7 );
    make_pin_in_out(  d12,  d,  8 );
    make_pin_in_out(  d13,  b, 27 );
@@ -46,7 +48,7 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  d18,  a, 11 );
    make_pin_in_out(  d19,  a, 10 );
    make_pin_in_out(  d20,  b, 12 );
-   
+
    make_pin_in_out(  d21,  b, 13 );
    make_pin_in_out(  d22,  b, 26 );
    make_pin_in_out(  d23,  a, 14 );
@@ -79,11 +81,11 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  d48,  c, 15 );
    make_pin_in_out(  d49,  c, 14 );
    make_pin_in_out(  d50,  c, 13 );
-   
+
    make_pin_in_out(  d51,  c, 12 );
    make_pin_in_out(  d52,  b, 21 );
    make_pin_in_out(  d53,  b, 14 );
-   
+
    make_pin_in_out(  d54,  a, 16 );
    make_pin_in_out(  d55,  a, 24 );
    make_pin_in_out(  d56,  a, 23 );
@@ -92,7 +94,7 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  d59,  a,  4 );
    make_pin_in_out(  d60,  a,  3 );
    make_pin_in_out(  d61,  a,  2 );
-   
+
    make_pin_in_out(  d62,  b, 17 );
    make_pin_in_out(  d63,  b, 18 );
    make_pin_in_out(  d64,  b, 19 );
@@ -108,7 +110,7 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(  d74,  a, 27 );
    make_pin_in_out(  d75,  a, 26 );
    make_pin_in_out(  d76,  a, 25 );
-   
+
    make_pin_adc(  a0,  7 );
    make_pin_adc(  a1,  6 );
    make_pin_adc(  a2,  5 );
@@ -121,15 +123,15 @@ using chip = chip_sam3x8e< clock >;
    make_pin_adc(  a9, 11 );
    make_pin_adc( a10, 12 );
    make_pin_adc( a11, 13 );
-   
+
    using led = d13;
 
 /*    { 1, 15 },  // dac0
       { 1, 16 },  // dac1
       { 0,  1 },  // cantx
       { 0,  0 },  // canrx
-*/ 
-   
+*/
+
    make_pin_in_out(  _scl,  b, 13 );
    make_pin_in_out(  _sda,  b, 12 );
    make_pin_in_out( _scl1,  a, 18 );
@@ -137,6 +139,9 @@ using chip = chip_sam3x8e< clock >;
 
    using  scl = godafoss::pin_oc_from<  _scl >;
    using  sda = godafoss::pin_oc_from<  _sda >;
+
+   using  scl1 = godafoss::pin_oc_from<  _scl1 >;
+   using  sda1 = godafoss::pin_oc_from<  _sda1 >;
 /*
    using scl1 = godafoss::pin_oc< _scl1 >;
    using sda1 = godafoss::pin_oc< _sda1 >;
@@ -156,24 +161,24 @@ using chip = chip_sam3x8e< clock >;
    make_pin_in_out(   _tx,  a,  9 );
    make_pin_in_out(   _rx,  a,  8 );
    make_pin_in_out(  _led,  b, 27 );
-    
+
    using  tx = godafoss::pin_out<  _tx >;
    using  rx = godafoss::pin_in<   _rx >;
    using led = godafoss::pin_out< _led >;
 */
-   
-#undef make_pin_in_out   
+
+#undef make_pin_in_out
 #undef make_pin_adc
 
-   using waiting  = typename chip::waiting;	  
-   // using clocking = typename chip::clocking;	  
-   using timing = waiting;  
+   using waiting  = typename chip::waiting;
+   // using clocking = typename chip::clocking;
+   using timing = waiting;
 
 }; // template<...> struct target_arduino_due
 
 template< uint64_t clock = 84'000'000 >
-using target = target_arduino_due< clock >; 
-	
+using target = target_arduino_due< clock >;
+
 }; // namespace godafoss
 
 

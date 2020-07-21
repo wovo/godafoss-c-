@@ -24,13 +24,13 @@
 //
 // The created pin has only the properties required for that pin:
 // other properties of the source pin are not available via the created pin.
-// The exception is pullup and pulldown features: those are 
+// The exception is pullup and pulldown features: those are
 // available via the created pins.
 //
 // These adapters can only be used when the source pin is know.
 // For general use, the pin adapters that accept any (possible) source
 // pin are more covenient.
-// 
+//
 // @define pin_in_from_pin_in
 // @insert pin_in_from_pin_in
 //
@@ -230,9 +230,9 @@ template< typename T >
 concept can_pin_in_out_from =
       is_pin_in_out< T >
    || is_pin_oc< T >;
-      
+
 template< can_pin_in_out_from T >
-struct pin_in_out_from {};      
+struct pin_in_out_from {};
 
 template< is_pin_in_out T >
 struct pin_in_out_from< T > : pin_in_out_from_pin_in_out< T > {};
@@ -299,7 +299,7 @@ template< can_pin_oc_from T >
 struct pin_oc_from {};
 
 template< is_pin_in_out T  >
-struct pin_oc_from< T > : pin_out_from_pin_out< T > {};
+struct pin_oc_from< T > : pin_oc_from_pin_in_out< T > {};
 
 template< is_pin_oc T  >
 struct pin_oc_from< T > : pin_oc_from_pin_oc< T > {};

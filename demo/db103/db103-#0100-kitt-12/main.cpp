@@ -16,7 +16,7 @@ namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
 
-using leds = gf::port_out_from<
+using leds = gf::port_out_from_pins<
    target::scl,
    target::sda,
    target::p0_6,

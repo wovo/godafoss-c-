@@ -16,17 +16,22 @@
 // =============================================================================
 
 
-template< can_pin_out _p, typename d >
+template< can_pin_out _pin, can_static_duration _pause >
 GODAFOSS_NO_RETURN void blink(){
-   using p = direct< pin_out< _p >>;
-   p::init();
-   d::init();
+
+   using pin = direct< pin_out_from< _pin >>;
+   using pause = static_duration< _pause >;
+
+   pause::init();
+   pin::init();
+
    for(;;){
-      p::write( 1 );
-      d::wait();
-      p::write( 0 );
-      d::wait();
+      pin::write( 1 );
+      pause::wait();
+      pin::write( 0 );
+      pause::wait();
    }
+
 }
 
 /*

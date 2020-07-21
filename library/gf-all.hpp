@@ -119,6 +119,7 @@
 #pragma GCC diagnostic ignored "-Wstrict-overflow"
 #pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 #pragma GCC diagnostic ignored "-Wattributes"
 
 // -Wno-long-long.
@@ -175,13 +176,13 @@ namespace godafoss {
 #include "modifiers/gf-modifiers-pins.hpp"
 #include "modifiers/gf-modifiers-ports.hpp"
 
-#include "pins/gf-pin-demos.hpp"
-#include "ports/gf-port-demos.hpp"
-
-
+#include "timing/gf-timing-duration.hpp"
 #include "timing/gf-timing-wait.hpp"
 #include "timing/gf-timing-clock.hpp"
 #include "timing/gf-slow-down.hpp"
+
+#include "pins/gf-pin-demos.hpp"
+#include "ports/gf-port-demos.hpp"
 
 #include "char-io/gf-terminal.hpp"
 #include "char-io/gf-terminal-demos.hpp"

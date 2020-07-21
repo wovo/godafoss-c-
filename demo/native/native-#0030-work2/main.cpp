@@ -10,17 +10,19 @@ using line = gf::line< w >;
 using rectangle = gf::rectangle< w >;
 
 int main( void ){
+   /*
    w::init();
    w::clear( gf::green );
-   w::flush(); 
+   w::flush();
 std::cout << __LINE__ << "\n";timing::ms< 2'000 >::wait();
 // => paints everything white??
-   rectangle( 
-      w::location_t( 2, 2 ), 
-      w::location_t( 10, 10 ), 
+   rectangle(
+      w::location_t( 2, 2 ),
+      w::location_t( 10, 10 ),
       gf::red, gf::blue ).write();
-   w::flush(); 
+   w::flush();
 std::cout << __LINE__ << "\n";timing::ms< 2'000 >::wait();
    timing::ms< 2'000 >::wait();
+   * */
 }
 

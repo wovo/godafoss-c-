@@ -17,8 +17,8 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using led     = target::p1_3;
 
-using leds = gf::all<
-/*   target::scl,
+using leds = gf::all_pins<
+   target::scl,
    target::sda,
    target::p0_6,
    target::p0_7,
@@ -30,8 +30,7 @@ using leds = gf::all<
 
    target::p1_4,
    target::p1_5,
-*/   target::p1_8,
-
+   target::p1_8,
    target::p1_9
 >;
 

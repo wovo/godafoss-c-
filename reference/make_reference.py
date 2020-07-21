@@ -15,6 +15,7 @@
 #
 # ==============================================================================
 
+# donate to same title from multiple pages; order?
 # add external reference for torsor
 # text bij de adapters loopt nog niet helemaal
 # voorbeelden bij de adapters!

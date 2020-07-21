@@ -54,6 +54,13 @@ public:
          0xFF - static_cast< uint8_t >( blue ) );
    }
 
+   constexpr color operator/ ( int n ) const {
+      return color(
+         static_cast< uint8_t >( red / n ),
+         static_cast< uint8_t >( green / n ),
+         static_cast< uint8_t >( blue / n) );
+   }
+
    constexpr bool operator== ( const color c ) const {
       return
                ( red    == c.red   )

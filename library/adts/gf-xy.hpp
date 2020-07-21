@@ -139,6 +139,15 @@ public:
       };
    }
 
+   // @quote add 3 ... }
+   template< typename V >
+      requires requires( xy_value_type x, V b ){ { x += b }; }
+   constexpr xy & operator+=( const xy< V > rhs ){
+      x += rhs.x;
+      y += rhs.y;
+      return *this;
+   }
+
    // @quote subtract 3 ... }
    template< typename V >
       requires requires( xy_value_type x, V b ){ { x - b }; }

@@ -326,7 +326,7 @@ struct input_root :
 // @quote is_output 7
 template< typename T, typename VT = T::value_type >
 concept is_output = requires (
-   typename T::value_type v
+      typename T::value_type v
    ){
       T::_output_marker;
       { T::write( v ) }  -> std::same_as< void >;

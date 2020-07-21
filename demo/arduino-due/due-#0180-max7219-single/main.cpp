@@ -26,25 +26,9 @@ using spi = gf::spi_bus_bb_sclk_miso_mosi<
    target::d8,
    timing
 >;
-
-//using all = gf::all< target::d2, target::d3, target::d4 >;
-
-// using chip = gf::fold< gf::max7219< spi, target::d9, 8 > >;
-using chip = gf::max7219< spi, target::d9, 8 >;
+using window = gf::max7219< spi, target::d9, 8 >;
 
 int main( void ){
-   //gf::blink< all, timing::us< 1 > >();
-   //timing::init();
-   //timing::ms< 1'000 >::wait();
-if(0){
-      chip::init();
-   chip::clear( black );
-   for( int i = 0; i < 64; ++i ){
-      chip::write( chip::origin + chip::offset_t( i, i ), white );
-      chip::flush();
-      timing::ms< 200 >::wait();
-   }
-}
-   gf::demo::random_lines2< chip, timing::ms< 200 > > ();
+   gf::demo::bouncing_square< window, timing::ms< 50 >, 0 > ();
 }
 

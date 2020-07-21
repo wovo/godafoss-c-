@@ -103,13 +103,15 @@ struct i2c_profile_400kHz {
 // =============================================================================
 
 template<
-   can_pin_oc  scl_arg,
-   can_pin_oc  sda_arg,
-   typename    timing,
+   can_pin_oc     scl_arg,
+   can_pin_oc     sda_arg,
+   is_timing_wait timing,
    typename    _profile = i2c_profile_100kHz
 >
 struct i2c_bus_bb_scl_sda {
    using profile  = _profile;
+
+   //using timing = timing_wait< timing_arg >;
 
    using bus = i2c_bus_bb_scl_sda<
       scl_arg, sda_arg, timing, _profile >;
