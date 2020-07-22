@@ -1,7 +1,7 @@
 
 namespace demo {
 
-template< typename w, typename tt, uint64_t size, xy<> speed = { 1, 1 } >
+template< typename w, typename tt, uint64_t size = 3, xy<> speed = { 1, 1 } >
 void bouncing_square(){
    w::init();
    auto location = typename w::offset_t( 0, 0 );
@@ -20,6 +20,7 @@ void bouncing_square(){
 template< typename w, typename tt >
 void random_lines(){
    w::init();
+   tt::init();
    for(;;){
       w::clear( white );
       for( int i = 0; i < 20; ++i ){
@@ -39,6 +40,7 @@ void random_lines(){
 template< typename w, typename tt >
 void random_lines2(){
    w::init();
+   tt::init();
    for(;;){
       w::clear( white );
       for( int i = 0; i < 20; ++i ){

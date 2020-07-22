@@ -23,7 +23,7 @@ template<
    can_port_out  _port,
    xy<>          _size,
    typename      timing
-> struct _hd44780_rs_e_d_x_y_timing {
+> struct _hd44780_rs_e_d_s_timing {
 private:
 
    using rs      = pin_out< _rs >;
@@ -151,8 +151,8 @@ public:
       timing::init();
 
       // give LCD time to wake up
-      direct< e >::write( 0 );
       direct< rs >::write( 0 );
+      direct< e >::write( 0 );
       timing::template ms< 40 >::wait();
 
       // interface initialization: make sure the LCD is in 4 bit mode
@@ -211,5 +211,5 @@ template<
    typename      timing
 > using hd44780_rs_e_d_s_timing =
     terminal<
-    _hd44780_rs_e_d_x_y_timing<
+    _hd44780_rs_e_d_s_timing<
        rs, e, port, size, timing > >;

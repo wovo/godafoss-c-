@@ -4,11 +4,11 @@
 //
 // ==========================================================================
 //
-// This file is part of HwCpp, 
+// This file is part of HwCpp,
 // a C++ library for close-to-the-hardware programming.
 //
 // Copyright Wouter van Ooijen 2017
-// 
+//
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -25,7 +25,7 @@
 
 template< typename T >
 struct terminal_add_clear : T {
-	
+
    static void clear(){
       for( typename T::xy_t y = 0; y < T::size_y; ++y ){
          T::goto_xy( 0, y );
@@ -35,11 +35,11 @@ struct terminal_add_clear : T {
       }
       T::goto_xy( 0, 0 );
    }
-   
-}; // struct terminal_add_clear	
+
+}; // struct terminal_add_clear
 
 template< typename T >
-struct terminal : T {
+struct terminal : T, ostream_root {
 private:
    static inline uint_fast8_t goto_xy_state = 0;
 
@@ -77,13 +77,13 @@ public:
       }
 
       if( c == '\n' ){
-         T::goto_xy( xy( 0, T::cursor.y + 1 ) );
+         T::goto_xy( xy<>( 0, T::cursor.y + 1 ) );
 
       } else if( c == '\r' ){
-         T::goto_xy( xy( 0, T::cursor.y ) );
+         T::goto_xy( xy<>( 0, T::cursor.y ) );
 
       } else if( c == '\v' ){
-         T::goto_xy( xy( 0, 0 ) );
+         T::goto_xy( xy<>( 0, 0 ) );
 
       } else if( c == '\f' ){
          T::clear();
@@ -94,7 +94,7 @@ public:
       } else if( c == '\a' ){
          while( T::cursor.x < T::size.x ){
 	        T::write( ' ' );
-         }			
+         }
 
       } else if(
          ( T::cursor.x >= 0 )
@@ -105,5 +105,5 @@ public:
          T::write( c );
       }
    }
-   
+
 }; // struct terminal

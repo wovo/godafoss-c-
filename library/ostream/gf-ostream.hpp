@@ -24,10 +24,18 @@
 
 template< typename T >
 concept is_stream_out_char = requires {
+      T::_ostream_marker;
       std::same_as< typename T::value_type, char >;
    }
    && is_pipe< T >
    && is_output< T >;
+
+struct ostream_root :
+   pipe_root< char >,
+   output_root< char >
+{
+   static constexpr bool _ostream_marker = true;
+};
 
 
 // ==========================================================================

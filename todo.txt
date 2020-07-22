@@ -1,5 +1,6 @@
-db103-pcf8574-pcf8574 werk niet
-db103 lpc21isp houdt de chip in reset - no serial :(
+oled on lpc1114 past niet in de RAM??
+db103 lpc21isp houdt de chip in reset - no serial :( -> bmptk -control
+random lines werkt niet - ligt het aan de demo??
 
 bouncing square: minimum size 1 -> 2x2 pixels!
  init() with value -> all boxes must CRTP

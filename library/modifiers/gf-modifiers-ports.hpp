@@ -24,7 +24,7 @@
 //
 // The created pin has only the properties required for that pin:
 // other properties of the source pin are not available via the created pin.
-// The exception is pullup and pulldown features: those are 
+// The exception is pullup and pulldown features: those are
 // available via the created pins.
 //
 // These adapters serve, of course, to adapt a given port to the
@@ -41,7 +41,7 @@
 //
 // The port_in<> adapter creates an input port from a source port,
 // which is possible if the source port satisfies the can_port_in concept,
-// which requires it to be either a port_in, a port_in_out, 
+// which requires it to be either a port_in, a port_in_out,
 // or a port_oc.
 //
 // -----------------------------------------------------------------------------
@@ -57,8 +57,8 @@
 // which requires it to be either a port_in, a port_in_out,
 // or a port_oc.
 //
-// Note that when a port_oc is adapted to be used as port_out, 
-// pull-up resistors are required in order for the pins to 
+// Note that when a port_oc is adapted to be used as port_out,
+// pull-up resistors are required in order for the pins to
 // reach a high level.
 //
 // -----------------------------------------------------------------------------
@@ -73,8 +73,8 @@
 // which is possible if the source port satisfies the can_port_in_out concept,
 // which requires it to a port_in_out, or a port_oc.
 //
-// Note that when a port_oc is adapted to be used as port_in_out, 
-// pull-up resistors are required in order for the pins to 
+// Note that when a port_oc is adapted to be used as port_in_out,
+// pull-up resistors are required in order for the pins to
 // reach a high level.
 //
 // -----------------------------------------------------------------------------
@@ -111,7 +111,10 @@ concept can_port_in =
 
 // @quote port_in 1 = ...;
 template< can_port_in T >
-struct port_in {};
+struct port_in {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_port_in T  >
 struct port_in< T > : port_in_from_port_in< T > {};
@@ -138,7 +141,10 @@ concept can_port_out =
 
 // @quote port_out 1 = ...;
 template< can_port_out T >
-struct port_out {};
+struct port_out {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_port_out T  >
 struct port_out< T > : port_out_from_port_out< T > {};
@@ -164,7 +170,10 @@ concept can_port_in_out =
 
 // @quote port_in_out 1 = ...;
 template< can_port_in_out T  >
-struct port_in_out {};
+struct port_in_out {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_port_in_out T  >
 struct port_in_out< T > : port_in_out_from_port_in_out< T > {};

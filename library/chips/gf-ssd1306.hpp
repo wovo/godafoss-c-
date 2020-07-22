@@ -40,27 +40,27 @@ enum class ssd1306_commands {
    vertical_and_left_horizontal_scroll    = 0x2a
 };
 
-constexpr uint8_t ssd1306_cmd_prefix      = 0x80;
-constexpr uint8_t ssd1306_data_prefix     = 0x40;
-
 constexpr const uint8_t ssd1306_initialization[] = {
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::display_off,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_display_clock_div, 0x80,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_multiplex,         0x3f,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_display_offset,    0x00,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_start_line       | 0x00,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::charge_pump,           0x14,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::memory_mode,           0x00,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::seg_remap            | 0x01,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::com_scan_dec,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_com_pins,          0x12,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_contrast,          0xcf,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_precharge,         0xf1,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::set_vcom_detect,       0x40,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::display_all_on_resume,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::normal_display,
-   ssd1306_cmd_prefix, (uint8_t) ssd1306_commands::display_on
+   (uint8_t) ssd1306_commands::display_off,
+   (uint8_t) ssd1306_commands::set_display_clock_div, 0x80,
+   (uint8_t) ssd1306_commands::set_multiplex,         0x3f,
+   (uint8_t) ssd1306_commands::set_display_offset,    0x00,
+   (uint8_t) ssd1306_commands::set_start_line       | 0x00,
+   (uint8_t) ssd1306_commands::charge_pump,           0x14,
+   (uint8_t) ssd1306_commands::memory_mode,           0x00,
+   (uint8_t) ssd1306_commands::seg_remap            | 0x01,
+   (uint8_t) ssd1306_commands::com_scan_dec,
+   (uint8_t) ssd1306_commands::set_com_pins,          0x12,
+   (uint8_t) ssd1306_commands::set_contrast,          0xcf,
+   (uint8_t) ssd1306_commands::set_precharge,         0xf1,
+   (uint8_t) ssd1306_commands::set_vcom_detect,       0x40,
+   (uint8_t) ssd1306_commands::display_all_on_resume,
+   (uint8_t) ssd1306_commands::normal_display,
+   (uint8_t) ssd1306_commands::display_on
 };
+
+
+// ==========================================================================
 
 template< typename _bus, uint_fast8_t address >
 struct ssd1306_i2c {
@@ -71,19 +71,22 @@ struct ssd1306_i2c {
    static const uint_fast8_t data_mode = 0x40;
    static const uint_fast8_t cmd_mode  = 0x80;
 
+   static void init(){
+      bus::init();
+   }
+
    static void command( cmd d ){
       uint8_t data[] = {
           static_cast< uint8_t >( cmd_mode ),
           static_cast< uint8_t >( d )
       };
-      bus::write(
-         address,
+      typename bus::write_transaction( address ).write(
          data,
          sizeof( data ) / sizeof( uint8_t )
       );
    }
 
-   static void command( cmd d0, uint_fast8_t d1 ){
+   static void _command( cmd d0, uint_fast8_t d1 ){
       uint8_t data[] = {
          static_cast< uint8_t >( cmd_mode ),
          static_cast< uint8_t >( d0 ),
@@ -105,10 +108,13 @@ struct ssd1306_i2c {
          static_cast< uint8_t >( cmd_mode ),
          static_cast< uint8_t >( d2 )
       };
-      typename bus::write_transaction( address ).write(
+      if( 0 ) typename bus::write_transaction( address ).write(
          data,
          sizeof( data ) / sizeof( uint8_t )
       );
+      command( d0 );
+      command( (cmd) d1 );
+      command( (cmd) d2 );
    }
 
    static void data( const auto & data ){
@@ -121,6 +127,9 @@ struct ssd1306_i2c {
    }
 
 };
+
+
+// ==========================================================================
 
 template< typename chip >
 struct glcd_ssd1306 :
@@ -140,7 +149,10 @@ struct glcd_ssd1306 :
    >;
 
    static void init(){
-   //   chip::bus::write( ssd1306_initialization );
+      chip::init();
+      for( auto b : ssd1306_initialization ){
+         chip::command( (ssd1306_commands) b );
+      }
    }
 
    // current cursor setting in the controller;
@@ -206,6 +218,9 @@ struct glcd_ssd1306 :
 
 }; // class glcd_oled
 
-template< typename bus, int address = 0x30 >
+
+// ==========================================================================
+
+template< typename bus, int address = 0x3C >
 using oled = glcd_ssd1306< ssd1306_i2c< bus, address > >;
 

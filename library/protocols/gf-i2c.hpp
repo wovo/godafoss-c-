@@ -106,7 +106,7 @@ template<
    can_pin_oc     scl_arg,
    can_pin_oc     sda_arg,
    is_timing_wait timing,
-   typename    _profile = i2c_profile_100kHz
+   typename       _profile = i2c_profile_100kHz
 >
 struct i2c_bus_bb_scl_sda {
    using profile  = _profile;
@@ -123,7 +123,7 @@ struct i2c_bus_bb_scl_sda {
       scl::write( 0 );
       timing::template ns< profile::t_low - profile::t_su_dat >::wait();
       sda::write( x );
-      timing::template ns< profile::t_su_dat >::wait();
+      timing::template ns< 10 * profile::t_su_dat >::wait();
       scl::write( 1 );
       timing::template ns< profile::t_high >::wait();
    }

@@ -22,7 +22,7 @@
 // (only) an input_output pin, or (obly) an open collector pin.
 // (in each case, if such adaptation is possible).
 //
-// 
+//
 //
 // These adapters serve, of course, to adapt a given pin to the
 // adapted role, but also to ensure that the code that uses the adapted
@@ -53,8 +53,8 @@
 // which requires the pin to be either a pin_in, a pin_in_out,
 // or a pin_oc.
 //
-// Note that when a pin_oc is adapted to be used as pin_out, 
-// a pull-up resistor is required in order for the pin to 
+// Note that when a pin_oc is adapted to be used as pin_out,
+// a pull-up resistor is required in order for the pin to
 // reach a high level.
 //
 // -----------------------------------------------------------------------------
@@ -70,8 +70,8 @@
 // which is possible if the pin satisfies the can_input_output concept,
 // which requires the pin to a pin_in_out, or a pin_oc.
 //
-// Note that when a pin_oc is adapted to be used as pin_in_out, 
-// a pull-up resistor is required in order for the pin to 
+// Note that when a pin_oc is adapted to be used as pin_in_out,
+// a pull-up resistor is required in order for the pin to
 // reach a high level.
 //
 // -----------------------------------------------------------------------------
@@ -106,7 +106,10 @@ concept can_pin_in =
 
 // @quote pin_in 1 = ...;
 template< can_pin_in T >
-struct pin_in {};
+struct pin_in {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_in T  >
 struct pin_in< T > : pin_in_from_pin_in< T > {};
@@ -133,13 +136,19 @@ concept can_pin_out =
 
 // @quote pin_out 1 = ...;
 template< can_pin_out T >
-struct pin_out {};
+struct pin_out {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_out T  >
 struct pin_out< T > : pin_out_from_pin_out< T > {};
 
 template< is_pin_in_out T  >
 struct pin_out< T > : pin_out_from_pin_in_out< T > {};
+
+template< is_pin_oc T  >
+struct pin_out< T > : pin_out_from_pin_oc< T > {};
 
 
 // =============================================================================
@@ -156,7 +165,10 @@ concept can_pin_in_out =
 
 // @quote pin_in_out 1 = ...;
 template< can_pin_in_out T  >
-struct pin_in_out {};
+struct pin_in_out {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_in_out T  >
 struct pin_in_out< T > : pin_in_out_from_pin_in_out< T > {};
@@ -179,7 +191,10 @@ concept can_pin_oc =
 
 // @quote pin_oc 1 = ...;
 template< can_pin_oc T >
-struct pin_oc {};
+struct pin_oc {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_in_out T  >
 struct pin_oc< T > : pin_oc_from_pin_in_out< T > {};

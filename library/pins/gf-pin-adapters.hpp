@@ -116,7 +116,10 @@ concept can_pin_in_from =
    || is_pin_oc< T >;
 
 template< can_pin_in_from T >
-struct pin_in_from {};
+struct pin_in_from {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_in T  >
 struct pin_in_from< T > : pin_in_from_pin_in< T > {};
@@ -173,7 +176,10 @@ concept can_pin_out_from =
    || is_pin_oc< T >;
 
 template< can_pin_out_from T >
-struct pin_out_from {};
+struct pin_out_from {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_out T  >
 struct pin_out_from< T > : pin_out_from_pin_out< T > {};
@@ -232,7 +238,10 @@ concept can_pin_in_out_from =
    || is_pin_oc< T >;
 
 template< can_pin_in_out_from T >
-struct pin_in_out_from {};
+struct pin_in_out_from{
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_in_out T >
 struct pin_in_out_from< T > : pin_in_out_from_pin_in_out< T > {};
@@ -296,7 +305,10 @@ concept can_pin_oc_from =
    || is_pin_oc< T >;
 
 template< can_pin_oc_from T >
-struct pin_oc_from {};
+struct pin_oc_from {
+   // The specializations should cover all possibilities.
+   static_assert( sizeof( T ) < 0, "library internal error\n" );
+};
 
 template< is_pin_in_out T  >
 struct pin_oc_from< T > : pin_oc_from_pin_in_out< T > {};

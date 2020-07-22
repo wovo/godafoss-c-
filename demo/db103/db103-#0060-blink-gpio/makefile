@@ -19,6 +19,9 @@ HEADERS :=
 # other places to look for files for this project
 SEARCH  :=
 
+# other files that must be build (like main.lst, main.lss)
+RESULTS :=
+
 # no need for a terminal
 RUN_TERMINAL :=
 
