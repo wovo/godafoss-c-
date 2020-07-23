@@ -36,11 +36,6 @@ lpc1114 only 12 MHz
 background gebruikt nu indirection
 test non-copyable, not-constructible
 
-- where is my PCF8574A demo board??
-- add NO_TERMINAL option to bmptk
-
-shared names should *also* have a specific name for debugging
-
 ubuntu notes
 - sudo apt install git, codelite, python-is-python3,
    libsfml-dev, gcc-10, g++-10, gnome-terminal

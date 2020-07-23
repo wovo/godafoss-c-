@@ -18,7 +18,7 @@
 
 template< uint64_t N, bool unroll = false, typename body_t >
 void loop( body_t body ){
-   for( uint_fast8_t i = 0; i < N; ++i ){
+   for( uint32_t i = 0; i < N; ++i ){
       body();
    }
 }

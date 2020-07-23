@@ -15,8 +15,7 @@
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
-using i2c_bus = gf::i2c_bus_bb_scl_sda<
-   target::scl1, target::sda1, timing >;
+using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
 using chip    = gf::pcf8574a< i2c_bus, 0x01 >;
 using led     = chip::p0;
 

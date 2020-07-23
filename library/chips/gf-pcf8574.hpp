@@ -14,27 +14,29 @@ struct _pcf8574 :
 {
 
    using chip = _pcf8574< bus, address >;
-   static inline uint_fast8_t buffer;
-   static inline bool dirty;
+   static inline uint8_t read_buffer;
+   static inline uint_fast8_t write_buffer;
+   static inline bool write_dirty;
 
    static void GODAFOSS_INLINE init(){
-      dirty = false;
+      write_dirty = false;
       bus::init();
    }
 
    static void GODAFOSS_INLINE write( uint_fast8_t d ){
-      buffer = d;
-      dirty = true;
+      write_buffer = d;
+      write_dirty = true;
    }
 
    static void GODAFOSS_INLINE flush(){
-      if( dirty ){
-         typename bus::write_transaction( address ).write( buffer );
-         dirty = false;
+      if( write_dirty ){
+         typename bus::write_transaction( address ).write( write_buffer );
+         write_dirty = false;
       }
    }
 
    static void GODAFOSS_INLINE refresh(){
+      typename bus::read_transaction( address ).read( read_buffer );
    }
 
    template< int n > struct pin :
@@ -47,15 +49,15 @@ struct _pcf8574 :
 
       static GODAFOSS_INLINE void write( bool v ) {
          if( v ){
-            chip::buffer |= ( 1 << n );
+            chip::write_buffer |= ( 0x01 << n );
          } else {
-			chip::buffer &= ~( 1 << n );
+			   chip::write_buffer &= ~( 0x01 << n );
          }
-         chip::dirty = true;
+         chip::write_dirty = true;
       }
 
 	  static GODAFOSS_INLINE bool read(){
-         return 1;
+         return ( read_buffer& ( 0x01 << n ) ) != 0;
       }
 
       static GODAFOSS_INLINE void refresh() {
@@ -76,8 +78,6 @@ struct _pcf8574 :
    using p5 = pin< 5 >;
    using p6 = pin< 6 >;
    using p7 = pin< 7 >;
-
-
 };
 
 template<

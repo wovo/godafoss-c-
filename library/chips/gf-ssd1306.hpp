@@ -62,59 +62,20 @@ constexpr const uint8_t ssd1306_initialization[] = {
 
 // ==========================================================================
 
-template< typename _bus, uint_fast8_t address >
+template< typename bus, uint8_t address >
 struct ssd1306_i2c {
 
-   using bus = _bus;
-   using cmd = ssd1306_commands;
-
-   static const uint_fast8_t data_mode = 0x40;
-   static const uint_fast8_t cmd_mode  = 0x80;
+   static const uint8_t data_mode = 0x40;
+   static const uint8_t cmd_mode  = 0x80;
 
    static void init(){
       bus::init();
    }
 
-   static void command( cmd d ){
-      uint8_t data[] = {
-          static_cast< uint8_t >( cmd_mode ),
-          static_cast< uint8_t >( d )
-      };
-      typename bus::write_transaction( address ).write(
-         data,
-         sizeof( data ) / sizeof( uint8_t )
-      );
-   }
-
-   static void _command( cmd d0, uint_fast8_t d1 ){
-      uint8_t data[] = {
-         static_cast< uint8_t >( cmd_mode ),
-         static_cast< uint8_t >( d0 ),
-         static_cast< uint8_t >( cmd_mode ),
-         static_cast< uint8_t >( d1 )
-      };
-      typename bus::write_transaction( address ).write(
-         data,
-         sizeof( data ) / sizeof( uint8_t )
-      );
-   }
-
-   static void command( cmd d0, uint_fast8_t d1, uint_fast8_t d2 ){
-      uint8_t data[] = {
-         static_cast< uint8_t >( cmd_mode ),
-         static_cast< uint8_t >( d0 ),
-         static_cast< uint8_t >( cmd_mode ),
-         static_cast< uint8_t >( d1 ),
-         static_cast< uint8_t >( cmd_mode ),
-         static_cast< uint8_t >( d2 )
-      };
-      if( 0 ) typename bus::write_transaction( address ).write(
-         data,
-         sizeof( data ) / sizeof( uint8_t )
-      );
-      command( d0 );
-      command( (cmd) d1 );
-      command( (cmd) d2 );
+   static void command( uint8_t d ){
+      auto transaction = typename bus::write_transaction( address );
+      transaction.write( cmd_mode );
+      transaction.write( d );
    }
 
    static void data( const auto & data ){
@@ -151,34 +112,13 @@ struct glcd_ssd1306 :
    static void init(){
       chip::init();
       for( auto b : ssd1306_initialization ){
-         chip::command( (ssd1306_commands) b );
+         chip::command( (uint8_t) b );
       }
    }
 
-   // current cursor setting in the controller;
-   // used to avoid explicit cursor updates when such are not needed
-   static inline uint_fast8_t cursor_x, cursor_y;
-
-   static void pixels_to_chip(
-      uint_fast8_t x,
-      uint_fast8_t y,
-      uint_fast8_t d
-   ){
-      if(( x != cursor_x ) || ( y != cursor_y )){
-         chip::command( ssd1306_commands::column_addr,  x,  127 );
-         chip::command( ssd1306_commands::page_addr,    y,    7 );
-         cursor_x = x;
-         cursor_y = y;
-      }
-
-      const uint8_t data[] = { d };
-      chip::data( data );
-      cursor_x++;
-   }
 
    static auto constexpr buffer_entries = 128 * 64 / 8;
    static inline uint8_t buffer[ buffer_entries ];
-   static inline bool dirty[ buffer_entries ];
 
    static void write_to_buffer(
       root::offset_t pos,
@@ -192,26 +132,23 @@ struct glcd_ssd1306 :
       }
    }
 
-   /*
-   static void set_direct( location pos, color col ){
-      const uint_fast8_t a = pos.x + ( pos.y / 8 ) * size.x;
-      write_to_buffer( pos, a, col == foreground );
-      pixels_to_chip( pos.x, pos.y / 8, buffer[ a ] );
-   }
-    * */
-
    static void write_implementation(
       root::offset_t  pos,
       root::color_t    col
    ){
       const uint_fast8_t a = pos.x + ( pos.y / 8 ) * root::size.x;
       write_to_buffer( pos, a, col.is_black );
-      dirty[ a ] = true;
+   }
+
+   static void command( ssd1306_commands cmd, uint8_t d0, uint8_t d1 ){
+      chip::command( (uint8_t) cmd );
+      chip::command( d0 );
+      chip::command( d1 );
    }
 
    static void flush(){
-      chip::command( ssd1306_commands::column_addr,  0,  127 );
-      chip::command( ssd1306_commands::page_addr,    0,    7 );
+      command( ssd1306_commands::column_addr, 0, 127 );
+      command( ssd1306_commands::page_addr,   0,   7 );
       chip::data( buffer );
    }
 

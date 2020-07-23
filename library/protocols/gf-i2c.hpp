@@ -27,73 +27,7 @@
 //
 // ==========================================================================
 
-/*
-template< typename T >
-concept bool is_uint8 = std::is_same<
-   T, uint8_t >::value;
 
-template< typename T >
-concept bool is_uint8_iterator = std::is_same<
-   std::remove_reference_t< decltype( *std::begin( std::declval< T& >() ) ) >,
-   uint8_t >::value;
-
-template< typename T >
-concept bool _provides_uint8 =
-   is_uint8< T >
-   || is_uint8_iterator< T >;
-*/
-
-// =============================================================================
-//
-// i2c profiles
-//
-// according to the "I2C-bus specification and user manual,
-// 4 April 2014", UM10204.pdf, Table 10, p 48
-//
-// =============================================================================
-
-
-
-struct i2c_profile_root {
-   static constexpr bool is_i2c_profile = true;
-};
-
-/*
-template< typename T >
-concept i2c_profile(){
-   return T::is_i2c_profile;
-}
-*/
-
-// ========== 100 kHz
-
-using ns_type = uint64_t;
-
-struct i2c_profile_100kHz {
-   static constexpr uint_fast64_t  f         = 100'000;
-   static constexpr ns_type        t_hd_sta  = 4000;
-   static constexpr ns_type        t_low     = 4700;
-   static constexpr ns_type        t_high    = 4000;
-   static constexpr ns_type        t_su_sta  = 4700;
-   //static constexpr ns_type        t_hd_sta  =    0;
-   static constexpr ns_type        t_su_dat  =  250;
-   static constexpr ns_type        t_su_sto  = 4000;
-   static constexpr ns_type        t_buf     = 4700;
-};
-
-// ========== 400 kHz
-
-struct i2c_profile_400kHz {
-   static constexpr uint_fast64_t  f         = 400'000;
-   static constexpr ns_type        t_hd_sta  =  600;
-   static constexpr ns_type        t_low     = 1300;
-   static constexpr ns_type        t_high    =  600;
-   static constexpr ns_type        t_su_sta  =  600;
-   //static constexpr ns_type        t_hd_sta  =    0;
-   static constexpr ns_type        t_su_dat  =  100;
-   static constexpr ns_type        t_su_sto  =  600;
-   static constexpr ns_type        t_buf     = 1300;
-};
 
 
 // =============================================================================
@@ -103,15 +37,15 @@ struct i2c_profile_400kHz {
 // =============================================================================
 
 template<
-   can_pin_oc     scl_arg,
-   can_pin_oc     sda_arg,
-   is_timing_wait timing,
-   typename       _profile = i2c_profile_100kHz
+   can_pin_oc      scl_arg,
+   can_pin_oc      sda_arg,
+   is_timing_wait  timing_arg,
+   template< is_timing_wait >  typename _profile = i2c_profile_standard
 >
 struct i2c_bus_bb_scl_sda {
-   using profile  = _profile;
 
-   //using timing = timing_wait< timing_arg >;
+   using timing = timing_wait< timing_arg >;
+   using profile  = _profile< timing >;
 
    using bus = i2c_bus_bb_scl_sda<
       scl_arg, sda_arg, timing, _profile >;
@@ -120,43 +54,49 @@ struct i2c_bus_bb_scl_sda {
    using sda      = direct< pin_oc< sda_arg > >;
 
    static void write_bit( bool x ){
+
       scl::write( 0 );
-      timing::template ns< profile::t_low - profile::t_su_dat >::wait();
+      profile::t_su_dat::wait();
+
       sda::write( x );
-      timing::template ns< 10 * profile::t_su_dat >::wait();
+      profile::t_low::wait();
+
       scl::write( 1 );
-      timing::template ns< profile::t_high >::wait();
+      profile::t_high::wait();
    }
 
    static [[nodiscard]] bool read_bit(){
+
       scl::write( 0 );
-      timing::template ns< profile::t_low - profile::t_su_dat >::wait();
       sda::write( 1 );
-      timing::template ns< profile::t_su_dat >::wait();
+      profile::t_low::wait();
+
       scl::write( 1 );
       bool result = sda::read();
-      timing::template ns< profile::t_high >::wait();
+      profile::t_high::wait();
+
       return result;
    }
 
    static void write_start(){
-      sda::write( 1 );
-      scl::write( 1 );
-      timing::template ns< profile::t_su_sta >::wait();
+
       sda::write( 0 );
-      timing::template ns< profile::t_hd_sta >::wait();
+      profile::t_hd_sta::wait();
+
       scl::write( 0 );
    }
 
    static void write_stop(){
+
       scl::write( 0 );
-      timing::template ns< profile::t_low - profile::t_su_dat >::wait();
       sda::write( 0 );
-      timing::template ns< profile::t_su_dat >::wait();
+      profile::t_low::wait();
+
       scl::write( 1 );
-      timing::template ns< profile::t_su_sto >::wait();
+      profile::t_su_sto::wait();
+
       sda::write( 1 );
-      timing::template ns< profile::t_buf >::wait();
+      profile::t_buf::wait();
    }
 
    static [[nodiscard]] bool read_ack(){
@@ -172,20 +112,20 @@ struct i2c_bus_bb_scl_sda {
    }
 
    static void write_byte( uint8_t x ){
-      for( int i = 0; i < 8; ++i){
+      loop< 8 >( [&]{
          write_bit( ( x & 0x80 ) != 0 );
          x = x << 1;
-      }
+      });
    }
 
    static [[nodiscard]] uint8_t read_byte(){
       uint8_t result = 0;
-      for( int i = 0; i < 8; ++i ){
+      loop< 8 >( [&]{
          result = result << 1;
          if( read_bit() ){
             result |= 0x01;
          }
-      }
+      });
       return result;
    }
 
@@ -216,7 +156,7 @@ public:
          for( int i = 0; i < n; ++i ){
             bus::read_ack();
             bus::write_byte( data[ i ] );
-         }
+         };
       }
 
       void write( const uint8_t data ){
@@ -247,7 +187,7 @@ public:
             write_ack();
          }
          first = false;
-         for( int i = 0; i < n; ){
+         for( int i = 0; i < n; ++i ){
             data[ i ] = read_byte();
          }
       }
@@ -259,4 +199,4 @@ public:
    };
 
 
-};// i2c_bus_bb_scl_sda
+};

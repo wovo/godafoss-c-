@@ -49,7 +49,7 @@ concept is_hardware_uart = requires (
 
 template< typename T >
 struct be_uart :
-   pipe_root< char >,
+   ostream_root,
    duplex_root< char >
 {
 

@@ -101,6 +101,7 @@ HEADERS           += graphics/gf-window-decorators.hpp
 HEADERS           += graphics/gf-drawables.hpp
 HEADERS           += graphics/gf-window-demos.hpp
 
+HEADERS           += protocols/gf-i2c-profile.hpp
 HEADERS           += protocols/gf-i2c.hpp
 HEADERS           += protocols/gf-spi.hpp
 HEADERS           += protocols/gf-memory.hpp

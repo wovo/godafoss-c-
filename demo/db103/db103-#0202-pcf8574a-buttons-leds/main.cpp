@@ -15,10 +15,22 @@
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
-using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
-using chip    = gf::pcf8574a< i2c_bus, 0x01 >;
+using i2c_bus = gf::i2c_bus_bb_scl_sda<
+   target::scl, target::sda, timing >;
+using chip    = gf::pcf8574a< i2c_bus >;
+using led     = chip::p5;
 
 int main( void ){
-   gf::kitt< gf::invert< chip >, timing::ms< 50 > >();
+   chip::init();
+   chip::p0::write( 1 );
+   chip::p1::write( 1 );
+   chip::p2::write( 1 );
+   for(;;){
+      chip::refresh();
+      chip::p4::write( chip::p0::read() );
+      chip::p5::write( chip::p1::read() );
+      chip::p6::write( chip::p2::read() );
+      chip::flush();
+   }
 }
 

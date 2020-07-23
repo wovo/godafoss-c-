@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// kitt on 8 LEDs on a HC595 connected to a DB103 board (LPC1114)
+// blink the LED on an Arduino Due
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -12,13 +12,17 @@
 
 #include "godafoss.hpp"
 
-namespace gf  = godafoss;
-using target  = gf::target<>;
-using timing  = target::timing;
-using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
-using chip    = gf::pcf8574a< i2c_bus, 0x01 >;
+namespace gf = godafoss;
+using target = gf::target<>;
+using timing = target::timing;
+using i2c_bus = gf::i2c_bus_bb_scl_sda<
+   target::scl1,
+   target::sda1,
+   timing,
+   gf::i2c_profile_fast >;
+using oled = gf::oled< i2c_bus >;
 
 int main( void ){
-   gf::kitt< gf::invert< chip >, timing::ms< 50 > >();
+   gf::demo::bouncing_square< oled, timing::ms< 0 >, 8 > ();
 }
 
