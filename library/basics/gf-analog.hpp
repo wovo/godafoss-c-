@@ -22,6 +22,7 @@
 //
 // ==========================================================================
 
+/*
 // quote ''adc'' };
 template< typename T >
 concept adc = requires {
@@ -42,6 +43,7 @@ struct be_adc :
    static const value_type adc_min = 0;
    static const value_type adc_max = ( 1 << n_bits ) -1;
 };
+*/
 
 
 // ==========================================================================

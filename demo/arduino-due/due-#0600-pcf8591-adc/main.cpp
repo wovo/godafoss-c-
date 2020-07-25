@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// blink the LED on an Arduino Due
+// kitt on 8 LEDs on a HC595 connected to a DB103 board (LPC1114)
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -16,26 +16,23 @@ namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
 using uart    = target::uart<>;
-using adc0     = target::a0;
-using adc1     = target::a1;
+
+using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
+using chip    = gf::pcf8591< i2c_bus >;
 
 int main( void ){
-   gf::ostream< gf::formatter< uart > > cout;
+
    timing::init();
-   adc0::init();
-   adc1::init();
+   chip::init();
+   gf::ostream< gf::formatter< uart > > cout;
    timing::ms< 2000 >::wait();
+
    for(;;){
       cout
-         << "adc0 = 0x"
-         << gf::hex << gf::setw( 3 ) << gf::hex << gf::setfill( '0' )
-         << adc0::read().raw_value
-         << "     "
-         << "adc1 = 0x"
-         << gf::hex << gf::setw( 3 ) << gf::hex << gf::setfill( '0' )
-         << adc1::read().raw_value
-         << "\n";
-      timing::ms< 500 >::wait();
+         << "adc0: " << gf::setw( 4 ) << chip::adc0::read().raw_value << "   "
+         << "adc1: " << gf::setw( 4 ) << chip::adc1::read().raw_value << "   "
+         << "adc2: " << gf::setw( 4 ) << chip::adc2::read().raw_value << "   "
+         << "adc3: " << gf::setw( 4 ) << chip::adc3::read().raw_value << "\n";
+      timing::ms< 250 >::wait();
    }
 }
-

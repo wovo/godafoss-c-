@@ -67,19 +67,20 @@ struct ssd1306_i2c {
 
    static const uint8_t data_mode = 0x40;
    static const uint8_t cmd_mode  = 0x80;
+   using channel = typename bus::channel< address >;
 
    static void init(){
       bus::init();
    }
 
    static void command( uint8_t d ){
-      auto transaction = typename bus::write_transaction( address );
+      auto transaction = typename channel::write_transaction();
       transaction.write( cmd_mode );
       transaction.write( d );
    }
 
    static void data( const auto & data ){
-      auto transaction = typename bus::write_transaction( address );
+      auto transaction = typename channel::write_transaction();
       transaction.write( data_mode );
       transaction.write(
          data,

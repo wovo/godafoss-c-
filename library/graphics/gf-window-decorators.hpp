@@ -50,6 +50,43 @@ struct flip_horizontally :
 
 // ==========================================================================
 //
+// ==========================================================================
+
+template< typename minion >
+struct flip_vertically :
+   window_root<
+      flip_vertically< minion >,
+      typename minion::offset_t,
+      typename minion::color_t,
+      minion::size
+   >
+{
+
+   static void init(){
+      minion::init();
+   }
+
+   static void write_implementation(
+      minion::offset_t offset,
+      minion::color_t color
+   ){
+      minion::write(
+         minion::origin
+            + typename minion::offset_t(
+               offset.x, minion::size.y - offset.y ),
+         color
+      );
+   }
+
+   static void flush(){
+      minion::flush();
+   }
+
+};
+
+
+// ==========================================================================
+//
 // fold
 //
 // ==========================================================================

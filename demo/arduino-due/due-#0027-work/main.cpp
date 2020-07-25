@@ -1,4 +1,4 @@
-
+/*
 #include <concepts>
 
 // =========================
@@ -35,3 +35,6 @@ int main( void ){
    pin_in< b >();
 
 }
+*/
+
+int main(){}

@@ -32,8 +32,8 @@ int main( void ){
 
     back_light::write( 1 );
 
-    gf::scrolling_text< lcd >(
-       "We regret to inform you that we are closed for the day."
-    );
+//    gf::scrolling_text< lcd >(
+//       "We regret to inform you that we are closed for the day."
+//    );
 
 }

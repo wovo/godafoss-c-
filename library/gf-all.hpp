@@ -203,7 +203,7 @@ namespace godafoss {
 #include "chips/gf-ks0108.hpp"
 #include "chips/gf-hc595.hpp"
 #include "chips/gf-pcf8574.hpp"
-//#include "chips/gf-pcf8591.hpp"
+#include "chips/gf-pcf8591.hpp"
 #include "chips/gf-ssd1306.hpp"
 #include "chips/gf-nrf24l01.hpp"
 #include "chips/gf-max7219.hpp"

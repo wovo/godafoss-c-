@@ -32,7 +32,7 @@ int main( void ){
    //gf::blink< all, timing::us< 1 > >();
    //timing::init();
    //timing::ms< 1'000 >::wait();
-if(0){
+/*if(0){
       chip::init();
    chip::clear( black );
    for( int i = 0; i < 64; ++i ){
@@ -41,6 +41,7 @@ if(0){
       timing::ms< 200 >::wait();
    }
 }
-   gf::demo::random_lines2< chip, timing::ms< 200 > > ();
+* */
+   gf::demo::random_lines2< window, timing::ms< 200 > > ();
 }
 

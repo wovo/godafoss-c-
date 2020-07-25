@@ -1,4 +1,4 @@
-
+/*
 #include <concepts>
 
 template< typename T >
@@ -47,3 +47,5 @@ int main( void ){
    pin_in< c >();
 
 }
+&*/
+int main(){}

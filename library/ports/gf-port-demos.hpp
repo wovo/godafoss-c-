@@ -35,7 +35,7 @@ GODAFOSS_NO_RETURN void walk(){
    port::init();
    interval::init();
    for(;;){
-      constexpr typename port::value_type pattern = ( 0x01LL << n ) - 1;
+//      constexpr typename port::value_type pattern = ( 0x01LL << n ) - 1;
       for( uint_fast8_t  i = 0; i < port::n_pins; i += step ){
          port::write(
             demo_pattern< typename port::value_type, port::n_pins, n >( i ) );

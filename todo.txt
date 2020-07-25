@@ -1,6 +1,28 @@
+timing
+clock timing
+i1c abstraction
+hardware i2c
+hardware spi pins
+oled spi
+i2c chips check bus speed
+i2c fast is now > 400 kHz!, 100kHz is ietsje te snel
+
+
+
+simplfy using https://en.cppreference.com/w/cpp/types/is_same
+invert a source of fraction (ADC)
+ssd1306 spi
+i2c channel abstraction
+i2c hardware
+
+fraction operator- ??
+clock timing service, oled timings
+bouncing balls demo
+i2c from run-time address (bus scanner)
+pin_out from window!
+lcd scrolling message
 oled on lpc1114 past niet in de RAM??
 db103 lpc21isp houdt de chip in reset - no serial :( -> bmptk -control
-random lines werkt niet - ligt het aan de demo??
 
 bouncing square: minimum size 1 -> 2x2 pixels!
  init() with value -> all boxes must CRTP
@@ -21,7 +43,7 @@ bouncing square: minimum size 1 -> 2x2 pixels!
 random blocks two-files project!
 random is too large for an LPC1114
 db103 needs two 595 board and test
-db103 ADC not tested
+db103 ADC not tested -> use PCF8591 PCB
 port< > instead of port_out_from<> etc?
 gpio direct werkt niet, daarmee verder
 decorators have commented out requires clauses

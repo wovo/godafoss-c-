@@ -16,9 +16,9 @@ namespace gf = godafoss;
 using target = gf::target<>;
 using timing = target::timing;
 using chip = gf::ws2812< target::d11, timing, 187 >;
-using leds = gf::pin_out_from_port< gf::port_from_window< gf::monochrome< chip, gf::black, gf::blue > > >;
+//using leds = gf::pin_out_from< gf::port_from_window< gf::monochrome< chip, gf::black, gf::blue > > >;
 
 int main( void ){
-   gf::blink< leds, timing::ms< 10 > >();
+//   gf::blink< leds, timing::ms< 10 > >();
 }
 

@@ -14,11 +14,17 @@ struct _pcf8574 :
 {
 
    using chip = _pcf8574< bus, address >;
+   using channel = typename bus::channel< address >;
    static inline uint8_t read_buffer;
    static inline uint_fast8_t write_buffer;
    static inline bool write_dirty;
 
    static void GODAFOSS_INLINE init(){
+
+      static_assert(
+         bus::profile::f <= 100'000,
+         "The maximum I2C bus frequency for this chip is 100 kHz" );
+
       write_dirty = false;
       bus::init();
    }
@@ -30,13 +36,13 @@ struct _pcf8574 :
 
    static void GODAFOSS_INLINE flush(){
       if( write_dirty ){
-         typename bus::write_transaction( address ).write( write_buffer );
+         typename channel::write_transaction().write( write_buffer );
          write_dirty = false;
       }
    }
 
    static void GODAFOSS_INLINE refresh(){
-      typename bus::read_transaction( address ).read( read_buffer );
+      typename channel::read_transaction().read( read_buffer );
    }
 
    template< int n > struct pin :

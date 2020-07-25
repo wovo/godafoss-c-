@@ -195,43 +195,36 @@ template< typename w >
 class circle {
 public:
 
-   using address_t  = w::address_t;
-   using value_t    = w::address_t::value_t;
-   using color_t    = w::color_t;
+   using location_t  = w::location_t;
+   using offset_t    = w::offset_t;
+   using value_t     = w::offset_t::value_t;
+   using color_t     = w::color_t;
 
-   address_t  midpoint;
-   value_t    radius;
-   address_t  origin;
-   address_t  size;
-   color_t    border_ink;
-   bool       use_foreground;
-   color_t    fill_ink;
-   bool       fill;
+   offset_t   midpoint;
+   value_t   radius;
+   offset_t  origin;
+   offset_t  size;
+   color_t   border_ink;
+   bool      use_foreground;
+   color_t   fill_ink;
+   bool      fill;
 
    void update_from_midpoint_radius(){
-      origin = midpoint - address_t{ radius };
-      size = address_t( 2 * radius );
+      origin  = midpoint - offset_t{ radius, radius };
+      size    = offset_t{ radius, radius } * 2;
    }
 
-   circle( address_t midpoint, value_t radius )
-      : midpoint{ midpoint }, radius{ radius },
-        use_foreground{ true },
-        fill{ false }
+   circle( location_t midpoint, value_t radius, color_t ink )
+      : midpoint{ midpoint- w::origin }, radius{ radius },
+        border_ink{ ink },
+        fill_ink{ white }, fill{ false }
    {
       update_from_midpoint_radius();
    }
 
-   circle( address_t midpoint, value_t radius, color_t ink )
-      : midpoint{ midpoint }, radius{ radius },
-        border_ink{ ink }, use_foreground{ false },
-        fill{ false }
-   {
-      update_from_midpoint_radius();
-   }
-
-   circle( address_t midpoint, value_t radius, color_t border, color_t fill )
-      : midpoint{ midpoint }, radius{ radius },
-        border_ink{ border }, use_foreground{ false },
+   circle( location_t midpoint, value_t radius, color_t border, color_t fill )
+      : midpoint{ midpoint- w::origin }, radius{ radius },
+        border_ink{ border },
         fill_ink{ fill }, fill{ true }
    {
       update_from_midpoint_radius();
@@ -244,8 +237,7 @@ public:
          return;
       }
 
-      auto ink = use_foreground ? w::foreground : border_ink;
-      auto start = midpoint;
+      auto start = w::origin + midpoint;
 
       // http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
 
@@ -256,12 +248,12 @@ public:
       value_t y = radius;
 
       // top and bottom
-      w::write( start + xy( 0, + radius ), ink );
-      w::write( start + xy( 0, - radius ), ink );
+      w::write( start + xy( 0, + radius ), border_ink );
+      w::write( start + xy( 0, - radius ), border_ink );
 
       // left and right
-      w::write( start + xy( + radius, 0 ), ink );
-      w::write( start + xy( - radius, 0 ), ink );
+      w::write( start + xy( + radius, 0 ), border_ink );
+      w::write( start + xy( - radius, 0 ), border_ink );
 
       // filled circle
       if( 0 ) if( fill ){
@@ -290,14 +282,14 @@ public:
          ddFx += 2;
          fx += ddFx;
 
-         w::write( start + xy( + x, + y ), ink );
-         w::write( start + xy( - x, + y ), ink );
-         w::write( start + xy( + x, - y ), ink );
-         w::write( start + xy( - x, - y ), ink );
-         w::write( start + xy( + y, + x ), ink );
-         w::write( start + xy( - y, + x ), ink );
-         w::write( start + xy( + y, - x ), ink );
-         w::write( start + xy( - y, - x ), ink );
+         w::write( start + xy( + x, + y ), border_ink );
+         w::write( start + xy( - x, + y ), border_ink );
+         w::write( start + xy( + x, - y ), border_ink );
+         w::write( start + xy( - x, - y ), border_ink );
+         w::write( start + xy( + y, + x ), border_ink );
+         w::write( start + xy( - y, + x ), border_ink );
+         w::write( start + xy( + y, - x ), border_ink );
+         w::write( start + xy( - y, - x ), border_ink );
 
          // filled circle
          if( fill ){
