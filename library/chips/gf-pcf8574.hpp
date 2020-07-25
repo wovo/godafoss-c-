@@ -22,7 +22,7 @@ struct _pcf8574 :
    static void GODAFOSS_INLINE init(){
 
       static_assert(
-         bus::profile::f <= 100'000,
+         bus::frequency <= 100'000,
          "The maximum I2C bus frequency for this chip is 100 kHz" );
 
       write_dirty = false;
@@ -36,13 +36,13 @@ struct _pcf8574 :
 
    static void GODAFOSS_INLINE flush(){
       if( write_dirty ){
-         typename channel::write_transaction().write( write_buffer );
+         typename channel::write_transaction().write_byte( write_buffer );
          write_dirty = false;
       }
    }
 
    static void GODAFOSS_INLINE refresh(){
-      typename channel::read_transaction().read( read_buffer );
+      read_buffer = typename channel::read_transaction().read_byte();
    }
 
    template< int n > struct pin :

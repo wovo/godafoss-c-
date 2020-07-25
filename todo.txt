@@ -1,3 +1,6 @@
+i2c-bus vereenvoudigen
+concepts weer invoeren
+
 timing
 clock timing
 i1c abstraction

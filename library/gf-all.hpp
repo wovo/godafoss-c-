@@ -194,8 +194,10 @@ namespace godafoss {
 #include "graphics/gf-window-demos.hpp"
 
 #include "protocols/gf-spi.hpp"
+
 #include "protocols/gf-i2c-profile.hpp"
-#include "protocols/gf-i2c.hpp"
+#include "protocols/gf-i2c-bus.hpp"
+#include "protocols/gf-i2c-bit-banged.hpp"
 #include "protocols/gf-memory.hpp"
 
 #include "chips/gf-servo.hpp"

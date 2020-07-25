@@ -102,7 +102,9 @@ HEADERS           += graphics/gf-drawables.hpp
 HEADERS           += graphics/gf-window-demos.hpp
 
 HEADERS           += protocols/gf-i2c-profile.hpp
-HEADERS           += protocols/gf-i2c.hpp
+HEADERS           += protocols/gf-i2c-bus.hpp
+HEADERS           += protocols/gf-i2c-bit-banged.hpp
+
 HEADERS           += protocols/gf-spi.hpp
 HEADERS           += protocols/gf-memory.hpp
 

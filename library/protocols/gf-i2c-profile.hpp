@@ -48,51 +48,50 @@ template< typename T >
 concept is_i2c_profile = requires {
    T::_i2c_profile_marker;
 
+/*
    { T::t_hd_sta  ::wait() } -> std::same_as< void >;
    { T::t_low     ::wait() } -> std::same_as< void >;
    { T::t_high    ::wait() } -> std::same_as< void >;
    { T::t_su_dat  ::wait() } -> std::same_as< void >;
    { T::t_su_sto  ::wait() } -> std::same_as< void >;
    { T::t_buf     ::wait() } -> std::same_as< void >;
+*/
 };
 
-// default timing for making the frequency accessible
-struct _dummy_i2c_timing {
-   template< uint64_t t >
-   struct ns {
-      static void wait();
-   };
-};
 
 // =============================================================================
 
 // @quote standard 12
-template< is_timing_wait timing >
 struct i2c_standard : i2c_profile_root {
 
    static constexpr int64_t frequency = 100'000;
 
-   using t_hd_sta  = typename timing::ns< 4'000 >;
-   using t_low     = typename timing::ns< 4'700 >;
-   using t_high    = typename timing::ns< 4'000 >;
-   using t_su_dat  = typename timing::ns<   250 >;
-   using t_su_sto  = typename timing::ns< 4'000 >;
-   using t_buf     = typename timing::ns< 4'700 >;
+   template< is_timing_wait timing >
+   struct intervals {
+      using t_hd_sta  = typename timing::ns< 4'000 >;
+      using t_low     = typename timing::ns< 4'700 >;
+      using t_high    = typename timing::ns< 4'000 >;
+      using t_su_dat  = typename timing::ns<   250 >;
+      using t_su_sto  = typename timing::ns< 4'000 >;
+      using t_buf     = typename timing::ns< 4'700 >;
+   };
 };
 
 
 // =============================================================================
 
 // @quote fast 12
-template< is_timing_wait timing >
 struct i2c_fast : i2c_profile_root {
 
    static constexpr int64_t frequency = 400'000;
 
-   using t_hd_sta  = typename timing::ns<   600 >;
-   using t_low     = typename timing::ns< 1'300 >;
-   using t_high    = typename timing::ns<   600 >;
-   using t_su_dat  = typename timing::ns<   100 >;
-   using t_su_sto  = typename timing::ns<   600 >;
-   using t_buf     = typename timing::ns< 1'300 >;
+   template< is_timing_wait timing >
+   struct intervals {
+      using t_hd_sta  = typename timing::ns<   600 >;
+      using t_low     = typename timing::ns< 1'300 >;
+      using t_high    = typename timing::ns<   600 >;
+      using t_su_dat  = typename timing::ns<   100 >;
+      using t_su_sto  = typename timing::ns<   600 >;
+      using t_buf     = typename timing::ns< 1'300 >;
+   };
 };

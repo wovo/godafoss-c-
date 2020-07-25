@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// gf-i2c.hpp
+// gf-i2c-bit-banged.hpp
 //
 // =============================================================================
 //
@@ -30,18 +30,26 @@ template<
    can_pin_oc      scl_arg,
    can_pin_oc      sda_arg,
    is_timing_wait  timing_arg,
-   template< is_timing_wait > typename _profile = i2c_standard
+   is_i2c_profile  _profile
 >
-struct i2c_bus_bb_scl_sda {
+struct _i2c_base_bb_scl_sda {
 
-   using timing = timing_wait< timing_arg >;
-   using profile  = _profile< timing >;
+   using timing   = timing_wait< timing_arg >;
+   using profile  = typename _profile::intervals< timing >;
 
-   using bus = i2c_bus_bb_scl_sda<
-      scl_arg, sda_arg, timing, _profile >;
+   static constexpr auto frequency = _profile::frequency;
 
    using scl      = direct< pin_oc< scl_arg > >;
    using sda      = direct< pin_oc< sda_arg > >;
+
+   static void init(){
+      timing::init();
+      scl::init();
+      sda::init();
+
+      scl::write( 1 );
+      sda::write( 1 );
+   }
 
    static void write_bit( bool x ){
 
@@ -101,14 +109,22 @@ struct i2c_bus_bb_scl_sda {
       write_bit( 1 );
    }
 
-   static void write_byte( uint8_t x ){
+   static void write_byte( uint_fast8_t data ){
       loop< 8 >( [&]{
-         write_bit( ( x & 0x80 ) != 0 );
-         x = x << 1;
+         write_bit( ( data & 0x80 ) != 0 );
+         data = data << 1;
       });
+      (void) read_ack();
    }
 
+   static inline bool _first_byte;
+
    static [[nodiscard]] uint8_t read_byte(){
+      if( ! _first_byte ){
+         write_ack();
+      }
+      _first_byte = false;
+
       uint8_t result = 0;
       loop< 8 >( [&]{
          result = result << 1;
@@ -116,139 +132,37 @@ struct i2c_bus_bb_scl_sda {
             result |= 0x01;
          }
       });
+
       return result;
    }
 
-public:
-
-   static void init(){
-      timing::init();
-      scl::init();
-      sda::init();
-
-      scl::write( 1 );
-      sda::write( 1 );
+   static void start_write_transaction( uint_fast8_t address ){
+      write_start();
+      write_byte( address << 1 );
    }
 
-   struct _write_transaction {
+   static void stop_write_transaction(){
+      write_stop();
+   }
 
-      _write_transaction( uint8_t address ){
-         bus::write_start();
-         bus::write_byte( address << 1 );
-      }
+   static void start_read_transaction( uint_fast8_t address ){
+      write_start();
+      write_byte( ( address << 1 ) | 0x01 );
+      _first_byte = true;
+   }
 
-      ~_write_transaction(){
-         bus::read_ack();
-         bus::write_stop();
-      }
-
-      void write( const uint8_t data[], int n ){
-         for( int i = 0; i < n; ++i ){
-            bus::read_ack();
-            bus::write_byte( data[ i ] );
-         };
-      }
-
-      void write( const uint8_t data ){
-         write( &data, 1 );
-      }
-
-   };
-
-   struct _read_transaction {
-
-      bool first;
-
-      _read_transaction( uint8_t address ):
-         first( true )
-      {
-         write_start();
-         write_byte( ( address << 1 ) | 0x01 );
-         read_ack();
-      }
-
-      ~_read_transaction(){
-         write_nack();
-         write_stop();
-      }
-
-      void read( uint8_t data[], int n ){
-         for( int i = 0; i < n; ++i ){
-            if( ! first ){
-               write_ack();
-            }
-            first = false;
-            data[ i ] = read_byte();
-         }
-      }
-
-      void read( uint8_t & data ){
-         read( & data, 1 );
-      }
-
-   };
-
-   template< int address >
-   struct channel {
-
-      struct read_transaction {
-
-         bool first;
-
-         read_transaction():
-            first( true )
-         {
-            write_start();
-            write_byte( ( address << 1 ) | 0x01 );
-            read_ack();
-         }
-
-         ~read_transaction(){
-            write_nack();
-            write_stop();
-         }
-
-         void read( uint8_t data[], int n ){
-            for( int i = 0; i < n; ++i ){
-               if( ! first ){
-                  write_ack();
-               }
-               first = false;
-               data[ i ] = read_byte();
-            }
-         }
-
-         void read( uint8_t & data ){
-            read( & data, 1 );
-         }
-
-      };
-
-      struct write_transaction {
-
-         write_transaction(){
-            bus::write_start();
-            bus::write_byte( address << 1 );
-         }
-
-         ~write_transaction(){
-            bus::read_ack();
-            bus::write_stop();
-         }
-
-         void write( const uint8_t data[], int n ){
-            for( int i = 0; i < n; ++i ){
-               bus::read_ack();
-               bus::write_byte( data[ i ] );
-            };
-         }
-
-         void write( const uint8_t data ){
-            write( &data, 1 );
-         }
-
-      };
-
-   };
-
+   static void stop_read_transaction(){
+      write_nack();
+      write_stop();
+   }
 };
+
+template<
+   can_pin_oc      scl_arg,
+   can_pin_oc      sda_arg,
+   is_timing_wait  timing_arg,
+   is_i2c_profile  profile    = i2c_standard
+>
+struct i2c_bus_bb_scl_sda :
+   i2c_bus< _i2c_base_bb_scl_sda<
+      scl_arg, sda_arg, timing_arg, profile > >{};

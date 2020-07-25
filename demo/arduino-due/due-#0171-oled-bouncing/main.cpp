@@ -7,7 +7,7 @@ using i2c_bus = gf::i2c_bus_bb_scl_sda<
    target::scl1,
    target::sda1,
    timing,
-   gf::i2c_standard >;
+   gf::i2c_fast >;
 using oled = gf::oled< i2c_bus >;
 
 int main( void ){

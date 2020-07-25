@@ -75,13 +75,13 @@ struct ssd1306_i2c {
 
    static void command( uint8_t d ){
       auto transaction = typename channel::write_transaction();
-      transaction.write( cmd_mode );
-      transaction.write( d );
+      transaction.write_byte( cmd_mode );
+      transaction.write_byte( d );
    }
 
    static void data( const auto & data ){
       auto transaction = typename channel::write_transaction();
-      transaction.write( data_mode );
+      transaction.write_byte( data_mode );
       transaction.write(
          data,
          sizeof( data ) / sizeof( uint8_t )
