@@ -6,7 +6,7 @@
 
 
 template<
-   spi           bus,
+   is_spi_bus    bus,
    typename      timing,
    unsigned int  n_chips = 1 >
 struct ws2801 :

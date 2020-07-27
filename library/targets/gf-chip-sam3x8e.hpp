@@ -115,7 +115,6 @@ struct _pin_in_out :
    }
 
    static void GODAFOSS_INLINE refresh(){}
-
 };
 
 
@@ -193,7 +192,6 @@ struct pin_adc {
    static value_type GODAFOSS_INLINE read(){
       return value_type( _adc_get_common( channel, 0x01 << channel ) );
    }
-
 };
 
 
@@ -265,7 +263,6 @@ struct uart :
    static char GODAFOSS_INLINE read_unchecked(){
       return hw_uart->UART_RHR;
    }
-
 };
 
 
@@ -415,9 +412,8 @@ struct waiting :
 
       }
    }
-
-}; // struct waiting
-
+};
+\
 // ==========================================================================
 //
 // I2C
@@ -430,149 +426,167 @@ template<
 >
 struct _i2c_base {
 
-   static void init() {
+   static void config_pin(uint32_t pin, Pio *pio) {
+      pio->PIO_ABSR = pio->PIO_ABSR & (~pin & PIOA->PIO_ABSR);
+      pio->PIO_PDR = pin;
+      pio->PIO_IDR = pin;
+      pio->PIO_PUER = pin;
+  };
 
-      // don't do this over and over
-      GODAFOSS_RUN_ONCE;
+  static void init() {
 
-      godafoss::chip_sam3x8e< clock_frequency >::init();
+     // don't do this over and over
+     GODAFOSS_RUN_ONCE;
 
-      auto config_pin = [](uint32_t pin, Pio *pio) {
-         pio->PIO_ABSR = pio->PIO_ABSR & (~pin & PIOA->PIO_ABSR);
-         pio->PIO_PDR = pin;
-         pio->PIO_IDR = pin;
-         pio->PIO_PUER = pin;
-      };
+     godafoss::chip_sam3x8e< clock_frequency >::init();
 
-      if( twi() == TWI0 ){
+     if( twi() == TWI0 ){
 
-         // configure the pins
-         config_pin(PIO_PA18A_TWCK0, PIOA);
-         config_pin(PIO_PA17A_TWD0, PIOA);
+        // configure the pins
+        config_pin(PIO_PA18A_TWCK0, PIOA);
+        config_pin(PIO_PA17A_TWD0, PIOA);
 
-         // enable the clock
-         if ((PMC->PMC_PCSR0 & (1 << ID_TWI0)) != (1 << ID_TWI0)) {
-            PMC->PMC_PCER0 = PMC->PMC_PCER0 | ( 1 << ID_TWI0 );
-         }
+        // enable the clock
+        if ((PMC->PMC_PCSR0 & (1 << ID_TWI0)) != (1 << ID_TWI0)) {
+           PMC->PMC_PCER0 = PMC->PMC_PCER0 | ( 1 << ID_TWI0 );
+        }
 
-      } else {
+     } else {
 
-         // configure the pins
-         config_pin(PIO_PB13A_TWCK1, PIOB);
-         config_pin(PIO_PB12A_TWD1, PIOB);
+        // configure the pins
+        config_pin(PIO_PB13A_TWCK1, PIOB);
+        config_pin(PIO_PB12A_TWD1, PIOB);
 
-         // enable the clock
-         if ((PMC->PMC_PCSR0 & (1 << ID_TWI1)) != (1 << ID_TWI1)) {
-            PMC->PMC_PCER0 = PMC->PMC_PCER0 | ( 1 << ID_TWI1 );
-         }
-      }
+        // enable the clock
+        if ((PMC->PMC_PCSR0 & (1 << ID_TWI1)) != (1 << ID_TWI1)) {
+           PMC->PMC_PCER0 = PMC->PMC_PCER0 | ( 1 << ID_TWI1 );
+        }
+     }
 
-      // Disable PDC channel
-      twi()->TWI_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
+     // Disable PDC channel
+     twi()->TWI_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
 
-      // TWI Slave Mode Enabled
-      twi()->TWI_CR = TWI_CR_SVEN;
+     // TWI Slave Mode Enabled
+     twi()->TWI_CR = TWI_CR_SVEN;
 
-      // twi()disable and sw reset
-      twi()->TWI_CR = TWI_CR_SWRST;
-      twi()->TWI_RHR;
+     // twi()disable and sw reset
+     twi()->TWI_CR = TWI_CR_SWRST;
+     twi()->TWI_RHR;
 
-      // Wait for at least 10ms
-      wait_busy( 10'000 * 84 );
+     // Wait for at least 10ms
+     wait_busy( 10'000 * 84 );
 
-      // TWI Slave mode disabled, Twi master mode disabled
-      twi()->TWI_CR = TWI_CR_SVDIS | TWI_CR_MSDIS;
+     // TWI Slave mode disabled, Twi master mode disabled
+     twi()->TWI_CR = TWI_CR_SVDIS | TWI_CR_MSDIS;
 
-      // Enable master mode
-      twi()->TWI_CR = TWI_CR_MSEN;
+     // Enable master mode
+     twi()->TWI_CR = TWI_CR_MSEN;
 
-      // this sets the twi frequency
-      constexpr uint32_t masterClock = clock_frequency;
-      uint32_t ckdiv = 0;   // Clock divider
-      uint32_t cLHDiv = 0;  // Clock low and high divider
-      cLHDiv = masterClock / ( frequency * 2) - 4;
+     // this sets the twi frequency
+     constexpr uint32_t masterClock = clock_frequency;
+     uint32_t ckdiv = 0;   // Clock divider
+     uint32_t cLHDiv = 0;  // Clock low and high divider
+     cLHDiv = masterClock / ( frequency * 2 ) - 4;
 
-      // cldiv must fit in 8 bits, ckdiv must fit in 3 bits
-      while ((cLHDiv > 0xFF) && (ckdiv < 7)) {
-         ckdiv++;  // Increase clock devider
-         cLHDiv /= 2;
-      }
-      twi()->TWI_CWGR =
-           TWI_CWGR_CLDIV( cLHDiv )
-         | TWI_CWGR_CHDIV( cLHDiv )
-         | TWI_CWGR_CKDIV( ckdiv  );
+     // cldiv must fit in 8 bits, ckdiv must fit in 3 bits
+     while(( cLHDiv > 0xFF ) && ( ckdiv < 7 )){
+        ckdiv++;  // Increase clock devider
+        cLHDiv /= 2;
+     }
+     twi()->TWI_CWGR =
+          TWI_CWGR_CLDIV( cLHDiv )
+        | TWI_CWGR_CHDIV( cLHDiv )
+        | TWI_CWGR_CKDIV( ckdiv  );
    }
+
+   // ==========================================================================
 
    static void start_write_transaction( uint_fast8_t address ){
       twi()->TWI_MMR = 0x00 << 12 | address << 16;
    }
 
-   static void start_read_transaction( uint_fast8_t address ){
-      twi()->TWI_MMR = 0x01 << 12 | address << 16;
-   }
+   static void write( const uint8_t data) {
 
-   static void write_byte( const uint_fast8_t data) {
-
-      uint32_t status = 0;
-      uint32_t timeout = 1'000;
-         while (1) {
-
-            timeout--;
-            status = twi()->TWI_SR;
-            if (status & TWI_SR_TXRDY) {
-               break;
-            }
-            if (timeout == 0 ) {
-               return;
-            }
-
-         }
+      // start the transaction (if not yet started), and
+      // and transmit the next byte
       twi()->TWI_THR = data;
+
+      // wait for the tranmission to complete
+      uint32_t timeout = 10'000;
+      while( ( twi()->TWI_SR & TWI_SR_TXRDY ) == 0 ){
+         if( --timeout == 0 ){
+            break;
+         }
+      }
    }
 
    static void stop_write_transaction(){
       twi()->TWI_CR = TWI_CR_STOP;
+
       // Wait until the I2C bus is released.
-      while (!(twi()->TWI_SR & TWI_SR_TXCOMP)){};
+      while ( (twi()->TWI_SR & TWI_SR_TXCOMP) == 0 ){};
    }
 
-   static int_fast8_t read_byte() {
+   // ==========================================================================
 
-      uint32_t status = 0;
-      uint32_t timeout = 1'000;
+   static void start_read_transaction( uint_fast8_t address ){
+      twi()->TWI_MMR = 0x01 << 12 | address << 16;
 
+      // I'm not sure why, but without this reading of the RHR
+      // the data read seems to lag one byte behind
+      (void) twi()->TWI_RHR;
+   }
+
+   static int8_t read() {
+
+      // start the transaction (if not yet started), and
+      // and receive the next byte
       twi()->TWI_CR = TWI_CR_START;
-      for(;;){
-            timeout--;
-            status = twi()->TWI_SR;
 
-//            if (count == 1 && !stopTransaction) {
-//                twi()->TWI_CR = TWI_CR_STOP;
-//                stopTransaction = 1;
-//            }
-
-            if (!(status & TWI_SR_RXRDY)) {
-                if (timeout ==0 ) {
-                    return 0;
-                }
-                continue;
-            }
-            return twi()->TWI_RHR;
+      // wait for a received byte
+      uint32_t timeout = 10'000;
+      while( ( twi()->TWI_SR & TWI_SR_RXRDY ) == 0 ){
+         if( --timeout == 0 ){
+            twi()->TWI_CR = 0;
+            return 0xAA;
+            break;
+         }
       }
+
+      // stop the receiving
+      twi()->TWI_CR = 0;
+
+      return twi()->TWI_RHR;
    }
 
    static void stop_read_transaction(){
+      twi()->TWI_CR = TWI_CR_STOP;
+
+      //(void)twi()->TWI_RHR;
+
       // Wait until the I2C bus is released.
-      while (!(twi()->TWI_SR & TWI_SR_TXCOMP)){};
+      while ( (twi()->TWI_SR & TWI_SR_TXCOMP) == 0 ){};
    }
 
+   // ==========================================================================
 };
 
-template< typename profile = i2c_standard >
-struct i2c0 : i2c_bus< _i2c_base< []{ return TWI0; }, profile::frequency > >{};
+// I can't pass a data pointer as a template parameter :(
+// But I can pass a function that returns the data pointer.
+static constexpr Twi * _twi0(){ return TWI0; }
+static constexpr Twi * _twi1(){ return TWI1; }
 
 template< typename profile = i2c_standard >
-struct i2c1 : i2c_bus< _i2c_base< []{ return TWI1; }, profile::frequency > >{};
+struct i2c0 : i2c_bus<
+   _i2c_base< _twi0, profile::frequency >,
+   profile
+>{};
+
+template< typename profile = i2c_standard >
+struct i2c1 : i2c_bus<
+   _i2c_base< _twi1, profile::frequency >,
+   profile
+>{};
 
 
 }; // struct chip_sam3x8e

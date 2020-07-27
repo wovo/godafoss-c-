@@ -17,30 +17,22 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using uart    = target::uart<>;
 
-// using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
-
-using i2c_bus = target::i2c0<>;
-
-using chip    = gf::pcf8574a< i2c_bus, 0x01 >;
-using led     = chip::p0;
+#include "i2c_bus.hpp"
+#include "i2c_bus.cpp"
 
 int main( void ){
 
    timing::init();
-   //timing::ms< 2'000 >::wait();
    gf::ostream< gf::formatter< uart > > cout;
    cout << __LINE__ << "\n";
-   chip::init();
 
-   if(1)for(;;){
+   i2c_bus_c bus( i2c_bus_c::interface::interface_0, 100'000 );
+
+   for(;;){
+      uint8_t data[ 1 ] = { 0xAA };
       cout << __LINE__ << "\n";
-      gf::direct< chip >::write( 0xAA );
-      cout << __LINE__ << "\n";
-      timing::ms< 200 >::wait();
-      gf::direct< chip >::write( 0x55 );
+      bus.write( 0x49, data, 1, 0, 0 );
       cout << __LINE__ << "\n";
       timing::ms< 200 >::wait();
    }
-
-   gf::blink< led, timing::ms< 3 >  >();
 }

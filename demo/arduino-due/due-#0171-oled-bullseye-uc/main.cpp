@@ -19,12 +19,13 @@ using timing = target::timing;
 using adx     = target::a0;
 using ady     = target::a1;
 
-using i2c_bus = gf::i2c_bus_bb_scl_sda<
+using i2c_bus_sw = gf::i2c_bus_bb_scl_sda<
    target::scl1,
    target::sda1,
    timing,
-   gf::i2c_profile_fast >;
-using oled = gf::flip_vertically< gf::oled< i2c_bus > >;
+   gf::i2c_fast >;
+using i2c_bus_hw = target::i2c0< gf::i2c_fast >;
+using oled = gf::flip_vertically< gf::oled< i2c_bus_sw > >;
 
 int main( void ){
    oled::init();

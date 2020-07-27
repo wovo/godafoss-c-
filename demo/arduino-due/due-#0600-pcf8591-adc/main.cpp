@@ -17,7 +17,9 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using uart    = target::uart<>;
 
-using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
+//using i2c_bus = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
+using i2c_bus = target::i2c0<>;
+
 using chip    = gf::pcf8591< i2c_bus >;
 
 int main( void ){

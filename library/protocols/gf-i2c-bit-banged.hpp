@@ -109,7 +109,7 @@ struct _i2c_base_bb_scl_sda {
       write_bit( 1 );
    }
 
-   static void write_byte( uint_fast8_t data ){
+   static void write( uint8_t data ){
       loop< 8 >( [&]{
          write_bit( ( data & 0x80 ) != 0 );
          data = data << 1;
@@ -119,7 +119,7 @@ struct _i2c_base_bb_scl_sda {
 
    static inline bool _first_byte;
 
-   static [[nodiscard]] uint8_t read_byte(){
+   static [[nodiscard]] uint8_t read(){
       if( ! _first_byte ){
          write_ack();
       }
@@ -138,7 +138,7 @@ struct _i2c_base_bb_scl_sda {
 
    static void start_write_transaction( uint_fast8_t address ){
       write_start();
-      write_byte( address << 1 );
+      write( address << 1 );
    }
 
    static void stop_write_transaction(){
@@ -147,7 +147,7 @@ struct _i2c_base_bb_scl_sda {
 
    static void start_read_transaction( uint_fast8_t address ){
       write_start();
-      write_byte( ( address << 1 ) | 0x01 );
+      write( ( address << 1 ) | 0x01 );
       _first_byte = true;
    }
 
@@ -164,5 +164,6 @@ template<
    is_i2c_profile  profile    = i2c_standard
 >
 struct i2c_bus_bb_scl_sda :
-   i2c_bus< _i2c_base_bb_scl_sda<
-      scl_arg, sda_arg, timing_arg, profile > >{};
+   i2c_bus<
+      _i2c_base_bb_scl_sda< scl_arg, sda_arg, timing_arg, profile >,
+      profile >{};

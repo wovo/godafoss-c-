@@ -16,7 +16,11 @@ namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
 
-using i2c_bus  = gf::i2c_bus_bb_scl_sda< target::scl1, target::sda1, timing >;
+using i2c_bus_sw = gf::i2c_bus_bb_scl_sda<
+   target::scl1, target::sda1, timing >;
+using i2c_bus_hw = target::i2c0<>;
+
+using i2c_bus  = i2c_bus_sw;
 using oled     = gf::flip_vertically< gf::oled< i2c_bus > >;
 using chip     = gf::pcf8591< i2c_bus >;
 

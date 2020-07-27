@@ -12,12 +12,12 @@
 
 #include "godafoss.hpp"
 
-namespace gf = godafoss;
-using target = gf::target<>;
-using timing = target::timing;
+namespace gf  = godafoss;
+using target  = gf::target<>;
+using timing  = target::timing;
 using uart    = target::uart<>;
 
-template< template< gf::is_timing_wait > typename profile >
+template< gf::is_i2c_profile profile >
 void show_timing(){
 
    gf::ostream< gf::formatter< uart > > cout;
@@ -41,7 +41,7 @@ void show_timing(){
 int main( void ){
    timing::init();
    timing::ms< 2000 >::wait();
-   show_timing< gf::i2c_profile_standard >();
-   show_timing< gf::i2c_profile_fast >();
+   show_timing< gf::i2c_standard >();
+   show_timing< gf::i2c_fast >();
 }
 

@@ -5,24 +5,25 @@
 // =============================================================================
 
 template< typename T >
-concept spi = true;
+concept is_spi_bus = true;
 
 template<
    can_pin_out  _sclk,
    can_pin_in   _miso,
    can_pin_out  _mosi,
-   typename     timing
+   typename     _timing
 >
 struct spi_bus_bb_sclk_miso_mosi {
-private:
+//private:
 
    using sclk    = direct< pin_out< _sclk > >;
    using miso    = direct< pin_in<  _miso > >;
    using mosi    = direct< pin_out< _mosi > >;
+   using timing  = _timing;
 
    //for now: 1 MHz
-   static void wait_half_period(){
-      timing::template ns< 500 >::wait();
+   static void GODAFOSS_INLINE wait_half_period(){
+      timing::template ns< 100 >::wait();
    }
 
    // must implement other SPI modes
@@ -111,22 +112,22 @@ public:
 
       template< unsigned int n >
       void write(
-         const std::array< uint8_t, n > & data_out,
+         const std::array< uint8_t, n > & data,
 	      int_fast16_t amount = n
       ){
          spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
             ::write_and_read(
-               data_out.data(),
+               data.data(),
                nullptr,
                std::min( amount, (int_fast16_t) n ) );
       }
 
       void write(
-         const uint8_t data_out
+         const uint8_t data
       ){
          spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
             ::write_and_read(
-               &data_out,
+               &data,
                nullptr,
                1 );
       }
@@ -144,16 +145,16 @@ public:
       }
 
       void read(
-         uint8_t & data_in
+         uint8_t & data
       ){
          spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
             ::write_and_read(
                nullptr,
-               &data_in,
+               &data,
                1 );
       }
 
-      uint8_t read_byte(){
+      uint8_t read(){
          uint8_t d;
          spi_bus_bb_sclk_miso_mosi< _sclk, _miso, _mosi, timing  >
             ::write_and_read(
@@ -192,4 +193,3 @@ using spi_bus_bb_sclk_miso = spi_bus_bb_sclk_miso_mosi<
    pin_in_dummy,
    timing
 >;
-

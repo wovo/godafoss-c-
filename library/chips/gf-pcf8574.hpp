@@ -36,13 +36,13 @@ struct _pcf8574 :
 
    static void GODAFOSS_INLINE flush(){
       if( write_dirty ){
-         typename channel::write_transaction().write_byte( write_buffer );
+         typename channel::write_transaction().write( write_buffer );
          write_dirty = false;
       }
    }
 
    static void GODAFOSS_INLINE refresh(){
-      read_buffer = typename channel::read_transaction().read_byte();
+      read_buffer = typename channel::read_transaction().read();
    }
 
    template< int n > struct pin :

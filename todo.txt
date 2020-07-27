@@ -1,5 +1,12 @@
+document 'byte source' and byte sink interfaces (iwc, spi, nrf24)
+note: arduino due i2c1 has no pull-ups, ic2 on pcb == i2c0
+write book for embedded C programmers?
+
 i2c-bus vereenvoudigen
 concepts weer invoeren
+is_i2c_bus concept uitbreiden
+
+test due i2c1
 
 timing
 clock timing
@@ -7,10 +14,12 @@ i1c abstraction
 hardware i2c
 hardware spi pins
 oled spi
-i2c chips check bus speed
 i2c fast is now > 400 kHz!, 100kHz is ietsje te snel
 
-
+due tng - alernate random source
+demo N bouncing balls
+demo random by snow on the display
+ssd1306 half-size displays
 
 simplfy using https://en.cppreference.com/w/cpp/types/is_same
 invert a source of fraction (ADC)
@@ -23,7 +32,7 @@ clock timing service, oled timings
 bouncing balls demo
 i2c from run-time address (bus scanner)
 pin_out from window!
-lcd scrolling message
+lcd scrolling message demo, take from
 oled on lpc1114 past niet in de RAM??
 db103 lpc21isp houdt de chip in reset - no serial :( -> bmptk -control
 

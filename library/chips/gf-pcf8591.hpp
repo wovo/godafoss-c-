@@ -27,24 +27,21 @@ struct pcf8591 {
       bus::init();
    }
 
-   static uint_fast8_t _read( uint_fast8_t channel ){
+   static uint8_t _read( uint_fast8_t channel ){
+
 
       // select the correct channel
       {
-         uint8_t control[ 1 ] = { (uint8_t) (( configuration & ( ~ 0x03 )) | (uint8_t)channel ) };
-         typename channel::write_transaction().write( control, 1 );
+         uint8_t control = { (uint8_t) (( configuration & ( ~ 0x03 )) | (uint8_t)channel ) };
+         typename channel::write_transaction().write( control );
       }
 
       // Read results, note that the first byte is the
       // *previous* ADC result, the second byte is what we want.
-      //
-      // At least, that is what the documentation suggests.
-      // Actually, it seems we need the 3d byte!
-      // Something fishy is going on.
       {
-         uint8_t results[ 3 ];
-         typename channel::read_transaction().read( results, 3 );
-         return results[ 2 ];
+         std::array< uint8_t, 2 > results;
+         typename channel::read_transaction().read( results );
+         return results[ 1 ];
       }
    }
 

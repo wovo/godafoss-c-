@@ -48,11 +48,41 @@ concept is_i2c_base = requires(
 //
 // =============================================================================
 
+template< typename T >
+concept is_i2c_bus = requires(
+   uint_fast8_t address,
+   uint_fast8_t data
+){
+   { T::init()                             } -> std::same_as< void >;
+
+   /*
+   { T::start_write_transaction( address ) } -> std::same_as< void >;
+   { T::write_byte( data )                 } -> std::same_as< void >;
+   { T::stop_write_transaction()           } -> std::same_as< void >;
+
+   { T::start_read_transaction( address )  } -> std::same_as< void >;
+   { T::read_byte( data )                  } -> std::same_as< uint_fast8_t >;
+   { T::stop_read_transaction()            } -> std::same_as< void >;
+   */
+}
+   && T::i2c_bus_marker;
+
+
+// =============================================================================
+//
+// i2c_bus
+//
+// =============================================================================
+
 template<
    is_i2c_base     base,
-   is_i2c_profile  profile = i2c_standard
+   is_i2c_profile  profile
 >
 struct i2c_bus {
+
+   using timing = base::timing;
+
+   static constexpr bool i2c_bus_marker = true;
 
    static constexpr auto frequency = profile::frequency;
 
@@ -62,16 +92,20 @@ struct i2c_bus {
 
    struct _write_transaction {
 
-      _write_transaction( uint_fast32_t address ){
+      _write_transaction( uint_fast8_t address ){
          base::start_write_transaction( address );
       }
 
-      void write_byte( const uint_fast32_t data ){
+      void write( const uint8_t data ){
          base::write_byte( data );
       }
 
-      void write( const uint8_t data[], int n ){
-         for( int i = 0; i < n; ++i ){
+      template< unsigned int n >
+      void write(
+         const std::array< uint8_t, n > & data,
+	      int_fast16_t amount = n
+      ){
+         for( int i = 0; i < amount; ++i ){
             base::write_byte( data[ i ] );
          };
       }
@@ -87,13 +121,17 @@ struct i2c_bus {
          base::start_read_transaction( address );
       }
 
-      uint_fast8_t read_byte(){
-         return base::read_byte();
+      uint8_t read(){
+         return base::read();
       }
 
-      void read( uint8_t data[], int n ){
-         for( int i = 0; i < n; ++i ){
-            data[ i ] = base::read_byte();
+      template< unsigned int n >
+      void read(
+         std::array< uint8_t, n > & data,
+	      int_fast16_t amount = n
+      ){
+         for( int i = 0; i < amount; ++i ){
+            data[ i ] = base::read();
          };
       }
 
@@ -111,13 +149,17 @@ struct i2c_bus {
             base::start_write_transaction( address );
          }
 
-         void write_byte( const uint_fast8_t data ){
-            base::write_byte( data );
+         void write( const uint8_t data ){
+            base::write( data );
          }
 
-         void write( const uint8_t data[], int n ){
-            for( int i = 0; i < n; ++i ){
-               base::write_byte( data[ i ] );
+         template< unsigned int n >
+         void write(
+            const std::array< uint8_t, n > & data,
+            int_fast16_t amount = n
+         ){
+            for( int i = 0; i < amount; ++i ){
+               base::write( data[ i ] );
             };
          }
 
@@ -132,19 +174,17 @@ struct i2c_bus {
             base::start_read_transaction( address );
          }
 
-         void write( const uint8_t data[], int n ){
-            for( int i = 0; i < n; ++i ){
-               data[ i ] = base::read_byte();
-            };
+         uint8_t read(){
+            return base::read();
          }
 
-         uint_fast8_t read_byte(){
-            return base::read_byte();
-         }
-
-         void read( uint8_t data[], int n ){
-            for( int i = 0; i < n; ++i ){
-               data[ i ] = base::read_byte();
+         template< unsigned int n >
+         void read(
+            std::array< uint8_t, n > & data,
+	         int_fast16_t amount = n
+         ){
+            for( int i = 0; i < amount; ++i ){
+               data[ i ] = base::read();
             };
          }
 

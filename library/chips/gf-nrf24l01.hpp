@@ -160,7 +160,7 @@ struct nrf24l01_spi_ce_csn {
    static uint_fast8_t read( const reg r ){
       auto t = bus_transfer();
       t.write( compose( cmd::read_reg, r )  );
-      return t.read_byte();
+      return t.read();
    }
 
    // quote ##read-write 2
