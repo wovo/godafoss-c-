@@ -16,7 +16,7 @@ struct max7219 :
    window_root<
       max7219< bus, _cs, n_chips >,
       xy< int_fast16_t >,
-      black_or_white,
+      color_bw,
       { 8 * n_chips, 8 }
    >
 {
@@ -24,7 +24,7 @@ struct max7219 :
    using root = godafoss::window_root<
       max7219< bus, _cs, n_chips >,
       xy< int_fast16_t >,
-      black_or_white,
+      color_bw,
       { 8 * n_chips, 8 }
    >;
 
@@ -70,7 +70,7 @@ struct max7219 :
       const uint_fast8_t index = ( pos.x / 8 ) + pos.y * n_chips;
       const uint_fast8_t offset = 7 - ( pos.x % 8 );
 
-      if( col.is_black ){
+      if( col == black ){
          buffer[ index] |=  ( 0x01 << offset );
       } else {
          buffer[ index ] &= ~( 0x01 << offset );

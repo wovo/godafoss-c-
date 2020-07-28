@@ -1,3 +1,6 @@
+window decorators must use the largest of the colors and xy, not alwas color<>
+harware SPI via de USART
+
 document 'byte source' and byte sink interfaces (iwc, spi, nrf24)
 note: arduino due i2c1 has no pull-ups, ic2 on pcb == i2c0
 write book for embedded C programmers?
@@ -8,12 +11,20 @@ is_i2c_bus concept uitbreiden
 
 test due i2c1
 
+bb spi opsplitsen ala i2c
+bb spi voor aleen output kan sneller (bekijk assembly?)
+
+https://github.com/cpetrich/counterfeit_DS18B20/
+
+
 timing
 clock timing
 i1c abstraction
 hardware i2c
 hardware spi pins
 oled spi
+sam3x8e short timing klopt niet - 82 niet meegenomen??
+
 i2c fast is now > 400 kHz!, 100kHz is ietsje te snel
 
 due tng - alernate random source

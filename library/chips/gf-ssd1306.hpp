@@ -87,7 +87,7 @@ struct i2c {
 
    static const uint8_t data_mode = 0x40;
    static const uint8_t cmd_mode  = 0x80;
-   using timing   = typename bus::timing;
+
    using channel  = typename bus::channel< address >;
 
    static void init(){
@@ -118,9 +118,8 @@ struct i2c {
 template< is_spi_bus bus, can_pin_out _ss, can_pin_out _dc >
 struct spi_ss_dc {
 
-   using ss      = direct< pin_out< _ss >>;
-   using dc      = direct< pin_out< _dc >>;
-   using timing  = bus::timing;
+   using ss  = direct< pin_out< _ss >>;
+   using dc  = direct< pin_out< _dc >>;
 
    static void init(){
       bus::init();
@@ -153,29 +152,23 @@ struct ssd1306 :
    window_root<
       ssd1306< chip >,
       xy< int_fast16_t >,
-      black_or_white,
+      color_bw,
       { 128, 64 }
    >
 {
 
-   using timing = typename chip::timing;
-
    using root = godafoss::window_root<
       ssd1306< chip >,
       xy< int_fast16_t >,
-      black_or_white,
+      color_bw,
       { 128, 64 }
    >;
 
    static void init(){
       chip::init();
-
-      //using d = typename timing::ms< 5 >;
-      //d::wait();
       for( auto b : initialization ){
          chip::command( b );
       }
-
    }
 
 
@@ -199,7 +192,7 @@ struct ssd1306 :
       root::color_t    col
    ){
       const uint_fast8_t a = pos.x + ( pos.y / 8 ) * root::size.x;
-      write_to_buffer( pos, a, col.is_black );
+      write_to_buffer( pos, a, col == black );
    }
 
    static void command( command cmd, uint8_t d0, uint8_t d1 ){

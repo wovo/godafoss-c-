@@ -13,7 +13,7 @@ struct ws2812 :
    window_root<
       ws2812< _data, timing, n_chips >,
       xy< int_fast16_t >,
-      color,
+      color_bw,
       { n_chips, 1 }
    >
 {
@@ -21,13 +21,13 @@ struct ws2812 :
    using root = godafoss::window_root<
       ws2812< _data, timing, n_chips >,
       xy< int_fast16_t >,
-      color,
+      color_bw,
       { n_chips, 1 }
    >;
 
    using data = direct< pin_out< _data >>;
 
-   static inline std::array< color, n_chips > pixels;
+   static inline std::array< color_bw, n_chips > pixels;
 
    static void init(){
       data::init();
@@ -61,9 +61,9 @@ struct ws2812 :
 
    static void flush(){
       for( auto const & c : pixels ){
-         send( c.green );
-         send( c.red );
-         send( c.blue );
+         send( c.green() .of( 255 ) );
+         send( c.red()   .of( 255 ) );
+         send( c.blue()  .of( 255 ) );
       }
       timing::template us< 50 >::wait();
    }

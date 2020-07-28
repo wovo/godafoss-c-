@@ -28,14 +28,14 @@ struct spi_bus_bb_sclk_miso_mosi {
 
    // must implement other SPI modes
    template< int bits = 8 >
-   static void write_and_read_single(
+   static void GODAFOSS_NO_INLINE write_and_read_single(
       uint8_t   d_out,
       uint8_t & d_in
    ){
       d_in = 0;
-      //for( uint_fast8_t i = 0; i < bits; ++i ){
+      d_out = d_out << ( bits - 8 );
       loop< bits >([&]{
-         mosi::write( ( d_out & ( 0x01 << ( bits - 1 ) ) ) != 0 );
+         mosi::write( ( d_out & 0x80 ) != 0 );
          wait_half_period();
          sclk::write( 1 );
          wait_half_period();

@@ -243,7 +243,7 @@ struct monochrome :
    public window_root<
       monochrome< minion, for_black, for_white >,
       typename minion::offset_t,
-      black_or_white,
+      color_bw,
       minion::size
    >
 {
@@ -254,11 +254,11 @@ struct monochrome :
 
    static void write_implementation(
       minion::offset_t offset,
-      const black_or_white & c
+      const color_bw & c
    ){
       minion::write(
          minion::origin + offset,
-         ( c.is_black ) ? for_black : for_white );
+         ( c == black ) ? for_black : for_white );
    }
 
    static void flush(){
@@ -291,7 +291,7 @@ struct port_from_window:
          const typename root::value_type one = 0x01;
          minion::write(
             minion::origin + typename minion::offset_t( i, 0 ),
-            black_or_white( ( v & ( one  << i ) ) != 0 ) );
+            ( ( v & ( one  << i ) ) != 0 ) ? black : white );
       }
    }
 

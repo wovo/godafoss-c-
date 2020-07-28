@@ -29,9 +29,6 @@ template< typename T >
 concept xy_compatible = true;
 
 template< typename T >
-concept color_compatible = true;
-
-template< typename T >
 concept window = requires(
    typename T::location_t  a,
    typename T::color_t     c
@@ -49,7 +46,7 @@ concept window = requires(
 template<
    typename          _implementation,
    xy_compatible     _offset_t,
-   color_compatible  _color_t,
+   is_color          _color_t,
    xy<>              _size
 >
 struct window_root {

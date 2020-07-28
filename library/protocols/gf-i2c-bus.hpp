@@ -80,8 +80,6 @@ template<
 >
 struct i2c_bus {
 
-   using timing = base::timing;
-
    static constexpr bool i2c_bus_marker = true;
 
    static constexpr auto frequency = profile::frequency;

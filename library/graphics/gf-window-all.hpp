@@ -47,7 +47,7 @@ struct _windows_all {
       _windows_all< tail... >::init();
    }
 
-   static void write( xy<> offset, color col ){
+   static void write( xy<> offset, is_color auto col ){
       w::write( w::origin + offset, col );
       _windows_all< tail... >::write( offset, col );
    }
@@ -66,7 +66,7 @@ struct _windows_all< w > {
       w::init();
    }
 
-   static void write( xy<> offset, color col ){
+   static void write( xy<> offset, is_color auto col ){
       w::write( w::origin + offset, col );
    }
 
@@ -104,7 +104,7 @@ struct all< first, tail... > :
    window_root<
       all< first, tail... >,
       xy<>,
-      color,
+      color<>,
       windows_max_size< first, tail... >::value
    >
 {
@@ -112,7 +112,7 @@ struct all< first, tail... > :
       _windows_all< first, tail... >::init();
    }
 
-   static void write_implementation( xy<> offset, color col ){
+   static void write_implementation( xy<> offset, is_color auto col ){
       _windows_all< first, tail... >::write( offset, col );
    }
 

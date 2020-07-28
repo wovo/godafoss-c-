@@ -26,7 +26,7 @@ void random_lines(){
       for( int i = 0; i < 20; ++i ){
          auto start = w::origin + random_xy( w::size );
          auto end = w::origin + random_xy( w::size );
-         auto ink = random_color< typename w::color_t >();
+         auto ink = typename w::color_t::random();
 // std::cout << start << " " << end << " " << ink << "\n";
          godafoss::line< w >( start, end, ink ).write();
          w::flush();

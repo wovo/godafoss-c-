@@ -26,7 +26,7 @@ template<
    godafoss::window_root<
       ks0108_data_cs1_cs2_cd_e_timing< _port, _cs1, _cs2, _cd, _e, timing >,
       xy< int_fast16_t >,
-      black_or_white,
+      color_bw,
       { 128, 64 }
    >
 {
@@ -35,7 +35,7 @@ private:
    using root = godafoss::window_root<
       ks0108_data_cs1_cs2_cd_e_timing< _port, _cs1, _cs2, _cd, _e, timing >,
       xy< int_fast16_t >,
-      black_or_white,
+      color_bw,
       { 128, 64 }
    >;
 

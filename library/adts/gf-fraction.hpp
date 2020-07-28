@@ -21,12 +21,17 @@
 // @title fraction
 //
 // A fraction is a value relative to some (static) maximum.
-// Think of it as a percentage, or a value in the range 0.0 .. 1.0.
+// Think of it as a percentage, or a factor in the range 0.0 .. 1.0.
 //
 // @insert fraction
 //
-// A fraction has value, which should be interpreted relative to
+// A fraction has raw_value, which should be interpreted relative to
 // its full_scale. Both are of the type T.
+//
+// @insert constructor
+//
+// The constructor is explicit, to avoid the mistake of passing a value
+// where a raction is expected.
 //
 // @insert assign
 //
@@ -50,26 +55,68 @@ struct fraction {
    data_type raw_value;
 
    // @quote constructor 2 ...
-   explicit fraction( T x ):
+   constexpr explicit fraction( T x ):
       raw_value( x )
    {}
 
    // @quote assign 2 ... }
    template< typename V, V rhs_full_scale >
-   fraction & operator=( const fraction< V, rhs_full_scale > & rhs ){
+   constexpr fraction & operator=( const fraction< V, rhs_full_scale > & rhs ){
       raw_value = ( rhs.raw_value * rhs_full_scale ) / full_scale;
+   }
+
+   // @quote of 2 ... }
+   template< typename V >
+   constexpr V of( V x ) const {
+      return ( x * raw_value ) / _full_scale;
+   }
+
+   // @quote of 2 ... }
+   template< typename V, typename W >
+   constexpr V of( V x, W y ) const {
+      return x + of( y - x );
+   }
+
+   // @quote negate 1 ... }
+   constexpr fraction operator-() const {
+      return fraction( full_scale - raw_value );
    }
 
    // @quote multiply 2 ... }
    template< typename V >
-   V operator*( V rhs ){
-      return ( raw_value * rhs ) / full_scale;
+   constexpr V operator *( V rhs ) const {
+      return raw_value * rhs;
    }
 
-   // @quote rescale 2 ... }
-//   template< typename V, V other_full_scale >
-//   V rescale( V other_full_scale ){
-//      return ( value * full_scale ) / other_full_scale;
-//   }
+   // @quote multiply 2 ... }
+   template< typename V >
+   friend constexpr V operator *( V lhs, fraction rhs ) {
+      return rhs * lhs;
+   }
+
+   // @quote multiply 2 ... }
+   template< typename V >
+   constexpr V operator *( V rhs ) const {
+      return raw_value * rhs;
+   }
+
+   // @quote divide 2 ... }
+   template< typename V >
+   constexpr V operator / ( V rhs ) const {
+      return raw_value / rhs;
+   }
+
+   // @quote compare 2 ... }
+   template< typename V >
+   constexpr bool operator==( V rhs ) const {
+      return raw_value * V::full_scale == rhs.raw_value * full_scale;
+   }
+
+   // @quote compare 2 ... }
+   template< typename V >
+   constexpr bool operator!=( V rhs ) const {
+      return ! ( *this == rhs );
+   }
+
 };
 
