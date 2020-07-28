@@ -304,7 +304,7 @@ class section:
 
 class code:
 
-   def __init__( self, s, url ):
+   def __init__( self, s, url = "" ):
       self.s = s
       self.url = url
 
@@ -315,10 +315,15 @@ class code:
       return ":: \n\n" + indent( self.s, "  " )
 
    def html( self ):
-      return (
-         '<A HREF="%s" style="text-decoration:none">\n' +
-         '<pre><code class="c++">%s</code></pre></A>' ) % (
-         self.url, self.s )
+      if self.url == "":
+         return (
+            '<pre><code class="c++">%s</code></pre></A>' ) % (
+            self.s )
+      else:
+         return (
+            '<A HREF="%s" style="text-decoration:none">\n' +
+            '<pre><code class="c++">%s</code></pre></A>' ) % (
+            self.url, self.s )
 
 class define:
 
@@ -372,6 +377,7 @@ class item:
       self.defines = []
       self.global_defines = global_defines
       line_number = self.line_number - 1
+      n_code = 0
 
       for line in self.lines:
          line_number += 1
@@ -423,6 +429,10 @@ class item:
             self.content.append( code(
                refs.get( t, "<missing>" ), "../" + file_name))
 
+         elif line.strip().startswith( "@code " ):
+            n_code = int( after( line, "@code " ).strip() )
+            code_text = ""
+
          elif line.strip().startswith( "@bar" ):
             self.content.append( text_bar())
 
@@ -433,7 +443,15 @@ class item:
             self.content.append( text_line( after( line, "@noref " ), self, global_defines, False ))
 
          elif not line.strip().startswith( "@" ):
-            self.content.append( text_line( line, self, global_defines, True ))
+
+            if n_code > 0:
+               n_code -= 1
+               code_text += "\n" + line
+               if n_code == 0:
+                  self.content.append( code( code_text[ 1 : ] ))
+
+            else:
+               self.content.append( text_line( line, self, global_defines, True ))
 
          else:
             error( file_name, line_number, "unknown @ '%s'" % line )

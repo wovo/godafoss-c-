@@ -1,0 +1,68 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="is_static_duration"></a>
+<a name="static_duration"></a>
+<H2>static_duration</H2>
+from <A HREF="../library/timing/gf-timing-duration.hpp">timing/gf-timing-duration.hpp</A>
+
+
+<HR>
+
+<P>
+<A HREF="../../library/timing/gf-timing-duration.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept is_static_duration = requires {
+      T::_static_duration_marker;
+      { T::wait() } -> std::same_as< void >;
+      { T::wait_busy() } -> std::same_as< void >;
+   } && is_cto< T  >;
+</code></pre></A>
+<P>
+A static_duration is a <A HREF=cto.html#cto>cto</A> that represents a duration (amount of time).
+It provides two functions: wait() and wait_busy().
+<P>
+A wait() call will return after at least the amount of time
+static_duration represents, but may well take longer due to <A HREF=background-processing.html#background>background</A>
+work being done.
+<P>
+A wait_busy() call will return after the amount of time
+static_duration represents, without further delay.
+For very small delays, a wait_busy() call might be
+implemented as a few in-lined machine instructions.
+<P>
+<a name="static_duration_root"></a>
+<A HREF="../../library/timing/gf-timing-duration.hpp" style="text-decoration:none">
+<pre><code class="c++">struct static_duration_root : cto_root {
+   static const bool _static_duration_marker = true;
+};
+</code></pre></A>
+<P>
+All static durations inherit from static_duration_root.
+<P>
+<a name="can_static_duration<>"></a>
+<A HREF="../../library/timing/gf-timing-duration.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T >
+concept can_static_duration =
+   is_static_duration< T >;
+</code></pre></A>
+<P>
+The can_static_duration<> concept matches <A HREF=cto.html#cto>cto</A>'s that are acceptable to
+static_duration<>.
+<P>
+<a name="static_duration"></a>
+<A HREF="../../library/timing/gf-timing-duration.hpp" style="text-decoration:none">
+<pre><code class="c++">template< can_static_duration T >
+struct static_duration : static_duration_root { ... };
+</code></pre></A>
+<P>
+The static_duration<> adapter accepts a <A HREF=cto.html#cto>cto</A> that matches
+the can_static_duraction<> concept, and yields a <A HREF=cto.html#cto>cto</A> that is
+only a static_duration.
+<P>
+
+</body>

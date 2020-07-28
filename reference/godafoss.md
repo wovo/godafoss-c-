@@ -198,6 +198,37 @@ template< can_buffered T >
 struct buffered ... ;
 ```
 
+
+------------------------------
+------------------------------
+
+## colors
+
+from [adts/gf-color.hpp](../library/adts/gf-color.hpp)
+
+
+---------------------------------
+
+
+The color abstract data types represent a color.
+You wouldn't have guessed.
+The main use of these types is to specify the color of a pixel on a display.
+
+A color can be represented
+in 1 bit (often black-or-white),
+in 3 bits (one bit each for red, green and blue),
+in one byte (3 bits each for red and green,
+2 bits for blue because the eye is less sensitive to blue),
+in 16 bits (5 bits each for red and blue, 6 bits for green
+because the eye is most sensitive to green),
+in 24 bits (one byte each for red, green and blue).
+
+All color formats have the same interface.
+The choice between the different color formats is dictated by the
+balance between color resolution and memory size.
+
+
+
 <a name="is_cto"></a>
 <a name="cto"></a>
 
@@ -383,6 +414,213 @@ int main(){
 
 };
 ```
+
+<a name="fraction"></a>
+
+------------------------------
+------------------------------
+
+## fraction
+
+from [adts/gf-fraction.hpp](../library/adts/gf-fraction.hpp)
+
+
+---------------------------------
+
+
+```c++
+template< typename T, T _maximum >
+struct fraction {
+
+   using data_type = T;
+
+   static constexpr data_type maximum = _maximum;
+
+   data_type raw_value = _maximum;
+
+ };
+```
+
+A fraction is a type template that stores a raw_value,
+which is to be interpreted as a fraction of its maximum value.
+Think of a fraction as a percentage,
+or a factor in the range [ 0.0 .. 1.0 ].
+The type of the stored raw_value and the maximum value
+are template parameters.
+
+A fractions can be used to avoid the use of floating point arithmetic
+in a situation where otherwise a floating point
+value (in the range [ 0.0 .. 1.0 ]) would have been used.
+
+Examples of the use of fractions in the library:
+  - an ADC (Analaog to Digital Converter) returns a fraction
+  - the amount of red, green and blue in a color is expressed as a fraction
+  - the position of a servo motor is specified as a fraction
+
+
+
+
+---------------------------------
+
+
+### constructors
+
+```c++
+   constexpr fraction(){}
+```
+```c++
+   constexpr explicit fraction( T x ) ...
+```
+
+The constructor that acceptes a value is explicit,
+to avoid the mistake of passing a value
+where a fraction is required.
+
+```c++
+   template< typename V, V rhs_maximum > ...
+```
+
+The copy constructor copies the value from another fraction,
+which can have a different value type and/or a different maximum.
+The copying rescales relative to the maximum of the constructed fraction.
+
+```c++
+// example
+fraction< 10 > a( 5 );
+fraction< 4 > b( a );
+// now 4 == fraction< 4 >( 2 )```
+
+
+
+
+---------------------------------
+
+
+### assignment
+
+```c++
+   template< typename V, V rhs_maximum >
+   constexpr fraction & operator=( const fraction< V, rhs_maximum > & rhs ){ ... }
+```
+
+A fraction can be assigned from another fraction,
+which can have a different value type and/or a different maximum.
+As with the copy constructor, assignement rescales the value.
+
+```c++
+// example
+fraction< 10 > a;
+a = fraction< 2 >( 1 );
+// now a == fraction< 10 >( 5 );```
+
+
+
+
+---------------------------------
+
+
+### of-one
+
+```c++
+   template< typename V, typename W >
+   constexpr V of( V min, W max ) const { ... }
+```
+
+The of functions return the argument, scaled according to the fraction.
+The one-argument version scales to the interval [ 0, max ],
+the two-argument version scales to the interval [ min, max ].
+
+```c++
+// examples
+fraction< 3 >( 1 ) == fraction< 3 >( 2 )
+fraction< 8 >( 3 ) == fraction< 8 >( 5 )```
+
+
+
+
+---------------------------------
+
+
+### negate
+
+```c++
+   constexpr fraction operator - () const { ... }
+```
+
+The - operator complements the fraction: when the fraction is interpreted
+as a value v in the range [ 0.0 .. 1.0 ], it returns ( 1.0 - v ).
+
+```c++
+// examples
+fraction< 3 >( 1 ) == fraction< 3 >( 2 )
+fraction< 8 >( 3 ) == fraction< 8 >( 5 )```
+
+
+
+
+---------------------------------
+
+
+### multiply
+
+```c++
+   template< typename V >
+   constexpr fraction operator * ( V rhs ) const { ... }
+```
+```c++
+   template< typename V >
+   friend constexpr fraction operator * ( V lhs, fraction rhs ) { ... }
+```
+
+The multiplication operators multiply the fraction by the other parameter.
+
+```c++
+// example
+fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )```
+
+
+
+
+---------------------------------
+
+
+### divide
+
+```c++
+   template< typename V >
+   constexpr frcation operator / ( V rhs ) const { ... }
+```
+
+The division operator divides the fraction by the right hand side argument.
+
+```c++
+// example
+fraction< 10 >( 6 ) / 3  == fraction< 10 >( 2 )```
+
+
+
+
+---------------------------------
+
+
+### compare
+
+```c++
+   template< typename V >
+   constexpr bool operator == ( V rhs ) const { ... }
+```
+```c++
+   template< typename V >
+   constexpr bool operator != ( V rhs ) const { ... }
+```
+
+Fractions can be compared for equality and inequality.
+These comparisons take the scale (full_scale value) into account.
+
+```c++
+// examples
+fraction< 10 >( 3 ) != fraction< 5 >( 3 )
+fraction< 10 >( 6 ) == fraction< 5 >( 3 )```
 
 <a name="GODAFOSS_INLINE"></a>
 
@@ -576,6 +814,72 @@ and can be changed by the mode_set() function.
 The chip can be powered down. When a **[read](#read)** is done the chip
 is first (automatically) powered up.
 
+<a name="is_i2c_profile"></a>
+<a name="i2c_profile"></a>
+
+------------------------------
+------------------------------
+
+## i2c profiles
+
+from [protocols/gf-i2c-profile.hpp](../library/protocols/gf-i2c-profile.hpp)
+
+
+---------------------------------
+
+
+```c++
+template< typename T >
+concept is_i2c_profile = requires {
+   T::_i2c_profile_marker;
+
+/*
+   { T::t_hd_sta  ::wait() } -> std::same_as< void >;
+   { T::t_low     ::wait() } -> std::same_as< void >;
+   { T::t_high    ::wait() } -> std::same_as< void >;
+   { T::t_su_dat  ::wait() } -> std::same_as< void >;
+   { T::t_su_sto  ::wait() } -> std::same_as< void >;
+   { T::t_buf     ::wait() } -> std::same_as< void >;
+```
+
+An i2c profile defines the timing of signals on an i2c bus.
+It is implemented as a template class that takes a timing
+as the template parameter, and provides the bus frequency and
+timings that must be met by the communication on the i2c bus.
+
+```c++
+struct i2c_standard : i2c_profile_root {
+
+   static constexpr int64_t frequency = 100'000;
+
+   template< is_timing_wait timing >
+   struct intervals {
+      using t_hd_sta  = typename timing::ns< 4'000 >;
+      using t_low     = typename timing::ns< 4'700 >;
+      using t_high    = typename timing::ns< 4'000 >;
+      using t_su_dat  = typename timing::ns<   250 >;
+      using t_su_sto  = typename timing::ns< 4'000 >;
+      using t_buf     = typename timing::ns< 4'700 >;
+```
+```c++
+struct i2c_fast : i2c_profile_root {
+
+   static constexpr int64_t frequency = 400'000;
+
+   template< is_timing_wait timing >
+   struct intervals {
+      using t_hd_sta  = typename timing::ns<   600 >;
+      using t_low     = typename timing::ns< 1'300 >;
+      using t_high    = typename timing::ns<   600 >;
+      using t_su_dat  = typename timing::ns<   100 >;
+      using t_su_sto  = typename timing::ns<   600 >;
+      using t_buf     = typename timing::ns< 1'300 >;
+```
+
+Conform the "I2C-bus specification and user manual,
+4 April 2014", UM10204.pdf, Table 10, p 48, two profiles
+are defined: i2c_standard (100 kHz) and i2c_fast (400 kHz).
+
 
 ------------------------------
 ------------------------------
@@ -748,7 +1052,7 @@ a value of the **[value_type](#value_type)** of the **[item](#item)**.
 ```c++
 template< typename T, typename VT = T::value_type >
 concept is_output = requires (
-   typename T::value_type v
+      typename T::value_type v
    ){
       T::_output_marker;
       { T::write( v ) }  -> std::same_as< void >;
@@ -1838,6 +2142,70 @@ template< is_port_oc T >
 struct port_oc_from_port_oc : ... {};
 ```
 
+<a name="is_static_duration"></a>
+<a name="static_duration"></a>
+
+------------------------------
+------------------------------
+
+## static_duration
+
+from [timing/gf-timing-duration.hpp](../library/timing/gf-timing-duration.hpp)
+
+
+---------------------------------
+
+
+```c++
+template< typename T >
+concept is_static_duration = requires {
+      T::_static_duration_marker;
+      { T::wait() } -> std::same_as< void >;
+      { T::wait_busy() } -> std::same_as< void >;
+   } && is_cto< T  >;
+```
+
+A static_duration is a **[cto](#cto)** that represents a duration (amount of time).
+It provides two functions: wait() and wait_busy().
+
+A wait() call will return after at least the amount of time
+static_duration represents, but may well take longer due to **[background](#background)**
+work being done.
+
+A wait_busy() call will return after the amount of time
+static_duration represents, without further delay.
+For very small delays, a wait_busy() call might be
+implemented as a few in-lined machine instructions.
+
+<a name="static_duration_root"></a>
+```c++
+struct static_duration_root : cto_root {
+   static const bool _static_duration_marker = true;
+};
+```
+
+All static durations inherit from static_duration_root.
+
+<a name="can_static_duration<>"></a>
+```c++
+template< typename T >
+concept can_static_duration =
+   is_static_duration< T >;
+```
+
+The can_static_duration<> concept matches **[cto](#cto)**'s that are acceptable to
+static_duration<>.
+
+<a name="static_duration"></a>
+```c++
+template< can_static_duration T >
+struct static_duration : static_duration_root { ... };
+```
+
+The static_duration<> adapter accepts a **[cto](#cto)** that matches
+the can_static_duraction<> concept, and yields a **[cto](#cto)** that is
+only a static_duration.
+
 
 ------------------------------
 ------------------------------
@@ -2073,6 +2441,9 @@ a different value type.
    template< typename V >
 //      requires requires( V b ){ { x + b }; }   - GCC 10.0.1 ICE segfault
       requires requires( xy_value_type x, V b ){ { x + b }; } ... }
+   template< typename V >
+      requires requires( xy_value_type x, V b ){ { x += b }; }
+   constexpr xy & operator+=( const xy< V > rhs ){ ... }
 ```
 ```c++
    template< typename V >

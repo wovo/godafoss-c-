@@ -35,8 +35,8 @@ int main( void ){
       adx::refresh();
       ady::refresh();
       auto pos = oled::offset_t(
-         adx::read() * ( oled::size.x - 1 ),
-         ady::read() * ( oled::size.y - 1 ));
+         adx::read().of( oled::size.x - 1 ),
+         ady::read().of( oled::size.y - 1 ) );
 
       oled::clear( gf::white );
       gf::circle< oled >( oled::origin + pos, 6, gf::black ).write();

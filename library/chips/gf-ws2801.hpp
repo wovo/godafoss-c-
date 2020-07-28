@@ -7,7 +7,7 @@
 
 template<
    is_spi_bus    bus,
-   typename      timing,
+   is_timing_wait    timing,
    unsigned int  n_chips = 1 >
 struct ws2801 :
    window_root<
@@ -40,14 +40,14 @@ struct ws2801 :
    }
 
    static void flush(){
-      //timing::us< 500 >::wait();
+      // why doesnt this compile??
+      //typename timing::us< 500 >::wait();
       auto transfer = typename bus::transfer< pin_out_dummy >();
       for( auto const & c : pixels ){
-         transfer.write( c.red().of( 255 ) );
-         transfer.write( c.blue().of( 255 ) );
-         transfer.write( c.green().of( 255 ) );
+         transfer.write( c.red()   .of( 255 ) );
+         transfer.write( c.blue()  .of( 255 ) );
+         transfer.write( c.green() .of( 255 ) );
       }
    }
-
 
 }; // class ws2801

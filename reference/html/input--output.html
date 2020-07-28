@@ -85,7 +85,7 @@ a value of the <A HREF=item.html#value_type>value_type</A> of the <A HREF=item.h
 <A HREF="../../library/item/gf-item.hpp" style="text-decoration:none">
 <pre><code class="c++">template< typename T, typename VT = T::value_type >
 concept is_output = requires (
-   typename T::value_type v
+      typename T::value_type v
    ){
       T::_output_marker;
       { T::write( v ) }  -> std::same_as< void >;

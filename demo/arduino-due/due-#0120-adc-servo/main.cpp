@@ -22,7 +22,7 @@ int main( void ){
    adc::init();
    servo::init();
    for(;;){
-      servo::write( adc::read() * 100 );
+      servo::write( adc::read().of( 100 ) );
    }
 }
 

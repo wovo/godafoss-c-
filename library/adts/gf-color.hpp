@@ -29,9 +29,9 @@
 // in 1 bit (often black-or-white),
 // in 3 bits (one bit each for red, green and blue),
 // in one byte (3 bits each for red and green,
-//    bits for blue because the eye is less sensitive to blue),
+// 2 bits for blue because the eye is less sensitive to blue),
 // in 16 bits (5 bits each for red and blue, 6 bits for green
-//    because the eye is most sensitive to green),
+// because the eye is most sensitive to green),
 // in 24 bits (one byte each for red, green and blue).
 //
 // All color formats have the same interface.
@@ -50,7 +50,7 @@
 // =============================================================================
 
 struct color_root {
-   static const bool _color_marker = true;
+   static constexpr bool _color_marker = true;
 };
 
 template< typename T >
@@ -165,7 +165,7 @@ struct color : color_root {
       uint8_t red   : red_bits;
       uint8_t green : green_bits;
       uint8_t blue  : blue_bits;
-   } values;
+   } values = { 0, 0, 0 };
 
    template< int max >
    static constexpr uint8_t clip( int_fast16_t x ){
@@ -186,7 +186,7 @@ struct color : color_root {
       return base_type( values.blue );
    };
 
-  constexpr color(){}
+   constexpr color(){}
 
 /*
    constexpr color(
@@ -218,7 +218,7 @@ struct color : color_root {
    {}
 
    constexpr color(
-      uint_fast32_t rgb32 = 0
+      uint_fast32_t rgb32
    ): color(
       ( rgb32 & 0xFF0000 ) >> 16,
       ( rgb32 & 0x00FF00 ) >>  8,

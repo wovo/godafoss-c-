@@ -1,120 +1,223 @@
-// ==========================================================================
+// =============================================================================
 //
 // gf-fraction.hpp
 //
-// ==========================================================================
+// =============================================================================
 //
 // This file is part of godafoss,
 // a C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2020
+// Copyright
+//    Wouter van Ooijen 2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// =============================================================================
 
-// ==========================================================================
+// =============================================================================
 //
 // @define fraction
 // @title fraction
 //
-// A fraction is a value relative to some (static) maximum.
-// Think of it as a percentage, or a factor in the range 0.0 .. 1.0.
-//
 // @insert fraction
 //
-// A fraction has raw_value, which should be interpreted relative to
-// its full_scale. Both are of the type T.
+// A fraction is a type template that stores a raw_value,
+// which is to be interpreted as a fraction of its maximum value.
+// Think of a fraction as a percentage,
+// or a factor in the range [ 0.0 .. 1.0 ].
+// The type of the stored raw_value and the maximum value
+// are template parameters.
 //
-// @insert constructor
+// A fractions can be used to avoid the use of floating point arithmetic
+// in a situation where otherwise a floating point
+// value (in the range [ 0.0 .. 1.0 ]) would have been used.
 //
-// The constructor is explicit, to avoid the mistake of passing a value
-// where a raction is expected.
+// Examples of the use of fractions in the library:
+//   - an ADC (Analaog to Digital Converter) returns a fraction
+//   - the amount of red, green and blue in a color is expressed as a fraction
+//   - the position of a servo motor is specified as a fraction
 //
-// @insert assign
+// -----------------------------------------------------------------------------
 //
-// A fraction can be assigned from another fraction, which can
-// have a different full_scale. The assignement rescales the value.
+// @section constructors
+// @insert default-constructor
+// @insert value-constructor
 //
-// @ insert rescale
+// The constructor that acceptes a value is explicit,
+// to avoid the mistake of passing a value
+// where a fraction is required.
 //
-// The rescale function retruns the value, rescaled to the
-// full_scale argument.
+// @insert copy-constructor
 //
-// ==========================================================================
+// The copy constructor copies the value from another fraction,
+// which can have a different value type and/or a different maximum.
+// The copying rescales relative to the maximum of the constructed fraction.
+//
+// @code 4
+// // example
+// fraction< 10 > a( 5 );
+// fraction< 4 > b( a );
+// // now 4 == fraction< 4 >( 2 )
+//
+// -----------------------------------------------------------------------------
+//
+// @section assignment
+// @insert assignment
+//
+// A fraction can be assigned from another fraction,
+// which can have a different value type and/or a different maximum.
+// As with the copy constructor, assignement rescales the value.
+//
+// @code 4
+// // example
+// fraction< 10 > a;
+// a = fraction< 2 >( 1 );
+// // now a == fraction< 10 >( 5 );
+//
+// -----------------------------------------------------------------------------
+//
+// @section of-one
+// @insert of-two
+//
+// The of functions return the argument, scaled according to the fraction.
+// The one-argument version scales to the interval [ 0, max ],
+// the two-argument version scales to the interval [ min, max ].
+//
+// @code 3
+// // examples
+// fraction< 3 >( 1 ) == fraction< 3 >( 2 )
+// fraction< 8 >( 3 ) == fraction< 8 >( 5 )
+//
+// -----------------------------------------------------------------------------
+//
+// @section negate
+// @insert negate
+//
+// The - operator complements the fraction: when the fraction is interpreted
+// as a value v in the range [ 0.0 .. 1.0 ], it returns ( 1.0 - v ).
+//
+// @code 3
+// // examples
+// fraction< 3 >( 1 ) == fraction< 3 >( 2 )
+// fraction< 8 >( 3 ) == fraction< 8 >( 5 )
+//
+// -----------------------------------------------------------------------------
+//
+// @section multiply
+// @insert multiply
+// @insert multiply-reverse
+//
+// The multiplication operators multiply the fraction by the other parameter.
+//
+// @code 2
+// // example
+// fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )
+//
+// -----------------------------------------------------------------------------
+//
+// @section divide
+// @insert divide
+//
+// The division operator divides the fraction by the right hand side argument.
+//
+// @code 2
+// // example
+// fraction< 10 >( 6 ) / 3  == fraction< 10 >( 2 )
+//
+// -----------------------------------------------------------------------------
+//
+// @section compare
+// @insert compare-equal
+// @insert compare-unequal
+//
+// Fractions can be compared for equality and inequality.
+// These comparisons take the scale (full_scale value) into account.
+//
+// @code 3
+// // examples
+// fraction< 10 >( 3 ) != fraction< 5 >( 3 )
+// fraction< 10 >( 6 ) == fraction< 5 >( 3 )
+//
+// =============================================================================
 
-// @quote fraction 8 \n   ...\n};
-template< typename T, T _full_scale >
+
+// @quote fraction 10 };
+template< typename T, T _maximum >
 struct fraction {
 
    using data_type = T;
-   static constexpr data_type full_scale = _full_scale;
 
-   data_type raw_value;
+   static constexpr data_type maximum = _maximum;
 
-   // @quote constructor 2 ...
-   constexpr explicit fraction( T x ):
-      raw_value( x )
+   data_type raw_value = _maximum;
+
+
+   // @quote default-constructor 1
+   constexpr fraction(){}
+
+   // @quote value-constructor 1 ...
+   constexpr explicit fraction( T x )
+      : raw_value( x )
    {}
 
-   // @quote assign 2 ... }
-   template< typename V, V rhs_full_scale >
-   constexpr fraction & operator=( const fraction< V, rhs_full_scale > & rhs ){
-      raw_value = ( rhs.raw_value * rhs_full_scale ) / full_scale;
+   // @quote copy-constructor 1 ...
+   template< typename V, V rhs_maximum >
+   constexpr explicit fraction( const fraction< V, rhs_maximum > & rhs )
+      : raw_value( raw_value = ( rhs.raw_value * rhs_maximum ) / maximum; )
+   {}
+
+   // @quote assignment 2 ... }
+   template< typename V, V rhs_maximum >
+   constexpr fraction & operator=( const fraction< V, rhs_maximum > & rhs ){
+      raw_value = ( rhs.raw_value * rhs_maximum ) / maximum;
    }
 
-   // @quote of 2 ... }
+   // @quote of-one 2 ... }
    template< typename V >
-   constexpr V of( V x ) const {
-      return ( x * raw_value ) / _full_scale;
+   constexpr V of( V max ) const {
+      return ( raw_value * max ) / maximum;
    }
 
-   // @quote of 2 ... }
+   // @quote of-two 2 ... }
    template< typename V, typename W >
-   constexpr V of( V x, W y ) const {
-      return x + of( y - x );
+   constexpr V of( V min, W max ) const {
+      return min + of( max - min );
    }
 
    // @quote negate 1 ... }
-   constexpr fraction operator-() const {
-      return fraction( full_scale - raw_value );
+   constexpr fraction operator - () const {
+      return fraction( maximum - raw_value );
    }
 
    // @quote multiply 2 ... }
    template< typename V >
-   constexpr V operator *( V rhs ) const {
-      return raw_value * rhs;
+   constexpr fraction operator * ( V rhs ) const {
+      return fraction( raw_value * rhs );
    }
 
-   // @quote multiply 2 ... }
+   // @quote multiply-reverse 2 ... }
    template< typename V >
-   friend constexpr V operator *( V lhs, fraction rhs ) {
+   friend constexpr fraction operator * ( V lhs, fraction rhs ) {
       return rhs * lhs;
-   }
-
-   // @quote multiply 2 ... }
-   template< typename V >
-   constexpr V operator *( V rhs ) const {
-      return raw_value * rhs;
    }
 
    // @quote divide 2 ... }
    template< typename V >
-   constexpr V operator / ( V rhs ) const {
-      return raw_value / rhs;
+   constexpr frcation operator / ( V rhs ) const {
+      return fraction( raw_value / rhs );
    }
 
-   // @quote compare 2 ... }
+   // @quote compare-equal 2 ... }
    template< typename V >
-   constexpr bool operator==( V rhs ) const {
-      return raw_value * V::full_scale == rhs.raw_value * full_scale;
+   constexpr bool operator == ( V rhs ) const {
+      return raw_value * V::maximum == rhs.raw_value * maximum;
    }
 
-   // @quote compare 2 ... }
+   // @quote compare-unequal 2 ... }
    template< typename V >
-   constexpr bool operator!=( V rhs ) const {
+   constexpr bool operator != ( V rhs ) const {
       return ! ( *this == rhs );
    }
 

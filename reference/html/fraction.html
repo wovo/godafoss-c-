@@ -1,0 +1,190 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="fraction"></a>
+<H2>fraction</H2>
+from <A HREF="../library/adts/gf-fraction.hpp">adts/gf-fraction.hpp</A>
+
+
+<HR>
+
+<P>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">template< typename T, T _maximum >
+struct fraction {
+
+   using data_type = T;
+
+   static constexpr data_type maximum = _maximum;
+
+   data_type raw_value = _maximum;
+
+ };
+</code></pre></A>
+<P>
+A fraction is a type template that stores a raw_value,
+which is to be interpreted as a fraction of its maximum value.
+Think of a fraction as a percentage,
+or a factor in the range [ 0.0 .. 1.0 ].
+The type of the stored raw_value and the maximum value
+are template parameters.
+<P>
+A fractions can be used to avoid the use of floating point arithmetic
+in a situation where otherwise a floating point
+value (in the range [ 0.0 .. 1.0 ]) would have been used.
+<P>
+Examples of the use of fractions in the library:
+  <LI> an ADC (Analaog to Digital Converter) returns a fraction
+  <LI> the amount of red, green and blue in a color is expressed as a fraction
+  <LI> the position of a servo motor is specified as a fraction
+<P>
+<P>
+
+
+<HR>
+
+<H3>constructors</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr fraction(){}
+</code></pre></A>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr explicit fraction( T x ) ...
+</code></pre></A>
+<P>
+The constructor that acceptes a value is explicit,
+to avoid the mistake of passing a value
+where a fraction is required.
+<P>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V, V rhs_maximum > ...
+</code></pre></A>
+<P>
+The copy constructor copies the value from another fraction,
+which can have a different value type and/or a different maximum.
+The copying rescales relative to the maximum of the constructed fraction.
+<P>
+<pre><code class="c++">// example
+fraction< 10 > a( 5 );
+fraction< 4 > b( a );
+// now 4 == fraction< 4 >( 2 )</code></pre></A>
+<P>
+<P>
+
+
+<HR>
+
+<H3>assignment</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V, V rhs_maximum >
+   constexpr fraction & operator=( const fraction< V, rhs_maximum > & rhs ){ ... }
+</code></pre></A>
+<P>
+A fraction can be assigned from another fraction,
+which can have a different value type and/or a different maximum.
+As with the copy constructor, assignement rescales the value.
+<P>
+<pre><code class="c++">// example
+fraction< 10 > a;
+a = fraction< 2 >( 1 );
+// now a == fraction< 10 >( 5 );</code></pre></A>
+<P>
+<P>
+
+
+<HR>
+
+<H3>of-one</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V, typename W >
+   constexpr V of( V min, W max ) const { ... }
+</code></pre></A>
+<P>
+The of functions return the argument, scaled according to the fraction.
+The one-argument version scales to the interval [ 0, max ],
+the two-argument version scales to the interval [ min, max ].
+<P>
+<pre><code class="c++">// examples
+fraction< 3 >( 1 ) == fraction< 3 >( 2 )
+fraction< 8 >( 3 ) == fraction< 8 >( 5 )</code></pre></A>
+<P>
+<P>
+
+
+<HR>
+
+<H3>negate</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr fraction operator - () const { ... }
+</code></pre></A>
+<P>
+The - operator complements the fraction: when the fraction is interpreted
+as a value v in the range [ 0.0 .. 1.0 ], it returns ( 1.0 - v ).
+<P>
+<pre><code class="c++">// examples
+fraction< 3 >( 1 ) == fraction< 3 >( 2 )
+fraction< 8 >( 3 ) == fraction< 8 >( 5 )</code></pre></A>
+<P>
+<P>
+
+
+<HR>
+
+<H3>multiply</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+   constexpr fraction operator * ( V rhs ) const { ... }
+</code></pre></A>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+   friend constexpr fraction operator * ( V lhs, fraction rhs ) { ... }
+</code></pre></A>
+<P>
+The multiplication operators multiply the fraction by the other parameter.
+<P>
+<pre><code class="c++">// example
+fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )</code></pre></A>
+<P>
+<P>
+
+
+<HR>
+
+<H3>divide</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+   constexpr frcation operator / ( V rhs ) const { ... }
+</code></pre></A>
+<P>
+The division operator divides the fraction by the right hand side argument.
+<P>
+<pre><code class="c++">// example
+fraction< 10 >( 6 ) / 3  == fraction< 10 >( 2 )</code></pre></A>
+<P>
+<P>
+
+
+<HR>
+
+<H3>compare</H3>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+   constexpr bool operator == ( V rhs ) const { ... }
+</code></pre></A>
+<A HREF="../../library/adts/gf-fraction.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< typename V >
+   constexpr bool operator != ( V rhs ) const { ... }
+</code></pre></A>
+<P>
+Fractions can be compared for equality and inequality.
+These comparisons take the scale (full_scale value) into account.
+<P>
+<pre><code class="c++">// examples
+fraction< 10 >( 3 ) != fraction< 5 >( 3 )
+fraction< 10 >( 6 ) == fraction< 5 >( 3 )</code></pre></A>
+<P>
+
+</body>

@@ -81,6 +81,9 @@ a different value type.
 <pre><code class="c++">   template< typename V >
 //      requires requires( V b ){ { x + b }; }   - GCC 10.0.1 ICE segfault
       requires requires( xy_value_type x, V b ){ { x + b }; } ... }
+   template< typename V >
+      requires requires( xy_value_type x, V b ){ { x += b }; }
+   constexpr xy & operator+=( const xy< V > rhs ){ ... }
 </code></pre></A>
 <A HREF="../../library/adts/gf-xy.hpp" style="text-decoration:none">
 <pre><code class="c++">   template< typename V >

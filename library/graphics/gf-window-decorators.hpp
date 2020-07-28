@@ -287,11 +287,17 @@ struct port_from_window:
    }
 
    static void write( typename root::value_type v ){
+      (void) v;
       for( int i = 0; i < root::n_pins; ++i ){
          const typename root::value_type one = 0x01;
+         (void) one;
+
+
          minion::write(
             minion::origin + typename minion::offset_t( i, 0 ),
-            ( ( v & ( one  << i ) ) != 0 ) ? black : white );
+black );
+        //    ( ( v & ( one  << i ) ) != 0 ) ? black : white );
+
       }
    }
 

@@ -122,6 +122,7 @@
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 #pragma GCC diagnostic ignored "-Wattributes"
 #pragma GCC diagnostic ignored "-Wvolatile"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 // -Wno-long-long.
 
