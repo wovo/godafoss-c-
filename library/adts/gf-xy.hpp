@@ -24,7 +24,8 @@
 // The xy< xy_value_type > ADT class template is a pair of t
 // wo xy_value_type values named x and y.
 // It is used for distances in an xy plane, like on a window or terminal.
-// For a location in an xy plane the torsor< xy< T > > is used.
+// For a location (carthesian coordinate) in an xy plane
+// the torsor< xy< T > > is used.
 //
 // The xy<> ADT supports
 // - constructors: default (initializes to zero),

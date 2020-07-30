@@ -27,12 +27,12 @@
 //
 // The functions that extend the string by appending characters do so
 // up to the maximum length of the string. Appending characters beyond
-// this maximum length has no effect: the excess characters are ignored.
+// this maximum length has no effect: excess characters are ignored.
 //
 // The functions that access a character at an index (a position within
 // the stored string) do so only when the index is valid. When the index
-// is invalid, an undefined character (or a reference to an undefined
-// character) is returned.
+// is invalid, an undefined character (or for an lvalue,
+// a reference to an undefined character) is returned.
 //
 // @section attributes
 //

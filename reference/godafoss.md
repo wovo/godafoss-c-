@@ -198,11 +198,12 @@ template< can_buffered T >
 struct buffered ... ;
 ```
 
+<a name="color<>"></a>
 
 ------------------------------
 ------------------------------
 
-## colors
+## color
 
 from [adts/gf-color.hpp](../library/adts/gf-color.hpp)
 
@@ -210,23 +211,125 @@ from [adts/gf-color.hpp](../library/adts/gf-color.hpp)
 ---------------------------------
 
 
-The color abstract data types represent a color.
+The color type template represent a color.
 You wouldn't have guessed.
 The main use of these types is to specify the color of a pixel on a display.
 
-A color can be represented
-in 1 bit (often black-or-white),
-in 3 bits (one bit each for red, green and blue),
-in one byte (3 bits each for red and green,
+```c++
+template<
+   int red_bits   = 8,
+   int green_bits = 8,
+   int blue_bits  = 8
+>
+struct color { ... }
+```
+
+Displays have various color depths (number of bits used to represent
+a color), so different uses call for different color types.
+The choice is between color resolution and memory usage.
+The depths are specified in bits for red, blue and green.
+The maximum is 8 bits each. This is also the default.
+
+
+
+
+---------------------------------
+
+
+### predefined
+
+```c++
+struct color_bw { ... }
+using color_3  = color< 1, 1, 1 >;
+using color_8  = color< 3, 3, 2 >;
+using color_16 = color< 5, 6, 5 >;
+using color_24 = color< 8, 8, 8 >;
+```
+
+The most common color depths are predefined:
+  - 1 bit (often used for black-or-white),
+  - 3 bits (one bit each for red, green and blue),
+  - 8 bits (3 bits each for red and green,
 2 bits for blue because the eye is less sensitive to blue),
-in 16 bits (5 bits each for red and blue, 6 bits for green
+  - 16 bits (5 bits each for red and blue, 6 bits for green
 because the eye is most sensitive to green),
-in 24 bits (one byte each for red, green and blue).
+  - 24 bits (one byte each for red, green and blue).
 
-All color formats have the same interface.
-The choice between the different color formats is dictated by the
-balance between color resolution and memory size.
 
+
+
+---------------------------------
+
+
+### constructors
+
+
+```c++
+   constexpr color() { ... }
+```
+
+Colors have a default constructor.
+Don't rely on the value after default construction.
+
+```c++
+   template< is_color T >
+   constexpr color( T & rhs ): color(
+      rhs.red()   .of( red_max   ),
+      rhs.green() .of( green_max ),
+      rhs.blue()  .of( blue_max  ) ) { ... }
+```
+
+The copy constructor copies the fractions
+
+```c++
+<missing>```
+
+A color can be constructed from the three values
+for its **[read](#read)**, green and blue components.
+For each componet, the value is relative to the (unsigned) maximum that
+fits in the number of bits specified (by the template argument)
+for that color.
+
+
+
+
+
+
+---------------------------------
+
+
+### random()
+
+
+```c++
+   static color random(){ ... }
+```
+
+The static member function random() returns a random color.
+Each of the red, green and blue components has been selected by
+the simple random generator.
+
+
+
+
+
+---------------------------------
+
+
+### getters
+
+
+```c++
+   constexpr base_type red() const { ... }
+   constexpr base_type green() const { ... }
+   constexpr base_type blue() const { ... }
+```
+
+The red(), geen() and blue() member functions return the
+red, green and blue components as a fraction.
+
+```c++
+color< 8, 8, 8 >( 5, 10, 15 ).blue() == fraction< 255 >( 10 )```
 
 
 <a name="is_cto"></a>
@@ -415,7 +518,7 @@ int main(){
 };
 ```
 
-<a name="fraction"></a>
+<a name="fraction<>"></a>
 
 ------------------------------
 ------------------------------
@@ -451,6 +554,9 @@ are template parameters.
 A fractions can be used to avoid the use of floating point arithmetic
 in a situation where otherwise a floating point
 value (in the range [ 0.0 .. 1.0 ]) would have been used.
+
+All fraction operartions are constexpr. Fraction values
+can be used as non-type template arguments.
 
 Examples of the use of fractions in the library:
   - an ADC (Analaog to Digital Converter) returns a fraction
@@ -488,7 +594,7 @@ The copying rescales relative to the maximum of the constructed fraction.
 // example
 fraction< 10 > a( 5 );
 fraction< 4 > b( a );
-// now 4 == fraction< 4 >( 2 )```
+// now b == fraction< 4 >( 2 )```
 
 
 
@@ -519,21 +625,25 @@ a = fraction< 2 >( 1 );
 ---------------------------------
 
 
-### of-one
+### of()
 
+```c++
+   template< typename V >
+   constexpr V of( V max ) const { ... }
+```
 ```c++
    template< typename V, typename W >
    constexpr V of( V min, W max ) const { ... }
 ```
 
-The of functions return the argument, scaled according to the fraction.
+The of() functions return the argument, scaled according to the fraction.
 The one-argument version scales to the interval [ 0, max ],
 the two-argument version scales to the interval [ min, max ].
 
 ```c++
 // examples
-fraction< 3 >( 1 ) == fraction< 3 >( 2 )
-fraction< 8 >( 3 ) == fraction< 8 >( 5 )```
+fraction< 3 >( 1 ).of( 60 ) == 20
+fraction< 8 >( 3 ).of( 10, 90 ) == 40```
 
 
 
@@ -547,8 +657,9 @@ fraction< 8 >( 3 ) == fraction< 8 >( 5 )```
    constexpr fraction operator - () const { ... }
 ```
 
-The - operator complements the fraction: when the fraction is interpreted
-as a value v in the range [ 0.0 .. 1.0 ], it returns ( 1.0 - v ).
+The - operator returns the complements of the fraction:
+when the fraction is interpreted as a value v in the range [ 0.0 .. 1.0 ],
+it returns the fraction ( 1.0 - v ).
 
 ```c++
 // examples
@@ -575,8 +686,9 @@ fraction< 8 >( 3 ) == fraction< 8 >( 5 )```
 The multiplication operators multiply the fraction by the other parameter.
 
 ```c++
-// example
-fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )```
+// examplew
+fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )
+3 * fraction< 6 >( 2 ) == fraction< 6 >( 6 )```
 
 
 
@@ -588,7 +700,7 @@ fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )```
 
 ```c++
    template< typename V >
-   constexpr frcation operator / ( V rhs ) const { ... }
+   constexpr fraction operator / ( V rhs ) const { ... }
 ```
 
 The division operator divides the fraction by the right hand side argument.
@@ -615,12 +727,28 @@ fraction< 10 >( 6 ) / 3  == fraction< 10 >( 2 )```
 ```
 
 Fractions can be compared for equality and inequality.
-These comparisons take the scale (full_scale value) into account.
+These comparisons take the maximum values of both sides into account.
 
 ```c++
 // examples
 fraction< 10 >( 3 ) != fraction< 5 >( 3 )
 fraction< 10 >( 6 ) == fraction< 5 >( 3 )```
+
+
+
+
+---------------------------------
+
+
+### print
+
+```c++
+   template< typename S >
+   friend S & operator << ( S & sink, const fraction & v ){ ... }
+```
+
+A fraction can be printed in the "f[R/M]" format, where R is the
+raw_value, and M is the maximum.
 
 <a name="GODAFOSS_INLINE"></a>
 
@@ -1388,6 +1516,78 @@ The item_input_output<> decorator decorates
 an **[item](#item)** to be an **[input_output](#input_output)** **[item](#item)**,
 which is possible if the **[item](#item)** satisfies the can_input_output concept,
 which requires the **[item](#item)** to an **[input_output](#input_output)**.
+
+<a name="loop<>"></a>
+
+------------------------------
+------------------------------
+
+## loop
+
+from [basics/gf-loop.hpp](../library/basics/gf-loop.hpp)
+
+
+---------------------------------
+
+
+```c++
+loop< N, unroll >([&] GODAFOSS_INLINE {
+   // loop body
+});```
+
+The loop type template repeats the loop body N times.
+The optional unroll parameter selects whether the repeating is
+implemented as the compiler thinks best, or by (forced) unrolling.
+The default is false (no forced unrolling).
+
+Unrolling increases code size. Unrolled code will probably run faster,
+but this effect can be neglectible.
+On a system with memory wait states and a memory **[read](#read)** buffer a small
+non-unrolled loop that fits in the **[read](#read)** buffer will probably be faster
+than the unrolled version. As always: measure, and check the generated
+assembly.
+
+
+
+
+---------------------------------
+
+
+### examples
+
+
+```c++
+// example, the compiler chooses
+loop< 8 >([&] GODAFOSS_INLINE {
+   mosi::write( ( d_out & 0x80 ) != 0 );
+   wait_half_period();
+   sclk::write( 1 );
+   wait_half_period();
+   d_out = d_out << 1;
+   sclk::write( 0 );
+});```
+
+```c++
+// example, always unrolled
+loop< 8, true >([&] GODAFOSS_INLINE {
+   mosi::write( ( d_out & 0x80 ) != 0 );
+   wait_half_period();
+   sclk::write( 1 );
+   wait_half_period();
+   d_out = d_out << 1;
+   sclk::write( 0 );
+});```
+
+These examples show the (simplified) inner loop of
+the-bit banged spi implementation.
+
+The table shows the effect of unrolling on the bouncing square demo
+on an Arduino Due (sam3xa cortex-m3 CPU) running at the maximum
+CPU clock frequency (84 Mhz, 5 wait states for Flash access),
+with an 128x64 pixel b/w SSD1306 OLED.
+
+- no inline: 1364 bytes code, one byte takes 2.3 us, **[flush](#flush)** takes 2.9 ms
+- inline: 1536 bytes code, one byte takes 1.4 us, **[flush](#flush)** takes 1.9 ms
 
 <a name="no_inline"></a>
 
@@ -2230,12 +2430,12 @@ buffer overflows or out-of-bounds indexes.
 
 The functions that extend the string by appending characters do so
 up to the maximum length of the string. Appending characters beyond
-this maximum length has no effect: the excess characters are ignored.
+this maximum length has no effect: excess characters are ignored.
 
 The functions that access a character at an index (a position within
 the stored string) do so only when the index is valid. When the index
-is invalid, an undefined character (or a reference to an undefined
-character) is returned.
+is invalid, an undefined character (or for an lvalue,
+a reference to an undefined character) is returned.
 
 
 
@@ -2379,7 +2579,8 @@ struct xy final { ... };
 The xy< xy_value_type > ADT class template is a pair of t
 wo xy_value_type values named x and y.
 It is used for distances in an xy plane, like on a window or terminal.
-For a location in an xy plane the **[torsor](#torsor)**< xy< T > > is used.
+For a location (carthesian coordinate) in an xy plane
+the **[torsor](#torsor)**< xy< T > > is used.
 
 The xy<> ADT supports
 - constructors: default (initializes to zero),

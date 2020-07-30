@@ -1,0 +1,71 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="loop<>"></a>
+<H2>loop</H2>
+from <A HREF="../library/basics/gf-loop.hpp">basics/gf-loop.hpp</A>
+
+
+<HR>
+
+<P>
+<pre><code class="c++">loop< N, unroll >([&] GODAFOSS_INLINE {
+   // loop body
+});</code></pre></A>
+<P>
+The loop type template repeats the loop body N times.
+The optional unroll parameter selects whether the repeating is
+implemented as the compiler thinks best, or by (forced) unrolling.
+The default is false (no forced unrolling).
+<P>
+Unrolling increases code size. Unrolled code will probably run faster,
+but this effect can be neglectible.
+On a system with memory wait states and a memory <A HREF=input--output.html#read>read</A> buffer a small
+non-unrolled loop that fits in the <A HREF=input--output.html#read>read</A> buffer will probably be faster
+than the unrolled version. As always: measure, and check the generated
+assembly.
+<P>
+<P>
+
+
+<HR>
+
+<H3>examples</H3>
+<P>
+<pre><code class="c++">// example, the compiler chooses
+loop< 8 >([&] GODAFOSS_INLINE {
+   mosi::write( ( d_out & 0x80 ) != 0 );
+   wait_half_period();
+   sclk::write( 1 );
+   wait_half_period();
+   d_out = d_out << 1;
+   sclk::write( 0 );
+});</code></pre></A>
+<P>
+<pre><code class="c++">// example, always unrolled
+loop< 8, true >([&] GODAFOSS_INLINE {
+   mosi::write( ( d_out & 0x80 ) != 0 );
+   wait_half_period();
+   sclk::write( 1 );
+   wait_half_period();
+   d_out = d_out << 1;
+   sclk::write( 0 );
+});</code></pre></A>
+<P>
+These examples show the (simplified) inner loop of
+the-bit banged spi implementation.
+<P>
+The table shows the effect of unrolling on the bouncing square demo
+on an Arduino Due (sam3xa cortex-m3 CPU) running at the maximum
+CPU clock frequency (84 Mhz, 5 wait states for Flash access),
+with an 128x64 pixel b/w SSD1306 OLED.
+<P>
+<LI> no inline: 1364 bytes code, one byte takes 2.3 us, <A HREF=input--output.html#flush>flush</A> takes 2.9 ms
+<LI> inline: 1536 bytes code, one byte takes 1.4 us, <A HREF=input--output.html#flush>flush</A> takes 1.9 ms
+<P>
+
+</body>

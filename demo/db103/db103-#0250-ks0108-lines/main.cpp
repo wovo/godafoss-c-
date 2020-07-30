@@ -22,10 +22,11 @@ using lcd  = gf::ks0108_data_cs1_cs2_cd_e_timing<
    data, cs1, cs2, cd, e, timing >;
 
 int main( void ){
-   //gf::demo::random_lines2< lcd, timing::ms< 200 > > ();
-      gf::ostream< gf::formatter< uart > > cout;
+   gf::demo::random_lines2< lcd, timing::ms< 200 > > ();
+   timing::init();
+   gf::ostream< gf::formatter< uart > > cout;
    lcd::init();
-   //lcd::clear( gf::black_or_white( 0 ) );
+   lcd::clear( gf::white );
    //gf::line< lcd >( lcd::location_t{ 5,5 }, lcd::location_t{ 10, 10 }, gf::black_or_white( 1 ) );
    int n = 0;
    for(;;){

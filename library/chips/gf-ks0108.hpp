@@ -23,6 +23,7 @@ template<
    can_pin_oc   _e,
    typename             timing
 > struct ks0108_data_cs1_cs2_cd_e_timing :
+
    godafoss::window_root<
       ks0108_data_cs1_cs2_cd_e_timing< _port, _cs1, _cs2, _cd, _e, timing >,
       xy< int_fast16_t >,
@@ -41,11 +42,11 @@ private:
 
    // cs1, cs2, e are (internally) active high
    //(the electrical pins are active low)
-   using port    = port_oc< _port >;
-   using cs1     = pin_oc< invert< _cs1 > >;
-   using cs2     = pin_oc< invert< _cs2 > >;
-   using cd      = pin_oc< _cd >;
-   using e       = pin_oc< invert< _e > >;
+   using port    = port_out< _port >;
+   using cs1     = pin_out< invert< _cs1 > >;
+   using cs2     = pin_out< invert< _cs2 > >;
+   using cd      = pin_out< _cd >;
+   using e       = pin_out< invert< _e > >;
 
    // KS0108 commands
    static constexpr uint_fast8_t cmd_off = 0x3E;
@@ -55,7 +56,7 @@ private:
    static constexpr uint_fast8_t cmd_dsl = 0xC0;
 
    // pixel buffer
-   static inline uint8_t buffer[ root::size.x * root::size.y / 8 ];
+   static inline uint8_t buffer[ root::size.x * root::size.y / 8 ] = {};
 
    // write on byte, command or data
    static void write8( bool is_data, uint_fast8_t d ){
@@ -126,14 +127,13 @@ public:
    }
 
    static void write_implementation(
-      root::location_t  _pos,
-      root::color_t     col
+      root::offset_t   pos,
+      root::color_t    col
    ){
-	  const auto pos = _pos - root::origin;
       const uint_fast8_t bit_address   = pos.x + pos.y * root::size.x;
       const uint_fast8_t byte_address  = bit_address / 8;
       const uint_fast8_t bit_offset    = bit_address % 8;
-      if( col.is_black ){
+      if( col == black ){
          buffer[ byte_address ] |= ( 1 << bit_offset );
       } else {
          buffer[ byte_address ] &= ~ ( 1 << bit_offset );
@@ -161,5 +161,4 @@ public:
       }
    }
 
-
-}; // ks0108_data_cs1_cs2_cd_e_timing
+};

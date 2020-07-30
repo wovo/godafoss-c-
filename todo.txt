@@ -1,4 +1,24 @@
-window decorators must use the largest of the colors and xy, not alwas color<>
+speerpunten:
+- loop p
+- ints
+- string - plaatje: gitaar
+- fraction p
+- passing
+- random p 0-> random interface?
+- background (later?)
+- torsor iets met plaats en afstand
+- xy p
+- color p
+- date-and-time kalender + horloge
+- template< size_t n > concept range_1_5 = ( ( n >0 ) && ( n < 6 ) );
+
+loop: use smaller integer
+make demo for loop test, with measurements
+
+
+fraction: test, T/V concepts, sink concept
+
+window decorators must use the largest of the colors and xy, not always color<>
 harware SPI via de USART
 
 document 'byte source' and byte sink interfaces (iwc, spi, nrf24)
@@ -327,6 +347,9 @@ todo
 - problem with CRTP
 - remaining issues: users, abstractions, timing, testing, documentation (doxygen doesn't work)
 
+have only one type of timing?
+target provides the run, hence the target is always initialized? 0- fails for configurable target - no
+
 development board 2.0
 blue pill
 switches
@@ -345,7 +368,7 @@ LCD met touch
 smartpixel  3/4 pin output
 LDR
 DHT11
-dallas (5V)
+dallas (5V?)
 I2C
 2 x joystick
 
@@ -359,3 +382,58 @@ there: git clone git://gcc.gnu.org/git/gcc.git
 github.com/MikeLankamp/fpm
 
 
+template< can_pin _a, timing t >
+struct srf04 {
+   using a = pin_out< _a >;
+   static void init(
+      do something
+   }
+   using resources = use< a, t >;
+
+}
+
+run< blink< target::p1, target::timing > >()
+
+task has priority, stack size (for now)
+
+
+
+struct resource_sentinel {
+   using tasks = task_sentinel;
+   using background = background_sentinel;
+   using inits = init_sentinel;
+};
+
+
+template< can_pin_out _pin, can_static_duration _pause >
+struct blink {
+
+   using pin = direct< pin_out_from< _pin >>;
+   using pause = static_duration< _pause >;
+
+   using resources = resources< pin, pause >;
+
+   static void GODAFOSS_NO_RETURN run(){
+      for(;;){
+         pin::write( 1 );
+         pause::wait();
+         pin::write( 0 );
+         pause::wait();
+      }
+   }
+};
+
+template< application >
+struct run {
+   static void GODAFOSS_NO_RETURN run(){
+      - call all inits
+      - start threading
+      application::run();
+   }
+};
+
+int main(){
+   <hoe vind je de naam van wat er gerunt moet worden?
+}
+
+- je kan twee apps mergen, dan worden ze tasks

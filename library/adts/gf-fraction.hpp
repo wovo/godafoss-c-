@@ -18,7 +18,7 @@
 
 // =============================================================================
 //
-// @define fraction
+// @define fraction<>
 // @title fraction
 //
 // @insert fraction
@@ -33,6 +33,9 @@
 // A fractions can be used to avoid the use of floating point arithmetic
 // in a situation where otherwise a floating point
 // value (in the range [ 0.0 .. 1.0 ]) would have been used.
+//
+// All fraction operartions are constexpr. Fraction values
+// can be used as non-type template arguments.
 //
 // Examples of the use of fractions in the library:
 //   - an ADC (Analaog to Digital Converter) returns a fraction
@@ -59,7 +62,7 @@
 // // example
 // fraction< 10 > a( 5 );
 // fraction< 4 > b( a );
-// // now 4 == fraction< 4 >( 2 )
+// // now b == fraction< 4 >( 2 )
 //
 // -----------------------------------------------------------------------------
 //
@@ -78,25 +81,27 @@
 //
 // -----------------------------------------------------------------------------
 //
-// @section of-one
+// @section of()
+// @insert of-one
 // @insert of-two
 //
-// The of functions return the argument, scaled according to the fraction.
+// The of() functions return the argument, scaled according to the fraction.
 // The one-argument version scales to the interval [ 0, max ],
 // the two-argument version scales to the interval [ min, max ].
 //
 // @code 3
 // // examples
-// fraction< 3 >( 1 ) == fraction< 3 >( 2 )
-// fraction< 8 >( 3 ) == fraction< 8 >( 5 )
+// fraction< 3 >( 1 ).of( 60 ) == 20
+// fraction< 8 >( 3 ).of( 10, 90 ) == 40
 //
 // -----------------------------------------------------------------------------
 //
 // @section negate
 // @insert negate
 //
-// The - operator complements the fraction: when the fraction is interpreted
-// as a value v in the range [ 0.0 .. 1.0 ], it returns ( 1.0 - v ).
+// The - operator returns the complements of the fraction:
+// when the fraction is interpreted as a value v in the range [ 0.0 .. 1.0 ],
+// it returns the fraction ( 1.0 - v ).
 //
 // @code 3
 // // examples
@@ -111,9 +116,10 @@
 //
 // The multiplication operators multiply the fraction by the other parameter.
 //
-// @code 2
-// // example
+// @code 3
+// // examplew
 // fraction< 6 >( 2 ) * 2 == fraction< 6 >( 4 )
+// 3 * fraction< 6 >( 2 ) == fraction< 6 >( 6 )
 //
 // -----------------------------------------------------------------------------
 //
@@ -133,12 +139,20 @@
 // @insert compare-unequal
 //
 // Fractions can be compared for equality and inequality.
-// These comparisons take the scale (full_scale value) into account.
+// These comparisons take the maximum values of both sides into account.
 //
 // @code 3
 // // examples
 // fraction< 10 >( 3 ) != fraction< 5 >( 3 )
 // fraction< 10 >( 6 ) == fraction< 5 >( 3 )
+//
+// -----------------------------------------------------------------------------
+//
+// @section print
+// @insert print
+//
+// A fraction can be printed in the "f[R/M]" format, where R is the
+// raw_value, and M is the maximum.
 //
 // =============================================================================
 
@@ -165,7 +179,7 @@ struct fraction {
    // @quote copy-constructor 1 ...
    template< typename V, V rhs_maximum >
    constexpr explicit fraction( const fraction< V, rhs_maximum > & rhs )
-      : raw_value( raw_value = ( rhs.raw_value * rhs_maximum ) / maximum; )
+      : raw_value( ( rhs.raw_value * rhs_maximum ) / maximum )
    {}
 
    // @quote assignment 2 ... }
@@ -205,7 +219,7 @@ struct fraction {
 
    // @quote divide 2 ... }
    template< typename V >
-   constexpr frcation operator / ( V rhs ) const {
+   constexpr fraction operator / ( V rhs ) const {
       return fraction( raw_value / rhs );
    }
 
@@ -219,6 +233,12 @@ struct fraction {
    template< typename V >
    constexpr bool operator != ( V rhs ) const {
       return ! ( *this == rhs );
+   }
+
+   // @quote print 2 ... }
+   template< typename S >
+   friend S & operator << ( S & sink, const fraction & v ){
+      return sink << "f[" << v.raw_value << "/" << v.maximum << "]";
    }
 
 };

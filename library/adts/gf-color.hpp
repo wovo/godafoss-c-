@@ -19,25 +19,80 @@
 
 // =============================================================================
 //
-// @title colors
+// @define color<>
+// @title color
 //
-// The color abstract data types represent a color.
+// The color type template represent a color.
 // You wouldn't have guessed.
 // The main use of these types is to specify the color of a pixel on a display.
 //
-// A color can be represented
-// in 1 bit (often black-or-white),
-// in 3 bits (one bit each for red, green and blue),
-// in one byte (3 bits each for red and green,
+// @insert color
+//
+// Displays have various color depths (number of bits used to represent
+// a color), so different uses call for different color types.
+// The choice is between color resolution and memory usage.
+// The depths are specified in bits for red, blue and green.
+// The maximum is 8 bits each. This is also the default.
+//
+// -----------------------------------------------------------------------------
+//
+// @section predefined
+// @insert predefined
+//
+// The most common color depths are predefined:
+//   - 1 bit (often used for black-or-white),
+//   - 3 bits (one bit each for red, green and blue),
+//   - 8 bits (3 bits each for red and green,
 // 2 bits for blue because the eye is less sensitive to blue),
-// in 16 bits (5 bits each for red and blue, 6 bits for green
+//   - 16 bits (5 bits each for red and blue, 6 bits for green
 // because the eye is most sensitive to green),
-// in 24 bits (one byte each for red, green and blue).
+//   - 24 bits (one byte each for red, green and blue).
 //
-// All color formats have the same interface.
-// The choice between the different color formats is dictated by the
-// balance between color resolution and memory size.
+// -----------------------------------------------------------------------------
 //
+// @section constructors
+//
+// @insert constructor-default
+//
+// Colors have a default constructor.
+// Don't rely on the value after default construction.
+//
+// @insert constructor-copy
+//
+// The copy constructor copies the fractions
+//
+// @insert constructor-values
+//
+// A color can be constructed from the three values
+// for its read, green and blue components.
+// For each componet, the value is relative to the (unsigned) maximum that
+// fits in the number of bits specified (by the template argument)
+// for that color.
+//
+//
+//
+// -----------------------------------------------------------------------------
+//
+// @section random()
+//
+// @insert random
+//
+// The static member function random() returns a random color.
+// Each of the red, green and blue components has been selected by
+// the simple random generator.
+//
+//
+// -----------------------------------------------------------------------------
+//
+// @section getters
+//
+// @insert get
+//
+// The red(), geen() and blue() member functions return the
+// red, green and blue components as a fraction.
+//
+// @code 1
+// color< 8, 8, 8 >( 5, 10, 15 ).blue() == fraction< 255 >( 10 )
 //
 //
 // =============================================================================
@@ -61,11 +116,165 @@ concept is_color = requires(
    T::_color_marker;
 
 //   { typename T::base_type() } -> std::same_as< fraction< int_fast16_t, 255 > >;
-//   { T::prefix      } -> std::same_as< char[] >;
 
    { color.red()    } -> std::same_as< typename T::base_type >;
    { color.green()  } -> std::same_as< typename T::base_type >;
    { color.blue()   } -> std::same_as< typename T::base_type >;
+
+};
+
+
+// =============================================================================
+//
+// the common color base
+//
+// =============================================================================
+
+// @quote color 6 { ... }
+template<
+   int red_bits   = 8,
+   int green_bits = 8,
+   int blue_bits  = 8
+>
+struct color
+: color_root {
+
+   static_assert( red_bits   <= 8 );
+   static_assert( green_bits <= 8 );
+   static_assert( blue_bits  <= 8 );
+
+   static constexpr auto red_max   = ( 1 << red_bits   ) - 1;
+   static constexpr auto green_max = ( 1 << green_bits ) - 1;
+   static constexpr auto blue_max  = ( 1 << blue_bits  ) - 1;
+
+   struct {
+      uint8_t red   : red_bits;
+      uint8_t green : green_bits;
+      uint8_t blue  : blue_bits;
+   } values = { 0, 0, 0 };
+
+   using base_type = fraction< int_fast16_t, 255 >;
+
+   template< int max >
+   static constexpr uint8_t clip( int_fast16_t x ){
+      return ( x < 0 )
+         ? 0
+         : ( x > max ? max : x );
+   }
+
+   // @quote constructor-default 1 { ... }
+   constexpr color()
+      : values{ 0, 0, 0 }
+   {}
+
+   // @quote constructor-copy 5 { ... }
+   template< is_color T >
+   constexpr color( T & rhs ): color(
+      rhs.red()   .of( red_max   ),
+      rhs.green() .of( green_max ),
+      rhs.blue()  .of( blue_max  ) )
+   {}
+
+   // @quote constructor-components 5 { ... }
+   constexpr color(
+      int_fast16_t red,
+      int_fast16_t green,
+      int_fast16_t blue
+   )
+   : values {
+      red   : { clip< red_max   >( red   ) },
+      green : { clip< green_max >( green ) },
+      blue  : { clip< blue_max  >( blue  ) } }
+   {}
+
+   // only for 24 bits!
+   // @quote constructor-rgb 5 { ... }
+   constexpr color(
+      uint_fast32_t rgb32
+   ): color(
+      ( rgb32 & 0xFF0000 ) >> 16,
+      ( rgb32 & 0x00FF00 ) >>  8,
+      ( rgb32 & 0x0000FF ) >>  0 )
+   {}
+
+   // @quote get 1 ... }
+   constexpr base_type red() const {
+      return base_type( values.red );
+   };
+
+   // @quote get 1 ... }
+   constexpr base_type green() const {
+      return base_type( values.green );
+   };
+
+   // @quote get 1 ... }
+   constexpr base_type blue() const {
+      return base_type( values.blue );
+   };
+
+   // @quote random 1 ... }
+   static color random(){
+      return color(
+         random_in_range< uint8_t >( 0, red_max   ),
+         random_in_range< uint8_t >( 0, green_max ),
+         random_in_range< uint8_t >( 0, blue_max  )
+      );
+   }
+
+};
+
+
+// =============================================================================
+//
+// 1 bit color
+//
+// =============================================================================
+
+// @quote predefined 1 { ... }
+struct color_bw
+   : color_root {
+
+   using base_type = fraction< int_fast16_t, 1 >;
+   uint8_t white;
+
+public:
+
+   constexpr base_type red() const {
+      return base_type( white );
+   };
+
+   constexpr base_type green() const {
+      return base_type( white );
+   };
+
+   constexpr base_type blue() const {
+      return base_type( white );
+   };
+
+  constexpr color_bw(){}
+
+  constexpr color_bw(
+      uint_fast16_t red,
+      uint_fast16_t green,
+      uint_fast16_t blue
+   ):
+      white( ( red + blue + green ) > 0  )
+   {}
+
+   template< is_color T >
+   constexpr color_bw( const T & rhs ): color_bw(
+      rhs.red()   .of( 1 ),
+      rhs.green() .of( 1 ),
+      rhs.blue()  .of( 1 ) )
+   {}
+
+   static color_bw random(){
+      return color_bw(
+         random_in_range< uint8_t >( 0, 1 ),
+         0,
+         0
+      );
+   }
 
 };
 
@@ -134,7 +343,7 @@ constexpr bool operator != ( const T a, const V b ){
 template< typename T, is_color V >
 T & operator<<( T & lhs, const V & rhs ){
    return lhs
-      << V::prefix
+      << "c["
       << rhs.red()    * 255 << ","
       << rhs.green()  * 255 << ","
       << rhs.blue ()  * 255 << "]";
@@ -143,159 +352,11 @@ T & operator<<( T & lhs, const V & rhs ){
 
 // =============================================================================
 //
-// the common color base
-//
-// =============================================================================
-
-template<
-   int red_bits   = 8,
-   int green_bits = 8,
-   int blue_bits  = 8
->
-struct color : color_root {
-
-   static inline char prefix[]  = "c[";
-   using base_type = fraction< int_fast16_t, 16 >;
-
-   static constexpr auto red_max   = ( 1 << red_bits   ) - 1;
-   static constexpr auto green_max = ( 1 << green_bits ) - 1;
-   static constexpr auto blue_max  = ( 1 << blue_bits  ) - 1;
-
-   struct {
-      uint8_t red   : red_bits;
-      uint8_t green : green_bits;
-      uint8_t blue  : blue_bits;
-   } values = { 0, 0, 0 };
-
-   template< int max >
-   static constexpr uint8_t clip( int_fast16_t x ){
-      return ( x < 0 )
-         ? 0
-         : ( x > max ? max : x );
-   }
-
-   constexpr base_type red() const {
-      return base_type( values.red );
-   };
-
-   constexpr base_type green() const {
-      return base_type( values.green );
-   };
-
-   constexpr base_type blue() const {
-      return base_type( values.blue );
-   };
-
-   constexpr color(){}
-
-/*
-   constexpr color(
-      base_type red,
-      base_type green,
-      base_type blue
-   ): values {
-      red   : { clip< red_max   >( red.of(   red_max   ) ) },
-      green : { clip< green_max >( green.of( green_max ) ) },
-      blue  : { clip< blue_max  >( blue.of(  blue_max  ) ) } }
-   {}
-*/
-
-   constexpr color(
-      uint_fast16_t red,
-      uint_fast16_t green,
-      uint_fast16_t blue
-   ): values {
-      red   : { clip< red_max   >( red   ) },
-      green : { clip< green_max >( green ) },
-      blue  : { clip< blue_max  >( blue  ) } }
-   {}
-
-   template< is_color T >
-   constexpr color( T & rhs ): color(
-      rhs.red()   .of( red_max   ),
-      rhs.green() .of( green_max ),
-      rhs.blue()  .of( blue_max  ) )
-   {}
-
-   constexpr color(
-      uint_fast32_t rgb32
-   ): color(
-      ( rgb32 & 0xFF0000 ) >> 16,
-      ( rgb32 & 0x00FF00 ) >>  8,
-      ( rgb32 & 0x0000FF ) >>  0 )
-   {}
-
-   static color random(){
-      return color(
-         random_in_range< uint8_t >( 0, red_max   ),
-         random_in_range< uint8_t >( 0, green_max ),
-         random_in_range< uint8_t >( 0, blue_max  )
-      );
-   }
-
-};
-
-
-// =============================================================================
-//
-// 1 bit color
-//
-// =============================================================================
-
-struct color_bw : color_root {
-
-   static inline char prefix[]  = "c[";
-   using base_type = fraction< int_fast16_t, 1 >;
-   uint8_t white;
-
-public:
-
-   constexpr base_type red() const {
-      return base_type( white );
-   };
-
-   constexpr base_type green() const {
-      return base_type( white );
-   };
-
-   constexpr base_type blue() const {
-      return base_type( white );
-   };
-
-  constexpr color_bw(){}
-
-  constexpr color_bw(
-      uint_fast16_t red,
-      uint_fast16_t green,
-      uint_fast16_t blue
-   ):
-      white( ( red + blue + green ) > 0  )
-   {}
-
-   template< is_color T >
-   constexpr color_bw( const T & rhs ): color_bw(
-      rhs.red()   .of( 1 ),
-      rhs.green() .of( 1 ),
-      rhs.blue()  .of( 1 ) )
-   {}
-
-   static color_bw random(){
-      return color_bw(
-         random_in_range< uint8_t >( 0, 1 ),
-         0,
-         0
-      );
-   }
-
-};
-
-
-// =============================================================================
-//
 // 3, 8, 16, 24 bit color
 //
 // =============================================================================
 
+// @quote predefined 4
 using color_3  = color< 1, 1, 1 >;
 using color_8  = color< 3, 3, 2 >;
 using color_16 = color< 5, 6, 5 >;

@@ -52,8 +52,9 @@ static void init(){
    } else if constexpr ( clock_frequency == 84'000'000 ){
 
       // set flash timing
-      EFC0->EEFC_FMR = EEFC_FMR_FWS( 5 );
-      EFC1->EEFC_FMR = EEFC_FMR_FWS( 5 );
+      // datasheet 45.10.10 : 5 wait states required for > 80 MHz
+      EFC0->EEFC_FMR = EEFC_FMR_FWS( 4 );
+      EFC1->EEFC_FMR = EEFC_FMR_FWS( 4 );
 
       // switch to 84 Mhz
       sam3xa::SystemInit();
@@ -101,10 +102,10 @@ struct _pin_in_out :
    static void GODAFOSS_INLINE direction_flush(){}
 
    static void GODAFOSS_INLINE write( bool v ){
-	  if( v ){
-		  ((Pio*)P)->PIO_SODR = ( 0x1U << pin );
-	  } else {
-		  ((Pio*)P)->PIO_CODR = ( 0x1U << pin );
+      if( v ){
+         ((Pio*)P)->PIO_SODR = ( 0x1U << pin );
+      } else {
+         ((Pio*)P)->PIO_CODR = ( 0x1U << pin );
       }
    }
 

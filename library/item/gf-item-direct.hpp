@@ -52,12 +52,12 @@ struct _direct_read : T {};
 template< is_input T >
 struct _direct_read< T > : T {
 
-   static auto read(){
+   static auto GODAFOSS_INLINE read(){
       T::refresh();
       return T::read();
    }
 
-   static void refresh(){}
+   static void GODAFOSS_INLINE refresh(){}
 
 };
 
@@ -76,12 +76,12 @@ struct _direct_write< T > : T {
 
    using _vt = typename T::value_type;
 
-   static void write( by_const< _vt > v ) {
+   static void GODAFOSS_INLINE write( by_const< _vt > v ) {
       T::write( v );
       T::flush();
    }
 
-   static void flush(){}
+   static void GODAFOSS_INLINE flush(){}
 
 };
 
@@ -98,17 +98,17 @@ struct _direct_direction : T {};
 template< is_simplex T >
 struct _direct_direction< T > : T {
 
-   static void direction_set_input() {
+   static void GODAFOSS_INLINE direction_set_input() {
       T::direction_set_input();
       T::direction_flush();
    }
 
-   static void direction_set_output() {
+   static void GODAFOSS_INLINE direction_set_output() {
       T::direction_set_output();
       T::direction_flush();
    }
 
-   static void direction_flush(){}
+   static void GODAFOSS_INLINE direction_flush(){}
 
 };
 

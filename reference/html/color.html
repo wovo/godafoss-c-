@@ -1,0 +1,129 @@
+<head>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/agate.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<a name="color<>"></a>
+<H2>color</H2>
+from <A HREF="../library/adts/gf-color.hpp">adts/gf-color.hpp</A>
+
+
+<HR>
+
+<P>
+The color type template represent a color.
+You wouldn't have guessed.
+The main use of these types is to specify the color of a pixel on a display.
+<P>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++">template<
+   int red_bits   = 8,
+   int green_bits = 8,
+   int blue_bits  = 8
+>
+struct color { ... }
+</code></pre></A>
+<P>
+Displays have various color depths (number of bits used to represent
+a color), so different uses call for different color types.
+The choice is between color resolution and memory usage.
+The depths are specified in bits for red, blue and green.
+The maximum is 8 bits each. This is also the default.
+<P>
+<P>
+
+
+<HR>
+
+<H3>predefined</H3>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++">struct color_bw { ... }
+using color_3  = color< 1, 1, 1 >;
+using color_8  = color< 3, 3, 2 >;
+using color_16 = color< 5, 6, 5 >;
+using color_24 = color< 8, 8, 8 >;
+</code></pre></A>
+<P>
+The most common color depths are predefined:
+  <LI> 1 bit (often used for black-or-white),
+  <LI> 3 bits (one bit each for red, green and blue),
+  <LI> 8 bits (3 bits each for red and green,
+2 bits for blue because the eye is less sensitive to blue),
+  <LI> 16 bits (5 bits each for red and blue, 6 bits for green
+because the eye is most sensitive to green),
+  <LI> 24 bits (one byte each for red, green and blue).
+<P>
+<P>
+
+
+<HR>
+
+<H3>constructors</H3>
+<P>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr color() { ... }
+</code></pre></A>
+<P>
+Colors have a default constructor.
+Don't rely on the value after default construction.
+<P>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++">   template< is_color T >
+   constexpr color( T & rhs ): color(
+      rhs.red()   .of( red_max   ),
+      rhs.green() .of( green_max ),
+      rhs.blue()  .of( blue_max  ) ) { ... }
+</code></pre></A>
+<P>
+The copy constructor copies the fractions
+<P>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++"><missing></code></pre></A>
+<P>
+A color can be constructed from the three values
+for its <A HREF=input--output.html#read>read</A>, green and blue components.
+For each componet, the value is relative to the (unsigned) maximum that
+fits in the number of bits specified (by the template argument)
+for that color.
+<P>
+<P>
+<P>
+<P>
+
+
+<HR>
+
+<H3>random()</H3>
+<P>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++">   static color random(){ ... }
+</code></pre></A>
+<P>
+The static member function random() returns a random color.
+Each of the red, green and blue components has been selected by
+the simple random generator.
+<P>
+<P>
+<P>
+
+
+<HR>
+
+<H3>getters</H3>
+<P>
+<A HREF="../../library/adts/gf-color.hpp" style="text-decoration:none">
+<pre><code class="c++">   constexpr base_type red() const { ... }
+   constexpr base_type green() const { ... }
+   constexpr base_type blue() const { ... }
+</code></pre></A>
+<P>
+The red(), geen() and blue() member functions return the
+red, green and blue components as a fraction.
+<P>
+<pre><code class="c++">color< 8, 8, 8 >( 5, 10, 15 ).blue() == fraction< 255 >( 10 )</code></pre></A>
+<P>
+<P>
+
+</body>

@@ -23,7 +23,7 @@ SEARCH             +=
 RESULTS            +=
 
 # no need for a terminal
-RUN_TERMINAL :=
+# RUN_TERMINAL :=
 
 # set RELATIVE to the next higher directory and defer to the makefile.link
 RELATIVE           := ../
