@@ -143,6 +143,7 @@ namespace godafoss {
 #include "basics/gf-passing.hpp"
 #include "basics/gf-random.hpp"
 #include "basics/gf-background.hpp"
+#include "basics/gf-application.hpp"
 
 #include "item/gf-item.hpp"
 #include "item/gf-item-inherit.hpp"

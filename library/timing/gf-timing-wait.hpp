@@ -39,7 +39,8 @@ struct timing_wait_root : cto_root {
 
 template< is_timing_wait T >
 struct timing_wait : timing_wait_root {
-   static void init(){ T::init(); }
+   //static void init(){ T::init(); }
+   using resources = use< T >;
    template< uint64_t n > using ns = typename T::ns< n >;
    template< uint64_t n > using us = typename T::us< n >;
    template< uint64_t n > using ms = typename T::ms< n >;
@@ -72,9 +73,10 @@ struct be_timing_wait : timing_wait_root {
 
       static const uint64_t n_ticks = T::ticks_from_ns( n );
 
-      static void GODAFOSS_INLINE init(){
-         T::init();
-      }
+      //static void GODAFOSS_INLINE init(){
+      //   T::init();
+      //}
+      using resources = use< T >;
 
       static void GODAFOSS_INLINE wait(){
           T:: template wait_ticks_template< n_ticks >();

@@ -28,7 +28,8 @@ concept is_i2c_base = requires(
    uint_fast8_t address,
    uint_fast8_t data
 ){
-   { T::init()                             } -> std::same_as< void >;
+   true;
+//   { T::init()                             } -> std::same_as< void >;
 
    /*
    { T::start_write_transaction( address ) } -> std::same_as< void >;
@@ -53,7 +54,8 @@ concept is_i2c_bus = requires(
    uint_fast8_t address,
    uint_fast8_t data
 ){
-   { T::init()                             } -> std::same_as< void >;
+   true;
+//   { T::init()                             } -> std::same_as< void >;
 
    /*
    { T::start_write_transaction( address ) } -> std::same_as< void >;
@@ -84,9 +86,7 @@ struct i2c_bus {
 
    static constexpr auto frequency = profile::frequency;
 
-   static void init(){
-      base::init();
-   }
+   using resources = use< base >;
 
    struct _write_transaction {
 
@@ -140,6 +140,8 @@ struct i2c_bus {
 
    template< int address >
    struct channel {
+
+      using resources = use< base >;
 
       struct write_transaction {
 

@@ -12,6 +12,8 @@
 
 #include "godafoss.hpp"
 
+// 1 ledje doet het niet??
+
 namespace gf  = godafoss;
 using target  = gf::target<>;
 using timing  = target::timing;
@@ -20,5 +22,5 @@ using leds    = gf::all_pins<
    gf::invert< gf::all_pins<target::d6, target::d7, target::d8, target::d9 > > >;
 
 int main( void ){
-   gf::blink< leds, timing::ms< 300 > >();
+   gf::run< gf::blink< leds, timing::ms< 200 > > >();
 }

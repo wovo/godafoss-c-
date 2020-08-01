@@ -18,7 +18,7 @@ using led     = target::d13;
 
 int main( void ){
 
-   led::init();
+   led::resources::initialize();
    led::direction_set_output();
 
    for(;;){

@@ -28,7 +28,7 @@
 // These adapters can only be used when the source port is know.
 // For general use, the port adapters that accept any (possible) source
 // port are more covenient.
-// 
+//
 // @define port_in_from_port_in
 // @insert port_in_from_port_in
 //
@@ -81,11 +81,11 @@ struct port_in_from_port_in_out :
    inherit_read< T >
 {
 
-   static GODAFOSS_INLINE void init(){
-      T::init();
+   static GODAFOSS_INLINE void init__(){
       T::direction_set_input();
       T::direction_flush();
    }
+   using resources = use< T, execute< init__ > >;
 
 };
 
@@ -97,11 +97,11 @@ struct port_in_from_port_oc :
    inherit_read< T >
 {
 
-   static GODAFOSS_INLINE void init(){
-      T::init();
+   static GODAFOSS_INLINE void init__(){
       T::write( 0 );
       T::flush();
    }
+   using resources = use< T, execute< init__ > >;
 
 };
 
@@ -128,11 +128,11 @@ struct port_out_from_port_in_out :
    inherit_write< T >
 {
 
-   static GODAFOSS_INLINE void init(){
-      T::init();
+   static GODAFOSS_INLINE void init__(){
       T::direction_set_output();
       T::direction_flush();
    }
+   using resources = use< T, execute< init__ > >;
 
 };
 

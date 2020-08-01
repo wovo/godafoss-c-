@@ -126,7 +126,7 @@ concept is_color = requires(
 
 // =============================================================================
 //
-// the common color base
+// the general color template
 //
 // =============================================================================
 
@@ -187,6 +187,18 @@ struct color
       blue  : { clip< blue_max  >( blue  ) } }
    {}
 
+   // @quote constructor-fractions 5 { ... }
+   constexpr color(
+      base_type red,
+      base_type green,
+      base_type blue
+   )
+   : values {
+      red   : ( red.of( red_max ) ),
+      green : ( green.of( green_max ) ),
+      blue  : ( blue.of( blue_max ) ) }
+   {}
+
    // only for 24 bits!
    // @quote constructor-rgb 5 { ... }
    constexpr color(
@@ -235,7 +247,7 @@ struct color_bw
    : color_root {
 
    using base_type = fraction< int_fast16_t, 1 >;
-   uint8_t white;
+   uint8_t white = 0; // otherwise global ctor for array of these, why?
 
 public:
 

@@ -35,25 +35,6 @@
 
 // =============================================================================
 //
-// init
-//
-// =============================================================================
-
-template< typename T >
-struct _no_inline_item_init : T {};
-
-template< is_item T >
-struct _no_inline_item_init< T > : T {
-
-   static void init(){
-      T::init();
-   }
-
-};
-
-
-// =============================================================================
-//
 // write
 //
 // =============================================================================
@@ -138,7 +119,6 @@ struct _no_inline_item_direction< T > : T {
 // @quote no_inline 2 ... ;
 template< is_item T >
 using no_inline =
-   _no_inline_item_init<
    _no_inline_item_write<
    _no_inline_item_read<
-   _no_inline_item_direction< T > > > >;
+   _no_inline_item_direction< T > > >;

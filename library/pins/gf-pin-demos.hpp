@@ -15,41 +15,20 @@
 //
 // =============================================================================
 
-template< typename t >
-struct runner {
-   static void init(){
-      t::init();
-      runner< t::next >::init();
-   }
-};
-
-template<>
-struct runner< void > {
-   static void init(){}
-};
-
-template< typename application >
-struct run {
-
-   static void GODAFOSS_NO_RETURN run(){
-      runner< application >::init();
-      application::run();
-   }
-};
-
-
-// =============================================================================
-
 
 template< can_pin_out _pin, can_static_duration _pause >
 struct blink {
 
-   using pin = direct< pin_out_from< _pin >>;
+   //using pin = direct< pin_out_from< _pin >>;
+   using pin = pin_out_from< _pin >;
    using pause = static_duration< _pause >;
 
-   using resources = resources< pin, pause >;
+   using resources = use< pin, pause >;
+   // resources
+   // minions
+   // building blocks
 
-   static void GODAFOSS_NO_RETURN blink(){
+   static void GODAFOSS_NO_RETURN run(){
       for(;;){
          pin::write( 1 );
          pause::wait();
@@ -60,10 +39,6 @@ struct blink {
 };
 
 
-
-int main(){
-   <hoe vind je de naam van wat er gerunt moet worden?
-}
 
 /*
 template< can_pin_out _p, typename d, typename t >

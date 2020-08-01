@@ -1,3 +1,13 @@
+check https://en.cppreference.com/w/cpp/language/constraints for simpler concepts
+
+compile time objects
+transient objects - i2c and spi channels
+value objects (adts)
+
+main is now a bit complicated
+use< t >::initialization() - won't work for complicated t, needs to be private?
+uart werkt niet meer
+
 speerpunten:
 - loop p
 - ints

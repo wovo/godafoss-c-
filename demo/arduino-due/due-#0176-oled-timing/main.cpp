@@ -20,7 +20,7 @@ using uart    = target::uart<>;
 template< gf::is_i2c_profile profile >
 void show_timing(){
 
-   gf::ostream< gf::formatter< uart > > cout;
+//   gf::ostream< gf::formatter< uart > > cout;
 
    using i2c_bus = gf::i2c_bus_bb_scl_sda<
       target::scl1,
@@ -29,7 +29,7 @@ void show_timing(){
       profile >;
    using oled = gf::oled< i2c_bus >;
 
-   oled::init();
+   gf::use< oled >::initialize();
 //   auto t = timing::now_us();
    oled::flush();
 //   auto t2 = timing::now_us();
@@ -39,7 +39,7 @@ void show_timing(){
 }
 
 int main( void ){
-   timing::init();
+   gf::use< timing >::initialize();
    timing::ms< 2000 >::wait();
    show_timing< gf::i2c_standard >();
    show_timing< gf::i2c_fast >();

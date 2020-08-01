@@ -6,9 +6,9 @@
 
 
 template<
-   is_spi_bus    bus,
-   is_timing_wait    timing,
-   unsigned int  n_chips = 1 >
+   is_spi_bus      bus,
+   is_timing_wait  timing,
+   unsigned int    n_chips = 1 >
 struct ws2801 :
    window_root<
       ws2801< bus, timing, n_chips >,
@@ -27,10 +27,7 @@ struct ws2801 :
 
    static inline std::array< color<>, n_chips > pixels;
 
-   static void init(){
-      timing::init();
-      bus::init();
-   }
+   using resources = use< bus, timing >;
 
    static void write_implementation(
       root::offset_t  offset,

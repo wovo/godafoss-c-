@@ -26,15 +26,19 @@ struct nrf24l01_spi_ce_csn {
    using chip_enable  = direct< pin_out< _ce >>;
    using chip_select  = invert< direct< pin_out< _csn >>>;
 
-   static void init(){
-      bus::init();
-      chip_enable::init();
-      chip_select::init();
+   static void init__(){
       chip_enable::write( 0 );
       chip_select::write( 0 );
-      timing::init();
       timing:: template ms< 50 >::wait();
    }
+
+   using resources = use<
+      bus,
+      chip_enable,
+      chip_select,
+      timing,
+      execute< init__ >
+   >;
 
 
    // ========================================================================

@@ -17,9 +17,11 @@ using target  = gf::target<>;
 using timing  = target::timing;
 using uart    = target::uart<>;
 
+using resources = gf::use< timing >;
+
 int main( void ){
    gf::ostream< gf::formatter< uart > > cout;
-   timing::init();
+   resources::initialize();
    timing::ms< 2000 >::wait();
    cout << "Hello world (ostream)\n";
 }

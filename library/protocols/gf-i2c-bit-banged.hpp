@@ -42,14 +42,12 @@ struct _i2c_base_bb_scl_sda {
    using scl      = direct< pin_oc< scl_arg > >;
    using sda      = direct< pin_oc< sda_arg > >;
 
-   static void init(){
-      timing::init();
-      scl::init();
-      sda::init();
-
+   static void init__(){
       scl::write( 1 );
       sda::write( 1 );
    }
+
+   using resources = use< timing, scl, sda, execute< init__ > >;
 
    static void write_bit( bool x ){
 

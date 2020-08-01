@@ -28,9 +28,7 @@ using i2c_bus_hw = target::i2c0< gf::i2c_fast >;
 using oled = gf::flip_vertically< gf::oled< i2c_bus_sw > >;
 
 int main( void ){
-   oled::init();
-   adx::init();
-   ady::init();
+   gf::use< oled, adx, ady >::initialize();
    for(;;){
       adx::refresh();
       ady::refresh();

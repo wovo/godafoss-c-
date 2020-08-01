@@ -27,10 +27,11 @@
 template< typename pin, typename tail >
 struct _port_recurse_init : tail {
 
-  static void GODAFOSS_INLINE init() {
-      pin::init();
-      tail::init();
-  }
+  //static void GODAFOSS_INLINE init() {
+  //    pin::init();
+  //    tail::init();
+  //}
+  using resources = use< pin, tail >;
 };
 
 // ========= output

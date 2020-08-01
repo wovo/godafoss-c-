@@ -28,7 +28,7 @@ struct chip_sam3x8e {
 //
 // ==========================================================================
 
-static void init(){
+static void init__(){
 
    // don't do this over and over
    GODAFOSS_RUN_ONCE;
@@ -68,6 +68,8 @@ static void init(){
    }
 }
 
+using resources = execute< init__ >;
+
 
 // ==========================================================================
 //
@@ -87,9 +89,11 @@ struct _pin_in_out :
    pin_in_out_root
 {
 
-   static void GODAFOSS_INLINE init(){
-      godafoss::chip_sam3x8e< clock_frequency >::init();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   godafoss::chip_sam3x8e< clock_frequency >::init();
+   //}
+
+   using resources = execute< godafoss::chip_sam3x8e< clock_frequency >::init__ >;
 
    static void GODAFOSS_INLINE direction_set_input(){
       ((Pio*)P)->PIO_ODR = ( 0x1U << pin );
@@ -129,7 +133,7 @@ struct _pin_in_out :
 
 static void _adc_init_common(){
 
-   godafoss::chip_sam3x8e< clock_frequency >::init();
+   godafoss::chip_sam3x8e< clock_frequency >::init__();
 
    // enable the clock to the ADC (peripheral # 37, in the 2nd PCER)
    PMC->PMC_PCER1 = ( 0x01 << ( 37 - 32 ) );
@@ -183,9 +187,11 @@ struct pin_adc {
 
    using value_type = fraction< int_fast16_t, 4095 >;
 
-   static void GODAFOSS_INLINE init(){
-	  _adc_init_common();
-   }
+   //static void GODAFOSS_INLINE init(){
+	//  _adc_init_common();
+   //}
+
+   using resources = execute< _adc_init_common >;
 
    static void GODAFOSS_INLINE refresh(){
    }
@@ -209,12 +215,12 @@ struct uart :
 
    static inline Uart * hw_uart = UART;
 
-   static void init(){
+   static void init__(){
 
       // don't do this over and over
-      GODAFOSS_RUN_ONCE
+      GODAFOSS_RUN_ONCE;
 
-      chip_sam3x8e< clock_frequency >::init();
+      chip_sam3x8e< clock_frequency >::init__();
 
       // enable the clock to port A
       PMC->PMC_PCER0 = 1 << ID_PIOA;
@@ -248,6 +254,8 @@ struct uart :
       // Enable the receiver and the trasmitter.
       hw_uart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
    }
+
+   using resources = execute< init__ >;
 
    static bool GODAFOSS_INLINE write_blocks(){
       return ( hw_uart->UART_SR & 0x02 ) == 0;
@@ -382,9 +390,11 @@ struct waiting :
 
    using ticks_type = uint64_t;
 
-   static void GODAFOSS_INLINE init(){
-      chip_sam3x8e< clock_frequency >::init();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   chip_sam3x8e< clock_frequency >::init();
+   //}
+
+   using resources = execute< chip_sam3x8e< clock_frequency >::init__ >;
 
    static constexpr ticks_type ticks_from_ns( uint64_t n ){
       return ( n * clock_frequency ) / 1'000'000'000;
@@ -434,12 +444,12 @@ struct _i2c_base {
       pio->PIO_PUER = pin;
   };
 
-  static void init() {
+  static void __init() {
 
      // don't do this over and over
      GODAFOSS_RUN_ONCE;
 
-     godafoss::chip_sam3x8e< clock_frequency >::init();
+     godafoss::chip_sam3x8e< clock_frequency >::init__();
 
      if( twi() == TWI0 ){
 
@@ -499,6 +509,8 @@ struct _i2c_base {
         | TWI_CWGR_CHDIV( cLHDiv )
         | TWI_CWGR_CKDIV( ckdiv  );
    }
+
+   using resources = execute< __init >;
 
    // ==========================================================================
 

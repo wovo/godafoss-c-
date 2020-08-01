@@ -12,7 +12,7 @@ template<
    can_pin_in   _miso,
    can_pin_out  _mosi,
    typename     _timing,
-   bool         unroll
+   bool         unroll = false
 >
 struct spi_bus_bb_sclk_miso_mosi {
 //private:
@@ -24,7 +24,7 @@ struct spi_bus_bb_sclk_miso_mosi {
 
    //for now: 10 MHz
    static void GODAFOSS_INLINE wait_half_period(){
-      timing::template ns< 0 >::wait();
+      timing::template ns< 50 >::wait();
    }
 
    // must implement other SPI modes
@@ -63,19 +63,14 @@ struct spi_bus_bb_sclk_miso_mosi {
 
 public:
 
-   static void init(){
-      sclk::init();
-      miso::init();
-      mosi::init();
-      timing::init();
-   }
+   using resources = use< sclk, miso, mosi, timing >;
 
    template< can_pin_out _sel >
    struct transfer {
       using sel = direct< pin_out< _sel > >;
 
       transfer(){
-         //sel::init();
+         //sel::init(); !!!!!
          wait_half_period();
          sel::write( 1 );
          wait_half_period();
@@ -194,7 +189,7 @@ template<
 using spi_bus_bb_sclk_miso = spi_bus_bb_sclk_miso_mosi<
    _sclk,
    _miso,
-   pin_in_dummy,
+   pin_out_dummy,
    timing,
    unroll
 >;

@@ -25,9 +25,7 @@ struct flip_horizontally :
    >
 {
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -62,9 +60,7 @@ struct flip_vertically :
    >
 {
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -108,9 +104,7 @@ struct fold :
       xy<>( minion::size.x / n_fold, minion::size.y * n_fold )
    >;
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -153,9 +147,7 @@ struct invert< minion >:
    >
 {
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -192,9 +184,7 @@ struct recolor :
    >
 {
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -248,9 +238,7 @@ struct monochrome :
    >
 {
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -282,9 +270,7 @@ struct port_from_window:
 {
    using root = port_out_root< minion::size.x >;
 
-   static void init(){
-      minion::init();
-   }
+   using resources = use< minion >;
 
    static void write( typename root::value_type v ){
       (void) v;

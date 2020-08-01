@@ -28,7 +28,7 @@ struct pin_in_out_dummy :
    pin_in_out_root
 {
 
-   static void GODAFOSS_INLINE init(){}
+   using resources = use<>;
 
    static void GODAFOSS_INLINE refresh(){}
 

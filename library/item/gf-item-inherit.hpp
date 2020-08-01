@@ -72,9 +72,13 @@ struct inherit_init
 template< is_item T >
 struct inherit_init< T > {
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   T::init();
+   //}
+
+   // must rename this!
+
+   using resources = T::resources;
 
 };
 

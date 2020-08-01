@@ -20,5 +20,5 @@ using leds    = gf::port_out_from_pins<
    target::d6, target::d7, target::d8, target::d9 >;
 
 int main( void ){
-   gf::kitt< leds, timing::ms< 100 > >();
+   gf::run< gf::kitt< leds, timing::ms< 100 > > >();
 }

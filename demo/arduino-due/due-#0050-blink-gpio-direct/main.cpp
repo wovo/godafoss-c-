@@ -18,7 +18,7 @@ using led     = gf::pin_out_from< gf::direct< target::d13 >>;
 
 int main( void ){
 
-   led::init();
+   led::resources::initialize();
 
    for(;;){
 

@@ -69,12 +69,17 @@
 //
 // =============================================================================
 
+template< typename T >
+concept has_init = requires {
+   { T::init() } -> std::same_as< void >;
+};
+
 // @quote is_cto 5
 template< typename T >
 concept is_cto = requires {
    T::_cto_marker;
-   { T::init() } -> std::same_as< void >;
-};
+//   { T::init() } -> std::same_as< void >;
+} && ! has_init< T >;
 
 // @quote cto_root 3
 struct cto_root {

@@ -39,6 +39,6 @@ int main( void ){
    }
 }
 * */
-   gf::demo::random_lines2< window, timing::ms< 200 > > ();
+   gf::run< gf::demo::random_lines2< window, timing::ms< 200 > > >();
 }
 

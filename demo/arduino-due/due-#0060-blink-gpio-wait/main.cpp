@@ -19,8 +19,8 @@ using timing  = target::timing;
 
 int main( void ){
 
-   led::init();
-   timing::init();
+   led::resources::initialize();
+   timing::resources::initialize();
 
    for(;;){
 

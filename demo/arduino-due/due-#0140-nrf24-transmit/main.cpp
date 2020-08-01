@@ -8,8 +8,8 @@ using timing  = target::timing;
 using uart    = target::uart<>;
 
 using spi = gf::spi_bus_bb_sclk_miso_mosi<
-   target::d12, 
-   target::d13, 
+   target::d12,
+   target::d13,
    target::d9,
    timing
 >;
@@ -18,32 +18,32 @@ using nrf = gf::nrf24l01_spi_ce_csn<
    target::d11,
    target::d8,
    timing
->; 
+>;
 
-int main(){ 
-   timing::init();
+int main(){
+   gf::use< timing >::initialize();
    gf::ostream< gf::formatter< uart > > cout;
    timing::ms< 1000>::wait();
    cout << "NRF24L01 test - transmitter\n";
-    
-   nrf::init();
+
+   gf::use< nrf >::initialize();
    nrf::extensions_toggle();
    nrf::write( nrf::reg::feature, 0x07 );
    nrf::mode_transmit();
 
    uint8_t n = 0;
    for(;;){
-       
+
       nrf::interrupts_clear();
       nrf::write( nrf::cmd::flush_tx );
-      cout 
-         << "@ status = " 
+      cout
+         << "@ status = "
          << gf::hex << nrf::read( nrf::reg::status )
          << "\n"
-         << "@ fifo_status = " 
+         << "@ fifo_status = "
          << gf::hex << nrf::read( nrf::reg::fifo_status )
          << "\n";
-      
+
       // transmit 'a' ... 'z'
       std::array< uint8_t, 32 > msg;
       n = ( n + 1 ) % 26;
@@ -53,20 +53,20 @@ int main(){
       n = ( n + 1 ) % 26;
       msg[ 2 ] = 'a' + n;
       nrf::transmit_datagram( msg );
-      
+
       // log some info
-      cout 
-         << "config = " 
+      cout
+         << "config = "
          << gf::hex << nrf::read( nrf::reg::config )
          << "\n"
-         << "status = " 
+         << "status = "
          << gf::hex << nrf::read( nrf::reg::status )
          << "\n"
-         << "fifo_status = " 
+         << "fifo_status = "
          << gf::hex << nrf::read( nrf::reg::fifo_status )
-         << "\n\n"; 
-    
+         << "\n\n";
+
       timing::ms< 100 >::wait();
-   }      
+   }
 }
 

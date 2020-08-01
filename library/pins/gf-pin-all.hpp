@@ -37,10 +37,11 @@ struct _pin_out_from_pins< head, tail... > {
 
    using pin = pin_out_from< head > ;
 
-   static void GODAFOSS_INLINE init(){
-      pin::init();
-      _pin_out_from_pins<  tail... >::init();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   pin::init();
+   //   _pin_out_from_pins<  tail... >::init();
+   //}
+   using resources = use< pin, _pin_out_from_pins<  tail... > >;
 
    static void GODAFOSS_INLINE write( bool v ){
       pin::write( v );

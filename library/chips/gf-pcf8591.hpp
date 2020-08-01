@@ -18,14 +18,11 @@ struct pcf8591 {
    using channel = typename bus::channel< base + address >;
    static inline uint8_t configuration = 0x40;
 
-   static void GODAFOSS_INLINE init(){
+   static_assert(
+      bus::frequency <= 100'000,
+      "The maximum I2C bus frequency for this chip is 100 kHz" );
 
-      static_assert(
-         bus::frequency <= 100'000,
-         "The maximum I2C bus frequency for this chip is 100 kHz" );
-
-      bus::init();
-   }
+   using resources = use< bus >;
 
    static uint8_t _read( uint_fast8_t channel ){
 
@@ -50,9 +47,7 @@ struct pcf8591 {
 
       using value_type = fraction< int_fast16_t, 256 >;
 
-      static void GODAFOSS_INLINE init(){
-         pcf8591< bus, address >::init();
-      }
+      using resources = use< pcf8591< bus, address > >;
 
       static void GODAFOSS_INLINE refresh(){
       }

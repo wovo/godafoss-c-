@@ -23,6 +23,6 @@ using chip = gf::ws2801< bus, timing, 4 >;
 using port = gf::port_from_window< gf::monochrome< chip, gf::black, gf::blue > >;
 
 int main( void ){
-   gf::kitt< port, timing::ms< 100 > >();
+   gf::run< gf::kitt< port, timing::ms< 100 > > >();
 }
 

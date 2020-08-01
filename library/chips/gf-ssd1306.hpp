@@ -90,9 +90,7 @@ struct i2c {
 
    using channel  = typename bus::channel< address >;
 
-   static void init(){
-      bus::init();
-   }
+   using resources = use< channel >;
 
    static void command( uint8_t d ){
       auto transaction = typename channel::write_transaction();
@@ -121,12 +119,11 @@ struct spi_ss_dc {
    using ss  = direct< pin_out< _ss >>;
    using dc  = direct< pin_out< _dc >>;
 
-   static void init(){
-      bus::init();
-      dc::init();
-      ss::init();
+   static void init__(){
       ss::write( 1 );
    }
+
+   using resources = use< bus, dc, ss, execute< init__ > >;
 
    static void command( const auto & data ){
       dc::write( 0 );
@@ -164,13 +161,13 @@ struct ssd1306 :
       { 128, 64 }
    >;
 
-   static void init(){
-      chip::init();
+   static void init__(){
       for( auto b : initialization ){
          chip::command( b );
       }
    }
 
+   using resources = use< chip, execute< init__ > >;
 
    static auto constexpr buffer_entries = 128 * 64 / 8;
    static inline std::array< uint8_t, buffer_entries > buffer;

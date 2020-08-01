@@ -29,11 +29,11 @@ struct ws2812 :
 
    static inline std::array< color_bw, n_chips > pixels;
 
-   static void init(){
-      data::init();
+   static void init__(){
       data::write( 0 );
-      timing::init();
    }
+
+   using resources = use< data, timing, execute< init__ > >;
 
    static void write_implementation(
       root::offset_t  offset,

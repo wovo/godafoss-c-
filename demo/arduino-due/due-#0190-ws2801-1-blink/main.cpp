@@ -28,7 +28,7 @@ using port = gf::port_from_window< gf::monochrome< chip, gf::black, gf::red > >;
 
 
 int main( void ){
-   gf::kitt< port, timing::ms< 20 > >();
+   gf::run< gf::kitt< port, timing::ms< 20 > > >();
    /*
    chip::init();
    chip::clear( gf::green );

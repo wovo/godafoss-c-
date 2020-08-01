@@ -151,9 +151,11 @@ struct formatter {
 
    inline static _formatting format;
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   T::init();
+   //}
+
+   using resources = use< T >;
 
    static void GODAFOSS_INLINE write( char c ){
       T::write( c );
@@ -313,9 +315,11 @@ struct ostream {
 
    using base_type = T;
 
-   ostream(){
-      T::init();
-   }
+   //ostream(){
+   //   T::init();
+   //}
+
+   using resources = use< T >;
 
    template< typename V >
       requires requires( V v ){ T::write( v ); }

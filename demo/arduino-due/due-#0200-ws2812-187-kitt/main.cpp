@@ -30,7 +30,7 @@ int main( void ){
    cout << "Hello world (ostream)\n";
 */
 
-   gf::kitt< port, timing::ms< 2 >, 30 >();
+   gf::run< gf::kitt< port, timing::ms< 2 >, 30 > >();
    /*
    chip::init();
    chip::clear( gf::green );

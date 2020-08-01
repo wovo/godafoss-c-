@@ -25,9 +25,7 @@ using oled     = gf::flip_vertically< gf::oled< i2c_bus > >;
 using chip     = gf::pcf8591< i2c_bus >;
 
 int main( void ){
-   oled::init();
-   chip::adc0::init();
-   chip::adc1::init();
+   gf::use< oled, chip::adc0, chip::adc1 >::initialize();
    for(;;){
       chip::adc0::refresh();
       chip::adc1::refresh();

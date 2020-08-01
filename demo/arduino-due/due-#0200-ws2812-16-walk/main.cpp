@@ -19,6 +19,6 @@ using leds    = gf::ws2812< target::d11, timing, 16 >;
 using port    = gf::port_from_window< gf::monochrome< leds, gf::black, gf::blue > >;
 
 int main( void ){
-   gf::walk< port, timing::ms< 20 > >();
+   gf::run< gf::walk< port, timing::ms< 20 > > >();
 }
 

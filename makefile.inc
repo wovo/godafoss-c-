@@ -48,6 +48,7 @@ HEADERS           += basics/gf-ints.hpp
 HEADERS           += basics/gf-loop.hpp
 HEADERS           += basics/gf-passing.hpp
 HEADERS           += basics/gf-random.hpp
+HEADERS           += basics/gf-application.hpp
 HEADERS           += basics/gf-background.hpp
 
 HEADERS           += item/gf-item.hpp

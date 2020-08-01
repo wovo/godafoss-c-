@@ -26,5 +26,5 @@ using spi = gf::spi_bus_bb_sclk_miso_mosi<
 using window = gf::max7219< spi, target::d9, 1 >;
 
 int main( void ){
-   gf::demo::bouncing_square< window, timing::ms< 100 >, 2, { 1, 2 } > ();
+   gf::run< gf::demo::bouncing_square< window, timing::ms< 100 >, 2, { 1, 2 } > >();
 }

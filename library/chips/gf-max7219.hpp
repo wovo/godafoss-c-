@@ -49,9 +49,7 @@ struct max7219 :
       command( cmd_intensity, n & 0x0F );
    }
 
-   static void init(){
-      bus::init();
-      cs::init();
+   static void init__(){
       cs::write( 0 );
 
       command( cmd_mode,        0x00 );
@@ -60,6 +58,8 @@ struct max7219 :
       command( cmd_shutdown,    0x01 );
       command( cmd_test,        0x00 );
    }
+
+   using resources = use< bus, cs, execute< init__ > >;
 
    static inline uint8_t buffer[ 8 * n_chips ];
 

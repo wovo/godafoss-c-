@@ -30,35 +30,43 @@ constexpr T demo_pattern( int pos ){
 }
 
 template< can_port_out _port, typename interval, uint64_t n = 1, uint64_t step = 1 >
-GODAFOSS_NO_RETURN void walk(){
+struct walk {
+
    using port = direct< port_out< _port >>;
-   port::init();
-   interval::init();
-   for(;;){
-//      constexpr typename port::value_type pattern = ( 0x01LL << n ) - 1;
-      for( uint_fast8_t  i = 0; i < port::n_pins; i += step ){
-         port::write(
-            demo_pattern< typename port::value_type, port::n_pins, n >( i ) );
-         interval::wait();
+
+   using resources = use< port, interval >;
+
+   static GODAFOSS_NO_RETURN void run(){
+      for(;;){
+//         constexpr typename port::value_type pattern = ( 0x01LL << n ) - 1;
+         for( uint_fast8_t  i = 0; i < port::n_pins; i += step ){
+            port::write(
+               demo_pattern< typename port::value_type, port::n_pins, n >( i ) );
+            interval::wait();
+         }
       }
    }
-}
+};
 
 template< can_port_out _port, typename interval, uint64_t n = 1, uint64_t step = 1 >
-GODAFOSS_NO_RETURN void kitt(){
+struct kitt {
+
    using port = direct< port_out< _port > >;
-   port::init();
-   interval::init();
-   for(;;){
-      for( uint_fast8_t  i = 0; i < port::n_pins - ( n - 1 ); i += step ){
-         port::write(
-            demo_pattern< typename port::value_type, port::n_pins, n>( i ) );
-         interval::wait();
-      }
-      for( uint_fast8_t  i = port::n_pins - n; i > 0; i -= step ){
-         port::write(
-            demo_pattern< typename port::value_type, port::n_pins, n>( i ) );
-         interval::wait();
+
+   using resources = use< port, interval >;
+
+   static GODAFOSS_NO_RETURN void run(){
+      for(;;){
+         for( uint_fast8_t  i = 0; i < port::n_pins - ( n - 1 ); i += step ){
+            port::write(
+               demo_pattern< typename port::value_type, port::n_pins, n>( i ) );
+            interval::wait();
+         }
+         for( uint_fast8_t  i = port::n_pins - n; i > 0; i -= step ){
+            port::write(
+               demo_pattern< typename port::value_type, port::n_pins, n>( i ) );
+            interval::wait();
+         }
       }
    }
-}
+};

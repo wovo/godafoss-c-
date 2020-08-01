@@ -23,7 +23,7 @@ struct port_in_out_dummy :
 
    using _vt = typename port_in_out_root< n >::value_type;
 
-   static void GODAFOSS_INLINE init(){}
+   using resources = use<>;
 
    static void GODAFOSS_INLINE write( _vt v ){
       (void) v;
@@ -70,7 +70,7 @@ struct port_oc_dummy :
 
    using _vt = typename port_oc_root< n >::value_type;
 
-   static void GODAFOSS_INLINE init(){}
+   using resources = use<>;
 
    static void GODAFOSS_INLINE write( _vt v ){
       (void) v;

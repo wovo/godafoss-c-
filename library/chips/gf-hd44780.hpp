@@ -171,6 +171,8 @@ public:
       goto_xy( xy( 0, 0 ) );   // 'cursor' home
    }
 
+   // using resources = use< rs, e, port, timing, init >;
+
 }; // class _hd44780_rs_e_d_x_y_timing_foundation
 
 

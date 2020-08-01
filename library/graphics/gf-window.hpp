@@ -34,8 +34,8 @@ concept window = requires(
    typename T::color_t     c
 ){
    T::_window_marker;
+   // is cto?
    { T::size }           -> std::same_as< const typename T::offset_t & >;
-   { T::init() }         -> std::same_as< void >;
    { T::write( a, c ) }  -> std::same_as< void >;
    { T::clear( c ) }     -> std::same_as< void >;
    { T::flush() }        -> std::same_as< void >;

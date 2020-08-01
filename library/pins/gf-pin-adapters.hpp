@@ -85,10 +85,15 @@ struct pin_in_from_pin_in_out :
    pullup_pulldown_filter< T >
 {
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
+   static void GODAFOSS_INLINE __init(){
       direct< T >::direction_set_input();
    }
+
+   using resources = use<
+      T,
+      execute< __init >
+   >;
+
 
 };
 
@@ -100,10 +105,16 @@ struct pin_in_from_pin_oc :
    pullup_pulldown_filter< T >
 {
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
+   static void GODAFOSS_INLINE __init(){
       direct< T >::write( 1 );
    }
+
+   using resources = use<
+      T,
+      execute< __init >
+   >;
+
+
 
 };
 
@@ -152,10 +163,15 @@ struct pin_out_from_pin_in_out :
    inherit_write< T >
 {
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
-      direct< T >::direction_set_output();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   T::init();
+   //   direct< T >::direction_set_output();
+   //}
+
+   using resources = use<
+      direct< T >,
+      execute< direct< T >::direction_set_output >
+   >;
 
 };
 
@@ -266,10 +282,15 @@ struct pin_oc_from_pin_in_out :
    pullup_pulldown_filter< T >
 {
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
-      direct< T >::direction_set_input();
-   }
+   //static void GODAFOSS_INLINE init(){
+   //   T::init();
+   //   direct< T >::direction_set_input();
+   //}
+
+   using resources = use<
+      T,
+      execute< direct< T >::direction_set_input >
+   >;
 
    static void GODAFOSS_INLINE write( bool v ){
        if( v ){

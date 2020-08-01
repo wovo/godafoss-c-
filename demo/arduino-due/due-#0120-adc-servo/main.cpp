@@ -19,8 +19,7 @@ using adc     = target::a1;
 using servo   = gf::servo< target::d2, timing >;
 
 int main( void ){
-   adc::init();
-   servo::init();
+   gf::use< adc, servo >::initialize();
    for(;;){
       servo::write( adc::read().of( 100 ) );
    }

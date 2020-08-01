@@ -79,9 +79,11 @@ concept can_static_duration =
 template< can_static_duration T >
 struct static_duration : static_duration_root {
 
-   static void GODAFOSS_INLINE init(){
-      T::init();
-   }
+   //static void GODAFOSS_INLINE __init(){
+   //   T::init();
+   //}
+
+   using resources = use< T >;
 
    static void GODAFOSS_INLINE wait(){
       T::wait();

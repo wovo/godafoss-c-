@@ -19,11 +19,11 @@ using uart    = target::uart<>;
 using adc0     = target::a0;
 using adc1     = target::a1;
 
+using resources = gf::use< timing, adc0, adc1 >;
+
 int main( void ){
+   resources::initialize();
    gf::ostream< gf::formatter< uart > > cout;
-   timing::init();
-   adc0::init();
-   adc1::init();
    timing::ms< 2000 >::wait();
    for(;;){
       cout
