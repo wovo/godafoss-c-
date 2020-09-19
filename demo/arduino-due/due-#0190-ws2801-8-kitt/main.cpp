@@ -23,7 +23,8 @@ using chip = gf::ws2801< bus, timing, 9 >;
 //using chip = gf::recolor< _chip, gf::color, []( const gf::color & c ){ return - c; } >;
 
 //using port = gf::port_from_window< gf::invert< gf::monochrome< chip, gf::black, gf::red > > >;
-using port = gf::port_from_window< gf::monochrome< chip, gf::black, gf::red > >;
+using mono = gf::monochrome< chip, gf::black, gf::red >;
+using port = gf::port_from_window< mono >;
 
 int main( void ){
    gf::kitt< port, timing::ms< 20 > >();

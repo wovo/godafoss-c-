@@ -130,6 +130,8 @@ concept is_color = requires(
 //
 // =============================================================================
 
+using color_rgb_t = fraction< int_fast16_t, 255 >;
+
 // @quote color 6 { ... }
 template<
    int red_bits   = 8,
@@ -138,6 +140,8 @@ template<
 >
 struct color
 : color_root {
+
+   //using color_rgb_t =
 
    static_assert( red_bits   <= 8 );
    static_assert( green_bits <= 8 );
@@ -152,8 +156,6 @@ struct color
       uint8_t green : green_bits;
       uint8_t blue  : blue_bits;
    } values = { 0, 0, 0 };
-
-   using base_type = fraction< int_fast16_t, 255 >;
 
    template< int max >
    static constexpr uint8_t clip( int_fast16_t x ){
@@ -189,9 +191,9 @@ struct color
 
    // @quote constructor-fractions 5 { ... }
    constexpr color(
-      base_type red,
-      base_type green,
-      base_type blue
+      color_rgb_t red,
+      color_rgb_t green,
+      color_rgb_t blue
    )
    : values {
       red   : ( red.of( red_max ) ),
@@ -210,18 +212,18 @@ struct color
    {}
 
    // @quote get 1 ... }
-   constexpr base_type red() const {
-      return base_type( values.red );
+   constexpr color_rgb_t red() const {
+      return color_rgb_t( values.red );
    };
 
    // @quote get 1 ... }
-   constexpr base_type green() const {
-      return base_type( values.green );
+   constexpr color_rgb_t green() const {
+      return color_rgb_t( values.green );
    };
 
    // @quote get 1 ... }
-   constexpr base_type blue() const {
-      return base_type( values.blue );
+   constexpr color_rgb_t blue() const {
+      return color_rgb_t( values.blue );
    };
 
    // @quote random 1 ... }
@@ -238,7 +240,7 @@ struct color
 
 // =============================================================================
 //
-// 1 bit color
+// special case: 1 bit color
 //
 // =============================================================================
 
@@ -246,21 +248,20 @@ struct color
 struct color_bw
    : color_root {
 
-   using base_type = fraction< int_fast16_t, 1 >;
    uint8_t white = 0; // otherwise global ctor for array of these, why?
 
 public:
 
-   constexpr base_type red() const {
-      return base_type( white );
+   constexpr color_rgb_t red() const {
+      return color_rgb_t( white );
    };
 
-   constexpr base_type green() const {
-      return base_type( white );
+   constexpr color_rgb_t green() const {
+      return color_rgb_t( white );
    };
 
-   constexpr base_type blue() const {
-      return base_type( white );
+   constexpr color_rgb_t blue() const {
+      return color_rgb_t( white );
    };
 
   constexpr color_bw(){}

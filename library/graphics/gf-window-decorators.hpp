@@ -265,7 +265,7 @@ struct monochrome :
 template<
    window minion
 >
-struct port_from_window:
+struct port_from_windowx:
    public port_out_root< minion::size.x >
 {
    using root = port_out_root< minion::size.x >;
@@ -280,8 +280,7 @@ struct port_from_window:
 
 
          minion::write(
-            minion::origin + typename minion::offset_t( i, 0 ),
-black );
+            minion::origin + typename minion::offset_t( i, 0 ), black );
         //    ( ( v & ( one  << i ) ) != 0 ) ? black : white );
 
       }
