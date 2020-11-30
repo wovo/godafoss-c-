@@ -1,5 +1,10 @@
 check https://en.cppreference.com/w/cpp/language/constraints for simpler concepts
 
+bleeding edge cross compilers:
+(cortex) https://freddiechopin.info/en/download/category/11-bleeding-edge-toolchain
+(avr8) https://blog.zakkemble.net/avr-gcc-builds/
+(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0
+
 compile time objects
 transient objects - i2c and spi channels
 value objects (adts)
@@ -131,9 +136,9 @@ ubuntu notes
 
 files to check
 
-   t + basics/gf-attributes.hpp
-   t + basics/gf-shared-names.hpp
-   t + basics/gf-ints.hpp
+   x t + basics/gf-attributes.hpp
+   t + basics/gf-shared-names.hpp - must be removed!
+   t + basics/gf-ints.hpp - bigint afsplitsen
    t + basics/gf-passing.hpp
    t + basics/gf-random.hpp
        basics/gf-background.hpp
@@ -356,6 +361,13 @@ todo
 - how to print without std::cout
 - problem with CRTP
 - remaining issues: users, abstractions, timing, testing, documentation (doxygen doesn't work)
+
+targets
+- cortex M
+- ESP32
+- RISC V
+- AVR8
+- Raspberry Pi https://github.com/rsta2/circle (C: https://github.com/bztsrc/raspi3-tutorial)
 
 have only one type of timing?
 target provides the run, hence the target is always initialized? 0- fails for configurable target - no

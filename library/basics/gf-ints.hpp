@@ -17,7 +17,7 @@
 // =============================================================================
 //
 // @define godafoss::uint_bits
-// @title ints specified by number of bits
+// @title integer types specified by number of bits
 //
 // @insert text
 //
@@ -31,6 +31,10 @@
 //
 // Note that both can be larger than requested, so they should not be used
 // for modulo arithmetic (at least not without masking out excess bits).
+//
+// For uint's that are larger than provided by the implementation,
+// a primitive large integer ADT is used that has sufficient functionality
+// to be used internally in the library, but not more.
 //
 // Use uint_bits< N >::fast for variables and parameters,
 // use uint_bits< N >::least for arrays.
@@ -148,21 +152,21 @@ public:
 // =============================================================================
 
 // if no exact match, get something bigger
-template< uint64_t n > struct _uint_bits_fast {
+template< uint32_t n > struct _uint_bits_fast {
    typedef typename _uint_bits_fast< n + 1 >::type type;
 };
 
 // if no exact match, get something bigger
-template< uint64_t n > struct _uint_bits_least {
+template< uint32_t n > struct _uint_bits_least {
    typedef typename _uint_bits_least< n + 1 >::type type;
 };
 
 // @quote text 1
-template< uint64_t n > struct uint_bits {
+template< uint32_t n > struct uint_bits {
 
    // nothing bigger available than uint_fast64_t
    static_assert(
-      n <= 4 * 8 * sizeof( uint_fast64_t ),
+      n <= 8 * 8 * sizeof( uint_fast32_t ),
       "no unsigned integer type is large enough"
    );
 
@@ -225,7 +229,6 @@ template<> struct _uint_bits_fast< 4 * 8 * sizeof( uint_fast64_t ) > {
 //
 // =============================================================================
 
-
 template<> struct _uint_bits_least< 8 * sizeof( uint_least8_t ) > {
    typedef uint_least8_t type;
 };
@@ -255,5 +258,3 @@ template<> struct _uint_bits_least< 2 * 8 * sizeof( uint_fast64_t ) > {
 template<> struct _uint_bits_least< 4 * 8 * sizeof( uint_fast64_t ) > {
    typedef big_uint< uint_fast64_t, 4 >  type;
 };
-
-

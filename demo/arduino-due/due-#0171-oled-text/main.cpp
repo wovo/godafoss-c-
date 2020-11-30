@@ -15,11 +15,11 @@
 namespace gf = godafoss;
 using target = gf::target<>;
 using timing = target::timing;
-using i2c_bus = gf::i2c_bus_bb_scl_sda<
+using i2c_bus_sw = gf::i2c_bus_bb_scl_sda<
    target::scl1,
    target::sda1,
    timing >;
-using oled = gf::oled< i2c_bus >;
+using oled = gf::ssd1306_i2c< i2c_bus_sw >;
 
 int main( void ){
 //   for(;;){ oled::init(); }

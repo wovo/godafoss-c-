@@ -34,6 +34,8 @@
 #SEARCH += /usr/arm-none-eabi/include/c++/10.1.0
 #SEARCH += /usr/arm-none-eabi/include/c++/10.1.0/arm-none-eabi
 
+CPP_LANGUAGE      := -std=c++20  -fconcepts-diagnostics-depth=3
+
 # used by some tests
 SEARCH            += $(GODAFOSS)/../Catch2/include
 

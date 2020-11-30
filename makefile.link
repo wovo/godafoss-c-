@@ -29,7 +29,8 @@ GODAFOSS           ?= $(RELATIVE)
 include            $(GODAFOSS)/makefile.inc
 
 # C++20 required
-CPP_LANGUAGE    := -std=c++2a -fconcepts-diagnostics-depth=3
+# moved to the inc file: also for external users!
+# CPP_LANGUAGE    := -std=c++2a -fconcepts-diagnostics-depth=3
 
 # add SFML
 SFML ?= $(RELATIVE)/../SFML-2.5.1-32

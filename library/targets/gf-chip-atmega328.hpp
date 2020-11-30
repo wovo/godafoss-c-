@@ -13,9 +13,9 @@
 #include "avr/io.h"
 #undef register
 
-namespace godafoss {
-    
 extern "C" void GODAFOSS_WEAK GODAFOSS_NO_INLINE _GODAFOSS_avr_ret(){}
+    
+namespace godafoss {
     
 template< uint64_t clock >	
 struct chip_atmega328 {
@@ -26,7 +26,7 @@ struct chip_atmega328 {
 //
 // ==========================================================================	
 
-static void GODAFOSS_INLINE init(){
+static void GODAFOSS_INLINE init__(){
     
    if constexpr ( clock == 20'000'000 ){
       // 20 MHz crystal	   
@@ -86,12 +86,10 @@ static constexpr regs * port_direction[] = {
 
 template< _port p, uint32_t pin >
 struct _pin_in_out : 
-   be_pin_in_out 
+   pin_in_out_root 
 {
-	
-   static void GODAFOSS_INLINE init(){
-      godafoss::chip_atmega328< clock >::init();
-   }
+   
+   using resources = execute< chip_atmega328< clock >::init__ >;   
    
    static void GODAFOSS_INLINE direction_set_output(){
       *port_direction[ (int)p ] |= ( 0x1U << pin );
@@ -137,19 +135,21 @@ struct _pin_in_out :
 // ==========================================================================
 
 template< uint_fast64_t pin >
-struct _pin_adc :
-   be_adc< 10 >
+struct _pin_adc 
+// :  be_adc< 10 >
 {
-	
-   static void init(){
-      godafoss::chip_atmega328< clock >::init();
+
+   static void init__(){
+      godafoss::chip_atmega328< clock >::init__();
       
       // reference is AVCC
       ADMUX = 0x01 << REFS0;
-	  
+      
       // Enable the ADC and prescale
       ADCSRA = 7 | ( 0x01 << ADEN );  
    }
+   
+   using resources = execute< init__ >;
 
    static uint_fast16_t read(){
 	   
@@ -349,12 +349,9 @@ struct waiting :
    be_timing_wait< waiting > 
 {
 	
-   using chip = chip_atmega328< clock >;   
+   using chip       = chip_atmega328< clock >;   
    using ticks_type = chip::ticks_type;
-	
-   static void init(){
-      chip::init();
-   }	
+   using resources  = execute< chip::init__ >;
    
    static constexpr ticks_type ticks_from_ns( uint64_t n ){
       return ( n * clock ) / 1'000'000'000;	   
@@ -407,12 +404,14 @@ struct clocking :
 	
    using chip = chip_atmega328< clock >;      
 	
-   static void init(){
-      chip::init();
+   static void init__(){
+      chip::init__();
 
       // set up timer 1 without prescaler (input=CPU clock)
       TCCR1B = 0x01;   
    }	
+   
+   using resources = execute< init__ >;   
    
    static constexpr ticks_type ticks_from_ns( uint64_t n ){
       return ( n * clock ) / 1'000'000'000;	   

@@ -69,6 +69,7 @@
 //
 // =============================================================================
 
+// temporary
 template< typename T >
 concept has_init = requires {
    { T::init() } -> std::same_as< void >;
@@ -82,7 +83,7 @@ concept is_cto = requires {
 } && ! has_init< T >;
 
 // @quote cto_root 3
-struct cto_root {
+struct cto_root : not_constructible {
    static const bool _cto_marker = true;
 };
 

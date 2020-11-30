@@ -144,21 +144,21 @@ struct spi_ss_dc {
 //
 // ==========================================================================
 
-template< typename chip >
+template< typename chip, xy<> _size >
 struct ssd1306 :
    window_root<
-      ssd1306< chip >,
+      ssd1306< chip, _size >,
       xy< int_fast16_t >,
       color_bw,
-      { 128, 64 }
+      _size
    >
 {
 
    using root = godafoss::window_root<
-      ssd1306< chip >,
+      ssd1306< chip, _size >,
       xy< int_fast16_t >,
       color_bw,
-      { 128, 64 }
+      _size
    >;
 
    static void init__(){
@@ -215,9 +215,20 @@ struct ssd1306 :
 //
 // ==========================================================================
 
-template< is_i2c_bus bus, int address = 0 >
-using oled = ssd1306::ssd1306< ssd1306::i2c< bus, address + 0x3C > >;
+template< 
+   is_i2c_bus bus, 
+   int address = 0, 
+   xy<> size = { 128, 64 } 
+>
+using ssd1306_i2c = ssd1306::ssd1306< 
+  ssd1306::i2c< bus, address + 0x3C >, size >;
 
-template< is_spi_bus bus, can_pin_out ss, can_pin_out dc >
-using oled_spi_ss_dc = ssd1306::ssd1306< ssd1306::spi_ss_dc< bus, invert< ss >, dc > >;
+template< 
+   is_spi_bus bus, 
+   can_pin_out ss, 
+   can_pin_out dc, 
+   xy<> size = { 128, 64 } 
+>
+using ssd1306_spi_ss_dc = ssd1306::ssd1306< 
+   ssd1306::spi_ss_dc< bus, invert< ss >, dc >, size >;
 

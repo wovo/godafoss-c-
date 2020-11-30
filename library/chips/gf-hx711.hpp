@@ -90,7 +90,7 @@ private:
       }
 
       // extend the sign bit
-      if( result & ( 0x01 << 23 ) ){
+      if( result & ( static_cast< uint32_t >( 0x01 ) << 23 ) ){
          result |= 0xF000;
       }
 

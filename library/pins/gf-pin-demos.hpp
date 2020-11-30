@@ -17,7 +17,7 @@
 
 
 template< can_pin_out _pin, can_static_duration _pause >
-struct blink {
+struct blink : cto_root {
 
    //using pin = direct< pin_out_from< _pin >>;
    using pin = pin_out_from< _pin >;

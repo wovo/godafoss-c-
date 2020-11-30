@@ -14,9 +14,9 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using timing  = target::clocking;  // <======
+using timing  = target::clocking;  
 
-using lcd = godafoss::hd44780_rs_e_d_x_y_timing< 
+using lcd = gf::hd44780_rs_e_d_x_y_timing< 
    target::d8,
    target::d9,
    godafoss::port_out<

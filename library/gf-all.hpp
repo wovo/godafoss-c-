@@ -1,22 +1,8 @@
-// ==========================================================================
+// ============================================================================
 //
 // gf-all.hpp
 //
-// ==========================================================================
-//
-// This file includes all target-independent files.
-//
-// To add a file, add it here and in the Makefile.inc
-//
-// C/C++ library files are included here rather than in
-// the individual library files.
-// The individual header files depend on the order in which they
-// are included here, and don't have multiple-include guards.
-// They are not meant to be included individually.
-//
-// In typical use, this file is included (only) by a target HAL file.
-//
-// ==========================================================================
+// ============================================================================
 //
 // This file is part of godafoss (https://github.com/wovo/godafoss),
 // a C++ library for close-to-the-hardware programming.
@@ -28,13 +14,29 @@
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// ============================================================================
 
+// ============================================================================
+//
+// This file includes all target-independent files.
+//
+// To add a file, add it here and in the Makefile.inc
+//
+// C/C++ standard library files are included here rather than in
+// the individual library files.
+// The individual header files are not meant to be included individually:
+// they depend on the order in which they are included here, 
+// they assume to be inside the godafoss namespace,
+// and they don't have multiple-include guards.
+//
+// In typical use, this file is included (only) by a target HAL file.
+//
+// ============================================================================
 
 #ifndef GF_ALL_H
 #define GF_ALL_H
 
-// ==========================================================================
+// ============================================================================
 //
 // The library headers we need are included here
 // rather than in the files that need them.
@@ -44,32 +46,20 @@
 // https://github.com/maniacbug/StandardCplusplus
 // https://archive.codeplex.com/?p=libavrstdcpp
 //
-// ==========================================================================
+// ============================================================================
 
-/*
-#ifdef HWCPP_TARGET_use_avr8_hacks
-   #include HWCPP_INCLUDE( avr8-hacks/cstddef )
-   #include HWCPP_INCLUDE( targets/avr8-hacks/climits )
-   #include HWCPP_INCLUDE( targets/avr8-hacks/cstdint )
-   #include HWCPP_INCLUDE( targets/avr8-hacks/algorithm )
-   #include HWCPP_INCLUDE( targets/avr8-hacks/ratio )
-   #include HWCPP_INCLUDE( targets/avr8-hacks/type_traits )
-   #include HWCPP_INCLUDE( targets/avr8-hacks/array )
-//   #include HWCPP_INCLUDE( targets/avr8-hacks/concepts )
-#else
-*/
-   #include <cstddef>
-   #include <climits>
-   #include <algorithm>
-//   #include <cstdint>
-//   #include <ratio>
-   #include <type_traits>
-   #include <array>
-   #include <concepts>
-// #endif
+#include <cstddef>
+#include <cstdint>
+#include <climits>
+#include <limits>
+#include <algorithm>
+//#include <ratio>
+#include <type_traits>
+#include <array>
+#include <concepts>
 
 
-// ==========================================================================
+// ============================================================================
 //
 // This is a (greedy) selection from
 // https://gcc.gnu.org/onlinedocs/gcc-7.2.0/gcc/Warning-Options.html
@@ -77,7 +67,7 @@
 // For the library code a few false alarms are worth even a single error
 // that is detected by these (rather high) warning level settings.
 //
-// ==========================================================================
+// ============================================================================
 
 #pragma GCC diagnostic push
 
@@ -127,12 +117,12 @@
 // -Wno-long-long.
 
 
-// ==========================================================================
+// ============================================================================
 //
 // include all non-HAL library files,
 // enclosed in the godafoss namespace
 //
-// ==========================================================================
+// ============================================================================
 
 namespace godafoss {
 

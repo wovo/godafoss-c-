@@ -246,7 +246,7 @@ struct monochrome :
    ){
       minion::write(
          minion::origin + offset,
-         ( c == black ) ? for_black : for_white );
+         ( c.is_black() ) ? for_black : for_white );
    }
 
    static void flush(){

@@ -13,9 +13,9 @@ application.cpp
    godafoss.hpp
       gf-<target-hal>.hpp
          gf-all.hpp
-            torsor.hpp"
-            gf-attributes.hpp"
-            gf-shared-names.hpp"
+            torsor.hpp
+            gf-attributes.hpp
+            gf-shared-names.hpp
             ... all further godafoss files
 
 The godafoss files are in the subdirectories.

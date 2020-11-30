@@ -70,4 +70,4 @@ struct _by_const< T > { using type = const T; };
 // use by_const< T > when passing a T
 template< typename T >
 using by_const =
-   _by_const< T >::type;
+   typename _by_const< T >::type;

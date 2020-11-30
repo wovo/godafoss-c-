@@ -26,6 +26,6 @@ using spi = gf::spi_bus_bb_sclk_miso_mosi<
 using window = gf::fold< gf::max7219< spi, target::d9, 8 > >;
 
 int main( void ){
-   gf::demo::random_lines2< window, timing::ms< 200 > > ();
+   gf::run< gf::demo::random_lines2< window, timing::ms< 200 > > > ();
 }
 

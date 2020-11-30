@@ -263,7 +263,7 @@ hd44780
 ///    - '\\r' puts the cursor at the start of the current line
 ///    - '\\c' moves the cursor to the top-left position
 ///
-/// The best way to get a flicker-free display is to overwite
+/// The best way to get a flicker-free display is to overwrite
 /// instead of clear-and-then-write:
 /// use '\\c' to got to the 'origin', then rewrite the whole display,
 /// using '\\n' to go to a next line (because it clears the remainder of the line).

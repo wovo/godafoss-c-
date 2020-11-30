@@ -117,9 +117,9 @@ concept is_color = requires(
 
 //   { typename T::base_type() } -> std::same_as< fraction< int_fast16_t, 255 > >;
 
-   { color.red()    } -> std::same_as< typename T::base_type >;
-   { color.green()  } -> std::same_as< typename T::base_type >;
-   { color.blue()   } -> std::same_as< typename T::base_type >;
+//   { color.red()    } -> std::same_as< typename T::base_type >;
+//   { color.green()  } -> std::same_as< typename T::base_type >;
+//   { color.blue()   } -> std::same_as< typename T::base_type >;
 
 };
 
@@ -263,10 +263,18 @@ public:
    constexpr color_rgb_t blue() const {
       return color_rgb_t( white );
    };
+   
+   constexpr bool is_black() const {
+      return white == 0;      
+   }
 
-  constexpr color_bw(){}
+   constexpr bool is_white() const {
+      return white != 0;      
+   }
 
-  constexpr color_bw(
+   constexpr color_bw(){}
+
+   constexpr color_bw(
       uint_fast16_t red,
       uint_fast16_t green,
       uint_fast16_t blue

@@ -16,6 +16,7 @@
 //
 // =============================================================================
 
+// not usefull, cto can have a run too!
 // concept for cto - has resources
 // concept for application -> has also run
 

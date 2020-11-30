@@ -78,7 +78,7 @@ uint16_t random16(){
 uint32_t random32(){
    auto a = random16();
    auto b = random16();
-   return ( a << 16 ) | b;
+   return ( static_cast< uint32_t >( a ) << 16 ) | b;
 }
 
 // @quote random_in_range 5 ... }
