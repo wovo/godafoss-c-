@@ -2,8 +2,8 @@ check https://en.cppreference.com/w/cpp/language/constraints for simpler concept
 
 bleeding edge cross compilers:
 (cortex) https://freddiechopin.info/en/download/category/11-bleeding-edge-toolchain
-(avr8) https://blog.zakkemble.net/avr-gcc-builds/
-(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0
+(avr8) https://blog.zakkemble.net/avr-gcc-builds/ - no libs
+(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0 - includes C++ libs!!
 
 compile time objects
 transient objects - i2c and spi channels

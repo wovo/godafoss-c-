@@ -11,8 +11,8 @@
 #############################################################################
 
 # settings common to this part of the subdirectory tree
-TARGET             ?= arduino_uno
-SERIAL_PORT_UNO    ?= COM3
+TARGET             ?= arduino_leonardo
+SERIAL_PORT_UNO    ?= COM6
 CONSOLE_BAUDRATE   := 2400
 
 # set RELATIVE to the next higher directory and defer to the Makefile.link

@@ -131,9 +131,12 @@ HEADERS           += chips/gf-pca9685.hpp
 HEADERS           += chips/gf-dht11.hpp
 
 HEADERS           += targets/gf-chip-atmega328.hpp
+HEADERS           += targets/gf-chip-atmega32u4.hpp
 HEADERS           += targets/gf-chip-lpc1114.hpp
 HEADERS           += targets/gf-chip-sam3x8e.hpp
 HEADERS           += targets/gf-board-arduino-uno.hpp
+HEADERS           += targets/gf-board-arduino-leonardo.hpp
+HEADERS           += targets/gf-board-ks0474.hpp
 HEADERS           += targets/gf-board-my-first-dev-board.hpp
 HEADERS           += targets/gf-board-arduino-due.hpp
 HEADERS           += targets/gf-board-db103.hpp

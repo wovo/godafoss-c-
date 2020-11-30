@@ -42,6 +42,16 @@
    #include "targets/gf-board-arduino-uno.hpp"
 #endif
 
+#ifdef GF_TARGET_arduino_leonardo
+   #define GF_TARGET
+   #include "targets/gf-board-arduino-leonardo.hpp"
+#endif
+
+#ifdef GF_TARGET_ks0474
+   #define GF_TARGET
+   #include "targets/gf-board-ks0474.hpp"
+#endif
+
 #ifdef GF_TARGET_my_first_dev_board
    #define GF_TARGET
    #include "targets/gf-board-my-first-dev-board.hpp"
