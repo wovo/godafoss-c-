@@ -39,7 +39,7 @@
 
 #ifdef GF_TARGET_arduino_uno
    #define GF_TARGET
-   #include "targets/gf-board-arduino-uno.hpp"
+   #include "target-boards/gf-arduino-uno.hpp"
 #endif
 
 #ifdef GF_TARGET_arduino_leonardo

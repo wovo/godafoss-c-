@@ -1,14 +1,29 @@
 // ==========================================================================
 //
-// file : gf-board-arduino-due.hpp
+// gf-arduino-due.hpp
 //
-// HAL for the arduino due board target
+// ============================================================================
 //
+// This file is part of godafoss (https://github.com/wovo/godafoss),
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright
+//    Wouter van Ooijen 2019-2020
+//
+// Distributed under the Boost Software License, Version 1.0.
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// =============================================================================
+//
+// This file defines the arduino due (atsam3x8e) board target.
+//
+// power issue:
 // https://forum.arduino.cc/index.php?topic=256771.60
 //
 // ==========================================================================
 
-#include "targets/gf-chip-sam3x8e.hpp"
+#include "target-hals/gf-sam3xa.hpp"
 
 namespace godafoss {
 
@@ -180,8 +195,3 @@ template< uint64_t clock = 84'000'000 >
 using target = target_arduino_due< clock >;
 
 }; // namespace godafoss
-
-
-
-
-

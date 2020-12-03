@@ -14,8 +14,9 @@
 
 namespace gf  = godafoss;
 using target  = gf::target<>;
-using timing  = target::clocking;
+using led     = target::d13;
+using timing  = target::waiting;
 
 int main( void ){    
-   gf::run< gf::blink< target::led, timing::ms< 200 > > >();
+   gf::run< gf::blink< led, timing::ms< 200 > > >();
 }

@@ -2,30 +2,17 @@ check https://en.cppreference.com/w/cpp/language/constraints for simpler concept
 
 bleeding edge cross compilers:
 (cortex) https://freddiechopin.info/en/download/category/11-bleeding-edge-toolchain
-(avr8) https://blog.zakkemble.net/avr-gcc-builds/ - no libs
-(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0 - includes C++ libs!!
+(avr8) https://blog.zakkemble.net/avr-gcc-builds/
+(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0
 
-comparable:
-- ETL https://github.com/ambroise-leclerc/ETL : only AVR8, only pins, but port optimization
+meta-case USP ISP : 
+- https://irq5.io/2017/07/25/making-usbasp-chinese-clones-usable/
+- only a Windows GUI interface
+- NOT avrdude compatible
 
 compile time objects
 transient objects - i2c and spi channels
 value objects (adts)
-
-onderscheid:
-- target chips : mcu-s, chips
-- peripheral chips : chips, peripherals
-- target boards, boards
-- add-on boards (shields, i2c combinations, even single purpose boards) : shields
-
-chips-mcu
-chips-peripheral
-targets-chip
-targets-board
-? boards like lcd + buttons
-
-targets, incl 
-
 
 main is now a bit complicated
 use< t >::initialization() - won't work for complicated t, needs to be private?

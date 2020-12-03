@@ -1,6 +1,6 @@
 // ==========================================================================
 //
-// blink the LED on an Arduino Uno
+// empty project
 //
 // (c) Wouter van Ooijen (wouter@voti.nl) 2017
 //
@@ -12,10 +12,6 @@
 
 #include "godafoss.hpp"
 
-namespace gf  = godafoss;
-using target  = gf::target<>;
-using timing  = target::clocking;
+//int64_t x;
 
-int main( void ){    
-   gf::run< gf::blink< target::led, timing::ms< 200 > > >();
-}
+int main( void ){}

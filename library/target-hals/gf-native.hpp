@@ -1,31 +1,32 @@
-// ==========================================================================
+// ============================================================================
 //
-// file : gf-native.hpp
+// file : gf-sfml.hpp
 //
-// HAL for running native, using SFML for graphics windows and timing
-//
-// ==========================================================================
+// ============================================================================
 //
 // This file is part the https://www.github.com/godafoss
 // free C++ library for close-to-the-hardware programming.
 //
-// Copyright Wouter van Ooijen 2019
+// Copyright Wouter van Ooijen 2019-2020
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See the accompanying LICENSE_1_0.txt in the root directory of this
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-// ==========================================================================
+// ============================================================================
+//
+// HAL for running native, using SFML for graphics windows and timing
+//
+// ============================================================================
 
 #include "gf-all.hpp"
 #include "SFML/Graphics.hpp"
-
 #include <iostream>
 
 namespace godafoss {
 
 template< typename _dummy = void >
-struct target_native {
+struct native {
 
 
 // ==========================================================================
@@ -64,7 +65,7 @@ private:
 
    static void make_render_window(){
       GODAFOSS_RUN_ONCE;
-      // change the name!
+      // how to change the name?
       static sf::RenderWindow ww(
          sf::VideoMode( m * size.x, m * size.y ),
          name );
@@ -193,9 +194,6 @@ struct waiting :
 using timing   = waiting;
 // using timing   = clocking;
 
-}; // struct target_native
-
-template< typename _dummy = void >
-using target = target_native<>;
+}; // struct target
 
 }; // namespace godafoss

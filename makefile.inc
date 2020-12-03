@@ -4,16 +4,6 @@
 #
 ################################################################################
 #
-# makefile-include for the bmptk build system
-#
-# sets
-#    - SEARCH (the search path)
-#    - HEADERS (the dependencies)
-#
-# This file should be included by a project that uses godafoss and bmptk.
-#
-################################################################################
-#
 # This file is part of godafoss (https://github.com/wovo/godafoss),
 # a C++ library for close-to-the-hardware programming.#
 #
@@ -25,20 +15,25 @@
 # library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 #
 ################################################################################
-
-# externals
-
-# godafoss files
-
-#SEARCH += /usr/arm-none-eabi/include
-#SEARCH += /usr/arm-none-eabi/include/c++/10.1.0
-#SEARCH += /usr/arm-none-eabi/include/c++/10.1.0/arm-none-eabi
+#
+# makefile-include for the bmptk build system
+#
+# This script should be included by a project that uses godafoss and bmptk.
+# GODAFOSS must have been set to the godafoss directory.
+#
+# This script sets:
+#    - CPP_LANGUAGE
+#    - SEARCH (the bmptk search path)
+#    - HEADERS (the bmptk dependencies)
+#
+################################################################################
 
 CPP_LANGUAGE      := -std=c++20  -fconcepts-diagnostics-depth=3
 
 # used by some tests
 SEARCH            += $(GODAFOSS)/../Catch2/include
 
+# the godafoss files are all included relative to this point
 SEARCH            += $(GODAFOSS)/library
 
 HEADERS           += godafoss.hpp
@@ -130,14 +125,17 @@ HEADERS           += chips/gf-hx711.hpp
 HEADERS           += chips/gf-pca9685.hpp
 HEADERS           += chips/gf-dht11.hpp
 
-HEADERS           += targets/gf-chip-atmega328.hpp
-HEADERS           += targets/gf-chip-atmega32u4.hpp
-HEADERS           += targets/gf-chip-lpc1114.hpp
-HEADERS           += targets/gf-chip-sam3x8e.hpp
-HEADERS           += targets/gf-board-arduino-uno.hpp
-HEADERS           += targets/gf-board-arduino-leonardo.hpp
-HEADERS           += targets/gf-board-ks0474.hpp
-HEADERS           += targets/gf-board-my-first-dev-board.hpp
-HEADERS           += targets/gf-board-arduino-due.hpp
-HEADERS           += targets/gf-board-db103.hpp
-HEADERS           += targets/gf-native.hpp
+HEADERS           += target-hals/gf-atmega.hpp
+
+HEADERS           += target-boards/gf-arduino-uno.hpp
+
+#HEADERS           += targets/gf-chip-atmega32u4.hpp
+#HEADERS           += targets/gf-chip-lpc1114.hpp
+#HEADERS           += targets/gf-chip-sam3x8e.hpp
+#HEADERS           += targets/gf-board-arduino-uno.hpp
+#HEADERS           += targets/gf-board-arduino-leonardo.hpp
+#HEADERS           += targets/gf-board-ks0474.hpp
+#HEADERS           += targets/gf-board-my-first-dev-board.hpp
+#HEADERS           += targets/gf-board-arduino-due.hpp
+#HEADERS           += targets/gf-board-db103.hpp
+#HEADERS           += targets/gf-native.hpp

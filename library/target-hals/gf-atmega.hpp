@@ -1,10 +1,24 @@
-// ==========================================================================
+// =============================================================================
 //
-// file : hwcpp-chip-atmega328.hpp
+// gf-atmega.hpp
 //
-// HAL for the atmega328 AVR chip
+// =============================================================================
 //
-// ==========================================================================
+// This file is part of godafoss (https://github.com/wovo/godafoss),
+// a C++ library for close-to-the-hardware programming.
+//
+// Copyright
+//    Wouter van Ooijen 2019-2020
+//
+// Distributed under the Boost Software License, Version 1.0.
+// (See the accompanying LICENSE_1_0.txt in the root directory of this
+// library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+// =============================================================================
+//
+// HAL for atmega AVR chips
+//
+// =============================================================================
 
 #include "gf-all.hpp"
 
@@ -13,20 +27,33 @@
 #include "avr/io.h"
 #undef register
 
+// used by the inline small delay
 extern "C" void GODAFOSS_WEAK GODAFOSS_NO_INLINE _GODAFOSS_avr_ret(){}
+
+// required because the C++ library doesn't provide it
+extern "C" void GODAFOSS_WEAK GODAFOSS_NO_INLINE __cxa_pure_virtual(){
+   for(;;){
+      // This if for the side-effect only:
+      // a never-ending loop without side-effect is UB.
+      (void)PORTB;
+   }
+}
     
 namespace godafoss {
     
 template< uint64_t clock >	
-struct chip_atmega328 {
+struct atmega {
 	
-// ==========================================================================
+// =============================================================================
 //
 // chip initialization
 //
-// ==========================================================================	
+// =============================================================================
 
 static void GODAFOSS_INLINE init__(){
+   
+   // no real initialization required, just check if
+   // the clock parameter is reasonable
     
    if constexpr ( clock == 20'000'000 ){
       // 20 MHz crystal	   
@@ -44,66 +71,53 @@ static void GODAFOSS_INLINE init__(){
       static_assert( 
          clock == 0, 
          "Only 1 MHz (internal oscillator), "
-		 "or 16 or 20 MHz (external crystal) "
-		 "clock is supported for atmega328.");
+         "or 16 or 20 MHz (external crystal) "
+         "clock is supported for atmega328.");
    }		 
   
 }
    
    
-// ==========================================================================
+// =============================================================================
 //
 // GPIO
 //
-// ==========================================================================
+// =============================================================================
 
-enum class _port {
-//   a,
-   b, 
-   c, 
-   d
-};	
+// AVR GPIO ports
+enum class port { b, c, d };	
 
-typedef volatile unsigned char regs;
-
-static constexpr regs * port_data[] = { 
-   &PORTB,
-   &PORTC,
-   &PORTD
-};
-   
-static constexpr regs * port_in[] = { 
-   &PINB,
-   &PINC,
-   &PIND
-};
-   
-static constexpr regs * port_direction[] = { 
-   &DDRB,
-   &DDRC,
-   &DDRD
+// AVR GPIO register addresses
+static constexpr struct {
+   volatile std::uint8_t * output;
+   volatile std::uint8_t * input; 
+   volatile std::uint8_t * direction;
+} port_register [] = {
+   { &PORTB, &PINB, &DDRB },
+   { &PORTC, &PINC, &DDRC },
+   { &PORTD, &PIND, &DDRD }
 };
 
-template< _port p, uint32_t pin >
-struct _pin_in_out : 
+template< port p, uint32_t pin >
+struct gpio : 
    pin_in_out_root 
 {
    
-   using resources = execute< chip_atmega328< clock >::init__ >;   
+   using resources = execute< atmega< clock >::init__ >;   
    
    static void GODAFOSS_INLINE direction_set_output(){
-      *port_direction[ (int)p ] |= ( 0x1U << pin );
+      *port_register[ (int)p ].direction |= ( 0x1U << pin );
    }
    
    static void GODAFOSS_INLINE direction_set_input(){
-      *port_direction[ (int)p ] &= ~ ( 0x1U << pin );
+      *port_register[ (int)p ].direction &= ~ ( 0x1U << pin );
    }
    
    static void GODAFOSS_INLINE write( bool v ){
       if( v ){
-         *port_data[ (int)p ] |= ( 0x1U << pin );
+         *port_register[ (int)p ].output |= ( 0x1U << pin );
       } else {
-         *port_data[ (int)p ] &= ~ ( 0x1U << pin );
+         *port_register[ (int)p ].output &= ~ ( 0x1U << pin );
       }
    }
 
@@ -118,7 +132,7 @@ struct _pin_in_out :
    static void GODAFOSS_INLINE flush(){}
       
    static bool GODAFOSS_INLINE read(){	   
-      return ( *port_in[ (int)p ] & ( 0x1U << pin ) ) != 0;
+      return ( *port_register[ (int)p ].input & ( 0x1U << pin ) ) != 0;
    }
       
    static void GODAFOSS_INLINE refresh(){}
@@ -128,19 +142,18 @@ struct _pin_in_out :
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // ADC
 //
-// ==========================================================================
+// =============================================================================
 
 template< uint_fast64_t pin >
-struct _pin_adc 
+struct adc 
 // :  be_adc< 10 >
 {
 
    static void init__(){
-      godafoss::chip_atmega328< clock >::init__();
       
       // reference is AVCC
       ADMUX = 0x01 << REFS0;
@@ -149,14 +162,14 @@ struct _pin_adc
       ADCSRA = 7 | ( 0x01 << ADEN );  
    }
    
-   using resources = execute< init__ >;
+   using resources = execute< atmega< clock >::init__, init__ >;    
 
    static uint_fast16_t read(){
 	   
       // select the ADC input pin 
       ADMUX = ( 0x01 << REFS0 ) | pin;
 
-      // start the conversion.
+      // start the conversion
       ADCSRA |= 0x01 << ADSC;
 
       // wait for the conversion to finish
@@ -170,30 +183,32 @@ struct _pin_adc
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // UART
 //
-// ==========================================================================
+// =============================================================================
 
 template< uint64_t baudrate = GODAFOSS_BAUDRATE >
 struct uart :
    be_uart< uart< baudrate > >
 {
 	
-   static void init(){   
+   static void init__(){   
 	   
       // set baudrate	   
       uint64_t UBRR_VALUE = ((( clock / ( GODAFOSS_BAUDRATE * 16UL ))) - 1 );
       UBRR0H = (uint8_t) ( UBRR_VALUE >> 8 );
       UBRR0L = (uint8_t) UBRR_VALUE;
 	  
-	  // format : 8 data bits, no parity, 1 stop bit
+      // format : 8 data bits, no parity, 1 stop bit
       UCSR0C = 0x06;
 	  
-	  // enable rx and tx
-	  UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+      // enable rx and tx
+      UCSR0B = (1<<RXEN0)|(1<<TXEN0);
    }	
+   
+   using resources = execute< atmega< clock >::init__, init__ >;      
 
    static bool GODAFOSS_INLINE read_blocks(){
       return !( UCSR0A & ( 0x01<<RXC0 ));
@@ -214,14 +229,15 @@ struct uart :
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
 // inline small delay
 //
-// ==========================================================================
+// =============================================================================
 
 using ticks_type = uint64_t;
 
+// inline delay of a few instruction cycles
 template< ticks_type n >
 static void GODAFOSS_INLINE inline_small_delay(){
        
@@ -233,6 +249,8 @@ static void GODAFOSS_INLINE inline_small_delay(){
       );        
    }
 
+   // 8 cycles were handled by the call above,
+   // so now handle the remainder (0..7 cycles)
    constexpr ticks_type t = ( n % 8 );   
        
    if constexpr ( t  == 0 ){
@@ -289,19 +307,20 @@ static void GODAFOSS_INLINE inline_small_delay(){
 }
 
 
-// ==========================================================================
+// =============================================================================
 //
 // busy wait
 //
-// ==========================================================================
+// =============================================================================
 
 // call overhead is LDI, LDI, CALL, CP, CPC, BRGE/t, RET => 15
 static constexpr auto call_overhead = 15;
 static constexpr auto chunk = 8192;
 static constexpr auto one_loop = 7;
 
-static void GODAFOSS_NO_INLINE busy_wait_ticks_asm( int n ){ 
-    // first int parameter is passd in r24/r25
+// delay function for n instrcution cycles
+static void GODAFOSS_NO_INLINE busy_wait_ticks_asm( uint16_t n ){ 
+    // the first int parameter is passed in r24/r25
     __asm volatile(                       // clocks
        "1:  cp    r1, r24         \t\n"   // 1
        "    cpc   r1, r25         \t\n"   // 1
@@ -314,11 +333,11 @@ static void GODAFOSS_NO_INLINE busy_wait_ticks_asm( int n ){
 }
 
 
-// ==========================================================================
+// =============================================================================
 //
 // using timer 1
 //
-// ==========================================================================
+// =============================================================================
 
 static inline uint16_t    last_low = 0;
 static inline ticks_type  high = 0;
@@ -339,17 +358,17 @@ static ticks_type now_ticks(){
 } 
 
 
-// ==========================================================================
+// =============================================================================
 //
-// wait
+// waiting timing service
 //
-// ==========================================================================
+// =============================================================================
 
 struct waiting : 
    be_timing_wait< waiting > 
 {
 	
-   using chip       = chip_atmega328< clock >;   
+   using chip       = atmega< clock >;   
    using ticks_type = chip::ticks_type;
    using resources  = execute< chip::init__ >;
    
@@ -371,9 +390,6 @@ struct waiting :
    
    template< ticks_type t >
    static void GODAFOSS_INLINE wait_ticks_template(){
-	   
-	  //wait_ticks_function( t ); 
-	  //return;
 	      
       if constexpr ( t < call_overhead ){    
           chip::inline_small_delay< t >();
@@ -392,17 +408,17 @@ struct waiting :
 };
 
 
-// ==========================================================================
+// =============================================================================
 //
-// clock
+// clocking timing service
 //
-// ==========================================================================
+// =============================================================================
 
 struct clocking : 
    be_timing_wait< clocking > 
 {
 	
-   using chip = chip_atmega328< clock >;      
+   using chip = atmega< clock >;      
 	
    static void init__(){
       chip::init__();
@@ -429,32 +445,30 @@ struct clocking :
    template< ticks_type t >
    static void GODAFOSS_INLINE wait_ticks_template(){
 	   
-      if constexpr ( t < call_overhead ){    
+      if constexpr ( t < call_overhead ){   
+
+          // very small delay: generate a few inline instructions 
+          
           chip::inline_small_delay< t >();
           
       } else if constexpr ( t <= 2'000 ){  
 
+         // medium delay: call 
+         
          constexpr ticks_type remaining = t - call_overhead;
           
-         chip::inline_small_delay< remaining % one_loop >();
          chip::busy_wait_ticks_asm( remaining - ( remaining % one_loop) );   
+         chip::inline_small_delay< remaining % one_loop >();
          
       } else {
+         
+         // long delay: 
+         
          wait_ticks_function( t ); 
       }         
    };	  
 };
 
-
-// ==========================================================================
-//
-// default
-//
-// ==========================================================================
-   
-using timing   = waiting;  
-// using timing   = clocking;  
-
-}; // struct atmega328
+}; // struct atmega
 
 }; // namespace hwcpp

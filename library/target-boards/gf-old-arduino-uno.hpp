@@ -6,16 +6,14 @@
 //
 // ==========================================================================
 
-#include "targets/gf-chip-atmega32u4.hpp"
+#include "target-hals/gf-atmega.hpp"
 
 namespace godafoss {
     
 template< uint64_t clock >
-struct target_arduino_leonardo :
-   chip_atmega32u4< clock >    
-{       
+struct arduino_uno : atmega328< clock > {       
 	
-   using chip = chip_atmega32u4< clock >;	
+   using chip = chip_atmega328< clock >;	
 
    #define make_pin_in_out( NAME, PORT, PIN )                   \
       using NAME = typename chip::                              \
@@ -91,7 +89,7 @@ struct target_arduino_leonardo :
 }; // template<...> struct target_arduino_uno
 
 template< uint64_t clock = 16'000'000 >
-using target = target_arduino_leonardo< clock >; 
+using target = target_arduino_uno< clock >; 
 	
 }; // namespace godafoss
 
