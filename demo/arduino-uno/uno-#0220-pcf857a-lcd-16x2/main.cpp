@@ -18,15 +18,15 @@ using timing  = target::timing;
 
 using i2c_bus = gf::i2c_bus_bb_scl_sda< target::a0, target::a1, timing >;
 using chip    = gf::pcf8574a< i2c_bus, 0b0111 >;
-using lcd     = gf::hd44780_rs_e_d_x_y_timing< 
+using lcd     = gf::hd44780_rs_e_d_s_timing< 
    chip::p0,
    chip::p2,
-   gf::port_out<
+   gf::port_out_from_pins<
       chip::p4,
       chip::p5,
       chip::p6,
       chip::p7 >,
-   16, 2,
+   { 16, 2 },
    timing >; 
 
 int main( void ){

@@ -16,21 +16,23 @@ namespace gf  = godafoss;
 using target  = gf::target<>;
 using led     = gf::direct< gf::pin_out<  target::d13 > >;
 using timing  = target::waiting;
+    
+    
+struct blink {
+    
+   using resources = gf::use< led, timing >;
+    
+   static void run(){    
+      for(;;){
+         led::write( 1 );
+         timing::ms< 100 >::wait();
+         led::write( 0 );
+         timing::ms< 100 >::wait();
+      }    
+   }      
+
+};   
 
 int main( void ){   
-   
-   led::resources::initialize();
-   timing::resources::initialize();
-   
-   for(;;){
-      
-      led::write( 1 );
-
-      timing::ms< 100 >::wait();
-
-      led::write( 0 );
-
-      timing::ms< 100 >::wait();
-
-   }
+   gf::run< blink >();
 }

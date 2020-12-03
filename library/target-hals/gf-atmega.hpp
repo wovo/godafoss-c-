@@ -162,8 +162,10 @@ struct adc
       ADCSRA = 7 | ( 0x01 << ADEN );  
    }
    
-   using resources = execute< atmega< clock >::init__, init__ >;    
-
+   using resources = use<
+      execute< atmega< clock >::init__ >,
+      execute< init__ > >;    
+      
    static uint_fast16_t read(){
 	   
       // select the ADC input pin 
@@ -208,7 +210,9 @@ struct uart :
       UCSR0B = (1<<RXEN0)|(1<<TXEN0);
    }	
    
-   using resources = execute< atmega< clock >::init__, init__ >;      
+   using resources = use< 
+      execute< atmega< clock >::init__ >, 
+      execute< init__ > >;      
 
    static bool GODAFOSS_INLINE read_blocks(){
       return !( UCSR0A & ( 0x01<<RXC0 ));
@@ -471,4 +475,4 @@ struct clocking :
 
 }; // struct atmega
 
-}; // namespace hwcpp
+}; // namespace godaoss

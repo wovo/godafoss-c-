@@ -7,15 +7,16 @@ This file includes the appropriate godafoss HAL files, which
 in turn includes gf-all.hpp,
 which include the individual godafoss header files.
 
-Hence the include tree would look like this:
+Hence the include tree would look typically like this:
 
 application.cpp
    godafoss.hpp
-      gf-<target-hal>.hpp
-         gf-all.hpp
-            torsor.hpp
-            gf-attributes.hpp
-            gf-shared-names.hpp
-            ... all further godafoss files
+      gf-<target>.hpp
+         gf-<mcu>.hpp
+            gf-all.hpp
+               torsor.hpp
+               gf-attributes.hpp
+               gf-shared-names.hpp
+               ... and all other godafoss files too
 
 The godafoss files are in the subdirectories.
