@@ -18,6 +18,9 @@ main is now a bit complicated
 use< t >::initialization() - won't work for complicated t, needs to be private?
 uart werkt niet meer
 
+riscv
+https://github.com/riscv-mcu/GD32VF103_Firmware_Library
+
 speerpunten:
 - loop p
 - ints
