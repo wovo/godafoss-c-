@@ -33,15 +33,39 @@ https://github.com/thanks4opensource/regbits
 
 bleeding edge cross compilers:
 (cortex) https://freddiechopin.info/en/download/category/11-bleeding-edge-toolchain
+(cortex) https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/                                                                             
 (avr8) https://blog.zakkemble.net/avr-gcc-builds/ - no libs
 (avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0 - includes C++ libs!!
 (risc v) https://gnutoolchains.com/risc-v/
+
+meta-case USP ISP : 
+- https://irq5.io/2017/07/25/making-usbasp-chinese-clones-usable/
+- only a Windows GUI interface
+- NOT avrdude compatible
+
+C++ quiz : https://cppquiz.org/quiz/question/186
+C++ podcats : https://www.youtube.com/watch?v=XRTm_6SULU0
+conference keynotes: https://github.com/codereport/Talks/blob/master/CppConferenceKeynotes.md
+https://github.com/bernedom/SI/tree/master/include/SI
+https://github.com/trailfrenzy/SIwithET
+https://github.com/mithunkamat/ST7567-driver/blob/master/ST7567.c
+https://github.com/GValiente/butano
+https://artificial-mind.net/blog/2020/10/03/always-false
+
+https://embeddedtronicsblog.wordpress.com/2018/12/29/fake-stm32-blue-pill-boards/
+
 
 comparable:
 - ETL https://github.com/ambroise-leclerc/ETL : only AVR8, only pins, but port optimization
 
 books
 https://www.amazon.com/gp/product/1119431107?pf_rd_p=6fc81c8c-2a38-41c6-a68a-f78c79e7253f&pf_rd_r=8N6JEW01G47SE5FZTM9D
+- https://www.amazon.com/UNIX-History-Memoir-Brian-Kernighan/dp/1695978552/ref=as_li_ss_tl?ie=UTF8&linkCode=sl1&tag=revragnarok-20&linkId=c77497089c9d796e7c152239c6091859&language=en_US
+
+risc v:
+https://github.com/dwelch67/gigadevice_samples/tree/master/Sipeed.Longan.Nano/blinker01++
+                                   
+                                    
 
 google AI play:
 https://aiyprojects.withgoogle.com/
@@ -77,6 +101,26 @@ targets, incl
 main is now a bit complicated
 use< t >::initialization() - won't work for complicated t, needs to be private?
 uart werkt niet meer
+
+
+riscv
+https://github.com/riscv-mcu/GD32VF103_Firmware_Library
+https://www.sigmdel.ca/michel/ha/gd32v/longan_nano_01_en.html
+                       
+                                                                                 
+
+https://freeelectron.ro/installing-st-link-v2-to-flash-stm32-targets-on-linux/
+                
+            
+             
+                           
+
+              
+
+https://github.com/Viatorus/compile-time-printer
+
+https://github.com/theacodes/Winterbloom_Castor_and_Pollux/blob/master/firmware/scripts/samd21g18a.ld
+               
 
 speerpunten:
 - loop p
