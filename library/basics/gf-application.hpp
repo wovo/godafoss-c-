@@ -15,17 +15,17 @@
 // library, or a copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 // =============================================================================
-
-// not usefull, cto can have a run too!
+//
+// 
+// not useful, cto can have a run too!
 // concept for cto - has resources
 // concept for application -> has also run
-
-
+//
 // =============================================================================
 
 template< typename T >
-concept resource = requires {
-   typename T::resources;
+concept usage = requires {
+//   typename T::resources;
 };
 
 // fallback, required but never used
@@ -92,8 +92,17 @@ struct _background {
 // concept for cto - has resources
 // concept for application -> has also run
 
-template< typename application >
-struct run {
+template< usage application >
+void run {
+   
+   // determine the 
+   
+   // run the inits
+   application< timing >::
+   
+   
+   
+   // run the main    
    run(){
       application::resources::initialize();
       application::run();

@@ -1,78 +1,40 @@
-https://github.com/MoebiusTech
-https://github.com/shihaipeng03/MiniTelegraph.git
-
-https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0
-http://craftinginterpreters.com
-https://travisdowns.github.io/blog/2020/07/06/concurrency-costs.html
-https://ngathanasiou.wordpress.com/2020/07/09/avoiding-compile-time-recursion/
-https://pcbshopper.com
-https://hackaday.io/project/25596/gallery#f3bbf335d4fabe866589dea38a230367
-http://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html
-https://hackaday.com/2019/10/16/the-smallest-homebrewed-ttl-cpu-in-the-world/
-https://wiki.keyestudio.com/KS0474_Keyestudio_GAMEPI_DIY_Game_Console_learning_Kit_for_Arduino
-https://arduboy.com
-https://community.arduboy.com/t/welcome-to-the-arduboy-community/8/15
-https://community.arduboy.com/t/production-arduboy-schematic/702/11
-https://github.com/pellepl/spiffs\
-https://github.com/cpetrich/counterfeit_DS18B20/
-https://github.com/R2D2-2019/display
-https://github.com/R2D2-2019/I2C_library
-https://lvgl.io
-https://quick-bench.com/q/zqrtwmHCZTTbbj0WQBWSKeDJm5U
-
-
 check https://en.cppreference.com/w/cpp/language/constraints for simpler concepts
 
-GBA:
-https://github.com/GValiente/butano - check!
-https://pineight.com/gba/#gbfs
-https://www.gbadev.org/docs.php
-
-Register access:
-https://github.com/thanks4opensource/regbits
-
 bleeding edge cross compilers:
-(cortex) https://freddiechopin.info/en/download/category/11-bleeding-edge-toolchain
-(avr8) https://blog.zakkemble.net/avr-gcc-builds/ - no libs
-(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0 - includes C++ libs!!
-(risc v) https://gnutoolchains.com/risc-v/
+(cortex) https://freddiechopin.info/en/download/category/11-bleeding-edge-toolchain (geen linux)
+(cortex) https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/
+(avr8) https://blog.zakkemble.net/avr-gcc-builds/
+(avr8) https://github.com/CrustyAuklet/avr-libstdcxx/releases/tag/v10.2.0
 
-comparable:
-- ETL https://github.com/ambroise-leclerc/ETL : only AVR8, only pins, but port optimization
+meta-case USP ISP : 
+- https://irq5.io/2017/07/25/making-usbasp-chinese-clones-usable/
+- only a Windows GUI interface
+- NOT avrdude compatible
 
-books
-https://www.amazon.com/gp/product/1119431107?pf_rd_p=6fc81c8c-2a38-41c6-a68a-f78c79e7253f&pf_rd_r=8N6JEW01G47SE5FZTM9D
+C++ quiz : https://cppquiz.org/quiz/question/186
+C++ podcats : https://www.youtube.com/watch?v=XRTm_6SULU0
+conference keynotes: https://github.com/codereport/Talks/blob/master/CppConferenceKeynotes.md
+https://github.com/bernedom/SI/tree/master/include/SI
+https://github.com/trailfrenzy/SIwithET
+https://github.com/mithunkamat/ST7567-driver/blob/master/ST7567.c
+https://github.com/GValiente/butano
+https://artificial-mind.net/blog/2020/10/03/always-false
 
-google AI play:
-https://aiyprojects.withgoogle.com/
+https://embeddedtronicsblog.wordpress.com/2018/12/29/fake-stm32-blue-pill-boards/
 
-embedded course:
-https://course.ece.cmu.edu/~ece642/
-https://archive.org/details/@pkoopman
+books:
+- https://www.amazon.com/UNIX-History-Memoir-Brian-Kernighan/dp/1695978552/ref=as_li_ss_tl?ie=UTF8&linkCode=sl1&tag=revragnarok-20&linkId=c77497089c9d796e7c152239c6091859&language=en_US
 
-blue pill Logic Analyser:
-https://github.com/thanks4opensource/buck50
+https://github.com/olikraus/ucglib
 
-https://www.reddit.com/r/embedded/comments/kd3gm0/cortexm3_rtos_project_review_or_comment_request/
+risc v:
+
+https://github.com/dwelch67/gigadevice_samples/tree/master/Sipeed.Longan.Nano/blinker01++
+
 
 compile time objects
 transient objects - i2c and spi channels
 value objects (adts)
-
-onderscheid:
-- target chips : mcu-s, chips
-- peripheral chips : chips, peripherals
-- target boards, boards
-- add-on boards (shields, i2c combinations, even single purpose boards) : shields
-
-chips-mcu
-chips-peripheral
-targets-chip
-targets-board
-? boards like lcd + buttons
-
-targets, incl 
-
 
 main is now a bit complicated
 use< t >::initialization() - won't work for complicated t, needs to be private?
