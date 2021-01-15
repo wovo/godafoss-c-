@@ -20,6 +20,13 @@ https://github.com/R2D2-2019/I2C_library
 https://lvgl.io
 https://quick-bench.com/q/zqrtwmHCZTTbbj0WQBWSKeDJm5U
 
+micro:bit
+https://github.com/dwelch67/microbit
+https://github.com/bbcmicrobit/hardware
+https://tech.microbit.org/hardware/
+https://infocenter.nordicsemi.com/pdf/nRF52833_PS_v1.3.pdf
+https://www.st.com/en/mems-and-sensors/lsm303agr.html
+
 
 check https://en.cppreference.com/w/cpp/language/constraints for simpler concepts
 
@@ -64,6 +71,7 @@ https://www.amazon.com/gp/product/1119431107?pf_rd_p=6fc81c8c-2a38-41c6-a68a-f78
 
 risc v:
 https://github.com/dwelch67/gigadevice_samples/tree/master/Sipeed.Longan.Nano/blinker01++
+https://www.dalewheat.com/author/admin/ - serial connection
                                    
                                     
 
