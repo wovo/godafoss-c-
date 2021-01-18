@@ -243,6 +243,7 @@ struct uart :
 		 | UART_CR_RXDIS
 		 | UART_CR_TXDIS;
 
+      // must takr cpu clock into account!
       hw_uart->UART_BRGR = 5241600 / baudrate;
 
       // No parity, normal channel mode.
