@@ -26,6 +26,8 @@ https://blog.thea.codes
 
 https://www.reddit.com/r/embedded/comments/kxvzag/most_common_naming_convention_in_embedded_systems/
 
+https://www.reddit.com/r/embedded/comments/l4bxnl/opensource_file_system/
+
 micro:bit
 https://github.com/dwelch67/microbit
 https://github.com/bbcmicrobit/hardware
