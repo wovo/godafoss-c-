@@ -20,4 +20,3 @@ _linker_flags
 _linker_libs
 _dummy.jpg
 bmptk_*_stack.c
-_push.bat
