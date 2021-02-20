@@ -22,17 +22,19 @@
 // @define color<>
 // @title color
 //
-// The color type template represent a color.
+// The instances of the color type template represent a color.
 // You wouldn't have guessed.
-// The main use of these types is to specify the color of a pixel on a display.
+// The main use of these types is to specify the color of a pixel 
+// in an image or on a display.
 //
 // @insert color
 //
 // Displays have various color depths (number of bits used to represent
-// a color), so different uses call for different color types.
-// The choice is between color resolution and memory usage.
+// a color), so different uses call for different color types,
+// balancing memory use (and speed) against color depth. 
+//
 // The depths are specified in bits for red, blue and green.
-// The maximum is 8 bits each. This is also the default.
+// The maximum is 8 bits each, which is the default.
 //
 // -----------------------------------------------------------------------------
 //
@@ -46,7 +48,7 @@
 // 2 bits for blue because the eye is less sensitive to blue),
 //   - 16 bits (5 bits each for red and blue, 6 bits for green
 // because the eye is most sensitive to green),
-//   - 24 bits (one byte each for red, green and blue).
+//   - 24 bits (8 bits each for red, green and blue).
 //
 // -----------------------------------------------------------------------------
 //
@@ -54,8 +56,8 @@
 //
 // @insert constructor-default
 //
-// Colors have a default constructor.
-// Don't rely on the value after default construction.
+// Colors have a default constructor, but
+// don't rely on the color value after default construction.
 //
 // @insert constructor-copy
 //
@@ -65,10 +67,9 @@
 //
 // A color can be constructed from the three values
 // for its read, green and blue components.
-// For each componet, the value is relative to the (unsigned) maximum that
+// For each component, the value is relative to the (unsigned) maximum that
 // fits in the number of bits specified (by the template argument)
 // for that color.
-//
 //
 //
 // -----------------------------------------------------------------------------
@@ -77,8 +78,8 @@
 //
 // @insert random
 //
-// The static member function random() returns a random color.
-// Each of the red, green and blue components has been selected by
+// The static member function random() returns a random color, for which
+// each of the red, green and blue components has been selected by
 // the simple random generator.
 //
 //
@@ -248,6 +249,7 @@ struct color
 struct color_bw
    : color_root {
 
+   // is_white??
    uint8_t white = 0; // otherwise global ctor for array of these, why?
 
 public:

@@ -19,7 +19,25 @@ https://github.com/R2D2-2019/display
 https://github.com/R2D2-2019/I2C_library
 https://lvgl.io
 https://quick-bench.com/q/zqrtwmHCZTTbbj0WQBWSKeDJm5U
+https://drive.google.com/drive/folders/19pG3goVq1-Tf5rUn8wSy5ltm_D6MKXWM
+https://github.com/MoebiusTech/Arduino-Mini-ladar/blob/master/Mini%20Radar%20insllation%20.pdf
+https://twitter.com/i/topics/news/e-316591003?cn=ZmxleGlibGVfcmVjcw%3D%3D&refsrc=email
+https://leanpub.com/c20
+https://docs.modm.io
+https://mightydevices.com/index.php/2019/09/building-bare-metal-stm32l4-firmware-using-clang-llvm/
+http://www.nuonsoft.com/blog/2020/12/26/book-beginning-c20/
+https://github.com/kiwih/rp2040-vscode-picoprobe-project-c-template
+https://www.toptal.com/c-plus-plus/interview-questions
+https://www.reddit.com/r/embedded/comments/ll4vvf/building_an_operating_system_for_the_raspberry_pi/
 
+https://github.com/dwelch67/raspberrypi-pico/tree/master/blinker00
+https://github.com/OscarSaharoy/femtoscope
+https://libcinder.org
+https://github.com/rsta2/circle
+https://github.com/RIOT-OS/RIOT
+https://en.wikipedia.org/wiki/Rr_(debugging)
+https://devblogs.microsoft.com/oldnewthing/20140627-00/?p=633
+           
 https://barrgroup.com/Embedded-Systems/Books/Embedded-C-Coding-Standard
 
 https://blog.thea.codes
