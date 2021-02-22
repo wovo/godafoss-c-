@@ -19,6 +19,7 @@ https://github.com/R2D2-2019/display
 https://github.com/R2D2-2019/I2C_library
 https://lvgl.io
 https://quick-bench.com/q/zqrtwmHCZTTbbj0WQBWSKeDJm5U
+https://www.youtube.com/watch?v=pd9AVmcRc6U
 https://drive.google.com/drive/folders/19pG3goVq1-Tf5rUn8wSy5ltm_D6MKXWM
 https://github.com/MoebiusTech/Arduino-Mini-ladar/blob/master/Mini%20Radar%20insllation%20.pdf
 https://twitter.com/i/topics/news/e-316591003?cn=ZmxleGlibGVfcmVjcw%3D%3D&refsrc=email
@@ -43,10 +44,18 @@ https://barrgroup.com/Embedded-Systems/Books/Embedded-C-Coding-Standard
 
 https://blog.thea.codes
 
+https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Common-Function-Attributes.html#index-flatten-function-attribute
 https://www.reddit.com/r/embedded/comments/kxvzag/most_common_naming_convention_in_embedded_systems/
 
 https://www.reddit.com/r/embedded/comments/l4bxnl/opensource_file_system/
 
+GUIs:
+https://www.reddit.com/r/embedded/comments/l3nj3h/lameui_a_ui_library_for_mcus_i_have_been_making/
+https://github.com/lvgl/lvgl
+
+https://pastebin.com/D2ThwPQQ
+https://www.cnx-software.com/2021/01/27/a-closer-look-at-raspberry-pi-rp2040-programmable-ios-pio/
+                                                                   
 micro:bit
 https://github.com/dwelch67/microbit
 https://github.com/bbcmicrobit/hardware
@@ -54,6 +63,8 @@ https://tech.microbit.org/hardware/
 https://infocenter.nordicsemi.com/pdf/nRF52833_PS_v1.3.pdf
 https://www.st.com/en/mems-and-sensors/lsm303agr.html
 
+C++ tutorials:
+https://www.youtube.com/watch?v=_bYFu9mBnr4
 http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0843r3.html
 https://quuxplusone.github.io/blog/2018/06/18/inplace-vs-fixed-capacity/
 
