@@ -29,6 +29,7 @@ http://www.nuonsoft.com/blog/2020/12/26/book-beginning-c20/
 https://github.com/kiwih/rp2040-vscode-picoprobe-project-c-template
 https://www.toptal.com/c-plus-plus/interview-questions
 https://www.reddit.com/r/embedded/comments/ll4vvf/building_an_operating_system_for_the_raspberry_pi/
+https://www.reddit.com/r/cpp/comments/lp40ag/c20_gcc_trunk_getting_constexpr_usable_caller/
 
 https://github.com/dwelch67/raspberrypi-pico/tree/master/blinker00
 https://github.com/OscarSaharoy/femtoscope
