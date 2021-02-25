@@ -131,7 +131,11 @@ https://www.amazon.com/gp/product/1119431107?pf_rd_p=6fc81c8c-2a38-41c6-a68a-f78
 risc v:
 https://github.com/dwelch67/gigadevice_samples/tree/master/Sipeed.Longan.Nano/blinker01++
 https://www.dalewheat.com/author/admin/ - serial connection
-                                   
+
+https://jsandler18.github.io/
+https://medium.com/better-programming/modern-languages-suck-ad21cbc8a57c
+https://www.learncpp.com/
+https://www.youtube.com/playlist?list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb
                                     
 
 google AI play:
