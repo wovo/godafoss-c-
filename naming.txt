@@ -1,0 +1,16 @@
+NAMING
+
+**component
+   -> has: resources, uses, minions
+   value-store: *item <storage_type>
+      -> read only, write only, read write
+      *box, item
+      stream, channel, *pipe
+   addressed: **store, map <index_type, storage_type>
+      -> only write-only?
+      2D int: pixel, char   
+      
+uart - concept
+uart_from - adapter
+uart_from_compatible, uart_compatible - acceptable to uart_from
+uart_root<> - base class of all uarts

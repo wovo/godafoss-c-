@@ -41,6 +41,8 @@ https://en.wikipedia.org/wiki/Rr_(debugging)
 https://devblogs.microsoft.com/oldnewthing/20140627-00/?p=633
            
 https://barrgroup.com/Embedded-Systems/Books/Embedded-C-Coding-Standard
+anki robot companion
+Arduino powered graffiti maker bike. https://www.instructables.com/Bikelangelo-the-Graffiti-Maker-Bike/
 
 https://blog.thea.codes
 
