@@ -18,51 +18,6 @@ uart_from_compatible, uart_compatible - acceptable to uart_from
 uart_root<> - base class of all uarts
 
 
-Godafoss is a framework for component-based software development on small embedded systems
-(typically micro-controllers).
-
-In the context of godafoss an interface is a defined set of services.
-An example is the pin_in_out interface, which comprises the services
-(in this case: function calls) typically offered by a GPIO pin:
-- setting the direction (input or output) of the pin
-- writing a value to the pin, 
-- reading a value from the pin.
-
-An interface template is an interface that ...
-
-In the context of godafoss a component is a piece of software that offers an interface.
-An example of a component is a GPIO pin, which offers the pin_in_out interface.
-Components can be nested: 
-Typically the target component (the chip or board for which an application is built)
-contains a GPIO component for each of its physical GPIO pins.
-
-Components are static (determined at build time),
-and present in an application only when used by that application.
-A component that is present in the library or application code
-does not use any resources in the application unless it is used.
-
-A component template is (no surpise) a template for a component:
-when configured by supplying the template parameters, it yields a component.
-The component template parameters can be values
-(for instance the size 
-
-An example is the output component template: 
-it must be configured with (for instance) a GPIO pin component.
-The output component takes care of setting the direction of its GPIO minion, 
-and offers only the write service.
-
-A GPIO pin is a passive component: it doesn't do anything unless you invoke one of the functions from its interface.
-A component can contain sub-components. 
-
-
-
-A component can be passive, like a GPIO pin or an invert: 
-they wont do anything unless you invoke one of their services.
-A component can be active.
-The blink element
-
-
-Syntactically, an interface is a C++ concept.
 
 
 
