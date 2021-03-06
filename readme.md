@@ -1,7 +1,6 @@
 ![](images/godafoss-waterfalls.png)
 
-# Godafoss
-# a C++ framework for component-based micro-controller programming
+# Godafoss: a C++ framework for component-based micro-controller programming
 
 -------------------------------------------------------------------------------
 
@@ -11,13 +10,17 @@ THIS IS WORK IN PROGRESS, NOT YET FIT FOR USE
 except by myself and the very brave.
 
 For those brave who want to explore what is there:
-   attic - old stuff, do not look here
-   book - nothing useful here yet
-   demo - demos of library features
-   externals - external stuff used by godafoss, for now only my torsor
-   library - the library itself
-   tests - tests of library features
-   work - for temporary stuff I am working on
+   - attic: old stuff, do not look here
+   - book: nothing useful here yet
+   - demo: demos of library features
+   - externals: external stuff used by godafoss, for now only my torsor
+   - library: the library itself
+   - tests: tests of library features
+   - work: for temporary stuff I am working on
+   
+For now, I am the single contributor to this repo,
+and use github as my usb-stick-in-the clouds,
+so you won't learn much from the git history.
    
 -------------------------------------------------------------------------------
    
@@ -25,7 +28,7 @@ For those brave who want to explore what is there:
 
 The [Godafoss](https://en.wikipedia.org/wiki/Goðafoss) 
 (god-waterfall) is a large waterfall in the north of Iceland.
-Allegedly, in the year 1000 the law-speaker Porgeir made the decision
+Allegedly, in the year 1000 the law-speaker Porgeir decided
 that Iceland officially choose Christianity over the Norse beliefs.
 To signify this decision, he threw his statues of Norse gods in the waterfall.
 
@@ -37,16 +40,16 @@ I call godafoss a framework rather than a library,
 because godafoss enforces a specific style of programming.
 For me the difference between a framework and a library is that
 libraries play nice with each other and can be combined
-with each other and with a framework, 
-while a framework assumes you use it and no other ones: 
-frameworks don't play nice with each other.
+with each other and with a framework.
+A framework assumes you use it and no other ones: 
+frameworks tolerate libraries, but don't play nice with other frameworks.
 My work in this field stared as libraries, but at a point
-I realised that I needed to take overall control 
+I realized that I needed to take overall control 
 of the structure of an application to achieve both
 flexibility, ease of use, and efficiency.
 In my opinion a library is inherently better than a framework
 because it leaves more options for the user.
-I am sorry I could not make godafoss a library.
+I am sorry I could not keep godafoss a library.
 
 -------------------------------------------------------------------------------
    
