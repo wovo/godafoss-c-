@@ -1,8 +1,9 @@
 ![](images/godafoss-waterfalls.png)
 
-# Godafoss: a C++ framework for component-based micro-controller programming
+# Godafoss
+# a C++ framework for component-based micro-controller programming
 
-===============================================================================
+-------------------------------------------------------------------------------
 
 ## Status
 
@@ -18,7 +19,7 @@ For those brave who want to explore what is there:
    tests - tests of library features
    work - for temporary stuff I am working on
    
-===============================================================================
+-------------------------------------------------------------------------------
    
 ## Name and background
 
@@ -47,7 +48,7 @@ In my opinion a library is inherently better than a framework
 because it leaves more options for the user.
 I am sorry I could not make godafoss a library.
 
-===============================================================================
+-------------------------------------------------------------------------------
    
 ## Summary
 
