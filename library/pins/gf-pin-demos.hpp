@@ -23,7 +23,7 @@ struct blink : cto_root {
    using pin = pin_out_from< _pin >;
    using pause = static_duration< _pause >;
 
-   using requires = require< pin, pause >;
+   using requires = list< pin, pause >;
 
    static void GODAFOSS_NO_RETURN run(){
       for(;;){

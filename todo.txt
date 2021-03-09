@@ -32,6 +32,8 @@ https://www.toptal.com/c-plus-plus/interview-questions
 https://www.reddit.com/r/embedded/comments/ll4vvf/building_an_operating_system_for_the_raspberry_pi/
 https://www.reddit.com/r/cpp/comments/lp40ag/c20_gcc_trunk_getting_constexpr_usable_caller/
 
+https://kevinlynagh.com/rust-zig/
+
 https://github.com/dwelch67/raspberrypi-pico/tree/master/blinker00
 https://github.com/OscarSaharoy/femtoscope
 https://libcinder.org
