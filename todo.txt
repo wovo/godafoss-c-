@@ -1,5 +1,11 @@
 https://github.com/MoebiusTech
 https://github.com/shihaipeng03/MiniTelegraph.git
+https://www.dansaks.com/articles.shtml
+https://github.com/Picovoice
+https://jsandler18.github.io/tutorial/locks.html
+https://www.reddit.com/r/embedded/comments/lscmen/endtoend_voice_recognition_on_microcontrollers/
+https://adspthepodcast.com/2021/03/05/Episode-15.html
+https://www.youtube.com/watch?v=4qBKOAv0sBI
 
 https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0
 http://craftinginterpreters.com
