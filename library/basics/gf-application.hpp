@@ -24,7 +24,8 @@
 // =============================================================================
 
 template< typename T >
-concept usage = requires {
+concept resource = requires {
+    true;
 //   typename T::resources;
 };
 
@@ -92,13 +93,13 @@ struct _background {
 // concept for cto - has resources
 // concept for application -> has also run
 
-template< usage application >
-void run {
+template< typename application >
+class run {
    
    // determine the 
    
    // run the inits
-   application< timing >::
+   //application< timing >::
    
    
    
