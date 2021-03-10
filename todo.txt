@@ -39,6 +39,10 @@ https://www.reddit.com/r/embedded/comments/ll4vvf/building_an_operating_system_f
 https://www.reddit.com/r/cpp/comments/lp40ag/c20_gcc_trunk_getting_constexpr_usable_caller/
 
 https://kevinlynagh.com/rust-zig/
+https://lupyuen.github.io/articles/book
+https://pine64.com/product/pinetime-dev-kit/?v=0446c16e2e66
+https://www.nirsoft.net/utils/run_as_date.html
+https://en.wikipedia.org/wiki/Component-based_software_engineering
 
 https://github.com/dwelch67/raspberrypi-pico/tree/master/blinker00
 https://github.com/OscarSaharoy/femtoscope
