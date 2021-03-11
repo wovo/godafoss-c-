@@ -89,7 +89,7 @@ struct pin_in_from_pin_in_out :
       direct< T >::direction_set_input();
    }
 
-   using resources = use<
+   using resources = use_list<
       T,
       execute< __init >
    >;
@@ -109,7 +109,7 @@ struct pin_in_from_pin_oc :
       direct< T >::write( 1 );
    }
 
-   using resources = use<
+   using resources = use_list<
       T,
       execute< __init >
    >;
@@ -168,7 +168,7 @@ struct pin_out_from_pin_in_out :
    //   direct< T >::direction_set_output();
    //}
 
-   using resources = use<
+   using resources = use_list<
       direct< T >,
       execute< direct< T >::direction_set_output >
    >;
@@ -287,7 +287,7 @@ struct pin_oc_from_pin_in_out :
    //   direct< T >::direction_set_input();
    //}
 
-   using resources = use<
+   using resources = use_list<
       T,
       execute< direct< T >::direction_set_input >
    >;

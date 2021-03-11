@@ -59,7 +59,7 @@ struct max7219 :
       command( cmd_test,        0x00 );
    }
 
-   using resources = use< bus, cs, execute< init__ > >;
+   using resources = use_list< bus, cs, execute< init__ > >;
 
    static inline uint8_t buffer[ 8 * n_chips ];
 

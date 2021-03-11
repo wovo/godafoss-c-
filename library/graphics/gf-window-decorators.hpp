@@ -25,7 +25,7 @@ struct flip_horizontally :
    >
 {
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -60,7 +60,7 @@ struct flip_vertically :
    >
 {
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -104,7 +104,7 @@ struct fold :
       xy<>( minion::size.x / n_fold, minion::size.y * n_fold )
    >;
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -147,7 +147,7 @@ struct invert< minion >:
    >
 {
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -184,7 +184,7 @@ struct recolor :
    >
 {
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -238,7 +238,7 @@ struct monochrome :
    >
 {
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write_implementation(
       minion::offset_t offset,
@@ -270,7 +270,7 @@ struct port_from_windowx:
 {
    using root = port_out_root< minion::size.x >;
 
-   using resources = use< minion >;
+   using resources = use_list< minion >;
 
    static void write( typename root::value_type v ){
       (void) v;

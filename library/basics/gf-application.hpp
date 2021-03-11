@@ -31,11 +31,11 @@ concept resource = requires {
 
 // fallback, required but never used
 template< resource... _tail >
-struct use {};
+struct use_list {};
 
 // recursion endpoint
 template<>
-struct use<> {
+struct use_list<> {
    using first = void;
 
    static void GODAFOSS_INLINE initialize(){}
@@ -43,9 +43,9 @@ struct use<> {
 
 // initialize() will call that same function in all arguments
 template< resource _first, resource... _tail >
-struct use< _first, _tail... > {
+struct use_list< _first, _tail... > {
    using first      = _first;
-   using resources  = use< _tail... >;
+   using resources  = use_list< _tail... >;
 
    static void initialize(){
       first::resources::initialize();
@@ -95,7 +95,7 @@ struct _background {
 
 template< typename application >
 class run {
-   
+public:   
    // determine the 
    
    // run the inits

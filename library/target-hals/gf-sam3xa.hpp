@@ -16,7 +16,7 @@
 //
 // =============================================================================
 //
-// HAL for atsam3x chips
+// HAL for atsam3xa chips
 //
 // ==========================================================================
 
@@ -71,7 +71,7 @@ static void init__(){
       EFC1->EEFC_FMR = EEFC_FMR_FWS( 4 );
 
       // switch to 84 Mhz
-      sam3xa::SystemInit();
+      atmel_sam3xa::SystemInit();
 
    } else {
       static_assert(

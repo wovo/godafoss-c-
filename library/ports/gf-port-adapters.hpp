@@ -85,7 +85,7 @@ struct port_in_from_port_in_out :
       T::direction_set_input();
       T::direction_flush();
    }
-   using resources = use< T, execute< init__ > >;
+   using resources = use_list< T, execute< init__ > >;
 
 };
 
@@ -101,7 +101,7 @@ struct port_in_from_port_oc :
       T::write( 0 );
       T::flush();
    }
-   using resources = use< T, execute< init__ > >;
+   using resources = use_list< T, execute< init__ > >;
 
 };
 
@@ -132,7 +132,7 @@ struct port_out_from_port_in_out :
       T::direction_set_output();
       T::direction_flush();
    }
-   using resources = use< T, execute< init__ > >;
+   using resources = use_list< T, execute< init__ > >;
 
 };
 

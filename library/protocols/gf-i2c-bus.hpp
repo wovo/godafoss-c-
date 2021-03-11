@@ -86,7 +86,7 @@ struct i2c_bus {
 
    static constexpr auto frequency = profile::frequency;
 
-   using resources = use< base >;
+   using resources = use_list< base >;
 
    struct _write_transaction {
 
@@ -141,7 +141,7 @@ struct i2c_bus {
    template< int address >
    struct channel {
 
-      using resources = use< base >;
+      using resources = use_list< base >;
 
       struct write_transaction {
 

@@ -31,7 +31,7 @@ struct _port_recurse_init : tail {
   //    pin::init();
   //    tail::init();
   //}
-  using resources = use< pin, tail >;
+  using resources = use_list< pin, tail >;
 };
 
 // ========= output

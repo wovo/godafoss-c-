@@ -22,7 +22,7 @@ struct pcf8591 {
       bus::frequency <= 100'000,
       "The maximum I2C bus frequency for this chip is 100 kHz" );
 
-   using resources = use< bus >;
+   using resources = use_list< bus >;
 
    static uint8_t _read( uint_fast8_t channel ){
 
@@ -47,7 +47,7 @@ struct pcf8591 {
 
       using value_type = fraction< int_fast16_t, 256 >;
 
-      using resources = use< pcf8591< bus, address > >;
+      using resources = use_list< pcf8591< bus, address > >;
 
       static void GODAFOSS_INLINE refresh(){
       }

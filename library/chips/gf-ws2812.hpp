@@ -33,7 +33,7 @@ struct ws2812 :
       data::write( 0 );
    }
 
-   using resources = use< data, timing, execute< init__ > >;
+   using resources = use_list< data, timing, execute< init__ > >;
 
    static void write_implementation(
       root::offset_t  offset,

@@ -4,7 +4,7 @@ namespace demo {
 template< typename w, typename tt, uint64_t size = 3, xy<> speed = { 1, 1 } >
 struct bouncing_square {
 
-   using resources = use< w, tt >;
+   using resources = use_list< w, tt >;
 
    static void GODAFOSS_NO_RETURN run(){
       auto location = typename w::offset_t( 0, 0 );
@@ -44,7 +44,7 @@ void random_lines(){
 template< typename w, typename tt >
 struct random_lines2 {
 
-   using resources = use< w, tt >;
+   using resources = use_list< w, tt >;
 
    static void GODAFOSS_NO_RETURN run(){
       for(;;){
