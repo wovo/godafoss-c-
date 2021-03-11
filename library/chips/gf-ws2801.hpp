@@ -27,7 +27,7 @@ struct ws2801 :
 
    static inline std::array< color<>, n_chips > pixels;
 
-   using resources = use< bus, timing >;
+   using resources = use_list< bus, timing >;
 
    static void write_implementation(
       root::offset_t  offset,

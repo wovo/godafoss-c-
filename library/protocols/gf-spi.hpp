@@ -63,7 +63,7 @@ struct spi_bus_bb_sclk_miso_mosi {
 
 public:
 
-   using resources = use< sclk, miso, mosi, timing >;
+   using resources = use_list< sclk, miso, mosi, timing >;
 
    template< can_pin_out _sel >
    struct transfer {

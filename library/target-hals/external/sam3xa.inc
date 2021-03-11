@@ -29,7 +29,7 @@
 
 #include "sam3.h"
 
-struct sam3xa {
+struct atmel_sam3xa {
 
 /* Clock settings (84MHz) */
 #define SYS_BOARD_OSCOUNT   (CKGR_MOR_MOSCXTST(0x8))

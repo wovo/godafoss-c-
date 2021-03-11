@@ -29,10 +29,10 @@ namespace godafoss {
 
 template< uint64_t clock >
 struct target_arduino_due :
-   chip_sam3x8e< clock >
+   sam3xa< clock >
 {
 
-using chip = chip_sam3x8e< clock >;
+using chip = sam3xa< clock >;
 
 #define make_pin_in_out( NAME, PORT, PIN)      \
    using NAME  = typename chip:: template      \

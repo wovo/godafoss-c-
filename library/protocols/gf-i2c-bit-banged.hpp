@@ -47,7 +47,7 @@ struct _i2c_base_bb_scl_sda {
       sda::write( 1 );
    }
 
-   using resources = use< timing, scl, sda, execute< init__ > >;
+   using resources = use_list< timing, scl, sda, execute< init__ > >;
 
    static void write_bit( bool x ){
 

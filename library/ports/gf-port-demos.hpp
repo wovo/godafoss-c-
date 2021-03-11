@@ -34,7 +34,7 @@ struct walk {
 
    using port = direct< port_out< _port >>;
 
-   using resources = use< port, interval >;
+   using resources = use_list< port, interval >;
 
    static GODAFOSS_NO_RETURN void run(){
       for(;;){
@@ -53,7 +53,7 @@ struct kitt {
 
    using port = direct< port_out< _port > >;
 
-   using resources = use< port, interval >;
+   using resources = use_list< port, interval >;
 
    static GODAFOSS_NO_RETURN void run(){
       for(;;){

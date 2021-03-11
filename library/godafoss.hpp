@@ -44,32 +44,32 @@
 
 #ifdef GF_TARGET_arduino_leonardo
    #define GF_TARGET
-   #include "targets/gf-board-arduino-leonardo.hpp"
+   #include "target-boardss/gf-arduino-leonardo.hpp"
 #endif
 
 #ifdef GF_TARGET_ks0474
    #define GF_TARGET
-   #include "targets/gf-board-ks0474.hpp"
+   #include "target-boardss/gf-ks0474.hpp"
 #endif
 
 #ifdef GF_TARGET_my_first_dev_board
    #define GF_TARGET
-   #include "targets/gf-board-my-first-dev-board.hpp"
+   #include "target-boardss/gf-my-first-dev-board.hpp"
 #endif
 
 #ifdef GF_TARGET_arduino_due
    #define GF_TARGET
-   #include "targets/gf-board-arduino-due.hpp"
+   #include "target-boards/gf-arduino-due.hpp"
 #endif
 
 #ifdef GF_TARGET_db103
    #define GF_TARGET
-   #include "targets/gf-board-db103.hpp"
+   #include "target-boardss/gf-db103.hpp"
 #endif
 
 #ifdef GF_TARGET_stm32f030f4
    #define GF_TARGETDefined in header <type_traits>
-   #include "targets/gf-chip-stm32f030f4.hpp"
+   #include "target-chips/gf-stm32f030f4.hpp"
 #endif
 
 #ifndef GF_TARGET

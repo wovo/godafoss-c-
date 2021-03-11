@@ -9,7 +9,7 @@ struct servo {
 
    using pin = direct< pin_out< _pin > >;
 
-   using resources = use< pin, timing >;
+   using resources = use_list< pin, timing >;
 
    static void write( int n ){
       pin::write( 1 );

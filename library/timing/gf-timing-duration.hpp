@@ -83,7 +83,7 @@ struct static_duration : static_duration_root {
    //   T::init();
    //}
 
-   using resources = use< T >;
+   using resources = use_list< T >;
 
    static void GODAFOSS_INLINE wait(){
       T::wait();

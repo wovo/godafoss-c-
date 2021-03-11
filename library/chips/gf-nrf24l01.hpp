@@ -32,7 +32,7 @@ struct nrf24l01_spi_ce_csn {
       timing:: template ms< 50 >::wait();
    }
 
-   using resources = use<
+   using resources = use_list<
       bus,
       chip_enable,
       chip_select,

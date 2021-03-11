@@ -155,7 +155,7 @@ struct formatter {
    //   T::init();
    //}
 
-   using resources = use< T >;
+   using resources = use_list< T >;
 
    static void GODAFOSS_INLINE write( char c ){
       T::write( c );
@@ -319,7 +319,7 @@ struct ostream {
    //   T::init();
    //}
 
-   using resources = use< T >;
+   using resources = use_list< T >;
 
    template< typename V >
       requires requires( V v ){ T::write( v ); }
