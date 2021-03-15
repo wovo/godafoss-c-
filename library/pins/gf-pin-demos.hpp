@@ -17,8 +17,7 @@
 
 
 template< can_pin_out _pin, can_static_duration _pause >
-struct blink : cto_root {
-
+struct blink : cto_root { 
    //using pin = direct< pin_out_from< _pin >>;
    using pin = pin_out_from< _pin >;
    using pause = static_duration< _pause >;
@@ -36,6 +35,25 @@ struct blink : cto_root {
    }
 };
 
+/*
+template< can_pin_out _pin, duration pause >
+struct blink : cto_root { struct< context gf > {
+
+   using pin = direct< pin_out_from< _pin > >;
+
+   static void GODAFOSS_NO_RETURN main(){
+      for(;;){
+         pin::write( 1 );
+         pause::wait();
+         pin::write( 0 );
+         pause::wait();
+      }
+   }
+   
+   using composition = list< pin, pause, run< main > >;
+
+};
+*/
 
 
 /*
