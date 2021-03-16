@@ -9,7 +9,8 @@
 // =============================================================================
 
 struct resource_root {
-   static constexpr n_threads = 0;    
+   static constexpr auto n_threads = 0;    
+   
    static void run_initialization() { };
    static void run_thread()         { };
    static void run_background()     { };    
@@ -30,14 +31,14 @@ concept resource = requires {
 //
 // =============================================================================
 
-struct initialization< void f() >
+template< void f() >
 struct initialization : resource_root {
    static void run_initialization(){ f(); };
 };
 
 template< void f() >
 struct thread : resource_root {
-   static constexpr n_threads = 0;    
+   static constexpr auto n_threads = 1;    
    static void run_thread(){ f(); };
 };
 
@@ -49,13 +50,12 @@ struct background : resource_root {
 
 // =============================================================================
 //
-// A list bundles resources, and is a resource.
+// A list is a resource that bundles zero or more resources
 //
 // =============================================================================
 
-
 // fallback, required but never used
-template< typename... _tail > 
+template< resource... _tail > 
 struct list : resource_root {
 };
 
@@ -64,18 +64,25 @@ template<>
 struct list<> : resource_root {
 };
 
-template< typename _first, typename... _tail >
+// a list of at least one resource
+template< resource _first, resource... _tail >
 struct list< _first, _tail... > {
-    
-   using first  = _first;
    using next   = list< _tail... >;
+   using first  = _first;
+   
+   static constexpr auto n_threads = first::n_threads + next::n_threads;
+   
+   static void run_initialization() { 
+      first::run_initialization();
+      next::run_initialization();
+   };
 };
 
 
 // =============================================================================
 
 template< int _n >
-struct resource {
+struct timer {
    static constexpr int n = 42;
 };
 
@@ -85,7 +92,7 @@ struct resource {
 template< int n >
 struct blink { template< typename application > struct main {    
 
-   using r = resource< n >;
+   using r = timer< n >;
 
    static void body() { 
       std::cout << r::n << "\n";
@@ -95,6 +102,12 @@ struct blink { template< typename application > struct main {
       r,
       initialization< body > 
    >; 
+   
+   static constexpr auto n_threads = resources::n_threads;
+   
+   static void run_initialization() { 
+      resources::run_initialization();
+   };   
    
 }; };
 
@@ -106,7 +119,13 @@ struct app { template< typename application > struct main {
    using resources = list< 
       blink< 10 >,
       blink< 12 >
-  >; 
+   >;   
+      
+   static constexpr auto n_threads = resources::n_threads;
+   
+   static void run_initialization() { 
+      resources::run_initialization();
+   };         
   
 }; };
 
@@ -114,7 +133,7 @@ template< typename application >
 struct run_class {
    using app = typename application::main< application >;    
    static void run(){  
-      // init          
+      app::resources::run_initialization();     
    }
 };
 
