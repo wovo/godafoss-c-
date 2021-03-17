@@ -1,12 +1,14 @@
 #include <iostream>
 #include <concepts>
 
+#define TRACE { std::cout << __LINE__ << "\n"; }
 
-// =============================================================================
+
+// ===========================================================================
 //
 // A resource is something a component needs to implement its functionality.
 //
-// =============================================================================
+// ===========================================================================
 
 struct resource_root {
    static constexpr auto n_threads = 0;    
@@ -17,19 +19,17 @@ struct resource_root {
 };
 
 template< typename T >
-concept resource = requires {
-   { std::derived_from< T, resource_root > == true };
-};
+concept resource = std::derived_from< T, resource_root >;
 
 
-// =============================================================================
+// ===========================================================================
 //
 // encapsulate a function in a resource in different ways:
 // - initialization: to be run once before the others, returns
 // - thread: to br run as separate thread, doesn't return
 // - background: to be run while idle, returns
 //
-// =============================================================================
+// ===========================================================================
 
 template< void f() >
 struct initialization : resource_root {
@@ -48,24 +48,24 @@ struct background : resource_root {
 };
    
 
-// =============================================================================
+// ===========================================================================
 //
-// A list is a resource that bundles zero or more resources
+// A list is a resource that bundles zero or more composition
 //
-// =============================================================================
+// ===========================================================================
 
 // fallback, required but never used
-template< resource... _tail > 
+template< typename... _tail > 
 struct list : resource_root {
 };
 
-// and empty list of resources
+// and empty list of composition
 template<>
 struct list<> : resource_root {
 };
 
-// a list of at least one resource
-template< resource _first, resource... _tail >
+// a list that starts with a resource
+template< resource _first, typename... _tail >
 struct list< _first, _tail... > {
    using first  = _first;
    using next   = list< _tail... >;
@@ -73,105 +73,104 @@ struct list< _first, _tail... > {
    static constexpr auto n_threads = first::n_threads + next::n_threads;
    
    static void run_initialization() { 
+   TRACE;
       first::run_initialization();
+   TRACE;
       next::run_initialization();
+   TRACE;
+   };
+};
+
+// a list that starts with a component
+template< typename _first, typename... _tail >
+struct list< _first, _tail... > {
+   using first  = _first::composition;
+   using next   = list< _tail... >;
+   
+   static constexpr auto n_threads = first::n_threads + next::n_threads;
+   
+   static void run_initialization() { 
+   TRACE;
+      first::run_initialization();
+   TRACE;
+      next::run_initialization();
+   TRACE;
    };
 };
 
 
-// =============================================================================
+// ===========================================================================
 
 template< int _n >
-struct timer {
+struct timer { template< typename application > struct inner {    
+   using composition = list<>;
    static constexpr int n = 42;
-};
+}; };
 
 
-// =============================================================================
+// ===========================================================================
 
 template< int n >
-struct blink { template< typename application > struct main {    
+struct blink { template< typename application > struct inner {    
 
    using r = timer< n >;
 
    static void body() { 
-      std::cout << r::n << "\n";
+TRACE;       
+      std::cout << "n = " << r::n << "\n";
+TRACE;      
    };
    
-   using resources = list< 
-      r,
-      initialization< body > 
+   using composition = list< 
+      initialization< body >,
+      r
    >; 
    
-   static constexpr auto n_threads = resources::n_threads;
-   
-   static void run_initialization() { 
-      resources::run_initialization();
-   };   
-   
 }; };
 
 
-// =============================================================================
-
-/*
-struct app { template< typename application > struct main {    
-    
-   using resources = list< 
-      blink< 10 >,
-      blink< 12 >
-   >;   
-      
-   static constexpr auto n_threads = resources::n_threads;
-   
-   static void run_initialization() { 
-      resources::run_initialization();
-   };         
-  
-}; };
+// ===========================================================================
 
 template< typename application >
 struct run_class {
-   using app = typename application::main< application >;    
+   using app = typename application::inner< application >;    
    static void run(){  
-      app::resources::run_initialization();     
+   TRACE;
+      app::composition::run_initialization();     
+   TRACE;
    }
 };
 
 template< typename application >
 void run(){
+   TRACE;
     run_class< application >::run();
-}
-*/
-
-// =============================================================================
-
-template< resource x >
-struct s {};
-
-int smain(){
-   //run< app >();
-   s< bool > a;
-   (void) a;
-   return 0;
+   TRACE;
 }
 
-class A {};
- 
-class B: public A {};
- 
-class C: private A{};
- 
-int main() {
-    // std::derived_from == true only for public inheritance or exact same class
-    static_assert( std::derived_from<B, B> == true );      // same class: true
-    static_assert( std::derived_from<int, int> == false ); // same primitive type: false
-    static_assert( std::derived_from<B, A> == true );      // public inheritance: true
-    static_assert( std::derived_from<C, A> == false );     // private inheritance: false
- 
-    // std::is_base_of == true also for private inheritance
-    static_assert( std::is_base_of_v<B, B> == true );      // same class: true
-    static_assert( std::is_base_of_v<int, int> == false ); // same primitive type: false
-    static_assert( std::is_base_of_v<A, B> == true );      // public inheritance: true
-    static_assert( std::is_base_of_v<A, C> == true );      // private inheritance: true
+
+// ===========================================================================
+
+struct app { template< typename application > struct inner {    
+    
+   static void body() { 
+      TRACE;
+   };    
+    
+   using composition = list< 
+      initialization< body >,
+      initialization< body >,
+      blink< 10 >,
+      blink< 12 >
+   >;   
+  
+}; };
+
+
+// ===========================================================================
+
+int main(){
+   TRACE;
+   run< app >();
+   TRACE;   
 }
