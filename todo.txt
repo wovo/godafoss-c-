@@ -7,7 +7,10 @@ https://www.reddit.com/r/embedded/comments/lscmen/endtoend_voice_recognition_on_
 https://adspthepodcast.com/2021/03/05/Episode-15.html
 https://www.youtube.com/watch?v=4qBKOAv0sBI
 https://dl.acm.org/journal/toplas
+
+books:
 book: c++ templates the complete guide
+https://leanpub.com/c20
 
 https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0
 http://craftinginterpreters.com
@@ -40,6 +43,7 @@ https://www.toptal.com/c-plus-plus/interview-questions
 https://www.reddit.com/r/embedded/comments/ll4vvf/building_an_operating_system_for_the_raspberry_pi/
 https://www.reddit.com/r/cpp/comments/lp40ag/c20_gcc_trunk_getting_constexpr_usable_caller/
 https://www.quora.com/As-a-software-engineer-what-is-your-trick-to-keep-your-code-simple-and-readable
+soldeerbout https://pine64.com/product/pinecil-smart-mini-portable-soldering-iron/?v=0446c16e2e66
 
 
 https://kevinlynagh.com/rust-zig/

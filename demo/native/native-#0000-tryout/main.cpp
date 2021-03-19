@@ -1,7 +1,22 @@
 #include <iostream>
 #include <concepts>
+#include <algorithm>
 
 #define TRACE { std::cout << __LINE__ << "\n"; }
+
+
+/**
+ * Literal class type that wraps a constant expression string.
+ *
+ * Uses implicit conversion to allow templates to *seemingly* accept constant strings.
+ */
+template< size_t N >
+struct string_literal {
+    char value[ N ];
+    constexpr string_literal( const char ( &str )[ N ]) {
+        std::copy_n( str, N, value );
+    }
+};
 
 
 // ===========================================================================
@@ -10,13 +25,7 @@
 //
 // ===========================================================================
 
-struct resource_root {
-   static constexpr auto n_threads = 0;    
-   
-   static void run_initialization() { };
-   static void run_thread()         { };
-   static void run_background()     { };    
-};
+struct resource_root { };
 
 template< typename T >
 concept resource = std::derived_from< T, resource_root >;
@@ -24,106 +33,171 @@ concept resource = std::derived_from< T, resource_root >;
 
 // ===========================================================================
 //
-// encapsulate a function in a resource in different ways:
+// encapsulate a function  as a resource, in different ways:
 // - initialization: to be run once before the others, returns
 // - thread: to br run as separate thread, doesn't return
-// - background: to be run while idle, returns
+// - background: to be run while idle, returns (quickly)
 //
 // ===========================================================================
 
-template< void f() >
-struct initialization : resource_root {
+struct resource_function_root : resource_root { 
+};
+
+template< typename T >
+concept resource_function = std::derived_from< T, resource_function_root >;
+
+template< string_literal _name >
+struct printable_name {
+   static constexpr auto name( std::string prefix ){ 
+       return prefix + _name.value; }
+};
+
+template< void f(), string_literal name = "initialization" >
+struct initialization : resource_function_root, printable_name< name.value > { 
    static void run_initialization(){ f(); };
 };
 
-template< void f() >
-struct thread : resource_root {
-   static constexpr auto n_threads = 1;    
-   static void run_thread(){ f(); };
+template< void f(), string_literal name = "background" >
+struct background : resource_function_root, printable_name< name.value > { 
+   static void run_background(){ };
 };
 
-template< void f() >
-struct background : resource_root {
-   static void run_background(){ f(); };
+template< void f(), string_literal name = "thread" >
+struct thread : resource_function_root, printable_name< name.value > { 
+   static void run_thread(){ };
 };
-   
+
 
 // ===========================================================================
 //
-// A list is a resource that bundles zero or more composition
+// A component is a resource
+// ?? that has a resources list
+//
+// ===========================================================================
+
+struct component_root : resource_root { };
+
+template< typename T >
+concept component = std::derived_from< T, component_root >;
+
+
+// ===========================================================================
+//
+// A list is a resource that bundles zero or more resources
 //
 // ===========================================================================
 
 // fallback, required but never used
-template< typename... _tail > 
+template< resource... _tail > 
 struct list : resource_root {
+      // assertion failure!!
 };
 
-// and empty list of composition
+// and empty list of resources
 template<>
 struct list<> : resource_root {
+   template< typename T >
+   static void run_initialization() { };    
 };
 
-// a list that starts with a resource
-template< resource _first, typename... _tail >
+// a list that starts with a component
+template< component _first, resource... _tail >
 struct list< _first, _tail... > {
    using first  = _first;
    using next   = list< _tail... >;
    
-   static constexpr auto n_threads = first::n_threads + next::n_threads;
+   template< typename T >
+   static constexpr auto printable_name( std::string prefix ){ 
+      return first::template inner< T >::name( prefix ) + next::name( prefix + "   " ); }
    
+   template< typename T >
    static void run_initialization() { 
-   TRACE;
-      first::run_initialization();
-   TRACE;
-      next::run_initialization();
-   TRACE;
+      using res = first::template inner< T >::resources;
+      res::template run_initialization< T >();
+      next::template run_initialization< T >();
    };
 };
 
-// a list that starts with a component
-template< typename _first, typename... _tail >
+// a list that starts with a resource_function
+template< resource_function _first, resource... _tail >
 struct list< _first, _tail... > {
-   using first  = _first::composition;
+   using first  = list<>;    
    using next   = list< _tail... >;
    
-   static constexpr auto n_threads = first::n_threads + next::n_threads;
+   template< typename T >
+   static constexpr auto printable_name( std::string prefix ){ 
+      return _first::printable_name( prefix ) + next::name( prefix ); }
    
+   template< typename T >   
    static void run_initialization() { 
-   TRACE;
-      first::run_initialization();
-   TRACE;
-      next::run_initialization();
-   TRACE;
+       _first::run_initialization();
+      next::template run_initialization< T >();
    };
 };
+
+
+// ===========================================================================
+//
+// visualisation of a component hierarchy
+//
+// ===========================================================================
+
+
+/*
+template< typename T >
+struct walk {
+   static void run( std::string prefix ){
+      T::first::walk 
+      std::cout << prefix << T::name << "\n";
+   }    
+};
+
+template< list<> T >
+struct walk {
+   static void run( std::string prefix ){
+   }    
+};
+
+template< component T >
+struct walk {
+   static void run( std::string prefix ){
+      std::cout << prefix << T::name << "\n";
+   }    
+};
+*/
+
+
+
 
 
 // ===========================================================================
 
 template< int _n >
-struct timer { template< typename application > struct inner {    
-   using composition = list<>;
+struct timer : component_root { template< typename application > struct inner {   
+   static constexpr auto printable_name = "timer";
    static constexpr int n = 42;
+   using resources = list<>;
 }; };
 
 
 // ===========================================================================
 
 template< int n >
-struct blink { template< typename application > struct inner {    
+struct blink : component_root { template< typename application > struct inner {    
 
+  static constexpr auto printable_name = "blink";
+  
    using r = timer< n >;
 
    static void body() { 
 TRACE;       
-      std::cout << "n = " << r::n << "\n";
+      std::cout << "n = " << r::template inner< application >::n << "\n";
 TRACE;      
    };
    
-   using composition = list< 
-      initialization< body >,
-      r
+   using resources = list< 
+      r,
+      initialization< body >
    >; 
    
 }; };
@@ -136,12 +210,12 @@ struct run_class {
    using app = typename application::inner< application >;    
    static void run(){  
    TRACE;
-      app::composition::run_initialization();     
+      app::resources::template run_initialization< application >();     
    TRACE;
    }
 };
 
-template< typename application >
+template< component application >
 void run(){
    TRACE;
     run_class< application >::run();
@@ -151,14 +225,15 @@ void run(){
 
 // ===========================================================================
 
-struct app { template< typename application > struct inner {    
+struct app : component_root { template< typename application > struct inner {    
+    
+   static constexpr auto printable_name = "app";
     
    static void body() { 
       TRACE;
    };    
     
-   using composition = list< 
-      initialization< body >,
+   using resources = list< 
       initialization< body >,
       blink< 10 >,
       blink< 12 >
