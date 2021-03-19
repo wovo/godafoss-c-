@@ -5,16 +5,21 @@
 #define TRACE { std::cout << __LINE__ << "\n"; }
 
 
-/**
- * Literal class type that wraps a constant expression string.
- *
- * Uses implicit conversion to allow templates to *seemingly* accept constant strings.
- */
+// ===========================================================================
+//
+// fixed-maximum-length structural string
+// (acceptable as template parameter)
+//
+// ===========================================================================
+
 template< size_t N >
 struct string_literal {
     char value[ N ];
-    constexpr string_literal( const char ( &str )[ N ]) {
-        std::copy_n( str, N, value );
+    constexpr string_literal( const char * s ) {
+        for( auto & v : value ){
+           v = ( *s == '\0' ) ? *s : *s++;
+        }
+        value[ N - 1 ] = '\0';
     }
 };
 
@@ -40,30 +45,31 @@ concept resource = std::derived_from< T, resource_root >;
 //
 // ===========================================================================
 
-struct resource_function_root : resource_root { 
-};
+struct resource_function_root : resource_root { };
 
 template< typename T >
 concept resource_function = std::derived_from< T, resource_function_root >;
 
-template< string_literal _name >
+using resource_function_name = string_literal< 100 >;
+
+template< resource_function_name _name >
 struct printable_name {
    static constexpr auto name( std::string prefix ){ 
        return prefix + _name.value; }
 };
 
 template< void f(), string_literal name = "initialization" >
-struct initialization : resource_function_root, printable_name< name.value > { 
+struct initialization : resource_function_root, printable_name< name > { 
    static void run_initialization(){ f(); };
 };
 
 template< void f(), string_literal name = "background" >
-struct background : resource_function_root, printable_name< name.value > { 
+struct background : resource_function_root, printable_name< name > { 
    static void run_background(){ };
 };
 
 template< void f(), string_literal name = "thread" >
-struct thread : resource_function_root, printable_name< name.value > { 
+struct thread : resource_function_root, printable_name< name > { 
    static void run_thread(){ };
 };
 
