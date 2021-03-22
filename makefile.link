@@ -30,7 +30,7 @@ include            $(GODAFOSS)/makefile.inc
 
 # C++20 required
 # moved to the inc file: also for external users!
-# CPP_LANGUAGE    := -std=c++2a -fconcepts-diagnostics-depth=3
+# CPP_LANGUAGE    := -std=c++20 -fconcepts-diagnostics-depth=3
 
 # add SFML
 SFML ?= $(RELATIVE)/../SFML-2.5.1-32
@@ -45,6 +45,7 @@ ifeq ($(TARGET),native)
    else
       LINKER_FLAGS      += -lsfml-graphics -lsfml-window -lsfml-system
       DEFINES           += -DSFML_STATIC
+	  GPP-LINUX         ?= g++-10
    endif
 endif
 
