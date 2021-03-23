@@ -36,7 +36,11 @@ struct string_literal {
 // ===========================================================================
 
 template< typename T >
-constexpr std::vector< T > operator+ ( std::vector< T > a, const std::vector< T > & b ){
+constexpr std::vector< T > operator+ ( 
+   const std::vector< T > & a, 
+   const std::vector< T > & b 
+){
+   auto result{ a }; 
    a.insert( a.end(), b.begin(), b.end() );
    return a;
 }   
@@ -81,18 +85,38 @@ struct printable_name {
    static constexpr auto name = _name.value;
 };
 
-template< void f(), resource_function_name name = "initialization" >
-struct initialization : resource_function_root, printable_name< name > { 
+// merge, use only run() ?/
+
+template< 
+   void f(), 
+   resource_function_name name = "initialization" 
+>
+struct initialization : 
+   resource_function_root, 
+   printable_name< name > 
+{ 
    static void run_initialization(){ f(); };
 };
 
-template< void f(), resource_function_name name = "background" >
-struct background : resource_function_root, printable_name< name > { 
+template< 
+   void f(), 
+   resource_function_name name = "background" 
+>
+struct background : 
+   resource_function_root, 
+   printable_name< name > 
+{ 
    static void run_background(){ f(); };
 };
 
-template< void f(), resource_function_name name = "thread" >
-struct thread : resource_function_root, printable_name< name > { 
+template< 
+   void f(), 
+   resource_function_name name = "thread" 
+>
+struct thread : 
+   resource_function_root, 
+   printable_name< name > 
+{ 
    static void run_thread(){ f(); };
 };
 
@@ -131,15 +155,13 @@ struct list : list_root {
 // and empty list of resources
 template<>
 struct list<> {
-   template< typename T >
    static void run_initialization() { };    
    
-   template< typename T >
    static auto name( std::string prefix ){ 
        return std::string( "" ); 
    }
    
-   template< typename T, typename R >
+   template< typename R >
    static constexpr auto info(){
        return std::vector< std::remove_cvref_t< decltype( R::info ) > >{};
    }
@@ -151,33 +173,30 @@ struct list< _first, _tail... > : list_root {
    using first  = _first;
    using next   = list< _tail... >;
    
-   template< typename T >
    static constexpr auto name( std::string prefix = "" ){ 
       return 
-         prefix + std::string( first::template inner< T >::printable_name ) + "\n"
-         + first::resources::template name< T >( "   " + prefix )
-         + next::template name< T >( prefix ); 
+         prefix + std::string( first::printable_name ) + "\n"
+         + first::name( "   " + prefix )
+         + next::name( prefix ); 
       }
    
-   template< typename T >
    static void run_initialization() { 
-      using resources = first::resources;
-      resources::template run_initialization< T >();
-      next::template run_initialization< T >();
+      first::resources::run_initialization();
+      next::run_initialization();
    };
    
-   template< typename T, typename R >
+   template< typename R >
    static constexpr auto info(){
        return
-          first::resources::template info< T, R >()
-          + next::template info< T, R >();
+          first::resources::template info< R >()
+          + next::template info< R >();
    }  
  
-   template< typename T, typename R >
+   template< typename R >
       requires std::derived_from< first, R >
    static constexpr auto info(){
        return 
-          next::template info< T, R >()
+          next::template info< R >()
           + first::info;
    }   
 };
@@ -188,22 +207,20 @@ struct list< _first, _tail... > : list_root {
    using first  = list<>;    
    using next   = list< _tail... >;
    
-   template< typename T >
    static constexpr auto name( std::string prefix = "" ){ 
       return 
          prefix + _first::name + "\n"
-         + next::template name< T >( prefix ); 
+         + next::name( prefix ); 
     }
    
-   template< typename T >   
    static void run_initialization() { 
       _first::run_initialization();
-      next::template run_initialization< T >();
+      next::run_initialization();
    };
    
-   template< typename T, typename R >
+   template< typename R >
    static constexpr auto info(){
-       return next::template info< T, R >();
+       return next::template info< R >();
    }  
 };
 
@@ -224,31 +241,32 @@ void print( const std::vector< int > & data ){
    }   
 }
 
-template< typename application, int _marker >
+template< int _marker >
 struct xtimer : timer_root { 
+   template< typename application > struct inner {   
        
-   static constexpr int info = _marker;
+      static constexpr int info = _marker;
       
-   static constexpr int counter_number(){
-       // auto all = list<>::template info< application, timer_root >();
-       //for( unsigned int n = 0; n < all.size(); ++n ){
-       //   if( all[ n ] == info ) return (signed int) n;
-       // }
-       return _marker; // snark
-   }
-   static constexpr int n = counter_number();
-   
-   static constexpr auto printable_name = "timer n= ";
+      static constexpr int counter_number(){
+          // auto all = list<>::template info< application, timer_root >();
+          //for( unsigned int n = 0; n < all.size(); ++n ){
+          //   if( all[ n ] == info ) return (signed int) n;
+          // }
+          return _marker; // snark
+      }
+      static constexpr int n = counter_number();
       
-   static void init(){
-      //using resources = application::template inner< application >::resources;
-      //TRACE;
-      //print( resources::template info< application, timer_root >() );
-      //TRACE;       
-   }
+      static constexpr auto printable_name = "timer n= ";
       
-   using resources = list< initialization< init, "timer init"> >;
-   
+      static void init(){
+         //using resources = application::template inner< application >::resources;
+         //TRACE;
+         //print( resources::template info< application, timer_root >() );
+         //TRACE;       
+      }
+      
+      using resources = list< initialization< init, "timer init"> >;
+   }; 
 };
 
 
@@ -256,17 +274,18 @@ struct xtimer : timer_root {
 
 using namespace std::string_literals;
 
-template< typename application, int n >
-struct blink : component_root { 
+template< int n >
+struct blink : component_root { template< typename application > struct inner {    
 
    static constexpr auto printable_name = "blink n= "; // + std::to_string( n );
   
-   using r = xtimer< application, n >;
+   using r = xtimer< n >;
 
    static void body() { 
 TRACE;       
-      std::cout << "n = " << r::n << "\n";
+      std::cout << "n = " << r::template inner< application >::n << "\n";
 TRACE;      
+      //r::template inner< application >::write( 1 );
    };
    
    using resources = list< 
@@ -274,7 +293,7 @@ TRACE;
       initialization< body >
    >; 
    
-};
+}; };
 
 
 // ===========================================================================
@@ -283,15 +302,14 @@ TRACE;
 //
 // ===========================================================================
 
-template< component... all_components >
-struct wrap : component_root { 
-   template< typename components > struct inner {
+template< typename _application, component... all_components >
+struct wrap : template< typename _application :: inner : component_root { 
+   using application = _application;
        
-      static constexpr auto printable_name = "component wrapper";  
+   static constexpr auto printable_name = "component wrapper";  
      
-      using resources = list< all_components... >;    
-      
-   }; 
+   using resources = list< all_components... >;    
+   
 };
 
 
@@ -308,7 +326,7 @@ void run(){
    using app = wrap< first_component, more_components... >;
    
    // we mainly need the resources
-   using resources = app::resources;
+   using resources = app::template inner< app >::resources;
    
    TRACE;
    std::cout << resources::template name< app >();
@@ -324,21 +342,22 @@ void run(){
 //
 // ===========================================================================
 
-template< typename application >
-struct app : component_root {    
+struct app : component_root { 
+   template< typename application > struct inner {    
     
-   static constexpr auto printable_name = "app";
+      static constexpr auto printable_name = "app";
     
-   static void body() {     
-      TRACE;
-   };    
+      static void body() {     
+         TRACE;
+      };    
     
-   using resources = list< 
-      initialization< body >,
-      blink< application, 10 >,
-      blink< application, 12 >
-   >;   
-   
+      using resources = list< 
+         initialization< body >,
+         blink< 10 >,
+         blink< 12 >
+      >;   
+  
+   }; 
 };
 
 

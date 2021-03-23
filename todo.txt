@@ -44,6 +44,9 @@ https://www.reddit.com/r/embedded/comments/ll4vvf/building_an_operating_system_f
 https://www.reddit.com/r/cpp/comments/lp40ag/c20_gcc_trunk_getting_constexpr_usable_caller/
 https://www.quora.com/As-a-software-engineer-what-is-your-trick-to-keep-your-code-simple-and-readable
 soldeerbout https://pine64.com/product/pinecil-smart-mini-portable-soldering-iron/?v=0446c16e2e66
+https://github.com/cjsmeele/hersenschemen/blob/master/neuralnet-f/nn.hh
+https://pine64.com/product/pinecone-bl602-evaluation-board/?v=0446c16e2e66
+https://www.reddit.com/r/UsbCHardware/comments/jzwfex/the_pinecil_is_a_ts100type_soldering_iron_with_a/
 
 
 https://kevinlynagh.com/rust-zig/

@@ -7,7 +7,7 @@
 
 /*
 - name/printable-name => identification?
-
+- superclass for the resource functions
 */
 
 
@@ -19,32 +19,116 @@
 
 template< size_t N >
 struct string_literal {
+    
     char value[ N ];
+    
     constexpr string_literal( const char * s ) {
         for( auto & v : value ){
            v = ( *s == '\0' ) ? *s : *s++;
         }
         value[ N - 1 ] = '\0';
     }
+    
 };
 
 
 // ===========================================================================
 //
-// totally inefficient vector addition (for compile-time only)
+// fixed-maximum-length vector
 //
 // ===========================================================================
 
-template< typename T >
-constexpr std::vector< T > operator+ ( std::vector< T > a, const std::vector< T > & b ){
-   a.insert( a.end(), b.begin(), b.end() );
-   return a;
-}   
+template< typename T, int N >
+class vector {
+private:    
+
+   std::array< T, N > data;
+   int n;
+   
+public:   
+
+   constexpr vector(): n( 0 ) {}
+
+   constexpr vector( const T & d ):
+      vector()
+   {
+      *this += d;       
+   }
+   
+   vector & operator+=( const T & d ){
+      static_assert( n < N );
+      data[ n++ ] = d;
+   }
+   
+   T * begin(){ return data;  }
+   T * end(){ return data + n; }
+
+   constexpr T * begin() const { return data + n;  }
+   constexpr T * end() const { return data; }
+   
+   T & operator[]( int i ){
+       static_assert( ( i >= 0 ) && ( i < n ) );
+       return data[ i ];
+   }
+
+   constexpr T operator[]( int i ) const {
+       static_assert( ( i >= 0 ) && ( i < n ) );
+       return data[ i ];
+   }
+
+};
+
+
+// ===========================================================================
+//
+// immutable list
+//
+// ===========================================================================
+
+template< typename T, int N >
+struct immutable_list: std::array< T, N > {
+
+   template< int A, int B > 
+   constexpr immutable_list( 
+      const immutable_list< T, A > & a, 
+      const immutable_list< T, B > & b  
+   ){
+      static_assert( N == A + B );
+      for( unsigned int i = 0; i < A; ++i ){
+          this->operator[]( i ) = a[ i ];
+      }
+      for( unsigned int i = 0; i < B; ++i ){
+          this->operator[]( A + i ) = b[ i ];
+      }
+   }
+
+   //constexpr T * begin() const { return this->operator[]( 0 );  }
+   //constexpr T * end() const { return this->operator[]( N + 1 ); }
+
+};
 
 template< typename T >
-constexpr std::vector< T > operator+ ( std::vector< T > a, T b ){
-   a.push_back( b );
-   return a;
+struct immutable_list< T, 1 >: std::array< T, 1 > { 
+    constexpr immutable_list( const T & x ){
+        this->operator[]( 0 ) = x;
+    }
+
+   //constexpr T * begin() const { return this->operator[]( 0 );  }
+   //constexpr T * end() const { return this->operator[]( 2 ); }
+};
+
+template< typename T >
+struct immutable_list< T, 0 >: std::array< T, 0 > { 
+//   constexpr const T * begin() const { return & this->operator[]( 0 );  }
+//   constexpr const T * end() const { return & this->operator[]( 1 ); }
+};
+
+template< typename T, int A, int B >
+constexpr auto operator+( 
+   const immutable_list< T, A > & a, 
+   const immutable_list< T, B > & b  
+){
+   return immutable_list< T, A + B >( a, b );
 }   
 
 
@@ -62,7 +146,7 @@ concept resource = std::derived_from< T, resource_root >;
 
 // ===========================================================================
 //
-// encapsulate a function  as a resource, in different ways:
+// encapsulate a function as a resource, in different ways:
 // - initialization: to be run once before the others, returns
 // - thread: to br run as separate thread, doesn't return
 // - background: to be run while idle, returns (quickly)
@@ -124,13 +208,13 @@ concept is_list = std::derived_from< T, list_root >;
 
 // fallback, required but never used
 template< resource... _tail > 
-struct list : list_root {
+struct resource_list : list_root {
       // assertion failure!!
 };
 
 // and empty list of resources
 template<>
-struct list<> {
+struct resource_list<> {
    template< typename T >
    static void run_initialization() { };    
    
@@ -141,15 +225,15 @@ struct list<> {
    
    template< typename T, typename R >
    static constexpr auto info(){
-       return std::vector< std::remove_cvref_t< decltype( R::info ) > >{};
+       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 12 };
    }
 };
 
 // a list that starts with a component
 template< component _first, resource... _tail >
-struct list< _first, _tail... > : list_root {
+struct resource_list< _first, _tail... > : list_root {
    using first  = _first;
-   using next   = list< _tail... >;
+   using next   = resource_list< _tail... >;
    
    template< typename T >
    static constexpr auto name( std::string prefix = "" ){ 
@@ -168,6 +252,7 @@ struct list< _first, _tail... > : list_root {
    
    template< typename T, typename R >
    static constexpr auto info(){
+       //return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 13 };
        return
           first::template inner< T >::resources::template info< T, R >()
           + next::template info< T, R >();
@@ -176,17 +261,20 @@ struct list< _first, _tail... > : list_root {
    template< typename T, typename R >
       requires std::derived_from< first, R >
    static constexpr auto info(){
-       return 
-          next::template info< T, R >()
-          + first::template inner< T >::info;
+       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 15 };
+       //return 
+       //   immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{
+       //       first::template inner< T >::info
+       //   }
+       //   + next::template info< T, R >();
    }   
 };
 
 // a list that starts with a resource_function
 template< resource_function _first, resource... _tail >
-struct list< _first, _tail... > : list_root {
-   using first  = list<>;    
-   using next   = list< _tail... >;
+struct resource_list< _first, _tail... > : list_root {
+   using first  = resource_list<>;    
+   using next   = resource_list< _tail... >;
    
    template< typename T >
    static constexpr auto name( std::string prefix = "" ){ 
@@ -203,7 +291,8 @@ struct list< _first, _tail... > : list_root {
    
    template< typename T, typename R >
    static constexpr auto info(){
-       return next::template info< T, R >();
+       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 14 }
+       + next::template info< T, R >();
    }  
 };
 
@@ -231,24 +320,28 @@ struct xtimer : timer_root {
       static constexpr int info = _marker;
       
       static constexpr int counter_number(){
-          // auto all = list<>::template info< application, timer_root >();
-          //for( unsigned int n = 0; n < all.size(); ++n ){
-          //   if( all[ n ] == info ) return (signed int) n;
-          // }
-          return _marker; // snark
+          constexpr auto all = resources::template info< application, timer_root >();
+          for( unsigned int n = 0; n < all.size(); ++n ){
+             if( all[ n ] == info ) return (signed int) n;
+          }
+          return -1;
       }
       static constexpr int n = counter_number();
       
-      static constexpr auto printable_name = "timer n= ";
+      static constexpr auto printable_name = "xtimer n= ";
       
       static void init(){
-         //using resources = application::template inner< application >::resources;
-         //TRACE;
-         //print( resources::template info< application, timer_root >() );
-         //TRACE;       
+          TRACE;
+          std::cout << application::template inner< application >::resources::template name< application >();
+          TRACE;
+          auto all = application::template inner< application >::resources::template info< application, timer_root >();
+          TRACE;
+          for( const auto & x : all ){
+             std::cout << "x == " << x << "\n";
+          }      
       }
       
-      using resources = list< initialization< init, "timer init"> >;
+      using resources = resource_list< initialization< init, "xtimer init"> >;
    }; 
 };
 
@@ -268,10 +361,10 @@ struct blink : component_root { template< typename application > struct inner {
 TRACE;       
       std::cout << "n = " << r::template inner< application >::n << "\n";
 TRACE;      
-      r::template inner< application >::write( 1 ();
+      // r::template inner< application >::write( 1 ();
    };
    
-   using resources = list< 
+   using resources = resource_list< 
       r,
       initialization< body >
    >; 
@@ -291,7 +384,7 @@ struct wrap : component_root {
        
       static constexpr auto printable_name = "component wrapper";  
      
-      using resources = list< all_components... >;    
+      using resources = resource_list< all_components... >;    
       
    }; 
 };
@@ -335,7 +428,7 @@ struct app : component_root {
          TRACE;
       };    
     
-      using resources = list< 
+      using resources = resource_list< 
          initialization< body >,
          blink< 10 >,
          blink< 12 >
