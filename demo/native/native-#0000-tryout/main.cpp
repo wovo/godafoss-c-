@@ -6,14 +6,19 @@
 #define TRACE { std::cout << __LINE__ << "\n"; }
 
 /*
-- name/printable-name => identification?
-- superclass for the resource functions
+ * name/printable-name => identification? composition? str? printable?
+ * name as somthing you inherit from -> also for component
+ * what is the use of the names, only for reporting, not for inclusion??
+ * -> use immutable list of chars??
+ * list + element
 */
 
 
 // ===========================================================================
 //
-// fixed-maximum-length structural (= acceptable as template parameter) string
+// fixed-maximum-length structural string
+//
+// structural means usable as template parameter
 //
 // ===========================================================================
 
@@ -81,7 +86,9 @@ public:
 
 // ===========================================================================
 //
-// immutable list
+// immutable list 
+//
+// for compile-time use
 //
 // ===========================================================================
 
@@ -101,27 +108,28 @@ struct immutable_list: std::array< T, N > {
           this->operator[]( A + i ) = b[ i ];
       }
    }
-
-   //constexpr T * begin() const { return this->operator[]( 0 );  }
-   //constexpr T * end() const { return this->operator[]( N + 1 ); }
+   
+   constexpr immutable_list( 
+      const T a[ N ]  
+   ){
+      for( unsigned int i = 0; i < N; ++i ){
+          this->operator[]( i ) = a[ i ];
+      }
+   }   
 
 };
 
 template< typename T >
-struct immutable_list< T, 1 >: std::array< T, 1 > { 
+struct immutable_list< T, 1 >: std::array< T, 1 > {
+    
     constexpr immutable_list( const T & x ){
         this->operator[]( 0 ) = x;
     }
-
-   //constexpr T * begin() const { return this->operator[]( 0 );  }
-   //constexpr T * end() const { return this->operator[]( 2 ); }
+    
 };
 
 template< typename T >
-struct immutable_list< T, 0 >: std::array< T, 0 > { 
-//   constexpr const T * begin() const { return & this->operator[]( 0 );  }
-//   constexpr const T * end() const { return & this->operator[]( 1 ); }
-};
+struct immutable_list< T, 0 >: std::array< T, 0 > { };
 
 template< typename T, int A, int B >
 constexpr auto operator+( 
@@ -130,6 +138,22 @@ constexpr auto operator+(
 ){
    return immutable_list< T, A + B >( a, b );
 }   
+
+template< typename T, int A  >
+constexpr auto operator+( 
+   const immutable_list< T, A > & a, 
+   const immutable_list< T, 0 > & b  
+){
+   return a;
+}
+
+template< typename T, int B  >
+constexpr auto operator+( 
+   const immutable_list< T, 0 > & a, 
+   const immutable_list< T, B > & b  
+){
+   return b;
+}
 
 
 // ===========================================================================
@@ -146,46 +170,64 @@ concept resource = std::derived_from< T, resource_root >;
 
 // ===========================================================================
 //
-// encapsulate a function as a resource, in different ways:
-// - initialization: to be run once before the others, returns
-// - thread: to br run as separate thread, doesn't return
-// - background: to be run while idle, returns (quickly)
+// encapsulate a function and its name as a resource, in different ways:
+// - initialization  (to be run once before the others, returns)
+// - thread          (to be run as separate thread, doesn't return)
+// - background      (to be run while idle, returns quickly)
 //
 // ===========================================================================
+
+using resource_function_name = string_literal< 132 >;
 
 struct resource_function_root : resource_root { };
 
 template< typename T >
-concept resource_function = std::derived_from< T, resource_function_root >;
+concept resource_function = 
+   std::derived_from< T, resource_function_root >;
 
-using resource_function_name = string_literal< 132 >;
-
-template< resource_function_name _name >
-struct printable_name {
-   static constexpr auto name = _name.value;
+template< void f(), auto _name >
+struct resource_function_with_name : 
+   resource_function_root
+{
+    
+   static constexpr auto name = _name;
+   static void run(){ 
+      f(); 
+   };
+   
 };
 
-template< void f(), resource_function_name name = "initialization" >
-struct initialization : resource_function_root, printable_name< name > { 
-   static void run_initialization(){ f(); };
-};
+template< 
+   void f(), 
+   auto name = immutable_list( "initialization" )
+>
+struct initialization : 
+   resource_function_with_name< f, name > 
+{};
 
-template< void f(), resource_function_name name = "background" >
-struct background : resource_function_root, printable_name< name > { 
-   static void run_background(){ f(); };
-};
+template< 
+   void f(), 
+   resource_function_name name = "background" 
+>
+struct background : 
+   resource_function_with_name< f, name > 
+{};
 
-template< void f(), resource_function_name name = "thread" >
-struct thread : resource_function_root, printable_name< name > { 
-   static void run_thread(){ f(); };
-};
+template< 
+   void f(), 
+   resource_function_name name = "thread" 
+>
+struct thread : 
+   resource_function_with_name< f, name > 
+{};
 
 
 // ===========================================================================
 //
 // A component is a resource
-// ?? that has a resources list
-// ?? that has a name
+// ?? that has inside an inner:
+//    ?? a resources list
+//    ?? a name
 //
 // ===========================================================================
 
@@ -209,33 +251,36 @@ concept is_list = std::derived_from< T, list_root >;
 // fallback, required but never used
 template< resource... _tail > 
 struct resource_list : list_root {
-      // assertion failure!!
+   // assertion failure!!
 };
 
-// and empty list of resources
+// specialization for an empty list of resources
 template<>
 struct resource_list<> {
-   template< typename T >
+    
+   template< component T >
    static void run_initialization() { };    
    
-   template< typename T >
-   static auto name( std::string prefix ){ 
+   template< component T >
+   static constexpr auto name( std::string prefix ){ 
        return std::string( "" ); 
    }
    
-   template< typename T, typename R >
+   template< component T, typename R >
    static constexpr auto info(){
-       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 12 };
+       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 0 >{ };
    }
+   
 };
 
-// a list that starts with a component
+// specialiation for a list that starts with a component
 template< component _first, resource... _tail >
 struct resource_list< _first, _tail... > : list_root {
+    
    using first  = _first;
    using next   = resource_list< _tail... >;
    
-   template< typename T >
+   template< component T >
    static constexpr auto name( std::string prefix = "" ){ 
       return 
          prefix + std::string( first::template inner< T >::printable_name ) + "\n"
@@ -243,57 +288,58 @@ struct resource_list< _first, _tail... > : list_root {
          + next::template name< T >( prefix ); 
       }
    
-   template< typename T >
+   template< component T >
    static void run_initialization() { 
       using resources = first::template inner< T >::resources;
       resources::template run_initialization< T >();
       next::template run_initialization< T >();
    };
    
-   template< typename T, typename R >
+   template< component T, typename R >
    static constexpr auto info(){
-       //return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 13 };
-       return
+       return 
           first::template inner< T >::resources::template info< T, R >()
           + next::template info< T, R >();
    }  
  
-   template< typename T, typename R >
+   template< component T, typename R >
       requires std::derived_from< first, R >
    static constexpr auto info(){
-       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 15 };
-       //return 
-       //   immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{
-       //       first::template inner< T >::info
-       //   }
-       //   + next::template info< T, R >();
-   }   
+       return 
+          first::template inner< T >::resources::template info< T, R >()
+          + immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{
+              first::template inner< T >::info
+          }
+          + next::template info< T, R >();
+   }  
+ 
 };
 
-// a list that starts with a resource_function
+// specialization for a list that starts with a resource_function
 template< resource_function _first, resource... _tail >
 struct resource_list< _first, _tail... > : list_root {
+    
    using first  = resource_list<>;    
    using next   = resource_list< _tail... >;
    
-   template< typename T >
+   template< component T >
    static constexpr auto name( std::string prefix = "" ){ 
       return 
          prefix + _first::name + "\n"
          + next::template name< T >( prefix ); 
     }
    
-   template< typename T >   
+   template< component T >   
    static void run_initialization() { 
-      _first::run_initialization();
+      _first::run();
       next::template run_initialization< T >();
    };
    
-   template< typename T, typename R >
+   template< component T, typename R >
    static constexpr auto info(){
-       return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{ 14 }
-       + next::template info< T, R >();
+       return next::template info< T, R >();
    }  
+   
 };
 
 
@@ -315,12 +361,12 @@ void print( const std::vector< int > & data ){
 
 template< int _marker >
 struct xtimer : timer_root { 
-   template< typename application > struct inner {   
+   template< component application > struct inner {   
        
       static constexpr int info = _marker;
       
       static constexpr int counter_number(){
-          constexpr auto all = resources::template info< application, timer_root >();
+          constexpr auto all = application::template inner< application >::resources::template info< application, timer_root >();
           for( unsigned int n = 0; n < all.size(); ++n ){
              if( all[ n ] == info ) return (signed int) n;
           }
@@ -332,16 +378,17 @@ struct xtimer : timer_root {
       
       static void init(){
           TRACE;
-          std::cout << application::template inner< application >::resources::template name< application >();
-          TRACE;
-          auto all = application::template inner< application >::resources::template info< application, timer_root >();
-          TRACE;
-          for( const auto & x : all ){
-             std::cout << "x == " << x << "\n";
-          }      
+        std::cout << "I am number " << n << "\n";
+          //std::cout << application::template inner< application >::resources::template name< application >();
+          //TRACE;
+          //auto all =   application::template inner< application >::resources::template info< application, timer_root >();
+          //TRACE;
+          //for( const auto & x : all ){
+          //   std::cout << "x == " << x << "\n";
+          //}      
       }
       
-      using resources = resource_list< initialization< init, "xtimer init"> >;
+      using resources = resource_list< initialization< init, immutable_list( "xtimer init"> ) >;
    }; 
 };
 
@@ -380,7 +427,7 @@ TRACE;
 
 template< component... all_components >
 struct wrap : component_root { 
-   template< typename components > struct inner {
+   template< component components > struct inner {
        
       static constexpr auto printable_name = "component wrapper";  
      
@@ -406,7 +453,7 @@ void run(){
    using resources = app::template inner< app >::resources;
    
    TRACE;
-   std::cout << resources::template name< app >();
+   //std::cout << resources::template name< app >();
    TRACE;
    resources::template run_initialization< app >();
    TRACE;
@@ -420,7 +467,7 @@ void run(){
 // ===========================================================================
 
 struct app : component_root { 
-   template< typename application > struct inner {    
+   template< component application > struct inner {    
     
       static constexpr auto printable_name = "app";
     
@@ -441,7 +488,6 @@ struct app : component_root {
 // ===========================================================================
 
 int main(){     
-   TRACE;
-   run< app >();
-   TRACE;   
+   //std::cout << resources::template name< app >();    
+   run< app >();  
 }
