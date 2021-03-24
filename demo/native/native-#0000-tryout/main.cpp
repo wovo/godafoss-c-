@@ -388,7 +388,7 @@ struct xtimer : timer_root {
           //}      
       }
       
-      using resources = resource_list< initialization< init, immutable_list( "xtimer init"> ) >;
+      using resources = resource_list< initialization< init, immutable_list( "xtimer init" ) > ) >;
    }; 
 };
 
