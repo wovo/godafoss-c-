@@ -155,6 +155,48 @@ constexpr auto operator+(
    return b;
 }
 
+template< typename T >
+constexpr auto operator+( 
+   const immutable_list< T, 0 > & a, 
+   const immutable_list< T, 0 > & b  
+){
+   return immutable_list< T, 0 >();
+}
+
+template< typename T, int A  >
+constexpr auto operator+( 
+   const immutable_list< T, A > & a, 
+   const T & x
+){
+   return a + immutable_list< T, 1 >( x );
+}
+
+template< typename T, int A  >
+constexpr auto operator+( 
+   const T & x,
+   const immutable_list< T, A > & b
+){
+   return immutable_list< T, 1 >( x ) + b;
+}
+
+template< int N >
+struct immutable_string : immutable_list< char, N > {
+   constexpr immutable_string( 
+      const char ( &s )[ N ]
+   ): immutable_list< char, N >( s ){}
+};
+
+template<>
+struct immutable_string< 0 > : immutable_list< char, 0 > {
+   constexpr immutable_string( 
+   ): immutable_list< char, 0 >(){}
+};
+
+template< int N >
+constexpr auto prefix(){
+   return immutable_list< char, 1 >( '0' + N ) + immutable_list< char, 1 >( '>' );
+}
+
 
 // ===========================================================================
 //
@@ -191,6 +233,7 @@ struct resource_function_with_name :
 {
     
    static constexpr auto name = _name;
+   
    static void run(){ 
       f(); 
    };
@@ -199,7 +242,7 @@ struct resource_function_with_name :
 
 template< 
    void f(), 
-   auto name = immutable_list( "initialization" )
+   immutable_string name = "initialization"
 >
 struct initialization : 
    resource_function_with_name< f, name > 
@@ -226,7 +269,7 @@ struct thread :
 //
 // A component is a resource
 // ?? that has inside an inner:
-//    ?? a resources list
+//    ?? list
 //    ?? a name
 //
 // ===========================================================================
@@ -235,6 +278,11 @@ struct component_root : resource_root { };
 
 template< typename T >
 concept component = std::derived_from< T, component_root >;
+
+template< immutable_string _name >
+struct component_name : component_root {
+    static constexpr auto name = _name;
+};
 
 
 // ===========================================================================
@@ -261,9 +309,9 @@ struct resource_list<> {
    template< component T >
    static void run_initialization() { };    
    
-   template< component T >
-   static constexpr auto name( std::string prefix ){ 
-       return std::string( "" ); 
+   template< component T, int N >
+   static constexpr auto name(){ 
+       return immutable_string< 0 >(); 
    }
    
    template< component T, typename R >
@@ -280,12 +328,12 @@ struct resource_list< _first, _tail... > : list_root {
    using first  = _first;
    using next   = resource_list< _tail... >;
    
-   template< component T >
-   static constexpr auto name( std::string prefix = "" ){ 
+   template< component T, int N >
+   static constexpr auto name(){ 
       return 
-         prefix + std::string( first::template inner< T >::printable_name ) + "\n"
-         + first::template inner< T >::resources::template name< T >( "   " + prefix )
-         + next::template name< T >( prefix ); 
+         prefix< N >() + first::name + '\n'
+         + first::template inner< T >::resources::template name< T, N + 1 >()
+         + next::template name< T, N >(); 
       }
    
    template< component T >
@@ -322,11 +370,11 @@ struct resource_list< _first, _tail... > : list_root {
    using first  = resource_list<>;    
    using next   = resource_list< _tail... >;
    
-   template< component T >
-   static constexpr auto name( std::string prefix = "" ){ 
+   template< component T, int N >
+   static constexpr auto name(){ 
       return 
-         prefix + _first::name + "\n"
-         + next::template name< T >( prefix ); 
+         prefix< N >() + _first::name + '\n'
+         + next::template name< T, N >(); 
     }
    
    template< component T >   
@@ -345,7 +393,7 @@ struct resource_list< _first, _tail... > : list_root {
 
 // ===========================================================================
 
-struct timer_root : component_root {
+struct timer_root {
    static constexpr int info = 0;
 };
 
@@ -360,7 +408,7 @@ void print( const std::vector< int > & data ){
 }
 
 template< int _marker >
-struct xtimer : timer_root { 
+struct xtimer : timer_root, component_name< "xtimer" >  { 
    template< component application > struct inner {   
        
       static constexpr int info = _marker;
@@ -374,8 +422,6 @@ struct xtimer : timer_root {
       }
       static constexpr int n = counter_number();
       
-      static constexpr auto printable_name = "xtimer n= ";
-      
       static void init(){
           TRACE;
         std::cout << "I am number " << n << "\n";
@@ -388,7 +434,9 @@ struct xtimer : timer_root {
           //}      
       }
       
-      using resources = resource_list< initialization< init, immutable_list( "xtimer init" ) > ) >;
+      using resources = resource_list< 
+         initialization< init > 
+      >;
    }; 
 };
 
@@ -398,9 +446,8 @@ struct xtimer : timer_root {
 using namespace std::string_literals;
 
 template< int n >
-struct blink : component_root { template< typename application > struct inner {    
-
-   static constexpr auto printable_name = "blink n= "; // + std::to_string( n );
+struct blink : component_name< "blink" > { 
+   template< typename application > struct inner {    
   
    using r = xtimer< n >;
 
@@ -426,10 +473,8 @@ TRACE;
 // ===========================================================================
 
 template< component... all_components >
-struct wrap : component_root { 
+struct wrap : component_name< "component wrapper" > { 
    template< component components > struct inner {
-       
-      static constexpr auto printable_name = "component wrapper";  
      
       using resources = resource_list< all_components... >;    
       
@@ -453,7 +498,9 @@ void run(){
    using resources = app::template inner< app >::resources;
    
    TRACE;
-   //std::cout << resources::template name< app >();
+   for( auto c : resources::template name< app, 0 >() ){
+       std::cout << c;
+   }
    TRACE;
    resources::template run_initialization< app >();
    TRACE;
@@ -466,10 +513,8 @@ void run(){
 //
 // ===========================================================================
 
-struct app : component_root { 
+struct app : component_name< "test application" > { 
    template< component application > struct inner {    
-    
-      static constexpr auto printable_name = "app";
     
       static void body() {     
          TRACE;
@@ -488,6 +533,5 @@ struct app : component_root {
 // ===========================================================================
 
 int main(){     
-   //std::cout << resources::template name< app >();    
    run< app >();  
 }
