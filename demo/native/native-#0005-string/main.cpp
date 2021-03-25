@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <type_traits>
 
+
 #define TRACE { std::cout << __LINE__ << "\n"; }
 
 
@@ -31,14 +32,17 @@ struct immutable_list: std::array< T, N > {
       }
    }
    
+/*
    constexpr immutable_list( 
       const T a[ N ]  
    ){
-      for( unsigned int i = 0; i < N; ++i ){
+      for( unsigned int i = 0; i < N; ++std::copy_n(str, N, value);i ){
           this->operator[]( i ) = a[ i ];
       }
    }   
+*/   
 
+   
 };
 
 template< typename T >
@@ -53,13 +57,15 @@ struct immutable_list< T, 1 >: std::array< T, 1 > {
 template< typename T >
 struct immutable_list< T, 0 >: std::array< T, 0 > { };
 
-template<size_t N>
-struct StringLiteral {
-    constexpr StringLiteral(const char (&str)[N]) {
-        std::copy_n(str, N, value);
-    }
-    
-    char value[N];
+template< int N >
+struct immutable_list< char, N >: std::array< char, N > { 
+   constexpr immutable_list( 
+      const char a[ N ]  
+   ){
+      for( unsigned int i = 0; i < N; ++i ){
+          this->operator[]( i ) = a[ i ];
+      }
+   }         
 };
 
 template< typename T, int A, int B >
@@ -94,8 +100,6 @@ constexpr auto operator+(
    return a + immutable_list< T, 1 >( x );
 }
 
-constexpr StringLiteral(const char (&str)[N]) {
-
 
 // ===========================================================================
 //
@@ -103,22 +107,14 @@ constexpr StringLiteral(const char (&str)[N]) {
 //
 // ===========================================================================
 
-template< auto s >
-struct named {
-   static void print(){
-      for( auto c : s ) {
-         std::cout << c;
-      }   
-      std::cout << "\n";
-   }
-};
+
 
 
 // ===========================================================================
 
 int xmain(){     
    //std::cout << resources::template name< app >();    
-   named< immutable_list< char, 0 >() + 'y' + 'z' > :: print();
+   //named< immutable_list< "Hello" > :: print();
    return 0;
 }
 
@@ -129,6 +125,23 @@ struct StringLiteral {
     }
     
     char value[N];
+};
+
+template< int N >
+struct immutable_string : immutable_list< char, N > {
+   constexpr immutable_string( 
+      const char ( &s )[ N ]
+   ): immutable_list< char, N >( s ){}
+};
+
+template< immutable_string s >
+struct named {
+   static void print(){
+      for( auto c : s ) {
+         std::cout << c;
+      }      
+      std::cout << "\n";
+   }
 };
 
 template<StringLiteral lit>
@@ -142,7 +155,10 @@ void Print() {
     std::cout << "Size: " << size << ", Contents: " << contents << std::endl;
 }
 
+
+
 int main()
 {
+    named< "Hello" >:: print();
     Print<"literal string">(); // Prints "Size: 15, Contents: literal string"
 }
