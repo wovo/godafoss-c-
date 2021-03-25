@@ -194,7 +194,7 @@ struct immutable_string< 0 > : immutable_list< char, 0 > {
 
 template< int N >
 constexpr auto prefix(){
-   return immutable_list< char, 1 >( '0' + N ) + immutable_list< char, 1 >( '>' );
+   return immutable_list< char, 1 >( '@' ) + immutable_list< char, 1 >( '0' + N );
 }
 
 
@@ -420,18 +420,11 @@ struct xtimer : timer_root, component_name< "xtimer" >  {
           }
           return -1;
       }
+      
       static constexpr int n = counter_number();
       
       static void init(){
-          TRACE;
-        std::cout << "I am number " << n << "\n";
-          //std::cout << application::template inner< application >::resources::template name< application >();
-          //TRACE;
-          //auto all =   application::template inner< application >::resources::template info< application, timer_root >();
-          //TRACE;
-          //for( const auto & x : all ){
-          //   std::cout << "x == " << x << "\n";
-          //}      
+         std::cout << "I am number " << n << "\n";
       }
       
       using resources = resource_list< 
@@ -452,10 +445,7 @@ struct blink : component_name< "blink" > {
    using r = xtimer< n >;
 
    static void body() { 
-TRACE;       
       std::cout << "n = " << r::template inner< application >::n << "\n";
-TRACE;      
-      // r::template inner< application >::write( 1 ();
    };
    
    using resources = resource_list< 
@@ -498,8 +488,16 @@ void run(){
    using resources = app::template inner< app >::resources;
    
    TRACE;
+   bool prefix = false;
    for( auto c : resources::template name< app, 0 >() ){
-       std::cout << c;
+      if( prefix ){
+          for( int i = 0; i < ( c - '0' ); ++i ) std::cout << "   ";
+          prefix = false;
+      } else if( c == '@' ){
+          prefix = true;
+      } else {   
+          std::cout << c;
+      }   
    }
    TRACE;
    resources::template run_initialization< app >();
