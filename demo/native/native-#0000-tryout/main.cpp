@@ -198,6 +198,16 @@ constexpr auto prefix(){
 }
 
 
+
+//template< int N >
+//   requires
+//struct immutable_string_decimal_higher< n >
+
+template< int N >
+constexpr auto immutable_string_decimal = 
+   immutable_list< char, 1 >( '0' + N );
+
+
 // ===========================================================================
 //
 // A resource is something a component needs to implement its functionality.
@@ -279,9 +289,9 @@ struct component_root : resource_root { };
 template< typename T >
 concept component = std::derived_from< T, component_root >;
 
-template< immutable_string _name >
+template< immutable_string ...strings >
 struct component_name : component_root {
-    static constexpr auto name = _name;
+    static constexpr auto name = ( strings + ... + immutable_string< 0 >() );
 };
 
 
@@ -439,7 +449,7 @@ struct xtimer : timer_root, component_name< "xtimer" >  {
 using namespace std::string_literals;
 
 template< int n >
-struct blink : component_name< "blink" > { 
+struct blink : component_name< "blink", immutable_string_decimal< n > > { 
    template< typename application > struct inner {    
   
    using r = xtimer< n >;
