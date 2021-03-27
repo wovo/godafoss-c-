@@ -198,29 +198,11 @@ constexpr auto prefix(){
    return immutable_list< char, 1 >( '@' ) + immutable_list< char, 1 >( '0' + N );
 }
 
-constexpr number_of_digits( int x ){
-   int n = 0;
-   while( x > 0 ){
-      x = x / 10;
-      ++n;
-   }
-   return ( n == 0 ) ? 1 : 0;;
-}
 
-template< int N >
-struct immutable_string_from_int : 
-   immutable_list< char, number_of_digits( N ) > 
-{
-   constexpr immutable_string_from_int(){
-      int digits = number_of_digits( N );
-      int n = N;
-      for( int i = 0; i < digits; ++i ){
-         this->operator[]( N - i ) = n % 10;
-         n = n / 10;
-      }
-   }
-};
+// ===========================================================================
 
+template< int n >
+struct the_application { }; 
 
 // ===========================================================================
 //
@@ -303,9 +285,9 @@ struct component_root : resource_root { };
 template< typename T >
 concept component = std::derived_from< T, component_root >;
 
-template< immutable_string ..._name >
+template< immutable_string _name >
 struct component_name : component_root {
-    static constexpr auto name = ( _name + ... + immutable_string< 0 >() );
+    static constexpr auto name = _name;
 };
 
 
@@ -330,15 +312,14 @@ struct resource_list : list_root {
 template<>
 struct resource_list<> {
     
-   template< component T >
    static void run_initialization() { };    
    
-   template< component T, int N >
+   template< int N >
    static constexpr auto name(){ 
        return immutable_string< 0 >(); 
    }
    
-   template< component T, typename R >
+   template< typename R >
    static constexpr auto info(){
        return immutable_list< std::remove_cvref_t< decltype( R::info ) >, 0 >{ };
    }
@@ -352,37 +333,36 @@ struct resource_list< _first, _tail... > : list_root {
    using first  = _first;
    using next   = resource_list< _tail... >;
    
-   template< component T, int N >
+   template< int N >
    static constexpr auto name(){ 
       return 
          prefix< N >() + first::name + '\n'
-         + first::template inner< T >::resources::template name< T, N + 1 >()
-         + next::template name< T, N >(); 
+         + first::resources::template name< N + 1 >()
+         + next::template name< N >(); 
       }
    
-   template< component T >
    static void run_initialization() { 
-      using resources = first::template inner< T >::resources;
-      resources::template run_initialization< T >();
-      next::template run_initialization< T >();
+      using resources = first::resources;
+      resources::template run_initialization();
+      next::template run_initialization();
    };
    
-   template< component T, typename R >
+   template< typename R >
    static constexpr auto info(){
        return 
-          first::template inner< T >::resources::template info< T, R >()
-          + next::template info< T, R >();
+          first::template info< R >()
+          + next::template info< R >();
    }  
  
-   template< component T, typename R >
+   template< typename R >
       requires std::derived_from< first, R >
    static constexpr auto info(){
        return 
-          first::template inner< T >::resources::template info< T, R >()
+          first::resources::template info< R >()
           + immutable_list< std::remove_cvref_t< decltype( R::info ) >, 1 >{
-              first::template inner< T >::info
+              first::info
           }
-          + next::template info< T, R >();
+          + next::template info< R >();
    }  
  
 };
@@ -394,22 +374,21 @@ struct resource_list< _first, _tail... > : list_root {
    using first  = resource_list<>;    
    using next   = resource_list< _tail... >;
    
-   template< component T, int N >
+   template< int N >
    static constexpr auto name(){ 
       return 
          prefix< N >() + _first::name + '\n'
-         + next::template name< T, N >(); 
+         + next::template name< N >(); 
     }
    
-   template< component T >   
    static void run_initialization() { 
       _first::run();
-      next::template run_initialization< T >();
-   };
+      next::template run_initialization();
+   }   
    
-   template< component T, typename R >
+   template< typename R >
    static constexpr auto info(){
-       return next::template info< T, R >();
+       return next::template info< R >();
    }  
    
 };
@@ -433,12 +412,11 @@ void print( const std::vector< int > & data ){
 
 template< int _marker >
 struct xtimer : timer_root, component_name< "xtimer" >  { 
-   template< component application > struct inner {   
        
       static constexpr int info = _marker;
       
       static constexpr int counter_number(){
-          constexpr auto all = application::template inner< application >::resources::template info< application, timer_root >();
+          constexpr auto all = the_application< _marker >::resources::template info< timer_root >();
           for( unsigned int n = 0; n < all.size(); ++n ){
              if( all[ n ] == info ) return (signed int) n;
           }
@@ -453,23 +431,19 @@ struct xtimer : timer_root, component_name< "xtimer" >  {
       
       using resources = resource_list< 
          initialization< init > 
-      >;
-   }; 
+      >;   
 };
 
 
 // ===========================================================================
 
 template< int n >
-//struct blink : component_name< "blink n=", immutable_string_from_int< n >  > { 
-struct blink : component_name< immutable_string_from_int< n >()  > { 
-//struct blink : component_name< "blink n=" > { 
-   template< typename application > struct inner {    
+struct blink : component_name< "blink" > { 
   
    using r = xtimer< n >;
 
    static void body() { 
-      std::cout << "n = " << r::template inner< application >::n << "\n";
+      std::cout << "n = " << r::n << "\n";
    };
    
    using resources = resource_list< 
@@ -477,7 +451,7 @@ struct blink : component_name< immutable_string_from_int< n >()  > {
       initialization< body >
    >; 
    
-}; };
+};
 
 
 // ===========================================================================
@@ -488,11 +462,9 @@ struct blink : component_name< immutable_string_from_int< n >()  > {
 
 template< component... all_components >
 struct wrap : component_name< "component wrapper" > { 
-   template< component components > struct inner {
      
       using resources = resource_list< all_components... >;    
       
-   }; 
 };
 
 
@@ -509,7 +481,7 @@ void run(){
    using app = wrap< first_component, more_components... >;
    
    // we mainly need the resources
-   using resources = app::template inner< app >::resources;
+   using resources = app::resources;
    
    TRACE;
    bool prefix = false;
@@ -535,8 +507,8 @@ void run(){
 //
 // ===========================================================================
 
-struct app : component_name< "test application" > { 
-   template< component application > struct inner {    
+template<>
+struct the_application< 10 > : component_name< "test application" > { 
     
       static void body() {     
          TRACE;
@@ -547,13 +519,12 @@ struct app : component_name< "test application" > {
          blink< 10 >,
          blink< 12 >
       >;   
-  
-   }; 
+
 };
 
 
 // ===========================================================================
 
 int main(){     
-   run< app >();  
+   run< the_application< 10 > >();  
 }

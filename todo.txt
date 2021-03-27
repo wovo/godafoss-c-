@@ -12,6 +12,8 @@ books:
 book: c++ templates the complete guide
 https://leanpub.com/c20
 
+https://www.reddit.com/r/esp32/comments/mbahkh/just_a_small_update_of_my_esp32_open_smartwatch/
+
 https://www.elsevier.com/books/engineering-a-compiler/cooper/978-0-12-088478-0
 http://craftinginterpreters.com
 https://travisdowns.github.io/blog/2020/07/06/concurrency-costs.html
